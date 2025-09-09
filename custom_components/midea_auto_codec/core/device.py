@@ -326,6 +326,10 @@ class MiedaDevice(threading.Thread):
     def _device_connected(self, connected=True):
         self._connected = connected
         status = {"connected": connected}
+        if not connected:
+            MideaLogger.warning(f"Device {self._device_id} disconnected", self._device_id)
+        else:
+            MideaLogger.info(f"Device {self._device_id} connected", self._device_id)
         self._update_all(status)
 
     def _update_all(self, status):

@@ -28,6 +28,7 @@ from homeassistant.const import (
 )
 from .core.logger import MideaLogger
 from .core.device import MiedaDevice
+from .data_coordinator import MideaDataUpdateCoordinator
 from .const import (
     DOMAIN,
     DEVICES,
@@ -98,29 +99,24 @@ def register_services(hass: HomeAssistant):
         attributes = service.data.get("attributes")
         MideaLogger.debug(f"Service called: set_attributes, device_id: {device_id}, attributes: {attributes}")
         try:
-            device: MiedaDevice = hass.data[DOMAIN][DEVICES][device_id].get(CONF_DEVICE)
+            coordinator: MideaDataUpdateCoordinator = hass.data[DOMAIN][DEVICES][device_id].get("coordinator")
         except KeyError:
             MideaLogger.error(f"Failed to call service set_attributes: the device {device_id} isn't exist.")
             return
-        if device:
-            device.set_attributes(attributes)
+        if coordinator:
+            await coordinator.async_set_attributes(attributes)
 
     async def async_send_command(service: ServiceCall):
         device_id = service.data.get("device_id")
         cmd_type = service.data.get("cmd_type")
         cmd_body = service.data.get("cmd_body")
         try:
-            cmd_body = bytearray.fromhex(cmd_body)
-        except ValueError:
-            MideaLogger.error(f"Failed to call service set_attributes: invalid cmd_body, a hexadecimal string required")
-            return
-        try:
-            device: MiedaDevice = hass.data[DOMAIN][DEVICES][device_id].get(CONF_DEVICE)
+            coordinator: MideaDataUpdateCoordinator = hass.data[DOMAIN][DEVICES][device_id].get("coordinator")
         except KeyError:
-            MideaLogger.error(f"Failed to call service set_attributes: the device {device_id} isn't exist.")
+            MideaLogger.error(f"Failed to call service send_command: the device {device_id} isn't exist.")
             return
-        if device:
-            device.send_command(cmd_type, cmd_body)
+        if coordinator:
+            await coordinator.async_send_command(cmd_type, cmd_body)
 
     hass.services.async_register(
         DOMAIN, 
@@ -222,9 +218,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         hass.data[DOMAIN] = {}
     if DEVICES not in hass.data[DOMAIN]:
         hass.data[DOMAIN][DEVICES] = {}
+    
+    # Create data coordinator
+    coordinator = MideaDataUpdateCoordinator(hass, config_entry, device)
+    await coordinator.async_config_entry_first_refresh()
+    
     hass.data[DOMAIN][DEVICES][device_id] = {}
     hass.data[DOMAIN][DEVICES][device_id][CONF_DEVICE] = device
+    hass.data[DOMAIN][DEVICES][device_id]["coordinator"] = coordinator
     hass.data[DOMAIN][DEVICES][device_id][CONF_ENTITIES] = {}
+    
     config = load_device_config(hass, device_type, sn8)
     if config is not None and len(config) > 0:
         queries = config.get("queries")
@@ -239,6 +242,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         hass.data[DOMAIN][DEVICES][device_id]["manufacturer"] = config.get("manufacturer")
         hass.data[DOMAIN][DEVICES][device_id]["rationale"] = config.get("rationale")
         hass.data[DOMAIN][DEVICES][device_id][CONF_ENTITIES] = config.get(CONF_ENTITIES)
+    
     for platform in ALL_PLATFORM:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             config_entry, platform))

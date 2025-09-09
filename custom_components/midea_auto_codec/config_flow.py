@@ -86,10 +86,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     account=account,
                     password=password
                 )
-            if await self._cloud.login():
-                return await self.async_step_home()
-            else:
-                return await self.async_step_user(error="account_invalid")
+            try:
+                if await self._cloud.login():
+                    return await self.async_step_home()
+                else:
+                    return await self.async_step_user(error="account_invalid")
+            except Exception as e:
+                _LOGGER.error(f"Login error: {e}")
+                return await self.async_step_user(error="login_failed")
         if user_input is not None:
             if self._cloud is None:
                 self._cloud = get_midea_cloud(
@@ -98,16 +102,21 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     account=user_input[CONF_ACCOUNT],
                     password=user_input[CONF_PASSWORD]
                 )
-            if await self._cloud.login():
-                return self.async_create_entry(
-                    title=f"{user_input[CONF_ACCOUNT]}",
-                    data={
-                        CONF_TYPE: CONF_ACCOUNT,
-                        CONF_ACCOUNT: user_input[CONF_ACCOUNT],
-                        CONF_PASSWORD: user_input[CONF_PASSWORD],
-                        CONF_SERVER: user_input[CONF_SERVER]
-                    })
-            else:
+            try:
+                if await self._cloud.login():
+                    return self.async_create_entry(
+                        title=f"{user_input[CONF_ACCOUNT]}",
+                        data={
+                            CONF_TYPE: CONF_ACCOUNT,
+                            CONF_ACCOUNT: user_input[CONF_ACCOUNT],
+                            CONF_PASSWORD: user_input[CONF_PASSWORD],
+                            CONF_SERVER: user_input[CONF_SERVER]
+                        })
+                else:
+                    self._cloud = None
+                    return await self.async_step_user(error="login_failed")
+            except Exception as e:
+                _LOGGER.error(f"Login error: {e}")
                 self._cloud = None
                 return await self.async_step_user(error="login_failed")
         return self.async_show_form(

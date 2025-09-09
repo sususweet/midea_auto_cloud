@@ -8,33 +8,59 @@ from homeassistant.const import (
     Platform,
     CONF_DEVICE_ID,
     CONF_ENTITIES,
-    CONF_DEVICE,
-    ATTR_TEMPERATURE
+    ATTR_TEMPERATURE, CONF_DEVICE
 )
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     DOMAIN,
     DEVICES
 )
-from .midea_entities import MideaEntity, Rationale
+from .midea_entity import MideaEntity
+from .midea_entities import Rationale
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up climate entities for Midea devices."""
     device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device = hass.data[DOMAIN][DEVICES][device_id].get(CONF_DEVICE)
-    manufacturer = hass.data[DOMAIN][DEVICES][device_id].get("manufacturer")
-    rationale = hass.data[DOMAIN][DEVICES][device_id].get("rationale")
-    entities = hass.data[DOMAIN][DEVICES][device_id].get(CONF_ENTITIES).get(Platform.CLIMATE)
+    device_data = hass.data[DOMAIN][DEVICES][device_id]
+    coordinator = device_data.get("coordinator")
+    device = device_data.get(CONF_DEVICE)
+    manufacturer = device_data.get("manufacturer")
+    rationale = device_data.get("rationale")
+    entities = device_data.get(CONF_ENTITIES, {}).get(Platform.CLIMATE, {})
+    
     devs = []
-    if entities is not None:
+    if entities:
         for entity_key, config in entities.items():
-            devs.append(MideaClimateEntity(device, manufacturer, rationale, entity_key, config))
+            devs.append(MideaClimateEntity(
+                coordinator, device, manufacturer, rationale, entity_key, config
+            ))
     async_add_entities(devs)
 
 
 class MideaClimateEntity(MideaEntity, ClimateEntity):
-    def __init__(self, device, manufacturer, rationale, entity_key, config):
-        super().__init__(device, manufacturer, rationale, entity_key, config)
+    def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        super().__init__(
+            coordinator,
+            device.device_id,
+            device.device_name,
+            f"T0x{device.device_type:02X}",
+            device.sn,
+            device.sn8,
+            device.model,
+        )
+        self._device = device
+        self._manufacturer = manufacturer
+        self._rationale = rationale
+        self._entity_key = entity_key
+        self._config = config
         self._key_power = self._config.get("power")
         self._key_hvac_modes = self._config.get("hvac_modes")
         self._key_preset_modes = self._config.get("preset_modes")
@@ -65,30 +91,30 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def current_temperature(self):
-        return self._device.get_attribute(self._key_current_temperature)
+        return self.device_attributes.get(self._key_current_temperature)
 
     @property
     def target_temperature(self):
         if isinstance(self._key_target_temperature, list):
-            temp_int = self._device.get_attribute(self._key_target_temperature[0])
-            tem_dec = self._device.get_attribute(self._key_target_temperature[1])
+            temp_int = self.device_attributes.get(self._key_target_temperature[0])
+            tem_dec = self.device_attributes.get(self._key_target_temperature[1])
             if temp_int is not None and tem_dec is not None:
                 return temp_int + tem_dec
             return None
         else:
-            return self._device.get_attribute(self._key_target_temperature)
+            return self.device_attributes.get(self._key_target_temperature)
 
     @property
     def min_temp(self):
         if isinstance(self._key_min_temp, str):
-            return float(self._device.get_attribute(self._key_min_temp))
+            return float(self.device_attributes.get(self._key_min_temp, 16))
         else:
             return float(self._key_min_temp)
 
     @property
     def max_temp(self):
         if isinstance(self._key_max_temp, str):
-            return float(self._device.get_attribute(self._key_max_temp))
+            return float(self.device_attributes.get(self._key_max_temp, 30))
         else:
             return float(self._key_max_temp)
 
@@ -140,13 +166,13 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     def is_aux_heat(self):
         return self._get_status_on_off(self._key_aux_heat)
 
-    def turn_on(self):
-        self._set_status_on_off(self._key_power, True)
+    async def async_turn_on(self):
+        await self._async_set_status_on_off(self._key_power, True)
 
-    def turn_off(self):
-        self._set_status_on_off(self._key_power, False)
+    async def async_turn_off(self):
+        await self._async_set_status_on_off(self._key_power, False)
 
-    def set_temperature(self, **kwargs):
+    async def async_set_temperature(self, **kwargs):
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = kwargs.get(ATTR_TEMPERATURE)
@@ -162,32 +188,68 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             new_status[self._key_target_temperature[1]] = temp_dec
         else:
             new_status[self._key_target_temperature] = temperature
-        self._device.set_attributes(new_status)
+        await self.async_set_attributes(new_status)
 
-    def set_fan_mode(self, fan_mode: str):
+    async def async_set_fan_mode(self, fan_mode: str):
         new_status = self._key_fan_modes.get(fan_mode)
-        self._device.set_attributes(new_status)
+        await self.async_set_attributes(new_status)
 
-    def set_preset_mode(self, preset_mode: str):
+    async def async_set_preset_mode(self, preset_mode: str):
         new_status = self._key_preset_modes.get(preset_mode)
-        self._device.set_attributes(new_status)
+        await self.async_set_attributes(new_status)
 
-    def set_hvac_mode(self, hvac_mode: str):
+    async def async_set_hvac_mode(self, hvac_mode: str):
         new_status = self._key_hvac_modes.get(hvac_mode)
-        self._device.set_attributes(new_status)
+        await self.async_set_attributes(new_status)
 
-    def set_swing_mode(self, swing_mode: str):
+    async def async_set_swing_mode(self, swing_mode: str):
         new_status = self._key_swing_modes.get(swing_mode)
-        self._device.set_attributes(new_status)
+        await self.async_set_attributes(new_status)
 
-    def turn_aux_heat_on(self) -> None:
-        self._set_status_on_off(self._key_aux_heat, True)
+    async def async_turn_aux_heat_on(self) -> None:
+        await self._async_set_status_on_off(self._key_aux_heat, True)
 
-    def turn_aux_heat_off(self) -> None:
-        self._set_status_on_off(self._key_aux_heat, False)
+    async def async_turn_aux_heat_off(self) -> None:
+        await self._async_set_status_on_off(self._key_aux_heat, False)
 
-    def update_state(self, status):
-        try:
-            self.schedule_update_ha_state()
-        except Exception as e:
-            pass
+    def _get_status_on_off(self, key):
+        """Get on/off status from device attributes."""
+        if key is None:
+            return False
+        value = self.device_attributes.get(key)
+        if isinstance(value, bool):
+            return value
+        return value == 1 or value == "on" or value == "true"
+
+    async def _async_set_status_on_off(self, key, value):
+        """Set on/off status for device attribute."""
+        if key is None:
+            return
+        await self.async_set_attribute(key, value)
+
+    def _dict_get_selected(self, dict_config, rationale=Rationale.EQUAL):
+        """Get selected value from dictionary configuration."""
+        if dict_config is None:
+            return None
+        
+        for key, config in dict_config.items():
+            if isinstance(config, dict):
+                # Check if all conditions match
+                match = True
+                for attr_key, attr_value in config.items():
+                    device_value = self.device_attributes.get(attr_key)
+                    if rationale == Rationale.EQUAL:
+                        if device_value != attr_value:
+                            match = False
+                            break
+                    elif rationale == Rationale.LESS:
+                        if device_value >= attr_value:
+                            match = False
+                            break
+                    elif rationale == Rationale.GREATER:
+                        if device_value <= attr_value:
+                            match = False
+                            break
+                if match:
+                    return key
+        return None
