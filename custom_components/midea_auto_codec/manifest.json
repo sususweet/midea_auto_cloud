@@ -1,13 +1,11 @@
 {
   "domain": "midea_auto_codec",
   "name": "Midea Auto Codec",
-  "codeowners": ["@georgezhao2010"],
+  "codeowners": ["@sususweet"],
   "config_flow": true,
-  "dependencies": [],
-  "documentation": "https://github.com/georgezhao2010/midea-auto-codec#readme",
-  "integration_type": "device",
-  "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/georgezhao2010/midea-auto-codec/issues",
+  "documentation": "https://github.com/sususweet/midea-auto-codec#readme",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/sususweet/midea-auto-codec/issues",
   "requirements": ["lupa>=2.0"],
   "version": "v0.0.3"
 }
