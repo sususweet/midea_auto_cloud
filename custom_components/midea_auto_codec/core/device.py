@@ -32,13 +32,14 @@ class MiedaDevice(threading.Thread):
                  name: str,
                  device_id: int,
                  device_type: int,
-                 ip_address: str,
-                 port: int,
+                 ip_address: str | None,
+                 port: int | None,
                  token: str | None,
                  key: str | None,
                  protocol: int,
                  model: str | None,
                  subtype: int | None,
+                 connected: bool,
                  sn: str | None,
                  sn8: str | None,
                  lua_file: str | None):
@@ -68,7 +69,7 @@ class MiedaDevice(threading.Thread):
         }
         self._refresh_interval = 30
         self._heartbeat_interval = 10
-        self._connected = False
+        self._device_connected(connected)
         self._queries = [{}]
         self._centralized = []
         self._calculate_get = []
@@ -169,45 +170,6 @@ class MiedaDevice(threading.Thread):
 
     def register_update(self, update):
         self._updates.append(update)
-
-    def connect(self, refresh=False):
-        try:
-            self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.settimeout(10)
-            MideaLogger.debug(f"Connecting to {self._ip_address}:{self._port}", self._device_id)
-            self._socket.connect((self._ip_address, self._port))
-            MideaLogger.debug(f"Connected", self._device_id)
-            if self._protocol == 3:
-                self._authenticate()
-            MideaLogger.debug(f"Authentication success", self._device_id)
-            self._device_connected(True)
-            if refresh:
-                self._refresh_status()
-            return True
-        except socket.timeout:
-            MideaLogger.debug(f"Connection timed out", self._device_id)
-        except socket.error:
-            MideaLogger.debug(f"Connection error", self._device_id)
-        except AuthException:
-            MideaLogger.debug(f"Authentication failed", self._device_id)
-        except ResponseException:
-            MideaLogger.debug(f"Unexpected response received", self._device_id)
-        except RefreshFailed:
-            MideaLogger.debug(f"Refresh status is timed out", self._device_id)
-        except Exception as e:
-            MideaLogger.error(f"Unknown error: {e.__traceback__.tb_frame.f_globals['__file__']}, "
-                              f"{e.__traceback__.tb_lineno}, {repr(e)}")
-        if refresh:
-            self._device_connected(False)
-        self._socket = None
-        return False
-
-    
-    def disconnect(self):
-        self._buffer = b""
-        if self._socket:
-            self._socket.close()
-            self._socket = None
 
     @staticmethod
     def _fetch_v2_message(msg):
@@ -329,7 +291,7 @@ class MiedaDevice(threading.Thread):
         if not connected:
             MideaLogger.warning(f"Device {self._device_id} disconnected", self._device_id)
         else:
-            MideaLogger.info(f"Device {self._device_id} connected", self._device_id)
+            MideaLogger.debug(f"Device {self._device_id} connected", self._device_id)
         self._update_all(status)
 
     def _update_all(self, status):
@@ -337,64 +299,64 @@ class MiedaDevice(threading.Thread):
         for update in self._updates:
             update(status)
 
-    def open(self):
-        if not self._is_run:
-            self._is_run = True
-            threading.Thread.start(self)
-
-    def close(self):
-        if self._is_run:
-            self._is_run = False
-            self._lua_runtime = None
-            self.disconnect()
-
-    def run(self):
-        while self._is_run:
-            while self._socket is None:
-                if self.connect(refresh=True) is False:
-                    if not self._is_run:
-                        return
-                    self.disconnect()
-                    time.sleep(5)
-            timeout_counter = 0
-            start = time.time()
-            previous_refresh = start
-            previous_heartbeat = start
-            self._socket.settimeout(1)
-            while True:
-                try:
-                    now = time.time()
-                    if 0 < self._refresh_interval <= now - previous_refresh:
-                        self._refresh_status()
-                        previous_refresh = now
-                    if now - previous_heartbeat >= self._heartbeat_interval:
-                        self._send_heartbeat()
-                        previous_heartbeat = now
-                    msg = self._socket.recv(512)
-                    msg_len = len(msg)
-                    if msg_len == 0:
-                        raise socket.error("Connection closed by peer")
-                    result = self._parse_message(msg)
-                    if result == ParseMessageResult.ERROR:
-                        MideaLogger.debug(f"Message 'ERROR' received")
-                        self.disconnect()
-                        break
-                    elif result == ParseMessageResult.SUCCESS:
-                        timeout_counter = 0
-                except socket.timeout:
-                    timeout_counter = timeout_counter + 1
-                    if timeout_counter >= 120:
-                        MideaLogger.debug(f"Heartbeat timed out")
-                        self.disconnect()
-                        break
-                except socket.error as e:
-                    MideaLogger.debug(f"Socket error {repr(e)}")
-                    self.disconnect()
-                    break
-                except Exception as e:
-                    MideaLogger.error(f"Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "
-                                      f"{e.__traceback__.tb_lineno}, {repr(e)}")
-                    self.disconnect()
-                    break
+    # def open(self):
+    #     if not self._is_run:
+    #         self._is_run = True
+    #         threading.Thread.start(self)
+    #
+    # def close(self):
+    #     if self._is_run:
+    #         self._is_run = False
+    #         self._lua_runtime = None
+    #         self.disconnect()
+    #
+    # def run(self):
+    #     while self._is_run:
+    #         while self._socket is None:
+    #             if self.connect(refresh=True) is False:
+    #                 if not self._is_run:
+    #                     return
+    #                 self.disconnect()
+    #                 time.sleep(5)
+    #         timeout_counter = 0
+    #         start = time.time()
+    #         previous_refresh = start
+    #         previous_heartbeat = start
+    #         self._socket.settimeout(1)
+    #         while True:
+    #             try:
+    #                 now = time.time()
+    #                 if 0 < self._refresh_interval <= now - previous_refresh:
+    #                     self._refresh_status()
+    #                     previous_refresh = now
+    #                 if now - previous_heartbeat >= self._heartbeat_interval:
+    #                     self._send_heartbeat()
+    #                     previous_heartbeat = now
+    #                 msg = self._socket.recv(512)
+    #                 msg_len = len(msg)
+    #                 if msg_len == 0:
+    #                     raise socket.error("Connection closed by peer")
+    #                 result = self._parse_message(msg)
+    #                 if result == ParseMessageResult.ERROR:
+    #                     MideaLogger.debug(f"Message 'ERROR' received")
+    #                     self.disconnect()
+    #                     break
+    #                 elif result == ParseMessageResult.SUCCESS:
+    #                     timeout_counter = 0
+    #             except socket.timeout:
+    #                 timeout_counter = timeout_counter + 1
+    #                 if timeout_counter >= 120:
+    #                     MideaLogger.debug(f"Heartbeat timed out")
+    #                     self.disconnect()
+    #                     break
+    #             except socket.error as e:
+    #                 MideaLogger.debug(f"Socket error {repr(e)}")
+    #                 self.disconnect()
+    #                 break
+    #             except Exception as e:
+    #                 MideaLogger.error(f"Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "
+    #                                   f"{e.__traceback__.tb_lineno}, {repr(e)}")
+    #                 self.disconnect()
+    #                 break
 
 

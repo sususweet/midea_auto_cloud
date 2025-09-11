@@ -1,18 +1,12 @@
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import (
-    Platform,
-    CONF_DEVICE_ID,
-    CONF_ENTITIES, CONF_DEVICE
-)
+from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import (
-    DOMAIN,
-    DEVICES
-)
+from .const import DOMAIN
 from .midea_entity import MideaEntity
+from . import load_device_config
 
 
 async def async_setup_entry(
@@ -21,19 +15,26 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up sensor entities for Midea devices."""
-    device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device_data = hass.data[DOMAIN][DEVICES][device_id]
-    coordinator = device_data.get("coordinator")
-    device = device_data.get(CONF_DEVICE)
-    manufacturer = device_data.get("manufacturer")
-    rationale = device_data.get("rationale")
-    entities = device_data.get(CONF_ENTITIES, {}).get(Platform.SENSOR, {})
-    
+    account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
+    if not account_bucket:
+        async_add_entities([])
+        return
+    device_list = account_bucket.get("device_list", {})
+    coordinator_map = account_bucket.get("coordinator_map", {})
+
     devs = []
-    if entities:
-        for entity_key, config in entities.items():
+    for device_id, info in device_list.items():
+        device_type = info.get("type")
+        sn8 = info.get("sn8")
+        config = load_device_config(hass, device_type, sn8) or {}
+        entities_cfg = (config.get("entities") or {}).get(Platform.SENSOR, {})
+        manufacturer = config.get("manufacturer")
+        rationale = config.get("rationale")
+        coordinator = coordinator_map.get(device_id)
+        device = coordinator.device if coordinator else None
+        for entity_key, ecfg in entities_cfg.items():
             devs.append(MideaSensorEntity(
-                coordinator, device, manufacturer, rationale, entity_key, config
+                coordinator, device, manufacturer, rationale, entity_key, ecfg
             ))
     async_add_entities(devs)
 

@@ -9,6 +9,7 @@ try:
 except ImportError:
     from homeassistant.util.json import save_json
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.core import (
     HomeAssistant, 
     ServiceCall
@@ -26,9 +27,11 @@ from homeassistant.const import (
     CONF_DEVICE,
     CONF_ENTITIES
 )
+
 from .core.logger import MideaLogger
 from .core.device import MiedaDevice
 from .data_coordinator import MideaDataUpdateCoordinator
+from .core.cloud import get_midea_cloud
 from .const import (
     DOMAIN,
     DEVICES,
@@ -39,19 +42,20 @@ from .const import (
     CONF_SN8,
     CONF_SN,
     CONF_MODEL_NUMBER,
-    CONF_LUA_FILE
+    CONF_LUA_FILE, CONF_SERVERS
 )
+# 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
+from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
 
-ALL_PLATFORM = [
+PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
-    Platform.SENSOR,
-    Platform.SWITCH,
+    # Platform.SENSOR,
+    # Platform.SWITCH,
     Platform.CLIMATE,
     Platform.SELECT,
     Platform.WATER_HEATER,
     Platform.FAN
 ]
-
 
 def get_sn8_used(hass: HomeAssistant, sn8):
     entries = hass.config_entries.async_entries(DOMAIN)
@@ -175,83 +179,87 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     device_type = config_entry.data.get(CONF_TYPE)
+    MideaLogger.debug(f"async_setup_entry type={device_type} data={config_entry.data}")
     if device_type == CONF_ACCOUNT:
+        account = config_entry.data.get(CONF_ACCOUNT)
+        password = config_entry.data.get(CONF_PASSWORD_KEY)
+        server = config_entry.data.get(CONF_SERVER_KEY)
+        cloud_name = CONF_SERVERS.get(server)
+        cloud = get_midea_cloud(
+            cloud_name=cloud_name,
+            session=async_get_clientsession(hass),
+            account=account,
+            password=password,
+        )
+        if not cloud or not await cloud.login():
+            MideaLogger.error("Midea cloud login failed")
+            return False
+
+        # 拉取家庭与设备列表
+        appliances = None
+        try:
+            homes = await cloud.list_home()
+            if homes and len(homes) > 0:
+                first_home_id = list(homes.keys())[0]
+                appliances = await cloud.list_appliances(first_home_id)
+            else:
+                appliances = await cloud.list_appliances(None)
+        except Exception as e:
+            MideaLogger.error(f"Fetch appliances failed: {e}")
+            appliances = None
+
+        if appliances is None:
+            appliances = {}
+
+        hass.data.setdefault(DOMAIN, {})
+        hass.data[DOMAIN].setdefault("accounts", {})
+        bucket = {"device_list": {}, "coordinator_map": {}}
+
+        # 为每台设备构建占位设备与协调器（不连接本地）
+        for appliance_code, info in appliances.items():
+            MideaLogger.debug(f"info={info} ")
+            try:
+                device = MiedaDevice(
+                    name=info.get(CONF_NAME) or info.get("name"),
+                    device_id=appliance_code,
+                    device_type=info.get(CONF_TYPE) or info.get("type"),
+                    ip_address=None,
+                    port=None,
+                    token=None,
+                    key=None,
+                    connected=info.get("online"),
+                    protocol=info.get(CONF_PROTOCOL) or 2,
+                    model=info.get(CONF_MODEL),
+                    subtype=info.get(CONF_MODEL_NUMBER),
+                    sn=info.get(CONF_SN) or info.get("sn"),
+                    sn8=info.get(CONF_SN8) or info.get("sn8"),
+                    lua_file=None,
+                )
+                coordinator = MideaDataUpdateCoordinator(hass, config_entry, device)
+                await coordinator.async_config_entry_first_refresh()
+                bucket["device_list"][appliance_code] = info
+                bucket["coordinator_map"][appliance_code] = coordinator
+            except Exception as e:
+                MideaLogger.error(f"Init device failed: {appliance_code}, error: {e}")
+
+        hass.data[DOMAIN]["accounts"][config_entry.entry_id] = bucket
+
+        hass.async_create_task(hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS))
         return True
-    name = config_entry.data.get(CONF_NAME)
-    device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device_type = config_entry.data.get(CONF_TYPE)
-    token = config_entry.data.get(CONF_TOKEN)
-    key = config_entry.data.get(CONF_KEY)
-    ip_address = config_entry.options.get(CONF_IP_ADDRESS, None)
-    if not ip_address:
-        ip_address = config_entry.data.get(CONF_IP_ADDRESS)
-    refresh_interval = config_entry.options.get(CONF_REFRESH_INTERVAL)
-    port = config_entry.data.get(CONF_PORT)
-    model = config_entry.data.get(CONF_MODEL)
-    protocol = config_entry.data.get(CONF_PROTOCOL)
-    subtype = config_entry.data.get(CONF_MODEL_NUMBER)
-    sn = config_entry.data.get(CONF_SN)
-    sn8 = config_entry.data.get(CONF_SN8)
-    lua_file = config_entry.data.get(CONF_LUA_FILE)
-    if protocol == 3 and (key is None or key is None):
-        MideaLogger.error("For V3 devices, the key and the token is required.")
-        return False
-    device = MiedaDevice(
-        name=name,
-        device_id=device_id,
-        device_type=device_type,
-        ip_address=ip_address,
-        port=port,
-        token=token,
-        key=key,
-        protocol=protocol,
-        model=model,
-        subtype=subtype,
-        sn=sn,
-        sn8=sn8,
-        lua_file=lua_file,
-    )
-    if refresh_interval is not None:
-        device.set_refresh_interval(refresh_interval)
-    device.open()
-    if DOMAIN not in hass.data:
-        hass.data[DOMAIN] = {}
-    if DEVICES not in hass.data[DOMAIN]:
-        hass.data[DOMAIN][DEVICES] = {}
-    
-    # Create data coordinator
-    coordinator = MideaDataUpdateCoordinator(hass, config_entry, device)
-    await coordinator.async_config_entry_first_refresh()
-    
-    hass.data[DOMAIN][DEVICES][device_id] = {}
-    hass.data[DOMAIN][DEVICES][device_id][CONF_DEVICE] = device
-    hass.data[DOMAIN][DEVICES][device_id]["coordinator"] = coordinator
-    hass.data[DOMAIN][DEVICES][device_id][CONF_ENTITIES] = {}
-    
-    config = load_device_config(hass, device_type, sn8)
-    if config is not None and len(config) > 0:
-        queries = config.get("queries")
-        if queries is not None and isinstance(queries, list):
-            device.set_queries(queries)
-        centralized = config.get("centralized")
-        if centralized is not None and isinstance(centralized, list):
-            device.set_centralized(centralized)
-        calculate = config.get("calculate")
-        if calculate is not None and isinstance(calculate, dict):
-            device.set_calculate(calculate)
-        hass.data[DOMAIN][DEVICES][device_id]["manufacturer"] = config.get("manufacturer")
-        hass.data[DOMAIN][DEVICES][device_id]["rationale"] = config.get("rationale")
-        hass.data[DOMAIN][DEVICES][device_id][CONF_ENTITIES] = config.get(CONF_ENTITIES)
-    
-    for platform in ALL_PLATFORM:
-        hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-            config_entry, platform))
-    config_entry.add_update_listener(update_listener)
-    return True
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
+    device_type = config_entry.data.get(CONF_TYPE)
+    if device_type == CONF_ACCOUNT:
+        # 卸载平台并清理账号桶
+        unload_ok = await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+        if unload_ok:
+            try:
+                hass.data.get(DOMAIN, {}).get("accounts", {}).pop(config_entry.entry_id, None)
+            except Exception:
+                pass
+        return unload_ok
     if device_id is not None:
         device: MiedaDevice = hass.data[DOMAIN][DEVICES][device_id][CONF_DEVICE]
         if device is not None:
@@ -259,7 +267,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 lua_file = config_entry.data.get("lua_file")
                 os.remove(lua_file)
                 remove_device_config(hass, device.sn8)
-            device.close()
+            # device.close()
         hass.data[DOMAIN][DEVICES].pop(device_id)
     for platform in ALL_PLATFORM:
         await hass.config_entries.async_forward_entry_unload(config_entry, platform)

@@ -1,5 +1,6 @@
-from homeassistant.const import *
+from homeassistant.const import Platform, UnitOfTemperature
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
+from homeassistant.components.climate.const import PRECISION_HALVES
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
@@ -79,7 +80,7 @@ DEVICE_MAPPING = {
                     "aux_heat": "ptc",
                     "min_temp": 17,
                     "max_temp": 30,
-                    "temperature_unit": TEMP_CELSIUS,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
                     "precision": PRECISION_HALVES,
                 }
             },

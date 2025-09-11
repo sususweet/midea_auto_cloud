@@ -1,4 +1,4 @@
-from homeassistant.const import *
+from homeassistant.const import Platform, UnitOfElectricPotential, UnitOfTemperature, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 

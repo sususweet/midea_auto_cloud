@@ -96,9 +96,10 @@ class MideaCloud:
                     break
             except Exception as e:
                 pass
+        print(response)
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
-        print(response)
+
         return None
 
     async def _get_login_id(self) -> str | None:

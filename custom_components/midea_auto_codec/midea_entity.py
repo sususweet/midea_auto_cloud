@@ -11,6 +11,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
+from .core.logger import MideaLogger
 from .data_coordinator import MideaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -78,6 +79,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
+        MideaLogger.debug(f"available available={self.coordinator.data} ")
         return self.coordinator.data.available
 
     async def _publish_command(self) -> None:

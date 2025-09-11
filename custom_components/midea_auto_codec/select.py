@@ -1,27 +1,30 @@
 from homeassistant.components.select import SelectEntity
-from homeassistant.const import (
-    Platform,
-    CONF_DEVICE_ID,
-    CONF_DEVICE,
-    CONF_ENTITIES,
-)
-from .const import (
-    DOMAIN,
-    DEVICES
-)
+from homeassistant.const import Platform
+from .const import DOMAIN
 from .midea_entities import MideaEntity
+from . import load_device_config
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device = hass.data[DOMAIN][DEVICES][device_id].get(CONF_DEVICE)
-    manufacturer = hass.data[DOMAIN][DEVICES][device_id].get("manufacturer")
-    rationale = hass.data[DOMAIN][DEVICES][device_id].get("rationale")
-    entities = hass.data[DOMAIN][DEVICES][device_id].get(CONF_ENTITIES).get(Platform.SELECT)
+    account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
+    if not account_bucket:
+        async_add_entities([])
+        return
+    device_list = account_bucket.get("device_list", {})
+    coordinator_map = account_bucket.get("coordinator_map", {})
+
     devs = []
-    if entities is not None:
-        for entity_key, config in entities.items():
-            devs.append(MideaSelectEntity(device, manufacturer, rationale, entity_key, config))
+    for device_id, info in device_list.items():
+        device_type = info.get("type")
+        sn8 = info.get("sn8")
+        config = load_device_config(hass, device_type, sn8) or {}
+        entities_cfg = (config.get("entities") or {}).get(Platform.SELECT, {})
+        manufacturer = config.get("manufacturer")
+        rationale = config.get("rationale")
+        coordinator = coordinator_map.get(device_id)
+        device = coordinator.device if coordinator else None
+        for entity_key, ecfg in entities_cfg.items():
+            devs.append(MideaSelectEntity(device, manufacturer, rationale, entity_key, ecfg))
     async_add_entities(devs)
 
 

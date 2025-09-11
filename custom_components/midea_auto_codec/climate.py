@@ -6,20 +6,16 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import (
     Platform,
-    CONF_DEVICE_ID,
-    CONF_ENTITIES,
-    ATTR_TEMPERATURE, CONF_DEVICE
+    ATTR_TEMPERATURE,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import (
-    DOMAIN,
-    DEVICES
-)
+from .const import DOMAIN
 from .midea_entity import MideaEntity
 from .midea_entities import Rationale
+from . import load_device_config
 
 
 async def async_setup_entry(
@@ -28,19 +24,27 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up climate entities for Midea devices."""
-    device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device_data = hass.data[DOMAIN][DEVICES][device_id]
-    coordinator = device_data.get("coordinator")
-    device = device_data.get(CONF_DEVICE)
-    manufacturer = device_data.get("manufacturer")
-    rationale = device_data.get("rationale")
-    entities = device_data.get(CONF_ENTITIES, {}).get(Platform.CLIMATE, {})
-    
+    # 账号型 entry：从 __init__ 写入的 accounts 桶加载设备和协调器
+    account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
+    if not account_bucket:
+        async_add_entities([])
+        return
+    device_list = account_bucket.get("device_list", {})
+    coordinator_map = account_bucket.get("coordinator_map", {})
+
     devs = []
-    if entities:
-        for entity_key, config in entities.items():
+    for device_id, info in device_list.items():
+        device_type = info.get("type")
+        sn8 = info.get("sn8")
+        config = load_device_config(hass, device_type, sn8) or {}
+        entities_cfg = (config.get("entities") or {}).get(Platform.CLIMATE, {})
+        manufacturer = config.get("manufacturer")
+        rationale = config.get("rationale")
+        coordinator = coordinator_map.get(device_id)
+        device = coordinator.device if coordinator else None
+        for entity_key, ecfg in entities_cfg.items():
             devs.append(MideaClimateEntity(
-                coordinator, device, manufacturer, rationale, entity_key, config
+                coordinator, device, manufacturer, rationale, entity_key, ecfg
             ))
     async_add_entities(devs)
 
@@ -81,8 +85,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
         if self._key_preset_modes is not None:
             features |= ClimateEntityFeature.PRESET_MODE
-        if self._key_aux_heat is not None:
-            features |= ClimateEntityFeature.AUX_HEAT
+        # if self._key_aux_heat is not None:
+        #     features |= ClimateEntityFeature.AUX_HEAT
         if self._key_swing_modes is not None:
             features |= ClimateEntityFeature.SWING_MODE
         if self._key_fan_modes is not None:
@@ -227,7 +231,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return
         await self.async_set_attribute(key, value)
 
-    def _dict_get_selected(self, dict_config, rationale=Rationale.EQUAL):
+    def _dict_get_selected(self, dict_config, rationale=Rationale.EQUALLY):
         """Get selected value from dictionary configuration."""
         if dict_config is None:
             return None
@@ -238,7 +242,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                 match = True
                 for attr_key, attr_value in config.items():
                     device_value = self.device_attributes.get(attr_key)
-                    if rationale == Rationale.EQUAL:
+                    if rationale == Rationale.EQUALLY:
                         if device_value != attr_value:
                             match = False
                             break
