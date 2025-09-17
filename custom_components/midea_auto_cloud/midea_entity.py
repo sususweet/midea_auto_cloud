@@ -1,4 +1,4 @@
-"""Base entity class for Midea Auto Codec integration."""
+"""Base entity class for Midea Auto Cloud integration."""
 
 from __future__ import annotations
 

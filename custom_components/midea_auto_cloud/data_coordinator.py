@@ -1,4 +1,4 @@
-"""Data coordinator for Midea Auto Codec integration."""
+"""Data coordinator for Midea Auto Cloud integration."""
 
 import logging
 from datetime import datetime, timedelta
