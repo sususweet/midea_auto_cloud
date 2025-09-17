@@ -1,0 +1,11 @@
+{
+  "domain": "midea_auto_cloud",
+  "name": "Midea Auto Cloud",
+  "codeowners": ["@sususweet"],
+  "config_flow": true,
+  "documentation": "https://github.com/sususweet/midea_auto_cloud#readme",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/sususweet/midea_auto_cloud/issues",
+  "requirements": [],
+  "version": "v0.0.5"
+}
