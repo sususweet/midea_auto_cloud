@@ -20,7 +20,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for device_id, info in device_list.items():
         device_type = info.get("type")
         sn8 = info.get("sn8")
-        config = load_device_config(hass, device_type, sn8) or {}
+        config = await load_device_config(hass, device_type, sn8) or {}
         entities_cfg = (config.get("entities") or {}).get(Platform.WATER_HEATER, {})
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")

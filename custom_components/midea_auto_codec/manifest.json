@@ -6,6 +6,6 @@
   "documentation": "https://github.com/sususweet/midea-auto-codec#readme",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/sususweet/midea-auto-codec/issues",
-  "requirements": ["lupa>=2.0"],
-  "version": "v0.0.3"
+  "requirements": [],
+  "version": "v0.0.5"
 }

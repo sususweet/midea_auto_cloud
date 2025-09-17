@@ -4,6 +4,7 @@ import voluptuous as vol
 from importlib import import_module
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.util.json import load_json
+
 try:
     from homeassistant.helpers.json import save_json
 except ImportError:
@@ -11,7 +12,7 @@ except ImportError:
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.core import (
-    HomeAssistant, 
+    HomeAssistant,
     ServiceCall
 )
 from homeassistant.const import (
@@ -42,7 +43,7 @@ from .const import (
     CONF_SN8,
     CONF_SN,
     CONF_MODEL_NUMBER,
-    CONF_LUA_FILE, CONF_SERVERS
+    CONF_SERVERS
 )
 # 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
 from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
@@ -56,6 +57,7 @@ PLATFORMS: list[Platform] = [
     Platform.WATER_HEATER,
     Platform.FAN
 ]
+
 
 def get_sn8_used(hass: HomeAssistant, sn8):
     entries = hass.config_entries.async_entries(DOMAIN)
@@ -74,13 +76,26 @@ def remove_device_config(hass: HomeAssistant, sn8):
         pass
 
 
-def load_device_config(hass: HomeAssistant, device_type, sn8):
-    os.makedirs(hass.config.path(CONFIG_PATH), exist_ok=True)
+async def load_device_config(hass: HomeAssistant, device_type, sn8):
+    def _ensure_dir_and_load(path_dir: str, path_file: str):
+        os.makedirs(path_dir, exist_ok=True)
+        return load_json(path_file, default={})
+
+    config_dir = hass.config.path(CONFIG_PATH)
     config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
-    json_data = load_json(config_file, default={})
-    if len(json_data) > 0:
-        json_data = json_data.get(sn8)
-    else:
+    raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
+    json_data = {}
+    if isinstance(raw, dict) and len(raw) > 0:
+        # 兼容两种文件结构：
+        # 1) { "<sn8>": { ...mapping... } }
+        # 2) { ...mapping... }（直接就是映射体）
+        if sn8 in raw:
+            json_data = raw.get(sn8) or {}
+        else:
+            # 如果像映射体（包含 entities/centralized 等关键字段），直接使用
+            if any(k in raw for k in ["entities", "centralized", "queries", "manufacturer"]):
+                json_data = raw
+    if not json_data:
         device_path = f".device_mapping.{'T0x%02X' % device_type}"
         try:
             mapping_module = import_module(device_path, __package__)
@@ -90,56 +105,11 @@ def load_device_config(hass: HomeAssistant, device_type, sn8):
                 json_data = mapping_module.DEVICE_MAPPING["default"]
             if len(json_data) > 0:
                 save_data = {sn8: json_data}
-                save_json(config_file, save_data)
+                # offload save_json as well
+                await hass.async_add_executor_job(save_json, config_file, save_data)
         except ModuleNotFoundError:
             MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
     return json_data
-
-
-def register_services(hass: HomeAssistant):
-
-    async def async_set_attributes(service: ServiceCall):
-        device_id = service.data.get("device_id")
-        attributes = service.data.get("attributes")
-        MideaLogger.debug(f"Service called: set_attributes, device_id: {device_id}, attributes: {attributes}")
-        try:
-            coordinator: MideaDataUpdateCoordinator = hass.data[DOMAIN][DEVICES][device_id].get("coordinator")
-        except KeyError:
-            MideaLogger.error(f"Failed to call service set_attributes: the device {device_id} isn't exist.")
-            return
-        if coordinator:
-            await coordinator.async_set_attributes(attributes)
-
-    async def async_send_command(service: ServiceCall):
-        device_id = service.data.get("device_id")
-        cmd_type = service.data.get("cmd_type")
-        cmd_body = service.data.get("cmd_body")
-        try:
-            coordinator: MideaDataUpdateCoordinator = hass.data[DOMAIN][DEVICES][device_id].get("coordinator")
-        except KeyError:
-            MideaLogger.error(f"Failed to call service send_command: the device {device_id} isn't exist.")
-            return
-        if coordinator:
-            await coordinator.async_send_command(cmd_type, cmd_body)
-
-    hass.services.async_register(
-        DOMAIN, 
-        "set_attributes", 
-        async_set_attributes,
-        schema=vol.Schema({ 
-            vol.Required("device_id"): vol.Coerce(int),
-            vol.Required("attributes"): vol.Any(dict)
-        })
-    )
-    hass.services.async_register(
-        DOMAIN, "send_command", async_send_command,
-        schema=vol.Schema({
-            vol.Required("device_id"): vol.Coerce(int),
-            vol.Required("cmd_type"): vol.In([2, 3]),
-            vol.Required("cmd_body"): str
-        })
-    )
-
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -172,8 +142,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
         with open(bit, "wt") as fp:
             fp.write(bit_lua)
-
-    register_services(hass)
     return True
 
 
@@ -234,11 +202,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     subtype=info.get(CONF_MODEL_NUMBER),
                     sn=info.get(CONF_SN) or info.get("sn"),
                     sn8=info.get(CONF_SN8) or info.get("sn8"),
-                    lua_file=None,
                 )
                 # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
                 try:
-                    mapping = load_device_config(
+                    mapping = await load_device_config(
                         hass,
                         info.get(CONF_TYPE) or info.get("type"),
                         info.get(CONF_SN8) or info.get("sn8"),
@@ -352,11 +319,9 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         device: MiedaDevice = hass.data[DOMAIN][DEVICES][device_id][CONF_DEVICE]
         if device is not None:
             if get_sn8_used(hass, device.sn8) == 1:
-                lua_file = config_entry.data.get("lua_file")
-                os.remove(lua_file)
                 remove_device_config(hass, device.sn8)
             # device.close()
         hass.data[DOMAIN][DEVICES].pop(device_id)
-    for platform in ALL_PLATFORM:
+    for platform in PLATFORMS:
         await hass.config_entries.async_forward_entry_unload(config_entry, platform)
     return True

@@ -96,7 +96,7 @@ class MideaCloud:
                     break
             except Exception as e:
                 pass
-        print(response)
+
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
 
