@@ -154,6 +154,10 @@ class MideaCloud:
     ):
         raise NotImplementedError()
 
+    async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
+        """Send control to a device via cloud. Subclasses should implement if supported."""
+        raise NotImplementedError()
+
 
 class MeijuCloud(MideaCloud):
     APP_ID = "900"
@@ -258,6 +262,36 @@ class MeijuCloud(MideaCloud):
                         appliances[int(appliance["applianceCode"])] = device_info
             return appliances
         return None
+
+    async def get_device_status(self, appliance_code: int) -> dict | None:
+        data = {
+            "applianceCode": str(appliance_code),
+            "command": {
+                "query": {"query_type": "total_query"}
+            }
+        }
+        if response := await self._api_request(
+            endpoint="/mjl/v1/device/status/lua/get",
+            data=data
+        ):
+            # 预期返回形如 { ... 状态键 ... }
+            return response
+        return None
+
+    async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
+        data = {
+            "applianceCode": str(appliance_code),
+            "command": {
+                "control": control
+            }
+        }
+        if status and isinstance(status, dict):
+            data["command"]["status"] = status
+        response = await self._api_request(
+            endpoint="/mjl/v1/device/lua/control",
+            data=data
+        )
+        return response is not None
 
     async def download_lua(
             self, path: str,

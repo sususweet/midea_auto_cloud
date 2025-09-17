@@ -13,6 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
+from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from .midea_entities import Rationale
 from . import load_device_config
@@ -42,6 +43,10 @@ async def async_setup_entry(
         rationale = config.get("rationale")
         coordinator = coordinator_map.get(device_id)
         device = coordinator.device if coordinator else None
+
+
+        MideaLogger.debug(f"entities_cfg={entities_cfg} ")
+
         for entity_key, ecfg in entities_cfg.items():
             devs.append(MideaClimateEntity(
                 coordinator, device, manufacturer, rationale, entity_key, ecfg
@@ -144,7 +149,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def fan_mode(self):
-        return self._dict_get_selected(self._key_fan_modes, Rationale.LESS)
+        return self._dict_get_selected(self._key_fan_modes, Rationale.EQUALLY)
 
     @property
     def swing_modes(self):
@@ -235,13 +240,17 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         """Get selected value from dictionary configuration."""
         if dict_config is None:
             return None
-        
+
+        MideaLogger.debug(f"dict_config={dict_config}, rationale={rationale}, self.device_attributes={self.device_attributes} ")
         for key, config in dict_config.items():
             if isinstance(config, dict):
                 # Check if all conditions match
                 match = True
                 for attr_key, attr_value in config.items():
                     device_value = self.device_attributes.get(attr_key)
+                    if device_value is None:
+                        match = False
+                        break
                     if rationale == Rationale.EQUALLY:
                         if device_value != attr_value:
                             match = False

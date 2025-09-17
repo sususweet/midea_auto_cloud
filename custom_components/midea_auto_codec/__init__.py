@@ -197,6 +197,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         # 拉取家庭与设备列表
         appliances = None
+        first_home_id = None
         try:
             homes = await cloud.list_home()
             if homes and len(homes) > 0:
@@ -213,7 +214,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         hass.data.setdefault(DOMAIN, {})
         hass.data[DOMAIN].setdefault("accounts", {})
-        bucket = {"device_list": {}, "coordinator_map": {}}
+        bucket = {"device_list": {}, "coordinator_map": {}, "cloud": cloud, "home_id": first_home_id}
 
         # 为每台设备构建占位设备与协调器（不连接本地）
         for appliance_code, info in appliances.items():
@@ -235,6 +236,93 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     sn8=info.get(CONF_SN8) or info.get("sn8"),
                     lua_file=None,
                 )
+                # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
+                try:
+                    mapping = load_device_config(
+                        hass,
+                        info.get(CONF_TYPE) or info.get("type"),
+                        info.get(CONF_SN8) or info.get("sn8"),
+                    ) or {}
+                except Exception:
+                    mapping = {}
+
+                try:
+                    device.set_queries(mapping.get("queries", []))
+                except Exception:
+                    pass
+                try:
+                    device.set_centralized(mapping.get("centralized", []))
+                except Exception:
+                    pass
+                try:
+                    device.set_calculate(mapping.get("calculate", {}))
+                except Exception:
+                    pass
+
+                # 预置 attributes：包含 centralized 里声明的所有键、entities 中使用到的所有属性键
+                try:
+                    preset_keys = set(mapping.get("centralized", []))
+                    entities_cfg = (mapping.get("entities") or {})
+                    # 收集实体配置中直接引用的属性键
+                    for platform_cfg in entities_cfg.values():
+                        if not isinstance(platform_cfg, dict):
+                            continue
+                        for _, ecfg in platform_cfg.items():
+                            if not isinstance(ecfg, dict):
+                                continue
+                            # 常见直接属性字段
+                            for k in [
+                                "power",
+                                "aux_heat",
+                                "current_temperature",
+                                "target_temperature",
+                                "oscillate",
+                                "min_temp",
+                                "max_temp",
+                            ]:
+                                v = ecfg.get(k)
+                                if isinstance(v, str):
+                                    preset_keys.add(v)
+                                elif isinstance(v, list):
+                                    for vv in v:
+                                        if isinstance(vv, str):
+                                            preset_keys.add(vv)
+                            # 模式映射里的条件字段
+                            for map_key in [
+                                "hvac_modes",
+                                "preset_modes",
+                                "swing_modes",
+                                "fan_modes",
+                                "operation_list",
+                                "options",
+                            ]:
+                                maps = ecfg.get(map_key) or {}
+                                if isinstance(maps, dict):
+                                    for _, cond in maps.items():
+                                        if isinstance(cond, dict):
+                                            for attr_name in cond.keys():
+                                                preset_keys.add(attr_name)
+                    # 传感器/开关等实体 key 本身也加入（其 key 即属性名）
+                    for platform_name, platform_cfg in entities_cfg.items():
+                        if not isinstance(platform_cfg, dict):
+                            continue
+                        platform_str = str(platform_name)
+                        if platform_str in [
+                            str(Platform.SENSOR),
+                            str(Platform.BINARY_SENSOR),
+                            str(Platform.SWITCH),
+                            str(Platform.FAN),
+                            str(Platform.SELECT),
+                        ]:
+                            for entity_key in platform_cfg.keys():
+                                preset_keys.add(entity_key)
+                    # 写入默认空值
+                    for k in preset_keys:
+                        if k not in device.attributes:
+                            device.attributes[k] = None
+                except Exception:
+                    pass
+
                 coordinator = MideaDataUpdateCoordinator(hass, config_entry, device)
                 await coordinator.async_config_entry_first_refresh()
                 bucket["device_list"][appliance_code] = info
