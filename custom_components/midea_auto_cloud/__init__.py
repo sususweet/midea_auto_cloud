@@ -2,6 +2,7 @@ import os
 import base64
 import voluptuous as vol
 from importlib import import_module
+from functools import partial
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.util.json import load_json
 
@@ -96,19 +97,26 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8):
             if any(k in raw for k in ["entities", "centralized", "queries", "manufacturer"]):
                 json_data = raw
     if not json_data:
-        device_path = f".device_mapping.{'T0x%02X' % device_type}"
+        # 使用绝对路径并在执行器中导入，避免事件循环阻塞与相对导入触发包初始化循环
+        module_path = f"{__package__}.device_mapping.T0x{device_type:02X}"
         try:
-            mapping_module = import_module(device_path, __package__)
-            if sn8 in mapping_module.DEVICE_MAPPING.keys():
-                json_data = mapping_module.DEVICE_MAPPING[sn8]
-            elif "default" in mapping_module.DEVICE_MAPPING:
-                json_data = mapping_module.DEVICE_MAPPING["default"]
+            mapping_module = await hass.async_add_executor_job(partial(import_module, module_path))
+        except ModuleNotFoundError:
+            mapping_module = None
+            MideaLogger.warning(f"Mapping module not found: {module_path}")
+        except Exception as e:
+            mapping_module = None
+            MideaLogger.warning(f"Import mapping module failed: {module_path}, err={e}")
+
+        if mapping_module and hasattr(mapping_module, "DEVICE_MAPPING"):
+            dm = getattr(mapping_module, "DEVICE_MAPPING") or {}
+            if sn8 in dm.keys():
+                json_data = dm.get(sn8) or {}
+            elif "default" in dm:
+                json_data = dm.get("default") or {}
             if len(json_data) > 0:
                 save_data = {sn8: json_data}
-                # offload save_json as well
                 await hass.async_add_executor_job(save_json, config_file, save_data)
-        except ModuleNotFoundError:
-            MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
     return json_data
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -299,7 +307,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         hass.data[DOMAIN]["accounts"][config_entry.entry_id] = bucket
 
-        hass.async_create_task(hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS))
+        await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
         return True
 
 
