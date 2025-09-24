@@ -68,37 +68,31 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "bright": {
-                    "name": "亮度",
                     "device_class": SensorDeviceClass.ILLUMINANCE,
                     "unit_of_measurement": "lx",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "temperature": {
-                    "name": "温度",
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "softwater": {
-                    "name": "软水",
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "left_time": {
-                    "name": "剩余时间",
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.HOURS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "air_set_hour": {
-                    "name": "空调设置时间",
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.HOURS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "air_left_hour": {
-                    "name": "空调剩余时间",
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.HOURS,
                     "state_class": SensorStateClass.MEASUREMENT

@@ -15,7 +15,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
-                    "name": "Thermostat",
                     "power": "power",
                     "hvac_modes": {
                         "off": {"power": "off"},
@@ -96,7 +95,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
-                    "name": "Thermostat",
                     "power": "power",
                     "hvac_modes": {
                         "off": {"power": "off"},

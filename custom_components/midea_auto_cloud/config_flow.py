@@ -60,7 +60,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_ACCOUNT): str,
                 vol.Required(CONF_PASSWORD): str,
-                vol.Required(CONF_SERVER, default=1): vol.In(CONF_SERVERS)
+                vol.Required(CONF_SERVER, default=2): vol.In(CONF_SERVERS)
             }),
             errors=errors,
         )

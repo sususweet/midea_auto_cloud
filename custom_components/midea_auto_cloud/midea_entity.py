@@ -73,10 +73,11 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             self._attr_device_class = self._config.get("device_class")
             self._attr_state_class = self._config.get("state_class")
             self._attr_icon = self._config.get("icon")
+            # Prefer translated name; allow explicit override via config.name
+            self._attr_translation_key = self._config.get("translation_key") or self._entity_key
             name_cfg = self._config.get("name")
-            if name_cfg is None:
-                name_cfg = self._entity_key.replace("_", " ").title()
-            self._attr_name = f"{name_cfg}"
+            if name_cfg is not None:
+                self._attr_name = f"{name_cfg}"
             self.entity_id = self._attr_unique_id
             # Register device updates for HA state refresh
             try:
