@@ -5,6 +5,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
+from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from . import load_device_config
 
@@ -51,11 +52,11 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
             device.sn,
             device.sn8,
             device.model,
+            entity_key
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
-        self._entity_key = entity_key
         self._config = config
 
     @property

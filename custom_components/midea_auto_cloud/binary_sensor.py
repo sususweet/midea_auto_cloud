@@ -57,11 +57,11 @@ class MideaDeviceStatusSensorEntity(MideaEntity, BinarySensorEntity):
             device.sn,
             device.sn8,
             device.model,
+            entity_key
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
-        self._entity_key = entity_key
         self._config = config
 
     @property
@@ -102,6 +102,7 @@ class MideaBinarySensorEntity(MideaEntity, BinarySensorEntity):
             device.sn,
             device.sn8,
             device.model,
+            entity_key
         )
         self._device = device
         self._manufacturer = manufacturer

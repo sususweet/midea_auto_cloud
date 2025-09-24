@@ -44,9 +44,6 @@ async def async_setup_entry(
         coordinator = coordinator_map.get(device_id)
         device = coordinator.device if coordinator else None
 
-
-        MideaLogger.debug(f"entities_cfg={entities_cfg} ")
-
         for entity_key, ecfg in entities_cfg.items():
             devs.append(MideaClimateEntity(
                 coordinator, device, manufacturer, rationale, entity_key, ecfg
@@ -64,11 +61,11 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             device.sn,
             device.sn8,
             device.model,
+            entity_key
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
-        self._entity_key = entity_key
         self._config = config
         self._key_power = self._config.get("power")
         self._key_hvac_modes = self._config.get("hvac_modes")

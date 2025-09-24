@@ -1,0 +1,108 @@
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, UnitOfTime
+from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
+from homeassistant.components.switch import SwitchDeviceClass
+
+DEVICE_MAPPING = {
+    "default": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "airswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "doorswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "dryswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "dry_step_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.BINARY_SENSOR: {
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "wash_stage":{
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_main_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_piao_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_times": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off" },
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "name": "亮度",
+                    "device_class": SensorDeviceClass.ILLUMINANCE,
+                    "unit_of_measurement": "lx",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature": {
+                    "name": "温度",
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "softwater": {
+                    "name": "软水",
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "left_time": {
+                    "name": "剩余时间",
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_set_hour": {
+                    "name": "空调设置时间",
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "name": "空调剩余时间",
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            }
+        }
+    }
+}

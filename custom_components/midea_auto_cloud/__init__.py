@@ -48,8 +48,8 @@ from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVE
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
-    # Platform.SENSOR,
-    # Platform.SWITCH,
+    Platform.SENSOR,
+    Platform.SWITCH,
     Platform.CLIMATE,
     Platform.SELECT,
     Platform.WATER_HEATER,
@@ -83,27 +83,24 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8):
     config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
     raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
     json_data = {}
-    if isinstance(raw, dict) and len(raw) > 0:
-        # 兼容两种文件结构：
-        # 1) { "<sn8>": { ...mapping... } }
-        # 2) { ...mapping... }（直接就是映射体）
-        if sn8 in raw:
-            json_data = raw.get(sn8) or {}
-        else:
-            # 如果像映射体（包含 entities/centralized 等关键字段），直接使用
-            if any(k in raw for k in ["entities", "centralized", "queries", "manufacturer"]):
-                json_data = raw
+    # if isinstance(raw, dict) and len(raw) > 0:
+    #     # 兼容两种文件结构：
+    #     # 1) { "<sn8>": { ...mapping... } }
+    #     # 2) { ...mapping... }（直接就是映射体）
+    #     if sn8 in raw:
+    #         json_data = raw.get(sn8) or {}
+    #     else:
+    #         # 如果像映射体（包含 entities/centralized 等关键字段），直接使用
+    #         if any(k in raw for k in ["entities", "centralized", "queries", "manufacturer"]):
+    #             json_data = raw
     if not json_data:
         device_path = f".device_mapping.{'T0x%02X' % device_type}"
         try:
             mapping_module = import_module(device_path, __package__)
-            MideaLogger.warning(f"device_path: % {device_path}")
-            MideaLogger.warning(f"mapping_module.DEVICE_MAPPING: % {mapping_module.DEVICE_MAPPING}")
             if sn8 in mapping_module.DEVICE_MAPPING.keys():
                 json_data = mapping_module.DEVICE_MAPPING[sn8]
             elif "default" in mapping_module.DEVICE_MAPPING:
                 json_data = mapping_module.DEVICE_MAPPING["default"]
-                MideaLogger.warning(f"json_data: % {json_data}")
         except ModuleNotFoundError:
             MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
 

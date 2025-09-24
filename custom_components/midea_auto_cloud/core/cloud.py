@@ -268,7 +268,6 @@ class MeijuCloud(MideaCloud):
                 "query": {}
             }
         }
-        MideaLogger.error(f"get_device_status: {data}")
         if response := await self._api_request(
             endpoint="/mjl/v1/device/status/lua/get",
             data=data

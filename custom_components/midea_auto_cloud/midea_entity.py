@@ -29,12 +29,14 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         sn: str,
         sn8: str,
         model: str,
+        entity_key: str
     ) -> None:
         """Initialize the entity."""
         super().__init__(coordinator)
         self._device_id = device_id
         self._device_name = device_name
         self._device_type = device_type
+        self._entity_key = entity_key
         self._sn = sn
         self._sn8 = sn8
         self._model = model

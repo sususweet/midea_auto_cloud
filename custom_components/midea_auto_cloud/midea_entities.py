@@ -26,6 +26,7 @@ class MideaEntity(Entity):
             self._rationale = rationale_local
         if self._rationale is None:
             self._rationale = ["off", "on"]
+        self._attr_name = self._config.get("name")
         self._attr_native_unit_of_measurement = self._config.get("unit_of_measurement")
         self._attr_device_class = self._config.get("device_class")
         self._attr_state_class = self._config.get("state_class")
