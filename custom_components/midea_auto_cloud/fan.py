@@ -1,7 +1,7 @@
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.const import Platform
 from .const import DOMAIN
-from .midea_entities import MideaEntity
+from .midea_entity import MideaEntity
 from . import load_device_config
 
 
@@ -24,13 +24,30 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         coordinator = coordinator_map.get(device_id)
         device = coordinator.device if coordinator else None
         for entity_key, ecfg in entities_cfg.items():
-            devs.append(MideaFanEntity(device, manufacturer, rationale, entity_key, ecfg))
+            devs.append(MideaFanEntity(coordinator, device, manufacturer, rationale, entity_key, ecfg))
     async_add_entities(devs)
 
 
 class MideaFanEntity(MideaEntity, FanEntity):
-    def __init__(self, device, manufacturer, rationale, entity_key, config):
-        super().__init__(device, manufacturer, rationale, entity_key, config)
+    def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        super().__init__(
+            coordinator,
+            device.device_id,
+            device.device_name,
+            f"T0x{device.device_type:02X}",
+            device.sn,
+            device.sn8,
+            device.model,
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
+        )
+        self._device = device
+        self._manufacturer = manufacturer
+        self._rationale = rationale
+        self._config = config
         self._key_power = self._config.get("power")
         self._key_preset_modes = self._config.get("preset_modes")
         self._key_speeds = self._config.get("speeds")
@@ -74,41 +91,48 @@ class MideaFanEntity(MideaEntity, FanEntity):
     def oscillating(self):
         return self._get_status_on_off(self._key_oscillate)
 
-    def turn_on(
+    async def async_turn_on(
             self,
             percentage: int | None = None,
             preset_mode: str | None = None,
             **kwargs,
     ):
-        if preset_mode is not None:
-            new_status = self._key_preset_modes.get(preset_mode)
-        else:
-            new_status = {}
-        if percentage is not None:
+        new_status = {}
+        if preset_mode is not None and self._key_preset_modes is not None:
+            new_status.update(self._key_preset_modes.get(preset_mode, {}))
+        if percentage is not None and self._key_speeds:
             index = round(percentage * self._attr_speed_count / 100) - 1
+            index = max(0, min(index, len(self._key_speeds) - 1))
             new_status.update(self._key_speeds[index])
-        new_status[self._key_power] = self._rationale[1]
-        self._device.set_attributes(new_status)
+        if self._key_power is not None:
+            new_status[self._key_power] = True
+        if new_status:
+            await self.async_set_attributes(new_status)
 
-    def turn_off(self):
-        self._set_status_on_off(self._key_power, False)
+    async def async_turn_off(self):
+        await self._async_set_status_on_off(self._key_power, False)
 
-    def set_percentage(self, percentage: int):
+    async def async_set_percentage(self, percentage: int):
+        if not self._key_speeds:
+            return
         index = round(percentage * self._attr_speed_count / 100)
-        if 0 < index < len(self._key_speeds):
+        if 0 < index <= len(self._key_speeds):
             new_status = self._key_speeds[index - 1]
-            self._device.set_attributes(new_status)
+            await self.async_set_attributes(new_status)
 
-    def set_preset_mode(self, preset_mode: str):
+    async def async_set_preset_mode(self, preset_mode: str):
+        if not self._key_preset_modes:
+            return
         new_status = self._key_preset_modes.get(preset_mode)
-        self._device.set_attributes(new_status)
+        if new_status:
+            await self.async_set_attributes(new_status)
 
-    def oscillate(self, oscillating: bool):
+    async def async_oscillate(self, oscillating: bool):
         if self.oscillating != oscillating:
-            self._set_status_on_off(self._key_oscillate, oscillating)
+            await self._async_set_status_on_off(self._key_oscillate, oscillating)
 
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
-        except Exception as e:
+        except Exception:
             pass

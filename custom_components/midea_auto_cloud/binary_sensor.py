@@ -57,17 +57,16 @@ class MideaDeviceStatusSensorEntity(MideaEntity, BinarySensorEntity):
             device.sn,
             device.sn8,
             device.model,
-            entity_key
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
         self._config = config
-
-    @property
-    def entity_id_suffix(self) -> str:
-        """Return the suffix for entity ID."""
-        return "status"
 
     @property
     def device_class(self):
@@ -102,18 +101,17 @@ class MideaBinarySensorEntity(MideaEntity, BinarySensorEntity):
             device.sn,
             device.sn8,
             device.model,
-            entity_key
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
         self._entity_key = entity_key
         self._config = config
-
-    @property
-    def entity_id_suffix(self) -> str:
-        """Return the suffix for entity ID."""
-        return f"binary_sensor_{self._entity_key}"
 
     @property
     def is_on(self):

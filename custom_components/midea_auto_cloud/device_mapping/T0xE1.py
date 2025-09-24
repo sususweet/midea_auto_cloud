@@ -62,6 +62,7 @@ DEVICE_MAPPING = {
                 "work_status": {
                     "options": {
                         "power_off": {"work_status": "power_off" },
+                        "power_on": {"work_status": "power_on" },
                     }
                 },
             },

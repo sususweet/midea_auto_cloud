@@ -15,7 +15,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
-from .midea_entities import Rationale
 from . import load_device_config
 
 
@@ -61,7 +60,11 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             device.sn,
             device.sn8,
             device.model,
-            entity_key
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
         )
         self._device = device
         self._manufacturer = manufacturer
@@ -146,7 +149,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def fan_mode(self):
-        return self._dict_get_selected(self._key_fan_modes, Rationale.EQUALLY)
+        return self._dict_get_selected(self._key_fan_modes, "EQUALLY")
 
     @property
     def swing_modes(self):
@@ -154,7 +157,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def swing_mode(self):
-        return self._dict_get_selected(self._key_swing_modes)
+        return self._dict_get_selected(self._key_swing_modes, "EQUALLY")
 
     @property
     def is_on(self) -> bool:
@@ -162,7 +165,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def hvac_mode(self):
-        return self._dict_get_selected(self._key_hvac_modes)
+        return self._dict_get_selected(self._key_hvac_modes, "EQUALLY")
 
     @property
     def hvac_modes(self):
@@ -233,7 +236,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return
         await self.async_set_attribute(key, value)
 
-    def _dict_get_selected(self, dict_config, rationale=Rationale.EQUALLY):
+    def _dict_get_selected(self, dict_config, rationale="EQUALLY"):
         """Get selected value from dictionary configuration."""
         if dict_config is None:
             return None
@@ -248,15 +251,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                     if device_value is None:
                         match = False
                         break
-                    if rationale == Rationale.EQUALLY:
+                    if rationale == "EQUALLY":
                         if device_value != attr_value:
                             match = False
                             break
-                    elif rationale == Rationale.LESS:
+                    elif rationale == "LESS":
                         if device_value >= attr_value:
                             match = False
                             break
-                    elif rationale == Rationale.GREATER:
+                    elif rationale == "GREATER":
                         if device_value <= attr_value:
                             match = False
                             break

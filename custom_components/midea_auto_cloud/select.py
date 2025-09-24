@@ -1,7 +1,7 @@
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import Platform
 from .const import DOMAIN
-from .midea_entities import MideaEntity
+from .midea_entity import MideaEntity
 from . import load_device_config
 
 
@@ -24,13 +24,30 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         coordinator = coordinator_map.get(device_id)
         device = coordinator.device if coordinator else None
         for entity_key, ecfg in entities_cfg.items():
-            devs.append(MideaSelectEntity(device, manufacturer, rationale, entity_key, ecfg))
+            devs.append(MideaSelectEntity(coordinator, device, manufacturer, rationale, entity_key, ecfg))
     async_add_entities(devs)
 
 
 class MideaSelectEntity(MideaEntity, SelectEntity):
-    def __init__(self, device, manufacturer, rationale, entity_key, config):
-        super().__init__(device, manufacturer, rationale, entity_key, config)
+    def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        super().__init__(
+            coordinator,
+            device.device_id,
+            device.device_name,
+            f"T0x{device.device_type:02X}",
+            device.sn,
+            device.sn8,
+            device.model,
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
+        )
+        self._device = device
+        self._manufacturer = manufacturer
+        self._rationale = rationale
+        self._config = config
         self._key_options = self._config.get("options")
 
     @property
@@ -41,13 +58,14 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
     def current_option(self):
         return self._dict_get_selected(self._key_options)
 
-    def select_option(self, option: str):
+    async def async_select_option(self, option: str):
         new_status = self._key_options.get(option)
-        self._device.set_attributes(new_status)
+        if new_status:
+            await self.async_set_attributes(new_status)
 
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
-        except Exception as e:
+        except Exception:
             pass
 

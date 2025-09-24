@@ -27,7 +27,7 @@ async def async_setup_entry(
     for device_id, info in device_list.items():
         device_type = info.get("type")
         sn8 = info.get("sn8")
-        config = load_device_config(hass, device_type, sn8) or {}
+        config = await load_device_config(hass, device_type, sn8) or {}
         entities_cfg = (config.get("entities") or {}).get(Platform.SWITCH, {})
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")
@@ -52,17 +52,17 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             device.sn,
             device.sn8,
             device.model,
-            entity_key
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config=config,
         )
         self._device = device
         self._manufacturer = manufacturer
         self._rationale = rationale
         self._config = config
 
-    @property
-    def entity_id_suffix(self) -> str:
-        """Return the suffix for entity ID."""
-        return f"switch_{self._entity_key}"
 
     @property
     def is_on(self) -> bool:
