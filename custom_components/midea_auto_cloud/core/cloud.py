@@ -3,9 +3,9 @@ import time
 import datetime
 import json
 import base64
-from threading import Lock
 from aiohttp import ClientSession
 from secrets import token_hex
+from .logger import MideaLogger
 from .security import CloudSecurity, MeijuCloudSecurity, MSmartCloudSecurity
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,7 +50,6 @@ class MideaCloud:
         self._device_id = CloudSecurity.get_deviceid(account)
         self._session = session
         self._security = security
-        self._api_lock = Lock()
         self._app_key = app_key
         self._account = account
         self._password = password
@@ -86,16 +85,15 @@ class MideaCloud:
                 "accesstoken": self._access_token
             })
         response:dict = {"code": -1}
-        for i in range(0, 3):
-            try:
-                with self._api_lock:
-                    r = await self._session.request("POST", url, headers=header, data=dump_data, timeout=10)
-                    raw = await r.read()
-                    _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
-                    response = json.loads(raw)
-                    break
-            except Exception as e:
-                pass
+        _LOGGER.debug(f"Midea cloud API header: {header}")
+        _LOGGER.debug(f"Midea cloud API dump_data: {dump_data}")
+        try:
+            r = await self._session.request("POST", url, headers=header, data=dump_data, timeout=5)
+            raw = await r.read()
+            _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
+            response = json.loads(raw)
+        except Exception as e:
+            _LOGGER.debug(f"API request attempt failed: {e}")
 
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
@@ -251,7 +249,7 @@ class MeijuCloud(MideaCloud):
                             "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
                             "sn8": appliance.get("sn8", "00000000"),
                             "model_number": appliance.get("modelNumber", "0"),
-                            "manufacturer_code":appliance.get("enterpriseCode", "0000"),
+                            "manufacturer_code": appliance.get("enterpriseCode", "0000"),
                             "model": appliance.get("productModel"),
                             "online": appliance.get("onlineStatus") == "1",
                         }
@@ -267,9 +265,10 @@ class MeijuCloud(MideaCloud):
         data = {
             "applianceCode": str(appliance_code),
             "command": {
-                "query": {"query_type": "total_query"}
+                "query": {}
             }
         }
+        MideaLogger.error(f"get_device_status: {data}")
         if response := await self._api_request(
             endpoint="/mjl/v1/device/status/lua/get",
             data=data

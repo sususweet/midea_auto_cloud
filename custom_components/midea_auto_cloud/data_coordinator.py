@@ -10,7 +10,6 @@ from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .core.device import MiedaDevice
-from .const import DOMAIN
 from .core.logger import MideaLogger
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,6 +30,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         hass: HomeAssistant,
         config_entry: ConfigEntry,
         device: MiedaDevice,
+        cloud=None,
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -45,6 +45,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self.device = device
         self.state_update_muted: CALLBACK_TYPE | None = None
         self._device_id = device.device_id
+        self._cloud = cloud
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -89,9 +90,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             return self.data
 
         try:
-            # 尝试账号模式下的云端轮询（如果 cloud 存在且支持）
-            account_bucket = self.hass.data.get(DOMAIN, {}).get("accounts", {}).get(self.config_entry.entry_id)
-            cloud = account_bucket.get("cloud") if account_bucket else None
+            # 使用传入的 cloud 实例（若可用）
+            cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
                 try:
                     status = await cloud.get_device_status(self._device_id)
@@ -120,8 +120,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""
         # 云端控制：构造 control 与 status（携带当前状态作为上下文）
-        account_bucket = self.hass.data.get(DOMAIN, {}).get("accounts", {}).get(self.config_entry.entry_id)
-        cloud = account_bucket.get("cloud") if account_bucket else None
+        cloud = self._cloud
         control = {attribute: value}
         status = dict(self.device.attributes)
         if cloud and hasattr(cloud, "send_device_control"):
@@ -134,8 +133,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
 
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
-        account_bucket = self.hass.data.get(DOMAIN, {}).get("accounts", {}).get(self.config_entry.entry_id)
-        cloud = account_bucket.get("cloud") if account_bucket else None
+        cloud = self._cloud
         control = dict(attributes)
         status = dict(self.device.attributes)
         if cloud and hasattr(cloud, "send_device_control"):
