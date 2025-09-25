@@ -386,15 +386,6 @@
             }
         },
         "sensor": {
-            "acme_freezing_mode": {
-                "name": "极速冷冻模式"
-            },
-            "acquire_icea_mode_power": {
-                "name": "取冰模式电源"
-            },
-            "acquire_water_mode_power": {
-                "name": "取水模式电源"
-            },
             "active_oxygen": {
                 "name": "活性氧"
             },
@@ -406,9 +397,6 @@
             },
             "air_set_hour": {
                 "name": "空调设置时间"
-            },
-            "all_refrigeration_power": {
-                "name": "全制冷电源"
             },
             "appointment_time": {
                 "name": "预约时间"
@@ -436,9 +424,6 @@
             },
             "bottom_temperature": {
                 "name": "底部温度"
-            },
-            "brash_icea_mode_power": {
-                "name": "碎冰模式电源"
             },
             "bright": {
                 "name": "亮度"
@@ -505,9 +490,6 @@
             },
             "cool_min_set_temp": {
                 "name": "制冷最小设定温度"
-            },
-            "cross_peak_electricity": {
-                "name": "错峰用电"
             },
             "cur_humidity": {
                 "name": "当前湿度"
@@ -602,9 +584,6 @@
             "dry_time": {
                 "name": "烘干时间"
             },
-            "dry_zone": {
-                "name": "干燥区"
-            },
             "dryer": {
                 "name": "烘干机"
             },
@@ -613,15 +592,6 @@
             },
             "e_version": {
                 "name": "E 版本"
-            },
-            "electronic_smell": {
-                "name": "电子除味"
-            },
-            "energy_saving_mode": {
-                "name": "节能模式"
-            },
-            "eradicate_pesticide_residue": {
-                "name": "去除农药残留"
             },
             "error": {
                 "name": "错误"
@@ -647,23 +617,11 @@
             "flocks_wash_count": {
                 "name": "毛绒洗涤次数"
             },
-            "floodlight_power": {
-                "name": "照明电源"
-            },
             "flushing_days": {
                 "name": "冲洗天数"
             },
             "freeze_fahrenheit_level": {
                 "name": "冷冻华氏等级"
-            },
-            "freezing_ice_machine_power": {
-                "name": "冷冻制冰机电源"
-            },
-            "freezing_mode": {
-                "name": "冷冻模式"
-            },
-            "freezing_power": {
-                "name": "冷冻电源"
             },
             "freezing_real_temperature": {
                 "name": "冷冻实际温度"
@@ -677,9 +635,6 @@
             "function_zone_level": {
                 "name": "功能区等级"
             },
-            "function_zone_power": {
-                "name": "功能区电源"
-            },
             "gas_lift_percent": {
                 "name": "燃气提升百分比"
             },
@@ -692,12 +647,6 @@
             "heat_min_set_temp": {
                 "name": "制热最小设定温度"
             },
-            "holiday_mode": {
-                "name": "假日模式"
-            },
-            "humidify_power": {
-                "name": "加湿电源"
-            },
             "humidity": {
                 "name": "湿度"
             },
@@ -707,20 +656,11 @@
             "humidity_value": {
                 "name": "湿度值"
             },
-            "ice_mouth_power": {
-                "name": "出冰口电源"
-            },
-            "icea_mode_power": {
-                "name": "制冰模式电源"
-            },
             "in_water_tem": {
                 "name": "进水温度"
             },
             "indoor_temperature": {
                 "name": "室内温度"
-            },
-            "intelligent_mode": {
-                "name": "智能模式"
             },
             "interval_room_humidity_level": {
                 "name": "间室湿度等级"
@@ -730,9 +670,6 @@
             },
             "leak_water_protection_value": {
                 "name": "漏水保护值"
-            },
-            "left_flexzone_power": {
-                "name": "左变温区电源"
             },
             "left_flexzone_temperature": {
                 "name": "左变温区温度"
@@ -755,9 +692,6 @@
             "micro_leak_protection_value": {
                 "name": "微漏保护值"
             },
-            "microcrystal_fresh": {
-                "name": "微晶保鲜"
-            },
             "middlestair_hour": {
                 "name": "中层小时"
             },
@@ -770,14 +704,8 @@
             "middlestair_temp": {
                 "name": "中层温度"
             },
-            "milk_mode_power": {
-                "name": "牛奶模式电源"
-            },
             "mixed_water_gear": {
                 "name": "混合水档位"
-            },
-            "moisturize_mode": {
-                "name": "保湿模式"
             },
             "normal_zone_level": {
                 "name": "普通区等级"
@@ -797,9 +725,6 @@
             "outdoor_temperature": {
                 "name": "室外温度"
             },
-            "performance_mode": {
-                "name": "性能模式"
-            },
             "person_tem_one": {
                 "name": "个人温度一"
             },
@@ -811,9 +736,6 @@
             },
             "planner_status": {
                 "name": "规划器状态"
-            },
-            "plasma_aseptic_mode_power": {
-                "name": "等离子杀菌模式电源"
             },
             "pm25_value": {
                 "name": "PM2.5值"
@@ -836,14 +758,8 @@
             "preheat_on_set_temp": {
                 "name": "预热开启设定温度"
             },
-            "preservation_mode": {
-                "name": "保鲜模式"
-            },
             "progress": {
                 "name": "进度"
-            },
-            "radar_mode_power": {
-                "name": "雷达模式电源"
             },
             "real_date_setting_day": {
                 "name": "实际日期设置日"
@@ -890,14 +806,8 @@
             "remote_control_flag": {
                 "name": "遥控标志"
             },
-            "remove_dew_power": {
-                "name": "除露电源"
-            },
             "return_water_tem": {
                 "name": "回水温度"
-            },
-            "right_flexzone_power": {
-                "name": "右变温区电源"
             },
             "right_flexzone_temperature": {
                 "name": "右变温区温度"
@@ -947,9 +857,6 @@
             "station_error_desc": {
                 "name": "基站错误描述"
             },
-            "storage_power": {
-                "name": "冷藏电源"
-            },
             "storage_temperature": {
                 "name": "冷藏温度"
             },
@@ -985,9 +892,6 @@
             },
             "tvoc_value": {
                 "name": "TVOC值"
-            },
-            "unfreeze_power": {
-                "name": "解冻电源"
             },
             "upstair_hour": {
                 "name": "上层小时"
@@ -1506,6 +1410,99 @@
             },
             "wind_dispel": {
                 "name": "风干"
+            },
+            "acme_freezing_mode": {
+                "name": "极速冷冻模式"
+            },
+            "acquire_icea_mode_power": {
+                "name": "取冰模式电源"
+            },
+            "acquire_water_mode_power": {
+                "name": "取水模式电源"
+            },
+            "all_refrigeration_power": {
+                "name": "全制冷电源"
+            },
+            "brash_icea_mode_power": {
+                "name": "碎冰模式电源"
+            },
+            "cross_peak_electricity": {
+                "name": "错峰用电"
+            },
+            "dry_zone": {
+                "name": "干燥区"
+            },
+            "electronic_smell": {
+                "name": "电子除味"
+            },
+            "energy_saving_mode": {
+                "name": "节能模式"
+            },
+            "eradicate_pesticide_residue": {
+                "name": "去除农药残留"
+            },
+            "floodlight_power": {
+                "name": "照明电源"
+            },
+            "freezing_ice_machine_power": {
+                "name": "冷冻制冰机电源"
+            },
+            "freezing_mode": {
+                "name": "冷冻模式"
+            },
+            "freezing_power": {
+                "name": "冷冻电源"
+            },
+            "function_zone_power": {
+                "name": "功能区电源"
+            },
+            "humidify_power": {
+                "name": "加湿电源"
+            },
+            "ice_mouth_power": {
+                "name": "出冰口电源"
+            },
+            "icea_mode_power": {
+                "name": "制冰模式电源"
+            },
+            "intelligent_mode": {
+                "name": "智能模式"
+            },
+            "left_flexzone_power": {
+                "name": "左变温区电源"
+            },
+            "microcrystal_fresh": {
+                "name": "微晶保鲜"
+            },
+            "milk_mode_power": {
+                "name": "牛奶模式电源"
+            },
+            "moisturize_mode": {
+                "name": "保湿模式"
+            },
+            "performance_mode": {
+                "name": "性能模式"
+            },
+            "plasma_aseptic_mode_power": {
+                "name": "等离子杀菌模式电源"
+            },
+            "preservation_mode": {
+                "name": "保鲜模式"
+            },
+            "radar_mode_power": {
+                "name": "雷达模式电源"
+            },
+            "remove_dew_power": {
+                "name": "除露电源"
+            },
+            "right_flexzone_power": {
+                "name": "右变温区电源"
+            },
+            "storage_power": {
+                "name": "冷藏电源"
+            },
+            "unfreeze_power": {
+                "name": "解冻电源"
             }
         }
     }

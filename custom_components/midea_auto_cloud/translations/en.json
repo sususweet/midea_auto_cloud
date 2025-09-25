@@ -290,15 +290,6 @@
             }
         },
         "sensor": {
-            "acme_freezing_mode": {
-                "name": "Acme Freezing Mode"
-            },
-            "acquire_icea_mode_power": {
-                "name": "Acquire Icea Mode Power"
-            },
-            "acquire_water_mode_power": {
-                "name": "Acquire Water Mode Power"
-            },
             "active_oxygen": {
                 "name": "Active Oxygen"
             },
@@ -310,9 +301,6 @@
             },
             "air_set_hour": {
                 "name": "AC Set Time"
-            },
-            "all_refrigeration_power": {
-                "name": "All Refrigeration Power"
             },
             "appointment_time": {
                 "name": "Appointment Time"
@@ -340,9 +328,6 @@
             },
             "bottom_temperature": {
                 "name": "Bottom Temperature"
-            },
-            "brash_icea_mode_power": {
-                "name": "Brash Icea Mode Power"
             },
             "bright": {
                 "name": "Brightness"
@@ -409,9 +394,6 @@
             },
             "cool_min_set_temp": {
                 "name": "Cool Min Set Temp"
-            },
-            "cross_peak_electricity": {
-                "name": "Cross Peak Electricity"
             },
             "cur_humidity": {
                 "name": "Current Humidity"
@@ -506,23 +488,11 @@
             "dry_time": {
                 "name": "Dry Time"
             },
-            "dry_zone": {
-                "name": "Dry Zone"
-            },
             "dryer": {
                 "name": "Dryer"
             },
             "dust_count": {
                 "name": "Dust Count"
-            },
-            "electronic_smell": {
-                "name": "Electronic Smell"
-            },
-            "energy_saving_mode": {
-                "name": "Energy Saving Mode"
-            },
-            "eradicate_pesticide_residue": {
-                "name": "Eradicate Pesticide Residue"
             },
             "error": {
                 "name": "Error"
@@ -548,23 +518,11 @@
             "flocks_wash_count": {
                 "name": "Flocks Wash Count"
             },
-            "floodlight_power": {
-                "name": "Floodlight Power"
-            },
             "flushing_days": {
                 "name": "Flushing Days"
             },
             "freeze_fahrenheit_level": {
                 "name": "Freeze Fahrenheit Level"
-            },
-            "freezing_ice_machine_power": {
-                "name": "Freezing Ice Machine Power"
-            },
-            "freezing_mode": {
-                "name": "Freezing Mode"
-            },
-            "freezing_power": {
-                "name": "Freezing Power"
             },
             "freezing_real_temperature": {
                 "name": "Freezing Real Temperature"
@@ -578,9 +536,6 @@
             "function_zone_level": {
                 "name": "Function Zone Level"
             },
-            "function_zone_power": {
-                "name": "Function Zone Power"
-            },
             "gas_lift_percent": {
                 "name": "Gas Lift Percent"
             },
@@ -593,12 +548,6 @@
             "heat_min_set_temp": {
                 "name": "Heat Min Set Temp"
             },
-            "holiday_mode": {
-                "name": "Holiday Mode"
-            },
-            "humidify_power": {
-                "name": "Humidify Power"
-            },
             "humidity": {
                 "name": "Humidity"
             },
@@ -608,20 +557,11 @@
             "humidity_value": {
                 "name": "Humidity Value"
             },
-            "ice_mouth_power": {
-                "name": "Ice Mouth Power"
-            },
-            "icea_mode_power": {
-                "name": "Icea Mode Power"
-            },
             "in_water_tem": {
                 "name": "In Water Temperature"
             },
             "indoor_temperature": {
                 "name": "Indoor Temperature"
-            },
-            "intelligent_mode": {
-                "name": "Intelligent Mode"
             },
             "interval_room_humidity_level": {
                 "name": "Interval Room Humidity Level"
@@ -631,9 +571,6 @@
             },
             "leak_water_protection_value": {
                 "name": "Leak Water Protection Value"
-            },
-            "left_flexzone_power": {
-                "name": "Left Flexzone Power"
             },
             "left_flexzone_temperature": {
                 "name": "Left Flexzone Temperature"
@@ -656,9 +593,6 @@
             "micro_leak_protection_value": {
                 "name": "Micro Leak Protection Value"
             },
-            "microcrystal_fresh": {
-                "name": "Microcrystal Fresh"
-            },
             "middlestair_hour": {
                 "name": "Middle Stair Hour"
             },
@@ -671,14 +605,8 @@
             "middlestair_temp": {
                 "name": "Middle Stair Temperature"
             },
-            "milk_mode_power": {
-                "name": "Milk Mode Power"
-            },
             "mixed_water_gear": {
                 "name": "Mixed Water Gear"
-            },
-            "moisturize_mode": {
-                "name": "Moisturize Mode"
             },
             "normal_zone_level": {
                 "name": "Normal Zone Level"
@@ -698,9 +626,6 @@
             "outdoor_temperature": {
                 "name": "Outdoor Temperature"
             },
-            "performance_mode": {
-                "name": "Performance Mode"
-            },
             "person_tem_one": {
                 "name": "Person Temperature One"
             },
@@ -712,9 +637,6 @@
             },
             "planner_status": {
                 "name": "Planner Status"
-            },
-            "plasma_aseptic_mode_power": {
-                "name": "Plasma Aseptic Mode Power"
             },
             "pm25_value": {
                 "name": "PM2.5 Value"
@@ -737,14 +659,8 @@
             "preheat_on_set_temp": {
                 "name": "Preheat On Set Temp"
             },
-            "preservation_mode": {
-                "name": "Preservation Mode"
-            },
             "progress": {
                 "name": "Progress"
-            },
-            "radar_mode_power": {
-                "name": "Radar Mode Power"
             },
             "real_date_setting_day": {
                 "name": "Real Date Setting Day"
@@ -791,14 +707,8 @@
             "remote_control_flag": {
                 "name": "Remote Control Flag"
             },
-            "remove_dew_power": {
-                "name": "Remove Dew Power"
-            },
             "return_water_tem": {
                 "name": "Return Water Temperature"
-            },
-            "right_flexzone_power": {
-                "name": "Right Flexzone Power"
             },
             "right_flexzone_temperature": {
                 "name": "Right Flexzone Temperature"
@@ -848,9 +758,6 @@
             "station_error_desc": {
                 "name": "Station Error Description"
             },
-            "storage_power": {
-                "name": "Storage Power"
-            },
             "storage_temperature": {
                 "name": "Storage Temperature"
             },
@@ -886,9 +793,6 @@
             },
             "tvoc_value": {
                 "name": "TVOC Value"
-            },
-            "unfreeze_power": {
-                "name": "Unfreeze Power"
             },
             "upstair_hour": {
                 "name": "Up Stair Hour"
@@ -1504,6 +1408,99 @@
             },
             "wind_dispel": {
                 "name": "Wind Dispel"
+            },
+            "acme_freezing_mode": {
+                "name": "Acme Freezing Mode"
+            },
+            "acquire_icea_mode_power": {
+                "name": "Acquire Icea Mode Power"
+            },
+            "acquire_water_mode_power": {
+                "name": "Acquire Water Mode Power"
+            },
+            "all_refrigeration_power": {
+                "name": "All Refrigeration Power"
+            },
+            "brash_icea_mode_power": {
+                "name": "Brash Icea Mode Power"
+            },
+            "cross_peak_electricity": {
+                "name": "Cross Peak Electricity"
+            },
+            "dry_zone": {
+                "name": "Dry Zone"
+            },
+            "electronic_smell": {
+                "name": "Electronic Smell"
+            },
+            "energy_saving_mode": {
+                "name": "Energy Saving Mode"
+            },
+            "eradicate_pesticide_residue": {
+                "name": "Eradicate Pesticide Residue"
+            },
+            "floodlight_power": {
+                "name": "Floodlight Power"
+            },
+            "freezing_ice_machine_power": {
+                "name": "Freezing Ice Machine Power"
+            },
+            "freezing_mode": {
+                "name": "Freezing Mode"
+            },
+            "freezing_power": {
+                "name": "Freezing Power"
+            },
+            "function_zone_power": {
+                "name": "Function Zone Power"
+            },
+            "humidify_power": {
+                "name": "Humidify Power"
+            },
+            "ice_mouth_power": {
+                "name": "Ice Mouth Power"
+            },
+            "icea_mode_power": {
+                "name": "Icea Mode Power"
+            },
+            "intelligent_mode": {
+                "name": "Intelligent Mode"
+            },
+            "left_flexzone_power": {
+                "name": "Left Flexzone Power"
+            },
+            "microcrystal_fresh": {
+                "name": "Microcrystal Fresh"
+            },
+            "milk_mode_power": {
+                "name": "Milk Mode Power"
+            },
+            "moisturize_mode": {
+                "name": "Moisturize Mode"
+            },
+            "performance_mode": {
+                "name": "Performance Mode"
+            },
+            "plasma_aseptic_mode_power": {
+                "name": "Plasma Aseptic Mode Power"
+            },
+            "preservation_mode": {
+                "name": "Preservation Mode"
+            },
+            "radar_mode_power": {
+                "name": "Radar Mode Power"
+            },
+            "remove_dew_power": {
+                "name": "Remove Dew Power"
+            },
+            "right_flexzone_power": {
+                "name": "Right Flexzone Power"
+            },
+            "storage_power": {
+                "name": "Storage Power"
+            },
+            "unfreeze_power": {
+                "name": "Unfreeze Power"
             }
         }
     }
