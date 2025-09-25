@@ -135,8 +135,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_code": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "humidity_set": {
                     "device_class": SensorDeviceClass.HUMIDITY,
@@ -178,8 +177,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "machine_type": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 }
             }
         }

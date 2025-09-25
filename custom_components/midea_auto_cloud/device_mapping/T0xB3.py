@@ -188,10 +188,6 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.SECONDS,
                     "state_class": SensorStateClass.MEASUREMENT
-                },
-                "version": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
                 }
             }
         }

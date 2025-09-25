@@ -136,8 +136,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "db_error_code": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "db_set_dewater_time": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -150,12 +149,10 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "db_device_software_version": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "db_rinse_count": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "db_wash_time": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -168,8 +165,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "db_appointment": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "db_dehydration_time": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -177,8 +173,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "db_cycle_memory": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 }
             }
         }

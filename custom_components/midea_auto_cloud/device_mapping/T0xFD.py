@@ -114,8 +114,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_code": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "cur_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,

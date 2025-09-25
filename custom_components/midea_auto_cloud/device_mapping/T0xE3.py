@@ -116,7 +116,7 @@ DEVICE_MAPPING = {
                 "water_volume": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "zero_cold_tem": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
@@ -126,7 +126,7 @@ DEVICE_MAPPING = {
                 "bath_out_volume": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "return_water_tem": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
@@ -136,12 +136,12 @@ DEVICE_MAPPING = {
                 "change_litre": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "bathtub_water_level": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
@@ -174,8 +174,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_code": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 }
             }
         }

@@ -76,15 +76,16 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "micro_leak_protection_value": {
                     "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": "kPa",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "regeneration_current_stages": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "water_hardness": {
                     "device_class": SensorDeviceClass.WATER,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "unit_of_measurement": UnitOfVolume.LITERS,
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "timing_regeneration_hour": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -107,12 +108,10 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "maintenance_reminder_setting": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "mixed_water_gear": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "use_days": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -126,6 +125,7 @@ DEVICE_MAPPING = {
                 },
                 "velocity": {
                     "device_class": SensorDeviceClass.SPEED,
+                    "unit_of_measurement": "m/s",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "supply_voltage": {
@@ -149,12 +149,10 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "salt_setting": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "regeneration_count": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "battery_voltage": {
                     "device_class": SensorDeviceClass.VOLTAGE,
@@ -162,8 +160,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "days_since_last_two_regeneration": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -176,20 +173,16 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "real_date_setting_year": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "real_date_setting_month": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "real_date_setting_day": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "category": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "real_time_setting_min": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -197,28 +190,27 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "regeneration_stages": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "soft_available_big": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "water_consumption_big": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "water_consumption_today": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "water_consumption_average": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "salt_alarm_threshold": {
                     "device_class": SensorDeviceClass.WEIGHT,
@@ -227,6 +219,7 @@ DEVICE_MAPPING = {
                 },
                 "leak_water_protection_value": {
                     "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": "kPa",
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }

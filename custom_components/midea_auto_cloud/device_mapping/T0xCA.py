@@ -267,20 +267,16 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "normal_zone_level": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "function_zone_level": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "freeze_fahrenheit_level": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "refrigeration_fahrenheit_level": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "leach_expire_day": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -305,10 +301,6 @@ DEVICE_MAPPING = {
                 "fast_freeze_minute": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "version": {
-                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }
