@@ -1,6 +1,5 @@
-from homeassistant.const import Platform, UnitOfTemperature
+from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from homeassistant.components.climate.const import PRECISION_HALVES
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 

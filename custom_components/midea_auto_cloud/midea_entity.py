@@ -124,8 +124,10 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        MideaLogger.debug(f"available available={self.coordinator.data} ")
-        return self.coordinator.data.available
+        if self.coordinator.data:
+            return self.coordinator.data.available
+        else:
+            return False
 
     async def _publish_command(self) -> None:
         """Publish commands to the device."""

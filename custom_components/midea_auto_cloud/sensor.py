@@ -66,4 +66,26 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        return self.device_attributes.get(self._entity_key)
+        value = self.device_attributes.get(self._entity_key)
+        
+        # Handle invalid string values
+        if isinstance(value, str) and value.lower() in ['invalid', 'none', 'null', '']:
+            return None
+            
+        # Try to convert to number if it's a string that looks like a number
+        if isinstance(value, str):
+            try:
+                # Try integer first
+                if '.' not in value:
+                    return int(value)
+                # Then float
+                return float(value)
+            except (ValueError, TypeError):
+                # If conversion fails, return None for numeric sensors
+                # or return the original string for enum sensors
+                device_class = self._config.get("device_class")
+                if device_class and "enum" not in device_class.lower():
+                    return None
+                return value
+                
+        return value
