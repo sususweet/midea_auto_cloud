@@ -173,6 +173,24 @@
             },
             "water_lack": {
                 "name": "缺水"
+            },
+            "communication_error": {
+                "name": "通信错误"
+            },
+            "door_status": {
+                "name": "门状态"
+            },
+            "ele_exception": {
+                "name": "电气异常"
+            },
+            "elec_warning": {
+                "name": "电气警告"
+            },
+            "limit_error": {
+                "name": "限制错误"
+            },
+            "sensor_error": {
+                "name": "传感器错误"
             }
         },
         "climate": {
@@ -383,6 +401,18 @@
             },
             "work_status": {
                 "name": "工作状态"
+            },
+            "func_select": {
+                "name": "功能选择"
+            },
+            "machine": {
+                "name": "机器"
+            },
+            "type_select": {
+                "name": "类型选择"
+            },
+            "water_quality": {
+                "name": "水质"
             }
         },
         "sensor": {
@@ -952,11 +982,266 @@
             },
             "zero_cold_tem": {
                 "name": "零冷水温度"
+            },
+            "bottom_temp": {
+                "name": "底部温度"
+            },
+            "cur_rate": {
+                "name": "当前流量"
+            },
+            "discharge_left_time": {
+                "name": "排水剩余时间"
+            },
+            "discharge_status": {
+                "name": "排水状态"
+            },
+            "end_time_hour": {
+                "name": "结束时间小时"
+            },
+            "end_time_minute": {
+                "name": "结束时间分钟"
+            },
+            "flow": {
+                "name": "流量"
+            },
+            "heat_water_level": {
+                "name": "热水水位"
+            },
+            "in_temperature": {
+                "name": "进水温度"
+            },
+            "mg_remain": {
+                "name": "镁离子剩余"
+            },
+            "morning_night_bash": {
+                "name": "晨夜冲洗"
+            },
+            "passwater_highbyte": {
+                "name": "过水高字节"
+            },
+            "passwater_lowbyte": {
+                "name": "过水低字节"
+            },
+            "rate": {
+                "name": "流量"
+            },
+            "scene_id": {
+                "name": "场景ID"
+            },
+            "screen_light": {
+                "name": "屏幕亮度"
+            },
+            "sterilize_cycle_index": {
+                "name": "杀菌循环索引"
+            },
+            "sterilize_left_days": {
+                "name": "杀菌剩余天数"
+            },
+            "tds_value": {
+                "name": "TDS值"
+            },
+            "top_temp": {
+                "name": "顶部温度"
+            },
+            "uv_sterilize_minute": {
+                "name": "紫外线杀菌分钟"
+            },
+            "uv_sterilize_second": {
+                "name": "紫外线杀菌秒"
+            },
+            "version": {
+                "name": "版本"
+            },
+            "volume": {
+                "name": "音量"
+            },
+            "wash_temperature": {
+                "name": "洗涤温度"
+            },
+            "water_system": {
+                "name": "水系统"
+            },
+            "waterday_highbyte": {
+                "name": "日用水高字节"
+            },
+            "waterday_lowbyte": {
+                "name": "日用水低字节"
             }
         },
         "switch": {
             "add_water_flag": {
                 "name": "加水标志"
+            },
+            "ali_manager": {
+                "name": "阿里管理"
+            },
+            "appoint_power": {
+                "name": "预约电源"
+            },
+            "appoint_wash": {
+                "name": "预约洗涤"
+            },
+            "auto_off": {
+                "name": "自动关机"
+            },
+            "baby_wash": {
+                "name": "婴儿洗涤"
+            },
+            "bath": {
+                "name": "沐浴"
+            },
+            "bath_person": {
+                "name": "沐浴人员"
+            },
+            "big_water": {
+                "name": "大水"
+            },
+            "bottom_heat": {
+                "name": "底部加热"
+            },
+            "clean": {
+                "name": "清洁"
+            },
+            "cloud": {
+                "name": "云"
+            },
+            "cloud_appoint": {
+                "name": "云预约"
+            },
+            "dad_wash": {
+                "name": "爸爸洗涤"
+            },
+            "eplus": {
+                "name": "E加"
+            },
+            "fast_hot_power": {
+                "name": "快速加热电源"
+            },
+            "fast_wash": {
+                "name": "快速洗涤"
+            },
+            "frequency_hot": {
+                "name": "变频加热"
+            },
+            "get_temp": {
+                "name": "获取温度"
+            },
+            "get_time": {
+                "name": "获取时间"
+            },
+            "half_heat": {
+                "name": "半加热"
+            },
+            "heat": {
+                "name": "加热"
+            },
+            "hot_power": {
+                "name": "加热电源"
+            },
+            "midea_manager": {
+                "name": "美的管理"
+            },
+            "mom_wash": {
+                "name": "妈妈洗涤"
+            },
+            "music": {
+                "name": "音乐"
+            },
+            "negative_ions": {
+                "name": "负离子"
+            },
+            "need_discharge": {
+                "name": "需要排水"
+            },
+            "night": {
+                "name": "夜间"
+            },
+            "now_wash": {
+                "name": "立即洗涤"
+            },
+            "one_egg": {
+                "name": "一个蛋"
+            },
+            "people_wash": {
+                "name": "人员洗涤"
+            },
+            "protect": {
+                "name": "保护"
+            },
+            "protect_show": {
+                "name": "保护显示"
+            },
+            "scene": {
+                "name": "场景"
+            },
+            "screen_off": {
+                "name": "屏幕关闭"
+            },
+            "scroll_hot": {
+                "name": "滚动加热"
+            },
+            "shower": {
+                "name": "淋浴"
+            },
+            "single_wash": {
+                "name": "单次洗涤"
+            },
+            "sleep": {
+                "name": "睡眠"
+            },
+            "smart_sterilize": {
+                "name": "智能杀菌"
+            },
+            "sound_dad": {
+                "name": "声音爸爸"
+            },
+            "sterilization": {
+                "name": "杀菌"
+            },
+            "sterilize_high_temp": {
+                "name": "高温杀菌"
+            },
+            "summer": {
+                "name": "夏季"
+            },
+            "t_hot": {
+                "name": "T加热"
+            },
+            "tech_water": {
+                "name": "技术水"
+            },
+            "ti_protect": {
+                "name": "TI保护"
+            },
+            "top_heat": {
+                "name": "顶部加热"
+            },
+            "two_egg": {
+                "name": "两个蛋"
+            },
+            "uv_sterilize": {
+                "name": "紫外线杀菌"
+            },
+            "warm_power": {
+                "name": "保温电源"
+            },
+            "wash": {
+                "name": "洗涤"
+            },
+            "wash_with_temp": {
+                "name": "温度洗涤"
+            },
+            "water_cyclic": {
+                "name": "水循环"
+            },
+            "water_flow": {
+                "name": "水流"
+            },
+            "whole_heat": {
+                "name": "全加热"
+            },
+            "winter": {
+                "name": "冬季"
             },
             "ai_flag": {
                 "name": "AI标志"

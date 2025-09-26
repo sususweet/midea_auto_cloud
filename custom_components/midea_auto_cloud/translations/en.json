@@ -287,6 +287,18 @@
             },
             "work_status": {
                 "name": "Work Status"
+            },
+            "func_select": {
+                "name": "Func Select"
+            },
+            "machine": {
+                "name": "Machine"
+            },
+            "type_select": {
+                "name": "Type Select"
+            },
+            "water_quality": {
+                "name": "Water Quality"
             }
         },
         "sensor": {
@@ -856,6 +868,87 @@
             },
             "zero_cold_tem": {
                 "name": "Zero Cold Temperature"
+            },
+            "bottom_temp": {
+                "name": "Bottom Temperature"
+            },
+            "cur_rate": {
+                "name": "Current Rate"
+            },
+            "discharge_left_time": {
+                "name": "Discharge Left Time"
+            },
+            "discharge_status": {
+                "name": "Discharge Status"
+            },
+            "end_time_hour": {
+                "name": "End Time Hour"
+            },
+            "end_time_minute": {
+                "name": "End Time Minute"
+            },
+            "flow": {
+                "name": "Flow"
+            },
+            "heat_water_level": {
+                "name": "Heat Water Level"
+            },
+            "in_temperature": {
+                "name": "In Temperature"
+            },
+            "mg_remain": {
+                "name": "Mg Remain"
+            },
+            "morning_night_bash": {
+                "name": "Morning Night Bash"
+            },
+            "passwater_highbyte": {
+                "name": "Passwater Highbyte"
+            },
+            "passwater_lowbyte": {
+                "name": "Passwater Lowbyte"
+            },
+            "rate": {
+                "name": "Rate"
+            },
+            "scene_id": {
+                "name": "Scene ID"
+            },
+            "screen_light": {
+                "name": "Screen Light"
+            },
+            "sterilize_cycle_index": {
+                "name": "Sterilize Cycle Index"
+            },
+            "sterilize_left_days": {
+                "name": "Sterilize Left Days"
+            },
+            "tds_value": {
+                "name": "TDS Value"
+            },
+            "top_temp": {
+                "name": "Top Temperature"
+            },
+            "uv_sterilize_minute": {
+                "name": "UV Sterilize Minute"
+            },
+            "uv_sterilize_second": {
+                "name": "UV Sterilize Second"
+            },
+            "volume": {
+                "name": "Volume"
+            },
+            "wash_temperature": {
+                "name": "Wash Temperature"
+            },
+            "water_system": {
+                "name": "Water System"
+            },
+            "waterday_highbyte": {
+                "name": "Waterday Highbyte"
+            },
+            "waterday_lowbyte": {
+                "name": "Waterday Lowbyte"
             }
         },
         "binary_sensor": {
@@ -927,6 +1020,24 @@
             },
             "water_lack": {
                 "name": "Water Lack"
+            },
+            "communication_error": {
+                "name": "Communication Error"
+            },
+            "door_status": {
+                "name": "Door Status"
+            },
+            "ele_exception": {
+                "name": "Ele Exception"
+            },
+            "elec_warning": {
+                "name": "Elec Warning"
+            },
+            "limit_error": {
+                "name": "Limit Error"
+            },
+            "sensor_error": {
+                "name": "Sensor Error"
             }
         },
         "climate": {
@@ -955,6 +1066,177 @@
         "switch": {
             "add_water_flag": {
                 "name": "Add Water Flag"
+            },
+            "ali_manager": {
+                "name": "Ali Manager"
+            },
+            "appoint_power": {
+                "name": "Appoint Power"
+            },
+            "appoint_wash": {
+                "name": "Appoint Wash"
+            },
+            "auto_off": {
+                "name": "Auto Off"
+            },
+            "baby_wash": {
+                "name": "Baby Wash"
+            },
+            "bath": {
+                "name": "Bath"
+            },
+            "bath_person": {
+                "name": "Bath Person"
+            },
+            "big_water": {
+                "name": "Big Water"
+            },
+            "bottom_heat": {
+                "name": "Bottom Heat"
+            },
+            "clean": {
+                "name": "Clean"
+            },
+            "cloud": {
+                "name": "Cloud"
+            },
+            "cloud_appoint": {
+                "name": "Cloud Appoint"
+            },
+            "dad_wash": {
+                "name": "Dad Wash"
+            },
+            "eplus": {
+                "name": "Eplus"
+            },
+            "fast_hot_power": {
+                "name": "Fast Hot Power"
+            },
+            "fast_wash": {
+                "name": "Fast Wash"
+            },
+            "frequency_hot": {
+                "name": "Frequency Hot"
+            },
+            "get_temp": {
+                "name": "Get Temp"
+            },
+            "get_time": {
+                "name": "Get Time"
+            },
+            "half_heat": {
+                "name": "Half Heat"
+            },
+            "heat": {
+                "name": "Heat"
+            },
+            "hot_power": {
+                "name": "Hot Power"
+            },
+            "midea_manager": {
+                "name": "Midea Manager"
+            },
+            "mom_wash": {
+                "name": "Mom Wash"
+            },
+            "music": {
+                "name": "Music"
+            },
+            "negative_ions": {
+                "name": "Negative Ions"
+            },
+            "need_discharge": {
+                "name": "Need Discharge"
+            },
+            "night": {
+                "name": "Night"
+            },
+            "now_wash": {
+                "name": "Now Wash"
+            },
+            "one_egg": {
+                "name": "One Egg"
+            },
+            "people_wash": {
+                "name": "People Wash"
+            },
+            "protect": {
+                "name": "Protect"
+            },
+            "protect_show": {
+                "name": "Protect Show"
+            },
+            "scene": {
+                "name": "Scene"
+            },
+            "screen_off": {
+                "name": "Screen Off"
+            },
+            "scroll_hot": {
+                "name": "Scroll Hot"
+            },
+            "shower": {
+                "name": "Shower"
+            },
+            "single_wash": {
+                "name": "Single Wash"
+            },
+            "sleep": {
+                "name": "Sleep"
+            },
+            "smart_sterilize": {
+                "name": "Smart Sterilize"
+            },
+            "sound_dad": {
+                "name": "Sound Dad"
+            },
+            "sterilization": {
+                "name": "Sterilization"
+            },
+            "sterilize_high_temp": {
+                "name": "Sterilize High Temp"
+            },
+            "summer": {
+                "name": "Summer"
+            },
+            "t_hot": {
+                "name": "T Hot"
+            },
+            "tech_water": {
+                "name": "Tech Water"
+            },
+            "ti_protect": {
+                "name": "Ti Protect"
+            },
+            "top_heat": {
+                "name": "Top Heat"
+            },
+            "two_egg": {
+                "name": "Two Egg"
+            },
+            "uv_sterilize": {
+                "name": "UV Sterilize"
+            },
+            "warm_power": {
+                "name": "Warm Power"
+            },
+            "wash": {
+                "name": "Wash"
+            },
+            "wash_with_temp": {
+                "name": "Wash With Temp"
+            },
+            "water_cyclic": {
+                "name": "Water Cyclic"
+            },
+            "water_flow": {
+                "name": "Water Flow"
+            },
+            "whole_heat": {
+                "name": "Whole Heat"
+            },
+            "winter": {
+                "name": "Winter"
             },
             "ai_flag": {
                 "name": "AI Flag"
