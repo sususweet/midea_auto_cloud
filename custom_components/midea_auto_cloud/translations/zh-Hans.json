@@ -200,6 +200,51 @@
             },
             "sensor_error": {
                 "name": "传感器错误"
+            },
+            "lock": {
+                "name": "锁定"
+            },
+            "furnace_light": {
+                "name": "炉灯"
+            },
+            "dissipate_heat": {
+                "name": "散热"
+            },
+            "pre_heat": {
+                "name": "预热"
+            },
+            "door_open": {
+                "name": "门开启"
+            },
+            "lack_water": {
+                "name": "缺水"
+            },
+            "high_temperature_work": {
+                "name": "高温工作"
+            },
+            "lack_box": {
+                "name": "缺盒"
+            },
+            "clean_sink_ponding": {
+                "name": "清洁水槽积水"
+            },
+            "clean_scale": {
+                "name": "清洁水垢"
+            },
+            "flip_side": {
+                "name": "翻面"
+            },
+            "reaction": {
+                "name": "反应"
+            },
+            "ramadan": {
+                "name": "斋月"
+            },
+            "change_water": {
+                "name": "换水"
+            },
+            "execute": {
+                "name": "执行"
             }
         },
         "climate": {
@@ -408,9 +453,6 @@
             "work_mode": {
                 "name": "工作模式"
             },
-            "work_status": {
-                "name": "工作状态"
-            },
             "func_select": {
                 "name": "功能选择"
             },
@@ -422,6 +464,9 @@
             },
             "water_quality": {
                 "name": "水质"
+            },
+            "work_status": {
+                "name": "工作状态"
             }
         },
         "sensor": {
@@ -1075,6 +1120,54 @@
             },
             "waterday_lowbyte": {
                 "name": "日用水低字节"
+            },
+            "work_hour": {
+                "name": "工作小时"
+            },
+            "work_minute": {
+                "name": "工作分钟"
+            },
+            "work_second": {
+                "name": "工作秒"
+            },
+            "cur_temperature_above": {
+                "name": "当前温度(上)"
+            },
+            "cur_temperature_underside": {
+                "name": "当前温度(下)"
+            },
+            "weight": {
+                "name": "重量"
+            },
+            "people_number": {
+                "name": "人数"
+            },
+            "steam_quantity": {
+                "name": "蒸汽量"
+            },
+            "totalstep": {
+                "name": "总步数"
+            },
+            "stepnum": {
+                "name": "步数"
+            },
+            "hour_set": {
+                "name": "设置小时"
+            },
+            "minute_set": {
+                "name": "设置分钟"
+            },
+            "second_set": {
+                "name": "设置秒"
+            },
+            "ota": {
+                "name": "OTA"
+            },
+            "cbs_version": {
+                "name": "CBS版本"
+            },
+            "cloudmenuid": {
+                "name": "云菜单ID"
             }
         },
         "switch": {

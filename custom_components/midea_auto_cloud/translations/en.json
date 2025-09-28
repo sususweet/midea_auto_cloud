@@ -294,9 +294,6 @@
             "work_mode": {
                 "name": "Work Mode"
             },
-            "work_status": {
-                "name": "Work Status"
-            },
             "func_select": {
                 "name": "Func Select"
             },
@@ -308,6 +305,9 @@
             },
             "water_quality": {
                 "name": "Water Quality"
+            },
+            "work_status": {
+                "name": "Work Status"
             }
         },
         "sensor": {
@@ -958,6 +958,54 @@
             },
             "waterday_lowbyte": {
                 "name": "Waterday Lowbyte"
+            },
+            "work_hour": {
+                "name": "Work Hour"
+            },
+            "work_minute": {
+                "name": "Work Minute"
+            },
+            "work_second": {
+                "name": "Work Second"
+            },
+            "cur_temperature_above": {
+                "name": "Current Temperature Above"
+            },
+            "cur_temperature_underside": {
+                "name": "Current Temperature Underside"
+            },
+            "weight": {
+                "name": "Weight"
+            },
+            "people_number": {
+                "name": "People Number"
+            },
+            "steam_quantity": {
+                "name": "Steam Quantity"
+            },
+            "totalstep": {
+                "name": "Total Step"
+            },
+            "stepnum": {
+                "name": "Step Number"
+            },
+            "hour_set": {
+                "name": "Hour Set"
+            },
+            "minute_set": {
+                "name": "Minute Set"
+            },
+            "second_set": {
+                "name": "Second Set"
+            },
+            "ota": {
+                "name": "OTA"
+            },
+            "cbs_version": {
+                "name": "CBS Version"
+            },
+            "cloudmenuid": {
+                "name": "Cloud Menu ID"
             }
         },
         "binary_sensor": {
@@ -1047,6 +1095,51 @@
             },
             "sensor_error": {
                 "name": "Sensor Error"
+            },
+            "lock": {
+                "name": "Lock"
+            },
+            "furnace_light": {
+                "name": "Furnace Light"
+            },
+            "dissipate_heat": {
+                "name": "Dissipate Heat"
+            },
+            "pre_heat": {
+                "name": "Pre Heat"
+            },
+            "door_open": {
+                "name": "Door Open"
+            },
+            "lack_water": {
+                "name": "Lack Water"
+            },
+            "high_temperature_work": {
+                "name": "High Temperature Work"
+            },
+            "lack_box": {
+                "name": "Lack Box"
+            },
+            "clean_sink_ponding": {
+                "name": "Clean Sink Ponding"
+            },
+            "clean_scale": {
+                "name": "Clean Scale"
+            },
+            "flip_side": {
+                "name": "Flip Side"
+            },
+            "reaction": {
+                "name": "Reaction"
+            },
+            "ramadan": {
+                "name": "Ramadan"
+            },
+            "change_water": {
+                "name": "Change Water"
+            },
+            "execute": {
+                "name": "Execute"
             }
         },
         "climate": {
