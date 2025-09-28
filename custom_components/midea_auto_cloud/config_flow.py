@@ -81,8 +81,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema({
                 vol.Required("option", default="change_credentials"): vol.In({
                     "change_credentials": "修改账号密码",
-                    "reset": "重置配置", 
-                    "configure": "设备配置"
                 })
             }),
             errors=error
