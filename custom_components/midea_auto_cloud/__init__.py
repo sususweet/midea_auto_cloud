@@ -41,7 +41,7 @@ from .const import (
     CONF_SN8,
     CONF_SN,
     CONF_MODEL_NUMBER,
-    CONF_SERVERS
+    CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE
 )
 # 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
 from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
@@ -179,11 +179,21 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     # 为每台设备构建占位设备与协调器（不连接本地）
                     for appliance_code, info in appliances.items():
                         MideaLogger.debug(f"info={info} ")
+
+                        os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
+                        path = hass.config.path(STORAGE_PATH)
+                        file = await cloud.download_lua(
+                            path=path,
+                            device_type=info.get(CONF_TYPE),
+                            sn=info.get(CONF_SN),
+                            model_number=info.get(CONF_MODEL_NUMBER),
+                            manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                        )
                         try:
                             device = MiedaDevice(
-                                name=info.get(CONF_NAME) or info.get("name"),
+                                name=info.get(CONF_NAME),
                                 device_id=appliance_code,
-                                device_type=info.get(CONF_TYPE) or info.get("type"),
+                                device_type=info.get(CONF_TYPE),
                                 ip_address=None,
                                 port=None,
                                 token=None,
@@ -192,8 +202,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 protocol=info.get(CONF_PROTOCOL) or 2,
                                 model=info.get(CONF_MODEL),
                                 subtype=info.get(CONF_MODEL_NUMBER),
-                                sn=info.get(CONF_SN) or info.get("sn"),
-                                sn8=info.get(CONF_SN8) or info.get("sn8"),
+                                sn=info.get(CONF_SN),
+                                sn8=info.get(CONF_SN8),
+                                lua_file=file,
+                                cloud=cloud,
                             )
                             # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
                             try:
@@ -289,6 +301,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                             bucket["coordinator_map"][appliance_code] = coordinator
                         except Exception as e:
                             MideaLogger.error(f"Init device failed: {appliance_code}, error: {e}")
+                    # break
                 hass.data[DOMAIN]["accounts"][config_entry.entry_id] = bucket
 
         except Exception as e:

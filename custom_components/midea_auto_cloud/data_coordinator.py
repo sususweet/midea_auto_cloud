@@ -90,16 +90,17 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             return self.data
 
         try:
-            # 使用传入的 cloud 实例（若可用）
-            cloud = self._cloud
-            if cloud and hasattr(cloud, "get_device_status"):
-                try:
-                    status = await cloud.get_device_status(self._device_id)
-                    if isinstance(status, dict) and len(status) > 0:
-                        for k, v in status.items():
-                            self.device.attributes[k] = v
-                except Exception as e:
-                    MideaLogger.debug(f"Cloud status fetch failed: {e}")
+            await self.device.refresh_status()
+            # # 使用传入的 cloud 实例（若可用）
+            # cloud = self._cloud
+            # if cloud and hasattr(cloud, "get_device_status"):
+            #     try:
+            #         status = await cloud.get_device_status(self._device_id)
+            #         if isinstance(status, dict) and len(status) > 0:
+            #             for k, v in status.items():
+            #                 self.device.attributes[k] = v
+            #     except Exception as e:
+            #         MideaLogger.debug(f"Cloud status fetch failed: {e}")
 
             # 返回并推送当前状态
             updated = MideaDeviceData(
@@ -120,26 +121,15 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""
         # 云端控制：构造 control 与 status（携带当前状态作为上下文）
-        cloud = self._cloud
-        control = {attribute: value}
-        status = dict(self.device.attributes)
-        if cloud and hasattr(cloud, "send_device_control"):
-            ok = await cloud.send_device_control(self._device_id, control=control, status=status)
-            if ok:
-                # 本地先行更新，随后依赖轮询或设备事件校正
-                self.device.attributes[attribute] = value
+        await self.device.set_attribute(attribute, value)
+        self.device.attributes[attribute] = value
         self.mute_state_update_for_a_while()
         self.async_update_listeners()
 
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
-        cloud = self._cloud
-        control = dict(attributes)
-        status = dict(self.device.attributes)
-        if cloud and hasattr(cloud, "send_device_control"):
-            ok = await cloud.send_device_control(self._device_id, control=control, status=status)
-            if ok:
-                self.device.attributes.update(attributes)
+        await self.device.set_attributes(attributes)
+        self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()
         self.async_update_listeners()
 

@@ -6,10 +6,10 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "prevent_straight_wind"}],
+        "queries": [{}],
         "centralized": [
             "power", "temperature", "small_temperature", "mode", "eco",
-            "comfort_power_save", "comfort_sleep", "strong_wind",
+            "comfort_power_save", "strong_wind",
             "wind_swing_lr", "wind_swing_lr", "wind_speed","ptc", "dry"
         ],
         "entities": {
@@ -28,12 +28,12 @@ DEVICE_MAPPING = {
                         "none": {
                             "eco": "off",
                             "comfort_power_save": "off",
-                            "comfort_sleep": "off",
+                            # "comfort_sleep": "off",
                             "strong_wind": "off"
                         },
                         "eco": {"eco": "on"},
                         "comfort": {"comfort_power_save": "on"},
-                        "sleep": {"comfort_sleep": "on"},
+                        # "sleep": {"comfort_sleep": "on"},
                         "boost": {"strong_wind": "on"}
                     },
                     "swing_modes": {
@@ -87,9 +87,9 @@ DEVICE_MAPPING = {
     },
     "22012227": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "prevent_straight_wind"}],
+        "queries": [{}],
         "centralized": ["power", "temperature", "small_temperature", "mode", "eco", "comfort_power_save",
-                        "comfort_sleep", "strong_wind", "wind_swing_lr", "wind_swing_ud", "wind_speed",
+                        "strong_wind", "wind_swing_lr", "wind_swing_ud", "wind_speed",
                         "ptc", "dry"],
         
         "entities": {
@@ -108,12 +108,12 @@ DEVICE_MAPPING = {
                         "none": {
                             "eco": "off",
                             "comfort_power_save": "off",
-                            "comfort_sleep": "off",
+                            # "comfort_sleep": "off",
                             "strong_wind": "off"
                         },
                         "eco": {"eco": "on"},
                         "comfort": {"comfort_power_save": "on"},
-                        "sleep": {"comfort_sleep": "on"},
+                        # "sleep": {"comfort_sleep": "on"},
                         "boost": {"strong_wind": "on"}
                     },
                     "swing_modes": {

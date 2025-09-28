@@ -256,7 +256,6 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if dict_config is None:
             return None
 
-        MideaLogger.debug(f"dict_config={dict_config}, rationale={rationale}, self.device_attributes={self.device_attributes} ")
         for key, config in dict_config.items():
             if isinstance(config, dict):
                 # Check if all conditions match

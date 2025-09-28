@@ -3,10 +3,13 @@ import time
 import datetime
 import json
 import base64
+import asyncio
+import requests
 from aiohttp import ClientSession
 from secrets import token_hex
 from .logger import MideaLogger
 from .security import CloudSecurity, MeijuCloudSecurity, MSmartCloudSecurity
+from .util import bytes_to_dec_string
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -100,6 +103,46 @@ class MideaCloud:
 
         return None
 
+    def _api_request_sync(self, endpoint: str, data: dict, header=None) -> dict | None:
+        header = header or {}
+        if not data.get("reqId"):
+            data.update({
+                "reqId": token_hex(16)
+            })
+        if not data.get("stamp"):
+            data.update({
+                "stamp":  datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            })
+        random = str(int(time.time()))
+        url = self._api_url + endpoint
+        dump_data = json.dumps(data)
+        sign = self._security.sign(dump_data, random)
+        header.update({
+            "content-type": "application/json; charset=utf-8",
+            "secretVersion": "1",
+            "sign": sign,
+            "random": random,
+        })
+        if self._access_token is not None:
+            header.update({
+                "accesstoken": self._access_token
+            })
+        response:dict = {"code": -1}
+        _LOGGER.debug(f"Midea cloud API header: {header}")
+        _LOGGER.debug(f"Midea cloud API dump_data: {dump_data}")
+        try:
+            r = requests.post(url, headers=header, data=dump_data, timeout=5)
+            raw = r.content
+            _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
+            response = json.loads(raw)
+        except Exception as e:
+            _LOGGER.debug(f"API request attempt failed: {e}")
+
+        if int(response["code"]) == 0 and "data" in response:
+            return response["data"]
+
+        return None
+
     async def _get_login_id(self) -> str | None:
         data = self._make_general_data()
         data.update({
@@ -115,27 +158,27 @@ class MideaCloud:
     async def login(self) -> bool:
         raise NotImplementedError()
 
-    async def get_keys(self, appliance_id: int):
-        result = {}
-        for method in [1, 2]:
-            udp_id = self._security.get_udp_id(appliance_id, method)
-            data = self._make_general_data()
-            data.update({
-                "udpid": udp_id
-            })
-            response = await self._api_request(
-                endpoint="/v1/iot/secure/getToken",
-                data=data
-            )
-            if response and "tokenlist" in response:
-                for token in response["tokenlist"]:
-                    if token["udpId"] == udp_id:
-                        result[method] = {
-                            "token": token["token"].lower(),
-                            "key": token["key"].lower()
-                        }
-        result.update(default_keys)
-        return result
+    async def send_cloud(self, appliance_id: int, data: bytearray):
+        appliance_code = str(appliance_id)
+        params = {
+            'applianceCode': appliance_code,
+            'order': self._security.aes_encrypt(bytes_to_dec_string(data)).hex(),
+            'timestamp': 'true',
+            "isFull": "false"
+        }
+
+        if response := await self._api_request(
+            endpoint='/v1/appliance/transparent/send',
+            data=params,
+        ):
+            if response and response.get('reply'):
+                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
+                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
+                return reply_data
+            else:
+                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
+
+        return None
 
     async def list_home(self) -> dict | None:
         return {1: "My home"}
