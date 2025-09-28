@@ -49,6 +49,15 @@
                 },
                 "title": "选项"
             },
+            "change_credentials": {
+                "title": "修改账号密码",
+                "description": "修改美的云账号的用户名和密码",
+                "data": {
+                    "account": "用户名",
+                    "password": "密码",
+                    "server": "服务器"
+                }
+            },
             "reset":{
                 "title": "重置配置文件",
                 "description": "移除已有的设备配置，并使用标准模板重新生成设备配置\n如果你的设备配置json文件进行过修改，重置之后修改将丢失\n如果标准模板中没有该设备类型，则不会生成设备配置",

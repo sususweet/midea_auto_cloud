@@ -49,6 +49,15 @@
                 },
                 "title": "Configure"
             },
+            "change_credentials": {
+                "title": "Change Credentials",
+                "description": "Change Midea cloud account's username and password",
+                "data": {
+                    "account": "Username",
+                    "password": "Password",
+                    "server": "Server"
+                }
+            },
             "reset":{
                 "title": "Reset the configuration of appliance",
                 "description": "Remove the old configuration and make a new configuration use template\nIf your configuration was modified, the changes will lost\nIf your appliance type or model not in template, then the new configuration won't be made",
