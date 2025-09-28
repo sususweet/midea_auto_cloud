@@ -245,6 +245,30 @@
             },
             "execute": {
                 "name": "执行"
+            },
+            "power": {
+                "name": "电源"
+            },
+            "humidify": {
+                "name": "加湿"
+            },
+            "swing": {
+                "name": "摆风"
+            },
+            "anion": {
+                "name": "负离子"
+            },
+            "display_on_off": {
+                "name": "显示开关"
+            },
+            "dust_reset": {
+                "name": "灰尘重置"
+            },
+            "temp_wind_switch": {
+                "name": "温风开关"
+            },
+            "filter_reset": {
+                "name": "滤网重置"
             }
         },
         "climate": {
@@ -467,6 +491,24 @@
             },
             "work_status": {
                 "name": "工作状态"
+            },
+            "voice": {
+                "name": "语音"
+            },
+            "swing_angle": {
+                "name": "摆风角度"
+            },
+            "swing_direction": {
+                "name": "摆风方向"
+            },
+            "scene": {
+                "name": "场景"
+            },
+            "sleep_sensor": {
+                "name": "睡眠传感器"
+            },
+            "gear": {
+                "name": "档位"
             }
         },
         "sensor": {
@@ -1168,6 +1210,57 @@
             },
             "cloudmenuid": {
                 "name": "云菜单ID"
+            },
+            "real_gear": {
+                "name": "实际档位"
+            },
+            "dust_life_time": {
+                "name": "灰尘寿命"
+            },
+            "filter_life_time": {
+                "name": "滤网寿命"
+            },
+            "battery_status": {
+                "name": "电池状态"
+            },
+            "battery_level": {
+                "name": "电池电量"
+            },
+            "temperature_feedback": {
+                "name": "温度反馈"
+            },
+            "water_feedback": {
+                "name": "水位反馈"
+            },
+            "timer_off_hour": {
+                "name": "定时关机小时"
+            },
+            "timer_off_minute": {
+                "name": "定时关机分钟"
+            },
+            "timer_on_hour": {
+                "name": "定时开机小时"
+            },
+            "timer_on_minute": {
+                "name": "定时开机分钟"
+            },
+            "pm25": {
+                "name": "PM2.5"
+            },
+            "ud_swing_angle": {
+                "name": "上下摆风角度"
+            },
+            "lr_diy_down_percent": {
+                "name": "左右自定义下百分比"
+            },
+            "lr_diy_up_percent": {
+                "name": "左右自定义上百分比"
+            },
+            "ud_diy_down_percent": {
+                "name": "上下自定义下百分比"
+            },
+            "ud_diy_up_percent": {
+                "name": "上下自定义上百分比"
             }
         },
         "switch": {

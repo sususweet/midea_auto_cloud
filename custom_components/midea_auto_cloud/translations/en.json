@@ -308,6 +308,24 @@
             },
             "work_status": {
                 "name": "Work Status"
+            },
+            "voice": {
+                "name": "Voice"
+            },
+            "swing_angle": {
+                "name": "Swing Angle"
+            },
+            "swing_direction": {
+                "name": "Swing Direction"
+            },
+            "scene": {
+                "name": "Scene"
+            },
+            "sleep_sensor": {
+                "name": "Sleep Sensor"
+            },
+            "gear": {
+                "name": "Gear"
             }
         },
         "sensor": {
@@ -1006,6 +1024,57 @@
             },
             "cloudmenuid": {
                 "name": "Cloud Menu ID"
+            },
+            "real_gear": {
+                "name": "Real Gear"
+            },
+            "dust_life_time": {
+                "name": "Dust Life Time"
+            },
+            "filter_life_time": {
+                "name": "Filter Life Time"
+            },
+            "battery_status": {
+                "name": "Battery Status"
+            },
+            "battery_level": {
+                "name": "Battery Level"
+            },
+            "temperature_feedback": {
+                "name": "Temperature Feedback"
+            },
+            "water_feedback": {
+                "name": "Water Feedback"
+            },
+            "timer_off_hour": {
+                "name": "Timer Off Hour"
+            },
+            "timer_off_minute": {
+                "name": "Timer Off Minute"
+            },
+            "timer_on_hour": {
+                "name": "Timer On Hour"
+            },
+            "timer_on_minute": {
+                "name": "Timer On Minute"
+            },
+            "pm25": {
+                "name": "PM2.5"
+            },
+            "ud_swing_angle": {
+                "name": "UD Swing Angle"
+            },
+            "lr_diy_down_percent": {
+                "name": "LR DIY Down Percent"
+            },
+            "lr_diy_up_percent": {
+                "name": "LR DIY Up Percent"
+            },
+            "ud_diy_down_percent": {
+                "name": "UD DIY Down Percent"
+            },
+            "ud_diy_up_percent": {
+                "name": "UD DIY Up Percent"
             }
         },
         "binary_sensor": {
@@ -1140,6 +1209,30 @@
             },
             "execute": {
                 "name": "Execute"
+            },
+            "power": {
+                "name": "Power"
+            },
+            "humidify": {
+                "name": "Humidify"
+            },
+            "swing": {
+                "name": "Swing"
+            },
+            "anion": {
+                "name": "Anion"
+            },
+            "display_on_off": {
+                "name": "Display On/Off"
+            },
+            "dust_reset": {
+                "name": "Dust Reset"
+            },
+            "temp_wind_switch": {
+                "name": "Temp Wind Switch"
+            },
+            "filter_reset": {
+                "name": "Filter Reset"
             }
         },
         "climate": {
