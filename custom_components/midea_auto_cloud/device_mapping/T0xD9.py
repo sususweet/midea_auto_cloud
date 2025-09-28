@@ -6,6 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": [0, 1],
+        "queries": [{}],
         "calculate": {
             "get": [
                 {

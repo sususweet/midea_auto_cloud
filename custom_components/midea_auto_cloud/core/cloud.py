@@ -347,6 +347,7 @@ class MeijuCloud(MideaCloud):
             "applianceMFCode": manufacturer_code,
             'version': "0",
             "iotAppId": self.APP_ID,
+            "modelNumber": model_number
         }
         fnm = None
         if response := await self._api_request(

@@ -5,6 +5,7 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": [0, 1],
+        "queries": [{}],
         "calculate": {
             "get": [
                 {
@@ -96,6 +97,7 @@ DEVICE_MAPPING = {
     },
     "61001527": {
         "rationale": [0, 1],
+        "queries": [{}],
         "calculate": {
             "get": [
                 {

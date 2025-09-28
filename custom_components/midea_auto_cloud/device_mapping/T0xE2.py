@@ -33,7 +33,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.WATER_HEATER: {
                 "water_heater": {
-                    "name": "Water Heater",
                     "power": "power",
                     "operation_list": {
                         "off": {"power": "off"},
