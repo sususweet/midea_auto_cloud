@@ -140,8 +140,13 @@ class MiedaDevice(threading.Thread):
             for attr in self._centralized:
                 new_status[attr] = self._attributes.get(attr)
             new_status[attribute] = value
-            if set_cmd := self._lua_runtime.build_control(new_status):
-                await self._build_send(set_cmd)
+            try:
+                if set_cmd := self._lua_runtime.build_control(new_status):
+                    await self._build_send(set_cmd)
+            except Exception as e:
+                cloud = self._cloud
+                if cloud and hasattr(cloud, "send_device_control"):
+                    await cloud.send_device_control(self._device_id, control=new_status, status=self._attributes)
 
     async def set_attributes(self, attributes):
         new_status = {}
@@ -153,8 +158,13 @@ class MiedaDevice(threading.Thread):
                 has_new = True
                 new_status[attribute] = value
         if has_new:
-            if set_cmd := self._lua_runtime.build_control(new_status):
-                await self._build_send(set_cmd)
+            try:
+                if set_cmd := self._lua_runtime.build_control(new_status):
+                    await self._build_send(set_cmd)
+            except Exception as e:
+                cloud = self._cloud
+                if cloud and hasattr(cloud, "send_device_control"):
+                    await cloud.send_device_control(self._device_id, control=new_status, status=self._attributes)
 
     def set_ip_address(self, ip_address):
         MideaLogger.debug(f"Update IP address to {ip_address}")

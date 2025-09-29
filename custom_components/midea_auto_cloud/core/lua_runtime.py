@@ -6,7 +6,7 @@ from .logger import MideaLogger
 
 class LuaRuntime:
     def __init__(self, file):
-        self._runtimes = lupa.LuaRuntime()
+        self._runtimes = lupa.lua51.LuaRuntime()
         string = f'dofile("{file}")'
         self._runtimes.execute(string)
         self._lock = threading.Lock()
