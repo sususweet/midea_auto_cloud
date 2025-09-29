@@ -1,14 +1,23 @@
 from homeassistant.components.water_heater import WaterHeaterEntity, WaterHeaterEntityFeature
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     Platform,
     ATTR_TEMPERATURE
 )
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
 from .const import DOMAIN
 from .midea_entity import MideaEntity
 from . import load_device_config
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up water heater entities for Midea devices."""
     account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
     if not account_bucket:
         async_add_entities([])
@@ -51,30 +60,6 @@ class MideaWaterHeaterEntityEntity(MideaEntity, WaterHeaterEntity):
         self._manufacturer = manufacturer
         self._rationale = rationale
         self._config = config
-        # Legacy compatibility: register update and restore display attributes
-        if self._device:
-            self._device.register_update(self.update_state)
-        if (rationale_local := self._config.get("rationale")) is not None:
-            self._rationale = rationale_local
-        if self._rationale is None:
-            self._rationale = ["off", "on"]
-        self._attr_native_unit_of_measurement = self._config.get("unit_of_measurement")
-        self._attr_device_class = self._config.get("device_class")
-        self._attr_state_class = self._config.get("state_class")
-        self._attr_icon = self._config.get("icon")
-        from .const import DOMAIN as _DOMAIN
-        self._attr_unique_id = f"{_DOMAIN}.{self._device.device_id}_{self._entity_key}"
-        self._attr_device_info = {
-            "manufacturer": "Midea" if self._manufacturer is None else self._manufacturer,
-            "model": f"{self._device.model}",
-            "identifiers": {( _DOMAIN, self._device.device_id)},
-            "name": self._device.device_name
-        }
-        name = self._config.get("name")
-        if name is None:
-            name = self._entity_key.replace("_", " ").title()
-        self._attr_name = f"{self._device.device_name} {name}"
-        self.entity_id = self._attr_unique_id
         self._key_power = self._config.get("power")
         self._key_operation_list = self._config.get("operation_list")
         self._key_min_temp = self._config.get("min_temp")
@@ -166,10 +151,4 @@ class MideaWaterHeaterEntityEntity(MideaEntity, WaterHeaterEntity):
         new_status = self._key_operation_list.get(operation_mode)
         if new_status:
             await self.async_set_attributes(new_status)
-
-    def update_state(self, status):
-        try:
-            self.schedule_update_ha_state()
-        except Exception:
-            pass
 

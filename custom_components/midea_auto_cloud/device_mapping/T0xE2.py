@@ -50,46 +50,13 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
-                "music": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "ti_protect": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "fast_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "ali_manager": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "ele_exception": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "communication_error": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "eplus": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "summer": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "winter": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "efficient": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "night": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "bath_person": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "cloud": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "bath": {
@@ -101,85 +68,10 @@ DEVICE_MAPPING = {
                 "whole_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "sterilization": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "frequency_hot": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "scene": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "big_water": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "negative_ions": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "screen_off": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "t_hot": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "baby_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "dad_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "mom_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "wash_with_temp": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "single_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "people_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "one_egg": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "two_egg": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "always_fell": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "smart_sterilize": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "sound_dad": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "door_status": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "limit_error": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "sensor_error": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "auto_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "clean": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "cloud_appoint": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "protect": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "midea_manager": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "sleep": {
@@ -189,9 +81,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "shower": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "scroll_hot": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "fast_hot_power": {
@@ -206,54 +95,12 @@ DEVICE_MAPPING = {
                 "water_flow": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "appoint_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "now_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "get_time": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "get_temp": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "warm_power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "sterilize_high_temp": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "bottom_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "top_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "show_h": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "uv_sterilize": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "need_discharge": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "elec_warning": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "water_cyclic": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "tech_water": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "protect_show": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "appoint_power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                }
             },
             Platform.SELECT: {
                 "mode": {
@@ -365,20 +212,9 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "version": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
                 "tds_value": {
                     "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "ppm",
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "scene_id": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "volume": {
-                    "device_class": SensorDeviceClass.SOUND_PRESSURE,
-                    "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "heat_water_level": {

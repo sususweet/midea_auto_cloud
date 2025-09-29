@@ -131,16 +131,16 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
     cjson = os.getcwd() + "/cjson.lua"
     bit = os.getcwd() + "/bit.lua"
-    if not os.path.exists(cjson):
-        from .const import CJSON_LUA
-        cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
-        with open(cjson, "wt") as fp:
-            fp.write(cjson_lua)
-    if not os.path.exists(bit):
-        from .const import BIT_LUA
-        bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
-        with open(bit, "wt") as fp:
-            fp.write(bit_lua)
+    # if not os.path.exists(cjson):
+    from .const import CJSON_LUA
+    cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
+    with open(cjson, "wt") as fp:
+        fp.write(cjson_lua)
+    # if not os.path.exists(bit):
+    from .const import BIT_LUA
+    bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
+    with open(bit, "wt") as fp:
+        fp.write(bit_lua)
     return True
 
 

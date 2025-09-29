@@ -5,7 +5,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from . import load_device_config
 
