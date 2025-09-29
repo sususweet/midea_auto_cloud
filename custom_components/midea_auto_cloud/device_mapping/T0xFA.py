@@ -107,7 +107,7 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "real_gear": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "dust_life_time": {
@@ -130,7 +130,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_code": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "temperature_feedback": {
@@ -139,7 +139,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "water_feedback": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "timer_off_hour": {
@@ -163,7 +163,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "version": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "pm25": {
@@ -172,26 +172,26 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ud_swing_angle": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "lr_diy_down_percent": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "lr_diy_up_percent": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ud_diy_down_percent": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ud_diy_up_percent": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 }

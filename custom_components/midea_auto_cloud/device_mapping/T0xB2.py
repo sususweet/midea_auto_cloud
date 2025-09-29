@@ -127,19 +127,19 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "people_number": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.DATA_RATE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "steam_quantity": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "totalstep": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "stepnum": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "hour_set": {
@@ -158,23 +158,23 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ota": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_code": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "version": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "cbs_version": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "cloudmenuid": {
-                    "device_class": SensorDeviceClass.NONE,
+                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }

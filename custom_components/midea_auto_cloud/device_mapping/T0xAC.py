@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{}, {"query_type":"run_status"}],
         "centralized": [
             "power", "temperature", "small_temperature", "mode", "eco",
             "comfort_power_save", "strong_wind",
@@ -77,11 +77,11 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "outdoor_temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
-                },
+                }
             }
         }
     },
@@ -155,8 +155,12 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
                 "outdoor_temperature": {
-                    "name": "室外机温度",
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
