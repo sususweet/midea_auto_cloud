@@ -19,3 +19,5 @@ CONF_SERVERS = {
     1: "MSmartHome",
     2: "美的美居",
 }
+CONF_HOMES = "homes"
+CONF_SELECTED_HOMES = "selected_homes"

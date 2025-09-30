@@ -2,6 +2,8 @@
     "config": {
         "error": {
             "no_home": "No available home",
+            "no_homes": "No available homes",
+            "no_homes_selected": "Please select at least one home",
             "account_invalid": "Failed to authenticate on Midea cloud, the password may be changed",
             "invalid_input": "Illegal input, IP address or 'auto' needed",
             "login_failed": "Failed to login, wrong account or password",
@@ -37,6 +39,13 @@
                 "title": "Appliance info",
                 "data": {
                     "ip_address": "IP address('auto' for discovery automatic)"
+                }
+            },
+            "select_homes": {
+                "title": "Select Homes",
+                "description": "Select the homes to add devices from, all selected by default",
+                "data": {
+                    "selected_homes": "Select Homes"
                 }
             }
         }

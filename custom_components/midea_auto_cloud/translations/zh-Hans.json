@@ -2,6 +2,8 @@
     "config": {
         "error": {
             "no_home": "未找到可用家庭",
+            "no_homes": "未找到可用家庭",
+            "no_homes_selected": "请至少选择一个家庭",
             "account_invalid": "登录美的云服务器失败，是否已修改过密码",
             "invalid_input": "无效的输入，请输入有效IP地址或auto",
             "login_failed": "无法登录到选择的美的云服务器，请检查用户名或密码",
@@ -37,6 +39,13 @@
                 "title": "设备信息",
                 "data": {
                     "ip_address": "设备地址(输入auto自动搜索设备)"
+                }
+            },
+            "select_homes": {
+                "title": "选择家庭",
+                "description": "选择要添加设备的家庭，默认全选",
+                "data": {
+                    "selected_homes": "选择家庭"
                 }
             }
         }

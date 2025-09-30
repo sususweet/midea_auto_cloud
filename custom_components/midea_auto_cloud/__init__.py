@@ -41,7 +41,8 @@ from .const import (
     CONF_SN8,
     CONF_SN,
     CONF_MODEL_NUMBER,
-    CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE
+    CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE,
+    CONF_SELECTED_HOMES
 )
 # 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
 from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
@@ -169,7 +170,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 hass.data.setdefault(DOMAIN, {})
                 hass.data[DOMAIN].setdefault("accounts", {})
                 bucket = {"device_list": {}, "coordinator_map": {}}
-                home_ids = list(homes.keys())
+                
+                # 获取用户选择的家庭ID列表
+                selected_homes = config_entry.data.get(CONF_SELECTED_HOMES, [])
+                MideaLogger.debug(f"Selected homes from config: {selected_homes}")
+                MideaLogger.debug(f"Available homes keys: {list(homes.keys())}")
+                if not selected_homes:
+                    # 如果没有选择，默认使用所有家庭
+                    home_ids = list(homes.keys())
+                else:
+                    # 只处理用户选择的家庭，确保类型匹配
+                    home_ids = []
+                    for selected_home in selected_homes:
+                        # 尝试匹配字符串和数字类型的home_id
+                        if selected_home in homes:
+                            home_ids.append(selected_home)
+                        elif str(selected_home) in homes:
+                            home_ids.append(str(selected_home))
+                        elif int(selected_home) in homes:
+                            home_ids.append(int(selected_home))
+                MideaLogger.debug(f"Final home_ids to process: {home_ids}")
 
                 for home_id in home_ids:
                     appliances = await cloud.list_appliances(home_id)

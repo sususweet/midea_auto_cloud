@@ -162,7 +162,6 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         """Set boolean attribute via coordinator, no-op if key is None."""
         if attribute_key is None:
             return
-        MideaLogger.error(f"self._rationale: {self._rationale}, {int(turn_on)}")
         await self.async_set_attribute(attribute_key, self._rationale[int(turn_on)])
 
     def _list_get_selected(self, key_of_list: list, rationale: Rationale = Rationale.EQUALLY):
