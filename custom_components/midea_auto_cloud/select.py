@@ -44,10 +44,6 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
         self._key_options = self._config.get("options")
 
     @property

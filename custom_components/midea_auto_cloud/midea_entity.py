@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from enum import IntEnum
 from typing import Any
 
 from homeassistant.helpers.debounce import Debouncer
@@ -16,6 +17,10 @@ from .data_coordinator import MideaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
+class Rationale(IntEnum):
+    EQUALLY = 0
+    GREATER = 1
+    LESS = 2
 
 class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     """Base class for Midea entities."""
@@ -61,6 +66,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             self._attr_unique_id = f"{DOMAIN}.{self._device_id}_{self._entity_key}"
             self.entity_id_base = f"midea_{self._device_id}"
             manu = "Midea" if manufacturer is None else manufacturer
+            self.manufacturer = manu
             self._attr_device_info = DeviceInfo(
                 identifiers={(DOMAIN, str(self._device_id))},
                 model=self._model,
@@ -140,78 +146,65 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
         Accepts common truthy representations: True/1/"on"/"true".
         """
+        result = False
         if attribute_key is None:
-            return False
-        value = self.device_attributes.get(attribute_key)
-        if isinstance(value, bool):
-            return value
-        return value in (1, "1", "on", "ON", "true", "TRUE")
+            return result
+        status = self.device_attributes.get(attribute_key)
+        if status is not None:
+            try:
+                result = bool(self._rationale.index(status))
+            except ValueError:
+                MideaLogger.error(f"The value of attribute {attribute_key} ('{status}') "
+                                  f"is not in rationale {self._rationale}")
+        return result
 
     async def _async_set_status_on_off(self, attribute_key: str | None, turn_on: bool) -> None:
         """Set boolean attribute via coordinator, no-op if key is None."""
         if attribute_key is None:
             return
-        await self.async_set_attribute(attribute_key, bool(turn_on))
+        MideaLogger.error(f"self._rationale: {self._rationale}, {int(turn_on)}")
+        await self.async_set_attribute(attribute_key, self._rationale[int(turn_on)])
 
-    def _list_get_selected(self, options: list[dict] | None, rationale: object = None) -> int | None:
-        """Select index from a list of dict conditions matched against attributes.
-
-        The optional rationale supports equality/greater/less matching. It can be
-        a string name ("EQUALLY"/"GREATER"/"LESS") or an Enum with .name.
-        """
-        if not options:
-            return None
-
-        rationale_name = getattr(rationale, "name", None) or rationale or "EQUALLY"
-        for index in range(0, len(options)):
+    def _list_get_selected(self, key_of_list: list, rationale: Rationale = Rationale.EQUALLY):
+        for index in range(0, len(key_of_list)):
             match = True
-            for attr, expected in options[index].items():
-                current = self.device_attributes.get(attr)
-                if current is None:
+            for attr, value in key_of_list[index].items():
+                state_value = self.device_attributes.get(attr)
+                if state_value is None:
                     match = False
                     break
-                if rationale_name == "EQUALLY" and current != expected:
+                if rationale is Rationale.EQUALLY and state_value != value:
                     match = False
                     break
-                if rationale_name == "GREATER" and current < expected:
+                if rationale is Rationale.GREATER and state_value < value:
                     match = False
                     break
-                if rationale_name == "LESS" and current > expected:
+                if rationale is Rationale.LESS and state_value > value:
                     match = False
                     break
             if match:
                 return index
         return None
 
-    def _dict_get_selected(self, mapping: dict | None, rationale: object = None):
-        """Return key from a dict whose value (a condition dict) matches attributes.
-
-        The optional rationale supports equality/greater/less matching. It can be
-        a string name ("EQUALLY"/"GREATER"/"LESS") or an Enum with .name.
-        """
-        if not mapping:
-            return None
-        rationale_name = getattr(rationale, "name", None) or rationale or "EQUALLY"
-        for key, conditions in mapping.items():
-            if not isinstance(conditions, dict):
-                continue
+    def _dict_get_selected(self, key_of_dict: dict, rationale: Rationale = Rationale.EQUALLY):
+        for mode, status in key_of_dict.items():
             match = True
-            for attr, expected in conditions.items():
-                current = self.device_attributes.get(attr)
-                if current is None:
+            for attr, value in status.items():
+                state_value = self.device_attributes.get(attr)
+                if state_value is None:
                     match = False
                     break
-                if rationale_name == "EQUALLY" and current != expected:
+                if rationale is Rationale.EQUALLY and state_value != value:
                     match = False
                     break
-                if rationale_name == "GREATER" and current <= expected:
+                if rationale is Rationale.GREATER and state_value < value:
                     match = False
                     break
-                if rationale_name == "LESS" and current >= expected:
+                if rationale is Rationale.LESS and state_value > value:
                     match = False
                     break
             if match:
-                return key
+                return mode
         return None
 
     async def publish_command_from_current_state(self) -> None:

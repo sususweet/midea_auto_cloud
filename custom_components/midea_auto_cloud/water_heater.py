@@ -56,10 +56,6 @@ class MideaWaterHeaterEntityEntity(MideaEntity, WaterHeaterEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
         self._key_power = self._config.get("power")
         self._key_operation_list = self._config.get("operation_list")
         self._key_min_temp = self._config.get("min_temp")

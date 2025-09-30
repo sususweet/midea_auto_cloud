@@ -1075,6 +1075,18 @@
             },
             "ud_diy_up_percent": {
                 "name": "UD DIY Up Percent"
+            },
+            "water_consumption_ml": {
+                "name": "Water Consumption (ml)"
+            },
+            "cool_target_temperature": {
+                "name": "Cool Target Temperature"
+            },
+            "keep_warm_time": {
+                "name": "Keep Warm Time"
+            },
+            "warm_left_time": {
+                "name": "Warm Left Time"
             }
         },
         "binary_sensor": {
@@ -1233,6 +1245,12 @@
             },
             "filter_reset": {
                 "name": "Filter Reset"
+            },
+            "heat_status": {
+                "name": "Heat Status"
+            },
+            "standby_status": {
+                "name": "Standby Status"
             }
         },
         "climate": {
@@ -1978,6 +1996,24 @@
             },
             "unfreeze_power": {
                 "name": "Unfreeze Power"
+            },
+            "heat_start": {
+                "name": "Heat Start"
+            },
+            "keep_warm": {
+                "name": "Keep Warm"
+            },
+            "vacation": {
+                "name": "Vacation Mode"
+            },
+            "germicidal": {
+                "name": "Germicidal"
+            },
+            "drainage": {
+                "name": "Drainage"
+            },
+            "wash_enable": {
+                "name": "Wash Enable"
             }
         }
     }

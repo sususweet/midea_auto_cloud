@@ -57,10 +57,6 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
 
     @property
     def native_value(self):

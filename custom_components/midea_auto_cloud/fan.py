@@ -44,10 +44,6 @@ class MideaFanEntity(MideaEntity, FanEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
         self._key_power = self._config.get("power")
         self._key_preset_modes = self._config.get("preset_modes")
         self._key_speeds = self._config.get("speeds")

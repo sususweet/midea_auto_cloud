@@ -269,6 +269,12 @@
             },
             "filter_reset": {
                 "name": "滤网重置"
+            },
+            "heat_status": {
+                "name": "加热状态"
+            },
+            "standby_status": {
+                "name": "待机状态"
             }
         },
         "climate": {
@@ -1261,6 +1267,18 @@
             },
             "ud_diy_up_percent": {
                 "name": "上下自定义上百分比"
+            },
+            "water_consumption_ml": {
+                "name": "用水量(毫升)"
+            },
+            "cool_target_temperature": {
+                "name": "制冷目标温度"
+            },
+            "keep_warm_time": {
+                "name": "保温时间"
+            },
+            "warm_left_time": {
+                "name": "剩余加热时间"
             }
         },
         "switch": {
@@ -1983,6 +2001,24 @@
             },
             "unfreeze_power": {
                 "name": "解冻电源"
+            },
+            "heat_start": {
+                "name": "加热启动"
+            },
+            "keep_warm": {
+                "name": "保温"
+            },
+            "vacation": {
+                "name": "度假模式"
+            },
+            "germicidal": {
+                "name": "杀菌"
+            },
+            "drainage": {
+                "name": "排水"
+            },
+            "wash_enable": {
+                "name": "洗涤启用"
             }
         }
     }

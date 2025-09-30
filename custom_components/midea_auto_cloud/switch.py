@@ -58,24 +58,16 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
-
 
     @property
     def is_on(self) -> bool:
         """Return if the switch is on."""
-        value = self.device_attributes.get(self._entity_key)
-        if isinstance(value, bool):
-            return value
-        return value == 1 or value == "on" or value == "true"
+        return self._get_status_on_off(self._entity_key)
 
     async def async_turn_on(self):
         """Turn the switch on."""
-        await self.async_set_attribute(self._entity_key, True)
+        await self._async_set_status_on_off(self._entity_key, True)
 
     async def async_turn_off(self):
         """Turn the switch off."""
-        await self.async_set_attribute(self._entity_key, False)
+        await self._async_set_status_on_off(self._entity_key, False)

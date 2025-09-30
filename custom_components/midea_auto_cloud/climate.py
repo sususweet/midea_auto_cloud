@@ -13,7 +13,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from . import load_device_config
 
@@ -66,10 +65,6 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._config = config
         self._key_power = self._config.get("power")
         self._key_hvac_modes = self._config.get("hvac_modes")
         self._key_preset_modes = self._config.get("preset_modes")

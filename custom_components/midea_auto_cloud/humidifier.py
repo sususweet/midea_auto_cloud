@@ -61,11 +61,6 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
             rationale=rationale,
             config=config,
         )
-        self._device = device
-        self._manufacturer = manufacturer
-        self._rationale = rationale
-        self._entity_key = entity_key
-        self._config = config
 
     @property
     def device_class(self):
