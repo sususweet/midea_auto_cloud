@@ -77,7 +77,7 @@ class MiedaDevice(threading.Thread):
         self._centralized = []
         self._calculate_get = []
         self._calculate_set = []
-        self._lua_runtime = MideaCodec(lua_file, sn=sn, subtype=subtype) if lua_file is not None else None
+        self._lua_runtime = MideaCodec(lua_file, device_type=self._attributes.get("device_type"), sn=sn, subtype=subtype) if lua_file is not None else None
         self._cloud = cloud
 
     @property

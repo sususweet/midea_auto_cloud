@@ -335,6 +335,15 @@
             },
             "gear": {
                 "name": "Gear"
+            },
+            "detergent": {
+                "name": "Detergent"
+            },
+            "softener": {
+                "name": "Softener"
+            },
+            "temperature": {
+                "name": "Temperature"
             }
         },
         "sensor": {

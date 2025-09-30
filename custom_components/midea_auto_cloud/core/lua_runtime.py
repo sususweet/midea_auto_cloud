@@ -26,8 +26,9 @@ class LuaRuntime:
 
 
 class MideaCodec(LuaRuntime):
-    def __init__(self, file, sn=None, subtype=None):
+    def __init__(self, file, device_type=None, sn=None, subtype=None):
         super().__init__(file)
+        self._device_type = device_type
         self._sn = sn
         self._subtype = subtype
 
@@ -56,9 +57,21 @@ class MideaCodec(LuaRuntime):
     def build_control(self, append=None):
         query_dict = self._build_base_dict()
         query_dict["control"] = {} if append is None else append
+        # 针对T0xD9复式洗衣机特殊处理
+        if self._device_type == "T0xD9":
+            control_keys = list(append.keys())
+            if len(control_keys) > 0:
+                # 从第一个键名中提取前缀，例如从 'db_power' 中提取 'db'
+                first_key = control_keys[0]
+                prefix = first_key.split("_")[0]
+                query_dict["control"]["bucket"] = prefix
+            else:
+                query_dict["control"]["bucket"] = "db"
         json_str = json.dumps(query_dict)
+        MideaLogger.debug(f"LuaRuntime json_str {json_str}")
         try:
             result = self.json_to_data(json_str)
+            MideaLogger.debug(f"LuaRuntime Result {result}")
             return result
         except lupa.LuaError as e:
             MideaLogger.error(f"LuaRuntimeError in build_control {json_str}: {repr(e)}")

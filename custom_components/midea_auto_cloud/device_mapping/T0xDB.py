@@ -5,7 +5,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
     "default": {
-        "rationale": [0, 1],
+        "rationale": ["off", "on"],
         "queries": [{}],
         "calculate": {
             "get": [
@@ -18,10 +18,12 @@ DEVICE_MAPPING = {
             }
         },
         "entities": {
-            Platform.SWITCH: {
+            Platform.BINARY_SENSOR: {
                 "power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
+                    "device_class": BinarySensorDeviceClass.RUNNING,
                 },
+            },
+            Platform.SWITCH: {
                 "softener_lack": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -66,6 +68,7 @@ DEVICE_MAPPING = {
                 },
                 "silent": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
                 },
                 "speedy": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -108,151 +111,218 @@ DEVICE_MAPPING = {
                 },
                 "ultraviolet_lamp": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
                 },
                 "eye_wash": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
                 },
                 "microbubble": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
                 },
                 "wind_dispel": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
                 },
                 "cycle_memory": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                }
+                },
+                "disinfectant": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                },
+                "add_rinse": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                },
             },
             Platform.SELECT: {
                 "running_status": {
                     "options": {
-                        "standby": {"running_status": "standby"},
-                        "running": {"running_status": "running"},
-                        "pause": {"running_status": "pause"},
-                        "finish": {"running_status": "finish"},
-                        "error": {"running_status": "error"}
+                        "off": {"power": "off", "running_status": "off"},
+                        "standby": {"power": "on", "running_status": "standby"},
+                        "start": {"power": "on", "running_status": "start"},
+                        "pause": {"power": "on", "running_status": "pause"},
+                        "end": {"power": "on", "running_status": "end"},
+                        "fault": {"power": "on", "running_status": "fault"},
+                        "delay": {"power": "on", "running_status": "delay"}
                     }
                 },
-                "db_dehydration_speed": {
+                "dehydration_speed": {
                     "options": {
-                        "low": {"db_dehydration_speed": "1"},
-                        "medium": {"db_dehydration_speed": "2"},
-                        "high": {"db_dehydration_speed": "3"},
-                        "extra_high": {"db_dehydration_speed": "4"}
+                        "0": {"dehydration_speed": "0"},
+                        "400": {"dehydration_speed": "400"},
+                        "600": {"dehydration_speed": "600"},
+                        "800": {"dehydration_speed": "800"},
+                        "1000": {"dehydration_speed": "1000"},
+                        "1200": {"dehydration_speed": "1200"},
+                        "1400": {"dehydration_speed": "1400"},
+                        "1600": {"dehydration_speed": "1600"},
+                        "1300": {"dehydration_speed": "1300"}
                     }
                 },
                 "mode": {
                     "options": {
                         "normal": {"mode": "normal"},
-                        "eco": {"mode": "eco"},
-                        "quick": {"mode": "quick"},
-                        "heavy": {"mode": "heavy"},
-                        "delicate": {"mode": "delicate"}
+                        "factory_test": {"mode": "factory_test"},
+                        "service": {"mode": "service"},
+                        "normal_continus": {"mode": "normal_continus"}
                     }
                 },
                 "water_level": {
                     "options": {
                         "low": {"water_level": "low"},
-                        "medium": {"water_level": "medium"},
+                        "medium": {"water_level": "mid"},
                         "high": {"water_level": "high"},
-                        "extra_high": {"water_level": "extra_high"}
+                        "auto": {"water_level": "auto"}
                     }
                 },
                 "program": {
                     "options": {
-                        "ssp": {"program": "ssp"},
                         "cotton": {"program": "cotton"},
-                        "synthetic": {"program": "synthetic"},
+                        "eco": {"program": "eco"},
+                        "fast_wash": {"program": "fast_wash"},
+                        "mixed_wash": {"program": "mixed_wash"},
                         "wool": {"program": "wool"},
-                        "delicate": {"program": "delicate"},
-                        "quick": {"program": "quick"}
+                        "ssp": {"program": "ssp"},
+                        "sport_clothes": {"program": "sport_clothes"},
+                        "single_dehytration": {"program": "single_dehytration"},
+                        "rinsing_dehydration": {"program": "rinsing_dehydration"},
+                        "big": {"program": "big"},
+                        "baby_clothes": {"program": "baby_clothes"},
+                        "down_jacket": {"program": "down_jacket"},
+                        "color": {"program": "color"},
+                        "intelligent": {"program": "intelligent"},
+                        "quick_wash": {"program": "quick_wash"},
+                        "shirt": {"program": "shirt"},
+                        "fiber": {"program": "fiber"},
+                        "enzyme": {"program": "enzyme"},
+                        "underwear": {"program": "underwear"},
+                        "outdoor": {"program": "outdoor"},
+                        "air_wash": {"program": "air_wash"},
+                        "single_drying": {"program": "single_drying"},
+                        "steep": {"program": "steep"},
+                        "kids": {"program": "kids"},
+                        "water_cotton": {"program": "water_cotton"},
+                        "fast_wash_30": {"program": "fast_wash_30"},
+                        "fast_wash_60": {"program": "fast_wash_60"},
+                        "water_mixed_wash": {"program": "water_mixed_wash"},
+                        "water_fiber": {"program": "water_fiber"},
+                        "water_kids": {"program": "water_kids"},
+                        "water_underwear": {"program": "water_underwear"},
+                        "specialist": {"program": "specialist"},
+                        "love": {"program": "love"},
+                        "water_intelligent": {"program": "water_intelligent"},
+                        "water_steep": {"program": "water_steep"},
+                        "water_fast_wash_30": {"program": "water_fast_wash_30"},
+                        "new_water_cotton": {"program": "new_water_cotton"},
+                        "water_eco": {"program": "water_eco"},
+                        "wash_drying_60": {"program": "wash_drying_60"},
+                        "self_wash_5": {"program": "self_wash_5"},
+                        "fast_wash_min": {"program": "fast_wash_min"},
+                        "mixed_wash_min": {"program": "mixed_wash_min"},
+                        "dehydration_min": {"program": "dehydration_min"},
+                        "self_wash_min": {"program": "self_wash_min"},
+                        "baby_clothes_min": {"program": "baby_clothes_min"},
+                        "diy0": {"program": "diy0"},
+                        "diy1": {"program": "diy1"},
+                        "diy2": {"program": "diy2"},
+                        "silk_wash": {"program": "silk_wash"},
+                        "prevent_allergy": {"program": "prevent_allergy"},
+                        "cold_wash": {"program": "cold_wash"},
+                        "soft_wash": {"program": "soft_wash"},
+                        "remove_mite_wash": {"program": "remove_mite_wash"},
+                        "water_intense_wash": {"program": "water_intense_wash"},
+                        "fast_dry": {"program": "fast_dry"},
+                        "water_outdoor": {"program": "water_outdoor"},
+                        "spring_autumn_wash": {"program": "spring_autumn_wash"},
+                        "summer_wash": {"program": "summer_wash"},
+                        "winter_wash": {"program": "winter_wash"},
+                        "jean": {"program": "jean"},
+                        "new_clothes_wash": {"program": "new_clothes_wash"},
+                        "silk": {"program": "silk"},
+                        "insight_wash": {"program": "insight_wash"},
+                        "fitness_clothes": {"program": "fitness_clothes"},
+                        "mink": {"program": "mink"},
+                        "fresh_air": {"program": "fresh_air"},
+                        "bucket_dry": {"program": "bucket_dry"},
+                        "jacket": {"program": "jacket"},
+                        "bath_towel": {"program": "bath_towel"},
+                        "night_fresh_wash": {"program": "night_fresh_wash"},
+                        "heart_wash": {"program": "heart_wash"},
+                        "water_cold_wash": {"program": "water_cold_wash"},
+                        "water_prevent_allergy": {"program": "water_prevent_allergy"},
+                        "water_remove_mite_wash": {"program": "water_remove_mite_wash"},
+                        "water_ssp": {"program": "water_ssp"},
+                        "standard": {"program": "standard"},
+                        "green_wool": {"program": "green_wool"},
+                        "cook_wash": {"program": "cook_wash"},
+                        "fresh_remove_wrinkle": {"program": "fresh_remove_wrinkle"},
+                        "steam_sterilize_wash": {"program": "steam_sterilize_wash"},
+                        "aromatherapy": {"program": "aromatherapy"},
+                        "sterilize_wash": {"program": "sterilize_wash"},
+                        "white_clothes_clean": {"program": "white_clothes_clean"},
+                        "clean_stains": {"program": "clean_stains"},
+                        "tube_clean_all": {"program": "tube_clean_all"},
+                        "no_channeling_color": {"program": "no_channeling_color"},
+                        "scald_wash": {"program": "scald_wash"},
+                        "hanfu_spring_summer": {"program": "hanfu_spring_summer"},
+                        "hanfu_autumn_winter": {"program": "hanfu_autumn_winter"},
+                        "skin_care_wash": {"program": "skin_care_wash"},
+                        "hanfu_wash": {"program": "hanfu_wash"}
                     }
                 },
                 "temperature": {
                     "options": {
-                        "cold": {"temperature": "cold"},
-                        "warm": {"temperature": "warm"},
-                        "hot": {"temperature": "hot"},
-                        "extra_hot": {"temperature": "extra_hot"}
-                    }
-                },
-                "detergent_density": {
-                    "options": {
-                        "low": {"detergent_density": "low"},
-                        "medium": {"detergent_density": "medium"},
-                        "high": {"detergent_density": "high"},
-                        "extra_high": {"detergent_density": "extra_high"}
-                    }
-                },
-                "softener_density": {
-                    "options": {
-                        "low": {"softener_density": "low"},
-                        "medium": {"softener_density": "medium"},
-                        "high": {"softener_density": "high"},
-                        "extra_high": {"softener_density": "extra_high"}
+                        "0": {"temperature": "0"},
+                        "20": {"temperature": "20"},
+                        "30": {"temperature": "30"},
+                        "40": {"temperature": "40"},
+                        "50": {"temperature": "50"},
+                        "60": {"temperature": "60"},
+                        "70": {"temperature": "70"},
+                        "90": {"temperature": "90"},
+                        "95": {"temperature": "95"}
                     }
                 },
                 "detergent": {
                     "options": {
-                        "none": {"detergent": "none"},
-                        "little": {"detergent": "little"},
-                        "normal": {"detergent": "normal"},
-                        "more": {"detergent": "more"}
+                        "0": {"detergent": "0"},
+                        "1": {"detergent": "1"},
+                        "2": {"detergent": "2"},
+                        "3": {"detergent": "3"},
+                        "4": {"detergent": "4"},
+                        "5": {"detergent": "5"}
                     }
                 },
                 "softener": {
                     "options": {
-                        "none": {"softener": "none"},
-                        "little": {"softener": "little"},
-                        "normal": {"softener": "normal"},
-                        "more": {"softener": "more"}
-                    }
-                },
-                "season": {
-                    "options": {
-                        "spring": {"season": "spring"},
-                        "summer": {"season": "summer"},
-                        "autumn": {"season": "autumn"},
-                        "winter": {"season": "winter"}
-                    }
-                },
-                "disinfectant": {
-                    "options": {
-                        "none": {"disinfectant": "none"},
-                        "light": {"disinfectant": "light"},
-                        "medium": {"disinfectant": "medium"},
-                        "strong": {"disinfectant": "strong"}
+                        "0": {"softener": "0"},
+                        "1": {"softener": "1"},
+                        "2": {"softener": "2"},
+                        "3": {"softener": "3"},
+                        "4": {"softener": "4"},
+                        "5": {"softener": "5"}
                     }
                 },
                 "dirty_degree": {
                     "options": {
-                        "light": {"dirty_degree": "light"},
-                        "medium": {"dirty_degree": "medium"},
-                        "heavy": {"dirty_degree": "heavy"},
-                        "extra_heavy": {"dirty_degree": "extra_heavy"}
-                    }
-                },
-                "stains": {
-                    "options": {
-                        "none": {"stains": "none"},
-                        "light": {"stains": "light"},
-                        "medium": {"stains": "medium"},
-                        "heavy": {"stains": "heavy"}
-                    }
-                },
-                "add_rinse": {
-                    "options": {
-                        "none": {"add_rinse": "none"},
-                        "one": {"add_rinse": "one"},
-                        "two": {"add_rinse": "two"},
-                        "three": {"add_rinse": "three"}
+                        "0": {"dirty_degree": "0"},
+                        "1": {"dirty_degree": "1"},
+                        "2": {"dirty_degree": "2"},
+                        "3": {"dirty_degree": "3"},
+                        "4": {"dirty_degree": "4"}
                     }
                 },
                 "soak_count": {
                     "options": {
-                        "none": {"soak_count": "none"},
-                        "one": {"soak_count": "one"},
-                        "two": {"soak_count": "two"},
-                        "three": {"soak_count": "three"}
+                        "0": {"soak_count": "0"},
+                        "1": {"soak_count": "1"},
+                        "2": {"soak_count": "2"},
+                        "3": {"soak_count": "3"},
+                        "4": {"soak_count": "4"},
+                        "5": {"soak_count": "5"}
                     }
                 }
             },

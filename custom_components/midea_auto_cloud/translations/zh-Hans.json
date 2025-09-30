@@ -524,6 +524,15 @@
             },
             "gear": {
                 "name": "档位"
+            },
+            "detergent": {
+                "name": "洗涤剂"
+            },
+            "softener": {
+                "name": "柔顺剂"
+            },
+            "temperature": {
+                "name": "温度"
             }
         },
         "sensor": {
