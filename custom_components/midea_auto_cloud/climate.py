@@ -81,6 +81,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     @property
     def supported_features(self):
         features = ClimateEntityFeature(0)
+        features |= ClimateEntityFeature.TURN_ON
+        features |= ClimateEntityFeature.TURN_OFF
         if self._key_target_temperature is not None:
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
         if self._key_preset_modes is not None:
