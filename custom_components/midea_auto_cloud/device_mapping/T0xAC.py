@@ -28,10 +28,11 @@ DEVICE_MAPPING = {
                         "none": {
                             "eco": "off",
                             "comfort_power_save": "off",
+                            "cool_power_saving": 0,
                             # "comfort_sleep": "off",
                             "strong_wind": "off"
                         },
-                        "eco": {"eco": "on"},
+                        "eco": {"eco": "on", "cool_power_saving": 1},
                         "comfort": {"comfort_power_save": "on"},
                         # "sleep": {"comfort_sleep": "on"},
                         "boost": {"strong_wind": "on"}
