@@ -67,7 +67,7 @@ class MideaWaterHeaterEntityEntity(MideaEntity, WaterHeaterEntity):
 
     @property
     def supported_features(self):
-        features = 0
+        features = WaterHeaterEntityFeature(0)
         if self._key_target_temperature is not None:
             features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
         if self._key_operation_list is not None:

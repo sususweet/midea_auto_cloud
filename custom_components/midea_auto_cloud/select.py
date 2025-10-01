@@ -60,7 +60,14 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
 
     @property
     def current_option(self):
-        return self._dict_get_selected(self._key_options)
+        # Use attribute from config if available, otherwise fall back to entity_key
+        attribute = self._config.get("attribute", self._entity_key)
+        if attribute and attribute != self._entity_key:
+            # For simple attribute access, get the value directly
+            return self._get_nested_value(attribute)
+        else:
+            # For complex mapping, use the existing logic
+            return self._dict_get_selected(self._key_options)
 
     async def async_select_option(self, option: str):
         new_status = self._key_options.get(option)

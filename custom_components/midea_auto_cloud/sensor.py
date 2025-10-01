@@ -61,7 +61,9 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        value = self.device_attributes.get(self._entity_key)
+        # Use attribute from config if available, otherwise fall back to entity_key
+        attribute = self._config.get("attribute", self._entity_key)
+        value = self._get_nested_value(attribute)
         
         # Handle invalid string values
         if isinstance(value, str) and value.lower() in ['invalid', 'none', 'null', '']:

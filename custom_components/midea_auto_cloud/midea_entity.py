@@ -141,15 +141,42 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         pass
 
     # ===== Unified helpers migrated from legacy entity base =====
+    def _get_nested_value(self, attribute_key: str | None) -> Any:
+        """Get nested value from device attributes using dot notation.
+        
+        Supports both flat and nested attribute access.
+        Examples: 'power', 'eco.status', 'temperature.room'
+        """
+        if attribute_key is None:
+            return None
+        
+        # Handle nested attributes with dot notation
+        if '.' in attribute_key:
+            keys = attribute_key.split('.')
+            value = self.device_attributes
+            try:
+                for key in keys:
+                    if isinstance(value, dict):
+                        value = value.get(key)
+                    else:
+                        return None
+                return value
+            except (KeyError, TypeError):
+                return None
+        else:
+            # Handle flat attributes
+            return self.device_attributes.get(attribute_key)
+
     def _get_status_on_off(self, attribute_key: str | None) -> bool:
         """Return boolean value from device attributes for given key.
 
         Accepts common truthy representations: True/1/"on"/"true".
+        Supports nested attributes with dot notation.
         """
         result = False
         if attribute_key is None:
             return result
-        status = self.device_attributes.get(attribute_key)
+        status = self._get_nested_value(attribute_key)
         if status is not None:
             try:
                 result = bool(self._rationale.index(status))
@@ -157,6 +184,32 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                 MideaLogger.error(f"The value of attribute {attribute_key} ('{status}') "
                                   f"is not in rationale {self._rationale}")
         return result
+
+    def _set_nested_value(self, attribute_key: str, value: Any) -> None:
+        """Set nested value in device attributes using dot notation.
+        
+        Supports both flat and nested attribute setting.
+        Examples: 'power', 'eco.status', 'temperature.room'
+        """
+        if attribute_key is None:
+            return
+        
+        # Handle nested attributes with dot notation
+        if '.' in attribute_key:
+            keys = attribute_key.split('.')
+            current_dict = self.device_attributes
+            
+            # Navigate to the parent dictionary
+            for key in keys[:-1]:
+                if key not in current_dict:
+                    current_dict[key] = {}
+                current_dict = current_dict[key]
+            
+            # Set the final value
+            current_dict[keys[-1]] = value
+        else:
+            # Handle flat attributes
+            self.device_attributes[attribute_key] = value
 
     async def _async_set_status_on_off(self, attribute_key: str | None, turn_on: bool) -> None:
         """Set boolean attribute via coordinator, no-op if key is None."""
@@ -168,7 +221,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         for index in range(0, len(key_of_list)):
             match = True
             for attr, value in key_of_list[index].items():
-                state_value = self.device_attributes.get(attr)
+                state_value = self._get_nested_value(attr)
                 if state_value is None:
                     match = False
                     break
@@ -189,7 +242,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         for mode, status in key_of_dict.items():
             match = True
             for attr, value in status.items():
-                state_value = self.device_attributes.get(attr)
+                state_value = self._get_nested_value(attr)
                 if state_value is None:
                     match = False
                     break

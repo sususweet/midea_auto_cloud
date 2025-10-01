@@ -1,11 +1,19 @@
 from homeassistant.components.fan import FanEntity, FanEntityFeature
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
 from .const import DOMAIN
 from .midea_entity import MideaEntity
 from . import load_device_config
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
     if not account_bucket:
         async_add_entities([])
@@ -53,7 +61,9 @@ class MideaFanEntity(MideaEntity, FanEntity):
 
     @property
     def supported_features(self):
-        features = 0
+        features = FanEntityFeature(0)
+        features |= FanEntityFeature.TURN_ON
+        features |= FanEntityFeature.TURN_OFF
         if self._key_preset_modes is not None and len(self._key_preset_modes) > 0:
             features |= FanEntityFeature.PRESET_MODE
         if self._key_speeds is not None and len(self._key_speeds) > 0:
@@ -100,8 +110,7 @@ class MideaFanEntity(MideaEntity, FanEntity):
             index = round(percentage * self._attr_speed_count / 100) - 1
             index = max(0, min(index, len(self._key_speeds) - 1))
             new_status.update(self._key_speeds[index])
-        if self._key_power is not None:
-            new_status[self._key_power] = True
+        await self._async_set_status_on_off(self._key_power, True)
         if new_status:
             await self.async_set_attributes(new_status)
 
@@ -127,8 +136,3 @@ class MideaFanEntity(MideaEntity, FanEntity):
         if self.oscillating != oscillating:
             await self._async_set_status_on_off(self._key_oscillate, oscillating)
 
-    def update_state(self, status):
-        try:
-            self.schedule_update_ha_state()
-        except Exception:
-            pass

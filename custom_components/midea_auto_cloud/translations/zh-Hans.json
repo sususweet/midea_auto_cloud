@@ -533,6 +533,21 @@
             },
             "temperature": {
                 "name": "温度"
+            },
+            "ptc": {
+                "name": "电辅热"
+            },
+            "wind_feeling_mode": {
+                "name": "风感模式"
+            },
+            "swing_louver": {
+                "name": "摆风叶片"
+            },
+            "swing_horizontal": {
+                "name": "水平摆风"
+            },
+            "swing_vertical": {
+                "name": "垂直摆风"
             }
         },
         "sensor": {
@@ -1297,6 +1312,33 @@
             },
             "warm_left_time": {
                 "name": "剩余加热时间"
+            },
+            "room_temperature": {
+                "name": "室内温度"
+            },
+            "outside_temperature": {
+                "name": "室外温度"
+            },
+            "lua_version": {
+                "name": "Lua版本"
+            },
+            "wind_speed_level": {
+                "name": "风速档位"
+            },
+            "timer_on_timeout": {
+                "name": "定时开机时间"
+            },
+            "timer_off_timeout": {
+                "name": "定时关机时间"
+            },
+            "selfclean_time_left": {
+                "name": "自清洁剩余时间"
+            },
+            "backup_time": {
+                "name": "备用时间"
+            },
+            "cur_fault_code": {
+                "name": "当前故障代码"
             }
         },
         "switch": {
@@ -2037,6 +2079,60 @@
             },
             "wash_enable": {
                 "name": "洗涤启用"
+            },
+            "eco": {
+                "name": "节能模式"
+            },
+            "strong": {
+                "name": "强劲模式"
+            },
+            "sterilize": {
+                "name": "杀菌功能"
+            },
+            "selfclean": {
+                "name": "自清洁"
+            },
+            "humidification": {
+                "name": "加湿功能"
+            },
+            "diagnose": {
+                "name": "诊断功能"
+            },
+            "co2_check": {
+                "name": "CO2检测"
+            },
+            "hcho_check": {
+                "name": "甲醛检测"
+            },
+            "pm25_check": {
+                "name": "PM2.5检测"
+            },
+            "idu_silent": {
+                "name": "室内机静音"
+            },
+            "idu_light": {
+                "name": "室内机灯光"
+            },
+            "idu_sleep": {
+                "name": "室内机睡眠"
+            },
+            "wind_feeling": {
+                "name": "风感功能"
+            },
+            "timer_on": {
+                "name": "定时开机"
+            },
+            "timer_off": {
+                "name": "定时关机"
+            },
+            "backup": {
+                "name": "备用功能"
+            },
+            "cur_fault": {
+                "name": "当前故障"
+            },
+            "filter_notification": {
+                "name": "滤网提醒"
             }
         }
     }

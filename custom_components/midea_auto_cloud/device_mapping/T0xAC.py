@@ -7,12 +7,46 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type":"run_status"}],
-        "centralized": [
-            "power", "temperature", "small_temperature", "mode", "eco",
-            "comfort_power_save", "strong_wind",
-            "wind_swing_lr", "wind_swing_lr", "wind_speed","ptc", "dry"
-        ],
+        "centralized": [],
         "entities": {
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": [
+                        {"wind_speed_real": 20},
+                        {"wind_speed_real": 40},
+                        {"wind_speed_real": 60},
+                        {"wind_speed_real": 80},
+                        {"wind_speed_real": 100},
+                    ],
+                    "preset_modes": {
+                        "heat": {
+                            "mode": "heat"
+                        },
+                        "cool": {
+                            "mode": "cool"
+                        },
+                        "auto": {
+                            "mode": "auto"
+                        },
+                        "dry": {
+                            "mode": "dry"
+                        },
+                        "fan": {
+                            "mode": "fan"
+                        },
+                        "standby": {
+                            "mode": "standby"
+                        },
+                        "dryconstant": {
+                            "mode": "dryconstant"
+                        },
+                        "dryauto": {
+                            "mode": "dryauto"
+                        },
+                    }
+                }
+            },
             Platform.CLIMATE: {
                 "thermostat": {
                     "power": "power",

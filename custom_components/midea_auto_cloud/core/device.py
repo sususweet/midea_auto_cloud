@@ -1,5 +1,6 @@
 import threading
 import socket
+import traceback
 from enum import IntEnum
 
 from .cloud import MideaCloud
@@ -134,19 +135,49 @@ class MiedaDevice(threading.Thread):
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
 
+    def _convert_to_nested_structure(self, attributes):
+        """Convert dot-notation attributes to nested structure."""
+        nested = {}
+        for key, value in attributes.items():
+            if '.' in key:
+                # Handle nested attributes with dot notation
+                keys = key.split('.')
+                current_dict = nested
+                
+                # Navigate to the parent dictionary
+                for k in keys[:-1]:
+                    if k not in current_dict:
+                        current_dict[k] = {}
+                    current_dict = current_dict[k]
+                
+                # Set the final value
+                current_dict[keys[-1]] = value
+            else:
+                # Handle flat attributes
+                nested[key] = value
+        return nested
+
     async def set_attribute(self, attribute, value):
         if attribute in self._attributes.keys():
             new_status = {}
             for attr in self._centralized:
                 new_status[attr] = self._attributes.get(attr)
             new_status[attribute] = value
+            
+            # Convert dot-notation attributes to nested structure for transmission
+            nested_status = self._convert_to_nested_structure(new_status)
+            
             try:
-                if set_cmd := self._lua_runtime.build_control(new_status):
+                if set_cmd := self._lua_runtime.build_control(nested_status):
                     await self._build_send(set_cmd)
+                    return
             except Exception as e:
-                cloud = self._cloud
-                if cloud and hasattr(cloud, "send_device_control"):
-                    await cloud.send_device_control(self._device_id, control=new_status, status=self._attributes)
+                MideaLogger.debug(f"LuaRuntimeError in set_attribute {nested_status}: {repr(e)}")
+                traceback.print_exc()
+
+            cloud = self._cloud
+            if cloud and hasattr(cloud, "send_device_control"):
+                await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     async def set_attributes(self, attributes):
         new_status = {}
@@ -157,14 +188,22 @@ class MiedaDevice(threading.Thread):
             if attribute in self._attributes.keys():
                 has_new = True
                 new_status[attribute] = value
+        
+        # Convert dot-notation attributes to nested structure for transmission
+        nested_status = self._convert_to_nested_structure(new_status)
+        
         if has_new:
             try:
-                if set_cmd := self._lua_runtime.build_control(new_status):
+                if set_cmd := self._lua_runtime.build_control(nested_status):
                     await self._build_send(set_cmd)
+                    return
             except Exception as e:
-                cloud = self._cloud
-                if cloud and hasattr(cloud, "send_device_control"):
-                    await cloud.send_device_control(self._device_id, control=new_status, status=self._attributes)
+                    MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
+                    traceback.print_exc()
+
+            cloud = self._cloud
+            if cloud and hasattr(cloud, "send_device_control"):
+                await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     def set_ip_address(self, ip_address):
         MideaLogger.debug(f"Update IP address to {ip_address}")

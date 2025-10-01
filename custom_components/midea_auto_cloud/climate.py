@@ -80,7 +80,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def supported_features(self):
-        features = 0
+        features = ClimateEntityFeature(0)
         if self._key_target_temperature is not None:
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
         if self._key_preset_modes is not None:
@@ -95,7 +95,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def current_temperature(self):
-        temp = self.device_attributes.get(self._key_current_temperature)
+        temp = self._get_nested_value(self._key_current_temperature)
         if temp is not None:
             try:
                 return float(temp)
@@ -106,8 +106,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     @property
     def target_temperature(self):
         if isinstance(self._key_target_temperature, list):
-            temp_int = self.device_attributes.get(self._key_target_temperature[0])
-            tem_dec = self.device_attributes.get(self._key_target_temperature[1])
+            temp_int = self._get_nested_value(self._key_target_temperature[0])
+            tem_dec = self._get_nested_value(self._key_target_temperature[1])
             if temp_int is not None and tem_dec is not None:
                 try:
                     return float(temp_int) + float(tem_dec)
@@ -115,7 +115,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                     return None
             return None
         else:
-            temp = self.device_attributes.get(self._key_target_temperature)
+            temp = self._get_nested_value(self._key_target_temperature)
             if temp is not None:
                 try:
                     return float(temp)
@@ -159,7 +159,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def fan_mode(self):
-        return self._dict_get_selected(self._key_fan_modes, "EQUALLY")
+        return self._dict_get_selected(self._key_fan_modes)
 
     @property
     def swing_modes(self):
@@ -167,7 +167,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def swing_mode(self):
-        return self._dict_get_selected(self._key_swing_modes, "EQUALLY")
+        return self._dict_get_selected(self._key_swing_modes)
 
     @property
     def is_on(self) -> bool:
@@ -175,7 +175,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def hvac_mode(self):
-        return self._dict_get_selected(self._key_hvac_modes, "EQUALLY")
+        return self._dict_get_selected(self._key_hvac_modes)
 
     @property
     def hvac_modes(self):
@@ -235,7 +235,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         """Get on/off status from device attributes."""
         if key is None:
             return False
-        value = self.device_attributes.get(key)
+        value = self._get_nested_value(key)
         if isinstance(value, bool):
             return value
         return value == 1 or value == "on" or value == "true"
@@ -245,33 +245,3 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if key is None:
             return
         await self.async_set_attribute(key, value)
-
-    def _dict_get_selected(self, dict_config, rationale="EQUALLY"):
-        """Get selected value from dictionary configuration."""
-        if dict_config is None:
-            return None
-
-        for key, config in dict_config.items():
-            if isinstance(config, dict):
-                # Check if all conditions match
-                match = True
-                for attr_key, attr_value in config.items():
-                    device_value = self.device_attributes.get(attr_key)
-                    if device_value is None:
-                        match = False
-                        break
-                    if rationale == "EQUALLY":
-                        if device_value != attr_value:
-                            match = False
-                            break
-                    elif rationale == "LESS":
-                        if device_value >= attr_value:
-                            match = False
-                            break
-                    elif rationale == "GREATER":
-                        if device_value <= attr_value:
-                            match = False
-                            break
-                if match:
-                    return key
-        return None

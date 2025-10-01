@@ -344,6 +344,21 @@
             },
             "temperature": {
                 "name": "Temperature"
+            },
+            "ptc": {
+                "name": "PTC"
+            },
+            "wind_feeling_mode": {
+                "name": "Wind Feeling Mode"
+            },
+            "swing_louver": {
+                "name": "Swing Louver"
+            },
+            "swing_horizontal": {
+                "name": "Swing Horizontal"
+            },
+            "swing_vertical": {
+                "name": "Swing Vertical"
             }
         },
         "sensor": {
@@ -1105,6 +1120,33 @@
             },
             "warm_left_time": {
                 "name": "Warm Left Time"
+            },
+            "room_temperature": {
+                "name": "Room Temperature"
+            },
+            "outside_temperature": {
+                "name": "Outside Temperature"
+            },
+            "lua_version": {
+                "name": "Lua Version"
+            },
+            "wind_speed_level": {
+                "name": "Wind Speed Level"
+            },
+            "timer_on_timeout": {
+                "name": "Timer On Timeout"
+            },
+            "timer_off_timeout": {
+                "name": "Timer Off Timeout"
+            },
+            "selfclean_time_left": {
+                "name": "Self Clean Time Left"
+            },
+            "backup_time": {
+                "name": "Backup Time"
+            },
+            "cur_fault_code": {
+                "name": "Current Fault Code"
             }
         },
         "binary_sensor": {
@@ -2032,6 +2074,60 @@
             },
             "wash_enable": {
                 "name": "Wash Enable"
+            },
+            "eco": {
+                "name": "Eco Mode"
+            },
+            "strong": {
+                "name": "Strong Mode"
+            },
+            "sterilize": {
+                "name": "Sterilize"
+            },
+            "selfclean": {
+                "name": "Self Clean"
+            },
+            "humidification": {
+                "name": "Humidification"
+            },
+            "diagnose": {
+                "name": "Diagnose"
+            },
+            "co2_check": {
+                "name": "CO2 Check"
+            },
+            "hcho_check": {
+                "name": "HCHO Check"
+            },
+            "pm25_check": {
+                "name": "PM2.5 Check"
+            },
+            "idu_silent": {
+                "name": "IDU Silent"
+            },
+            "idu_light": {
+                "name": "IDU Light"
+            },
+            "idu_sleep": {
+                "name": "IDU Sleep"
+            },
+            "wind_feeling": {
+                "name": "Wind Feeling"
+            },
+            "timer_on": {
+                "name": "Timer On"
+            },
+            "timer_off": {
+                "name": "Timer Off"
+            },
+            "backup": {
+                "name": "Backup"
+            },
+            "cur_fault": {
+                "name": "Current Fault"
+            },
+            "filter_notification": {
+                "name": "Filter Notification"
             }
         }
     }

@@ -1,3 +1,5 @@
+import traceback
+
 import lupa
 import threading
 import json
@@ -74,6 +76,7 @@ class MideaCodec(LuaRuntime):
             MideaLogger.debug(f"LuaRuntime Result {result}")
             return result
         except lupa.LuaError as e:
+            traceback.print_exc()
             MideaLogger.error(f"LuaRuntimeError in build_control {json_str}: {repr(e)}")
             return None
 

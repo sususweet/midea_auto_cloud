@@ -238,7 +238,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 mapping = {}
 
                             try:
-                                device.set_queries(mapping.get("queries", []))
+                                device.set_queries(mapping.get("queries", [{}]))
                             except Exception:
                                 pass
                             try:
