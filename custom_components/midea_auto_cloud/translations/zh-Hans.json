@@ -2136,6 +2136,9 @@
             },
             "filter_notification": {
                 "name": "滤网提醒"
+            },
+            "wash_mode": {
+                "name": "洗涤模式"
             }
         }
     }

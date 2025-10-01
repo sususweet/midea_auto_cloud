@@ -65,6 +65,31 @@ DEVICE_MAPPING = {
                         "power_on": {"work_status": "power_on" },
                     }
                 },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"mode": "neutral_gear"},
+                        "auto_wash": {"mode": "auto_wash"},
+                        "strong_wash": {"mode": "strong_wash"},
+                        "standard_wash": {"mode": "standard_wash"},
+                        "eco_wash": {"mode": "eco_wash"},
+                        "glass_wash": {"mode": "glass_wash"},
+                        "hour_wash": {"mode": "hour_wash"},
+                        "fast_wash": {"mode": "fast_wash"},
+                        "soak_wash": {"mode": "soak_wash"},
+                        "90min_wash": {"mode": "90min_wash"},
+                        "self_clean": {"mode": "self_clean"},
+                        "fruit_wash": {"mode": "fruit_wash"},
+                        "self_define": {"mode": "self_define"},
+                        "germ": {"mode": "germ"},
+                        "bowl_wash": {"mode": "bowl_wash"},
+                        "kill_germ": {"mode": "kill_germ"},
+                        "seafood_wash": {"mode": "seafood_wash"},
+                        "hotpot_wash": {"mode": "hotpot_wash"},
+                        "quietnight_wash": {"mode": "quietnight_wash"},
+                        "less_wash": {"mode": "less_wash"},
+                        "oilnet_wash": {"mode": "oilnet_wash"}
+                    }
+                },
             },
             Platform.SENSOR: {
                 "bright": {

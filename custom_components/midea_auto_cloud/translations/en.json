@@ -2133,6 +2133,9 @@
             },
             "filter_notification": {
                 "name": "Filter Notification"
+            },
+            "wash_mode": {
+                "name": "Wash Mode"
             }
         }
     }
