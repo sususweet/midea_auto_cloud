@@ -548,6 +548,20 @@
             },
             "swing_vertical": {
                 "name": "垂直摆风"
+            },
+            "left_cookmode": {
+                "name": "左侧烹饪模式",
+                "options": {
+                    "default": "默认",
+                    "order": "预约",
+                    "keep_temperature": "保温",
+                    "local_recipe": "本地食谱",
+                    "cloud_recipe": "云食谱",
+                    "order_keep_temperature": "预约保温"
+                }
+            },
+            "left_gear": {
+                "name": "左侧档位"
             }
         },
         "sensor": {
@@ -1339,6 +1353,42 @@
             },
             "cur_fault_code": {
                 "name": "当前故障代码"
+            },
+            "left_recipe_current_step_action": {
+                "name": "左侧食谱当前步骤动作"
+            },
+            "left_recipe_id": {
+                "name": "左侧食谱ID"
+            },
+            "left_recipe_rest_time": {
+                "name": "左侧食谱剩余时间"
+            },
+            "left_current_temperature": {
+                "name": "左侧当前温度"
+            },
+            "left_status": {
+                "name": "左侧状态"
+            },
+            "eq_recipe_action": {
+                "name": "等量食谱动作"
+            },
+            "gas_leakage_code": {
+                "name": "燃气泄漏代码"
+            },
+            "left_work_time": {
+                "name": "左侧工作时间"
+            },
+            "left_recipe_current_step": {
+                "name": "左侧食谱当前步骤"
+            },
+            "left_recipe_target_steps": {
+                "name": "左侧食谱目标步骤"
+            },
+            "left_recipe_target_time": {
+                "name": "左侧食谱目标时间"
+            },
+            "error_type": {
+                "name": "错误类型"
             }
         },
         "switch": {
@@ -2139,6 +2189,18 @@
             },
             "wash_mode": {
                 "name": "洗涤模式"
+            },
+            "left_power": {
+                "name": "左侧电源"
+            },
+            "left_dry_fire_protection": {
+                "name": "左侧干烧保护"
+            },
+            "left_lock": {
+                "name": "左侧锁定"
+            },
+            "light_lampblack_mode": {
+                "name": "灯光油烟模式"
             }
         }
     }

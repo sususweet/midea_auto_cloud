@@ -548,6 +548,20 @@
             },
             "swing_vertical": {
                 "name": "Swing Vertical"
+            },
+            "left_cookmode": {
+                "name": "Left Cook Mode",
+                "options": {
+                    "default": "Default",
+                    "order": "Order",
+                    "keep_temperature": "Keep Temperature",
+                    "local_recipe": "Local Recipe",
+                    "cloud_recipe": "Cloud Recipe",
+                    "order_keep_temperature": "Order Keep Temperature"
+                }
+            },
+            "left_gear": {
+                "name": "Left Gear"
             }
         },
         "sensor": {
@@ -1336,6 +1350,42 @@
             },
             "cur_fault_code": {
                 "name": "Current Fault Code"
+            },
+            "left_recipe_current_step_action": {
+                "name": "Left Recipe Current Step Action"
+            },
+            "left_recipe_id": {
+                "name": "Left Recipe ID"
+            },
+            "left_recipe_rest_time": {
+                "name": "Left Recipe Rest Time"
+            },
+            "left_current_temperature": {
+                "name": "Left Current Temperature"
+            },
+            "left_status": {
+                "name": "Left Status"
+            },
+            "eq_recipe_action": {
+                "name": "Eq Recipe Action"
+            },
+            "gas_leakage_code": {
+                "name": "Gas Leakage Code"
+            },
+            "left_work_time": {
+                "name": "Left Work Time"
+            },
+            "left_recipe_current_step": {
+                "name": "Left Recipe Current Step"
+            },
+            "left_recipe_target_steps": {
+                "name": "Left Recipe Target Steps"
+            },
+            "left_recipe_target_time": {
+                "name": "Left Recipe Target Time"
+            },
+            "error_type": {
+                "name": "Error Type"
             }
         },
         "switch": {
@@ -2136,6 +2186,18 @@
             },
             "wash_mode": {
                 "name": "Wash Mode"
+            },
+            "left_power": {
+                "name": "Left Power"
+            },
+            "left_dry_fire_protection": {
+                "name": "Left Dry Fire Protection"
+            },
+            "left_lock": {
+                "name": "Left Lock"
+            },
+            "light_lampblack_mode": {
+                "name": "Light Lampblack Mode"
             }
         }
     }
