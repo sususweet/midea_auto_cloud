@@ -56,9 +56,10 @@ class MideaCodec(LuaRuntime):
             MideaLogger.error(f"LuaRuntimeError in build_query {json_str}: {repr(e)}")
         return None
 
-    def build_control(self, append=None):
+    def build_control(self, append=None, status=None):
         query_dict = self._build_base_dict()
         query_dict["control"] = {} if append is None else append
+        query_dict["status"] = {} if status is None else status
         # 针对T0xD9复式洗衣机特殊处理
         if self._device_type == "T0xD9":
             control_keys = list(append.keys())

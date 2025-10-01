@@ -168,7 +168,7 @@ class MiedaDevice(threading.Thread):
             nested_status = self._convert_to_nested_structure(new_status)
             
             try:
-                if set_cmd := self._lua_runtime.build_control(nested_status):
+                if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
                     await self._build_send(set_cmd)
                     return
             except Exception as e:
@@ -194,7 +194,7 @@ class MiedaDevice(threading.Thread):
         
         if has_new:
             try:
-                if set_cmd := self._lua_runtime.build_control(nested_status):
+                if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
                     await self._build_send(set_cmd)
                     return
             except Exception as e:
