@@ -122,6 +122,195 @@
         }
     },
     "entity": {
+        "binary_sensor": {
+            "air_status": {
+                "name": "Air Running"
+            },
+            "bar_door_state": {
+                "name": "Bar Door State"
+            },
+            "bottom_hot": {
+                "name": "Bottom Hot"
+            },
+            "bright_lack": {
+                "name": "Brightness Lack"
+            },
+            "carpet_switch": {
+                "name": "Carpet Switch"
+            },
+            "chlorine_sterilization_error": {
+                "name": "Chlorine Sterilization Error"
+            },
+            "diy_flag": {
+                "name": "DIY Flag"
+            },
+            "diy_main_wash": {
+                "name": "DIY Main Wash"
+            },
+            "diy_piao_wash": {
+                "name": "DIY Rinse"
+            },
+            "diy_times": {
+                "name": "DIY Times"
+            },
+            "flank_hot": {
+                "name": "Flank Hot"
+            },
+            "flexzone_door_state": {
+                "name": "Flexzone Door State"
+            },
+            "freezer_door_state": {
+                "name": "Freezer Door State"
+            },
+            "have_reserve_task": {
+                "name": "Have Reserve Task"
+            },
+            "is_error": {
+                "name": "Is Error"
+            },
+            "maintenance_remind": {
+                "name": "Maintenance Remind"
+            },
+            "rtc_error": {
+                "name": "RTC Error"
+            },
+            "softwater_lack": {
+                "name": "Soft Water Lack"
+            },
+            "storage_door_state": {
+                "name": "Storage Door State"
+            },
+            "storage_ice_home_door_state": {
+                "name": "Storage Ice Home Door State"
+            },
+            "top_hot": {
+                "name": "Top Hot"
+            },
+            "wash_stage": {
+                "name": "Washing Stage"
+            },
+            "water_lack": {
+                "name": "Water Lack"
+            },
+            "communication_error": {
+                "name": "Communication Error"
+            },
+            "door_status": {
+                "name": "Door Status"
+            },
+            "ele_exception": {
+                "name": "Ele Exception"
+            },
+            "elec_warning": {
+                "name": "Elec Warning"
+            },
+            "limit_error": {
+                "name": "Limit Error"
+            },
+            "sensor_error": {
+                "name": "Sensor Error"
+            },
+            "lock": {
+                "name": "Lock"
+            },
+            "furnace_light": {
+                "name": "Furnace Light"
+            },
+            "dissipate_heat": {
+                "name": "Dissipate Heat"
+            },
+            "pre_heat": {
+                "name": "Pre Heat"
+            },
+            "door_open": {
+                "name": "Door Open"
+            },
+            "lack_water": {
+                "name": "Lack Water"
+            },
+            "high_temperature_work": {
+                "name": "High Temperature Work"
+            },
+            "lack_box": {
+                "name": "Lack Box"
+            },
+            "clean_sink_ponding": {
+                "name": "Clean Sink Ponding"
+            },
+            "clean_scale": {
+                "name": "Clean Scale"
+            },
+            "flip_side": {
+                "name": "Flip Side"
+            },
+            "reaction": {
+                "name": "Reaction"
+            },
+            "ramadan": {
+                "name": "Ramadan"
+            },
+            "change_water": {
+                "name": "Change Water"
+            },
+            "execute": {
+                "name": "Execute"
+            },
+            "power": {
+                "name": "Power"
+            },
+            "humidify": {
+                "name": "Humidify"
+            },
+            "swing": {
+                "name": "Swing"
+            },
+            "anion": {
+                "name": "Anion"
+            },
+            "display_on_off": {
+                "name": "Display On/Off"
+            },
+            "dust_reset": {
+                "name": "Dust Reset"
+            },
+            "temp_wind_switch": {
+                "name": "Temp Wind Switch"
+            },
+            "filter_reset": {
+                "name": "Filter Reset"
+            },
+            "heat_status": {
+                "name": "Heat Status"
+            },
+            "standby_status": {
+                "name": "Standby Status"
+            }
+        },
+        "climate": {
+            "freezing_zone": {
+                "name": "Freezing Zone"
+            },
+            "left_flexzone": {
+                "name": "Left Flexzone"
+            },
+            "right_flexzone": {
+                "name": "Right Flexzone"
+            },
+            "storage_zone": {
+                "name": "Storage Zone"
+            },
+            "thermostat": {
+                "name": "Thermostat"
+            },
+            "water_heater": {
+                "name": "Water Heater"
+            }
+        },
+        "humidifier": {
+            "humidifier": {
+                "name": "Humidifier"
+            }
+        },
         "select": {
             "add_rinse": {
                 "name": "Add Rinse"
@@ -1149,193 +1338,6 @@
                 "name": "Current Fault Code"
             }
         },
-        "binary_sensor": {
-            "air_status": {
-                "name": "Air Running"
-            },
-            "bar_door_state": {
-                "name": "Bar Door State"
-            },
-            "bottom_hot": {
-                "name": "Bottom Hot"
-            },
-            "bright_lack": {
-                "name": "Brightness Lack"
-            },
-            "carpet_switch": {
-                "name": "Carpet Switch"
-            },
-            "chlorine_sterilization_error": {
-                "name": "Chlorine Sterilization Error"
-            },
-            "diy_flag": {
-                "name": "DIY Flag"
-            },
-            "diy_main_wash": {
-                "name": "DIY Main Wash"
-            },
-            "diy_piao_wash": {
-                "name": "DIY Rinse"
-            },
-            "diy_times": {
-                "name": "DIY Times"
-            },
-            "flank_hot": {
-                "name": "Flank Hot"
-            },
-            "flexzone_door_state": {
-                "name": "Flexzone Door State"
-            },
-            "freezer_door_state": {
-                "name": "Freezer Door State"
-            },
-            "have_reserve_task": {
-                "name": "Have Reserve Task"
-            },
-            "is_error": {
-                "name": "Is Error"
-            },
-            "maintenance_remind": {
-                "name": "Maintenance Remind"
-            },
-            "rtc_error": {
-                "name": "RTC Error"
-            },
-            "softwater_lack": {
-                "name": "Soft Water Lack"
-            },
-            "storage_door_state": {
-                "name": "Storage Door State"
-            },
-            "storage_ice_home_door_state": {
-                "name": "Storage Ice Home Door State"
-            },
-            "top_hot": {
-                "name": "Top Hot"
-            },
-            "wash_stage": {
-                "name": "Washing Stage"
-            },
-            "water_lack": {
-                "name": "Water Lack"
-            },
-            "communication_error": {
-                "name": "Communication Error"
-            },
-            "door_status": {
-                "name": "Door Status"
-            },
-            "ele_exception": {
-                "name": "Ele Exception"
-            },
-            "elec_warning": {
-                "name": "Elec Warning"
-            },
-            "limit_error": {
-                "name": "Limit Error"
-            },
-            "sensor_error": {
-                "name": "Sensor Error"
-            },
-            "lock": {
-                "name": "Lock"
-            },
-            "furnace_light": {
-                "name": "Furnace Light"
-            },
-            "dissipate_heat": {
-                "name": "Dissipate Heat"
-            },
-            "pre_heat": {
-                "name": "Pre Heat"
-            },
-            "door_open": {
-                "name": "Door Open"
-            },
-            "lack_water": {
-                "name": "Lack Water"
-            },
-            "high_temperature_work": {
-                "name": "High Temperature Work"
-            },
-            "lack_box": {
-                "name": "Lack Box"
-            },
-            "clean_sink_ponding": {
-                "name": "Clean Sink Ponding"
-            },
-            "clean_scale": {
-                "name": "Clean Scale"
-            },
-            "flip_side": {
-                "name": "Flip Side"
-            },
-            "reaction": {
-                "name": "Reaction"
-            },
-            "ramadan": {
-                "name": "Ramadan"
-            },
-            "change_water": {
-                "name": "Change Water"
-            },
-            "execute": {
-                "name": "Execute"
-            },
-            "power": {
-                "name": "Power"
-            },
-            "humidify": {
-                "name": "Humidify"
-            },
-            "swing": {
-                "name": "Swing"
-            },
-            "anion": {
-                "name": "Anion"
-            },
-            "display_on_off": {
-                "name": "Display On/Off"
-            },
-            "dust_reset": {
-                "name": "Dust Reset"
-            },
-            "temp_wind_switch": {
-                "name": "Temp Wind Switch"
-            },
-            "filter_reset": {
-                "name": "Filter Reset"
-            },
-            "heat_status": {
-                "name": "Heat Status"
-            },
-            "standby_status": {
-                "name": "Standby Status"
-            }
-        },
-        "climate": {
-            "freezing_zone": {
-                "name": "Freezing Zone"
-            },
-            "left_flexzone": {
-                "name": "Left Flexzone"
-            },
-            "right_flexzone": {
-                "name": "Right Flexzone"
-            },
-            "storage_zone": {
-                "name": "Storage Zone"
-            },
-            "thermostat": {
-                "name": "Thermostat"
-            },
-            "water_heater": {
-                "name": "Water Heater"
-            }
-        },
-        "humidifier": {
-            "humidifier": { "name": "Humidifier" }
-        },
         "switch": {
             "add_water_flag": {
                 "name": "Add Water Flag"
@@ -1705,6 +1707,9 @@
             },
             "freeze_state": {
                 "name": "Freeze State"
+            },
+            "fresh_air_remove_odor": {
+                "name": "Fresh Air Remove Odor"
             },
             "fresh_anion_switch": {
                 "name": "Fresh Anion Switch"

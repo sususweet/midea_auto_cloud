@@ -1711,6 +1711,9 @@
             "freeze_state": {
                 "name": "防冻状态"
             },
+            "fresh_air_remove_odor": {
+                "name": "新风除菌"
+            },
             "fresh_anion_switch": {
                 "name": "负离子开关"
             },

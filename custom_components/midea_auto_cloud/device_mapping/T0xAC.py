@@ -11,38 +11,42 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.FAN: {
                 "fan": {
-                    "power": "power",
+                    "power": "new_wind_machine",
                     "speeds": [
-                        {"wind_speed_real": 20},
-                        {"wind_speed_real": 40},
-                        {"wind_speed_real": 60},
-                        {"wind_speed_real": 80},
-                        {"wind_speed_real": 100},
+                        {"fresh_air_fan_speed": 20},
+                        {"fresh_air_fan_speed": 40},
+                        {"fresh_air_fan_speed": 60},
+                        {"fresh_air_fan_speed": 80},
+                        {"fresh_air_fan_speed": 100},
                     ],
                     "preset_modes": {
-                        "heat": {
-                            "mode": "heat"
+                        "heat_exchange": {
+                            "fresh_air_mode": 1,
+                            "wind_strength": 0
                         },
-                        "cool": {
-                            "mode": "cool"
+                        "smooth_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 0
+                        },
+                        "rough_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 1
+                        },
+                        "smooth_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 0
+                        },
+                        "rough_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 1
                         },
                         "auto": {
-                            "mode": "auto"
+                            "fresh_air_mode": 4,
+                            "wind_strength": 0
                         },
-                        "dry": {
-                            "mode": "dry"
-                        },
-                        "fan": {
-                            "mode": "fan"
-                        },
-                        "standby": {
-                            "mode": "standby"
-                        },
-                        "dryconstant": {
-                            "mode": "dryconstant"
-                        },
-                        "dryauto": {
-                            "mode": "dryauto"
+                        "innercycle": {
+                            "fresh_air_mode": 5,
+                            "wind_strength": 0
                         },
                     }
                 }
@@ -95,6 +99,10 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "fresh_air_remove_odor": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
