@@ -565,6 +565,9 @@
             }
         },
         "sensor": {
+            "running_status": {
+                "name": "运行状态"
+            },
             "active_oxygen": {
                 "name": "活性氧"
             },
