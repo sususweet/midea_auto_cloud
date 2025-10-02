@@ -120,6 +120,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "running_status": {
+                    "icon": "mdi:washing-machine"
+                },
                 "appointment_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
