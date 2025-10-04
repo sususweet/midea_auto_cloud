@@ -492,6 +492,9 @@
             "work_mode": {
                 "name": "工作模式"
             },
+            "wash_mode": {
+                "name": "洗涤模式"
+            },
             "func_select": {
                 "name": "功能选择"
             },
@@ -2186,9 +2189,6 @@
             },
             "filter_notification": {
                 "name": "滤网提醒"
-            },
-            "wash_mode": {
-                "name": "洗涤模式"
             },
             "left_power": {
                 "name": "左侧电源"

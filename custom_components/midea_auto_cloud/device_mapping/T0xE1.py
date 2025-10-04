@@ -5,34 +5,28 @@ from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
     "default": {
-        "rationale": ["off", "on"],
+        "rationale": [0, 1],
         "queries": [{}],
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
                 "airswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "waterswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "uvswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "doorswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "dryswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "dry_step_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 }
             },
             Platform.BINARY_SENSOR: {
@@ -40,16 +34,16 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.RUNNING,
                 },
                 "water_lack": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
                 "softwater_lack": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
                 "wash_stage":{
                     "device_class": BinarySensorDeviceClass.RUNNING,
                 },
                 "bright_lack": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
                 "diy_flag": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
@@ -69,33 +63,36 @@ DEVICE_MAPPING = {
                     "options": {
                         "power_off": {"work_status": "power_off" },
                         "power_on": {"work_status": "power_on" },
+                        "cancel": {"work_status": "cancel" },
+                        "pause": {"operator":"pause"},
+                        "resume": {"operator":"start"},
                     }
                 },
                 "wash_mode": {
                     "options": {
-                        "neutral_gear": {"mode": "neutral_gear"},
-                        "auto_wash": {"mode": "auto_wash"},
-                        "strong_wash": {"mode": "strong_wash"},
-                        "standard_wash": {"mode": "standard_wash"},
-                        "eco_wash": {"mode": "eco_wash"},
-                        "glass_wash": {"mode": "glass_wash"},
-                        "hour_wash": {"mode": "hour_wash"},
-                        "fast_wash": {"mode": "fast_wash"},
-                        "soak_wash": {"mode": "soak_wash"},
-                        "90min_wash": {"mode": "90min_wash"},
-                        "self_clean": {"mode": "self_clean"},
-                        "fruit_wash": {"mode": "fruit_wash"},
-                        "self_define": {"mode": "self_define"},
-                        "germ": {"mode": "germ"},
-                        "bowl_wash": {"mode": "bowl_wash"},
-                        "kill_germ": {"mode": "kill_germ"},
-                        "seafood_wash": {"mode": "seafood_wash"},
-                        "hotpot_wash": {"mode": "hotpot_wash"},
-                        "quietnight_wash": {"mode": "quietnight_wash"},
-                        "less_wash": {"mode": "less_wash"},
-                        "oilnet_wash": {"mode": "oilnet_wash"}
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status":"work","mode":"eco_wash","additional":0,"wash_region":3},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                        "self_define": {"work_status": "work", "mode": "self_define"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "bowl_wash": {"work_status": "work", "mode": "bowl_wash"},
+                        "kill_germ": {"work_status": "work", "mode": "kill_germ"},
+                        "seafood_wash": {"work_status": "work", "mode": "seafood_wash"},
+                        "hotpot_wash": {"work_status": "work", "mode": "hotpot_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "less_wash": {"work_status": "work", "mode": "less_wash"},
+                        "oilnet_wash": {"work_status": "work", "mode": "oilnet_wash"}
                     }
-                },
+                }
             },
             Platform.SENSOR: {
                 "bright": {
@@ -115,7 +112,7 @@ DEVICE_MAPPING = {
                 },
                 "left_time": {
                     "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "air_set_hour": {

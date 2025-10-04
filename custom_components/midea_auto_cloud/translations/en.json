@@ -507,6 +507,9 @@
             "work_status": {
                 "name": "Work Status"
             },
+            "wash_mode": {
+                "name": "Wash Mode"
+            },
             "voice": {
                 "name": "Voice"
             },
@@ -2183,9 +2186,6 @@
             },
             "filter_notification": {
                 "name": "Filter Notification"
-            },
-            "wash_mode": {
-                "name": "Wash Mode"
             },
             "left_power": {
                 "name": "Left Power"
