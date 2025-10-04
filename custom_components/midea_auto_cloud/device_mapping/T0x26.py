@@ -105,9 +105,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
-                "subpacket_type": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
                 "drying_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
