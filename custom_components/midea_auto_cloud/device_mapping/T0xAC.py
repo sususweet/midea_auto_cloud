@@ -108,7 +108,7 @@ DEVICE_MAPPING = {
                 },
                 "prevent_straight_wind": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [1, 2]
+                    "rationale": [0, 1]
                 },
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,

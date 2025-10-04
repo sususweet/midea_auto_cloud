@@ -17,39 +17,51 @@ DEVICE_MAPPING = {
             Platform.SWITCH: {
                 "ai_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "light": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "appointment": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "prevent_wrinkle_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "steam_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "damp_dry_signal": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "eco_dry_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "bucket_clean_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "water_box": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "baby_lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "remind_sound": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "steam": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
