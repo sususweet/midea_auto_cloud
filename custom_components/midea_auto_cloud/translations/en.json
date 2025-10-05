@@ -183,6 +183,27 @@
       "maintenance_remind": {
         "name": "Maintenance Remind"
       },
+      "low_salt": {
+        "name": "Low Salt"
+      },
+      "no_salt": {
+        "name": "No Salt"
+      },
+      "low_battery": {
+        "name": "Low Battery"
+      },
+      "flowmeter_error": {
+        "name": "Flowmeter Error"
+      },
+      "salt_level_sensor_error": {
+        "name": "Salt Level Sensor Error"
+      },
+      "leak_water": {
+        "name": "Leak Water"
+      },
+      "micro_leak": {
+        "name": "Micro Leak"
+      },
       "rtc_error": {
         "name": "RTC Error"
       },
@@ -896,9 +917,6 @@
       },
       "left_flexzone_temperature": {
         "name": "Left Flexzone Temperature"
-      },
-      "left_salt": {
-        "name": "Left Salt"
       },
       "left_time": {
         "name": "Remaining Time"

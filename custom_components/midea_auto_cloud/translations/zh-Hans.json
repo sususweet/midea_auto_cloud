@@ -171,6 +171,27 @@
       "maintenance_remind": {
         "name": "维护提醒"
       },
+      "low_salt": {
+        "name": "盐量不足"
+      },
+      "no_salt": {
+        "name": "无盐"
+      },
+      "low_battery": {
+        "name": "电池电量低"
+      },
+      "flowmeter_error": {
+        "name": "流量计错误"
+      },
+      "salt_level_sensor_error": {
+        "name": "盐位传感器错误"
+      },
+      "leak_water": {
+        "name": "漏水"
+      },
+      "micro_leak": {
+        "name": "微漏"
+      },
       "rtc_error": {
         "name": "RTC 错误"
       },
@@ -896,9 +917,6 @@
       },
       "left_flexzone_temperature": {
         "name": "左变温区温度"
-      },
-      "left_salt": {
-        "name": "剩余盐量"
       },
       "left_time": {
         "name": "剩余时间"
