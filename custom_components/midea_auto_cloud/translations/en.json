@@ -636,6 +636,9 @@
       }
     },
     "sensor": {
+      "mode": {
+        "name": "Running Mode"
+      },
       "active_oxygen": {
         "name": "Active Oxygen"
       },

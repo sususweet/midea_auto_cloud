@@ -22,6 +22,7 @@ DEVICE_MAPPING = {
                     },
                     "target_temperature": "temp_set",
                     "current_temperature": "cur_temp",
+                    "pre_mode": "mode",
                     "min_temp": 5,
                     "max_temp": 70,
                     "temperature_unit": UnitOfTemperature.CELSIUS,
@@ -103,6 +104,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "cur_temp": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,

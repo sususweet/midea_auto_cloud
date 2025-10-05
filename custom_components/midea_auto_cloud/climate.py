@@ -66,6 +66,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             config=config,
         )
         self._key_power = self._config.get("power")
+        self._key_pre_mode = self._config.get("pre_mode")
         self._key_hvac_modes = self._config.get("hvac_modes")
         self._key_preset_modes = self._config.get("preset_modes")
         self._key_aux_heat = self._config.get("aux_heat")
@@ -248,8 +249,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return value
         return value == 1 or value == "on" or value == "true"
 
-    async def _async_set_status_on_off(self, key, value):
+    async def _async_set_status_on_off(self, attribute_key: str | None, turn_on: bool):
         """Set on/off status for device attribute."""
-        if key is None:
+        if attribute_key is None:
             return
-        await self.async_set_attribute(key, value)
+        new_status = {}
+        new_status[attribute_key] = self._rationale[int(turn_on)]
+        if turn_on:
+            new_status[self._key_pre_mode] = self._get_nested_value(self._key_pre_mode)
+        await self.async_set_attributes(new_status)

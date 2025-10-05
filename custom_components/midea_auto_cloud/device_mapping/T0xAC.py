@@ -91,6 +91,7 @@ DEVICE_MAPPING = {
                     },
                     "target_temperature": ["temperature", "small_temperature"],
                     "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
                     "aux_heat": "ptc",
                     "min_temp": 17,
                     "max_temp": 30,
@@ -115,6 +116,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "indoor_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
@@ -175,6 +179,7 @@ DEVICE_MAPPING = {
                     },
                     "target_temperature": ["temperature", "small_temperature"],
                     "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
                     "aux_heat": "ptc",
                     "min_temp": 17,
                     "max_temp": 30,
@@ -198,6 +203,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "indoor_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,

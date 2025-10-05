@@ -636,6 +636,9 @@
       }
     },
     "sensor": {
+      "mode": {
+        "name": "运行模式"
+      },
       "active_oxygen": {
         "name": "活性氧"
       },

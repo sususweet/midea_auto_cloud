@@ -142,6 +142,7 @@ DEVICE_MAPPING = {
                     },
                     "target_temperature": "storage_temperature",
                     "current_temperature": "refrigeration_real_temperature",
+                    "pre_mode": "mode",
                     "min_temp": -10,
                     "max_temp": 10,
                     "temperature_unit": UnitOfTemperature.CELSIUS,
@@ -221,6 +222,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "storage_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
