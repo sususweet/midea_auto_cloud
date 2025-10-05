@@ -198,6 +198,18 @@
       "door_status": {
         "name": "门状态"
       },
+      "softener_lack": {
+        "name": "柔顺剂不足"
+      },
+        "detergent_lack": {
+        "name": "洗涤剂不足"
+      },
+      "door_opened": {
+        "name": "门已打开"
+      },
+      "bucket_water_overheating": {
+        "name": "桶内水温过热"
+      },
       "ele_exception": {
         "name": "电气异常"
       },
@@ -1625,6 +1637,9 @@
       "ai_switch": {
         "name": "AI开关"
       },
+      "control_status": {
+        "name": "启停"
+      },
       "airdry_on_off": {
         "name": "风干开关"
       },
@@ -1651,9 +1666,6 @@
       },
       "bucket_clean_switch": {
         "name": "桶清洁开关"
-      },
-      "bucket_water_overheating": {
-        "name": "桶内水温过热"
       },
       "buzzer": {
         "name": "蜂鸣器"
@@ -1736,9 +1748,6 @@
       "defrost_state": {
         "name": "除霜状态"
       },
-      "detergent_lack": {
-        "name": "洗涤剂不足"
-      },
       "disinfect_on_off": {
         "name": "消毒开关"
       },
@@ -1750,9 +1759,6 @@
       },
       "door_middlestair": {
         "name": "中层门"
-      },
-      "door_opened": {
-        "name": "门已打开"
       },
       "door_upstair": {
         "name": "上层门"
@@ -2008,9 +2014,6 @@
       },
       "soften": {
         "name": "软化"
-      },
-      "softener_lack": {
-        "name": "柔顺剂不足"
       },
       "speedy": {
         "name": "快速"

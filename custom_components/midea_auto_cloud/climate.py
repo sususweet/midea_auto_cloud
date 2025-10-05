@@ -193,6 +193,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     async def async_turn_off(self):
         await self._async_set_status_on_off(self._key_power, False)
 
+    async def async_toggle(self):
+        if self.is_on:
+            await self.async_turn_off()
+        else:
+            await self.async_turn_on()
+
     async def async_set_temperature(self, **kwargs):
         if ATTR_TEMPERATURE not in kwargs:
             return

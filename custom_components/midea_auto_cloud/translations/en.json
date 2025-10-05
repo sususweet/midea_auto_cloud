@@ -123,6 +123,18 @@
   },
   "entity": {
     "binary_sensor": {
+      "softener_lack": {
+        "name": "Softener Lack"
+      },
+      "detergent_lack": {
+        "name": "Detergent Lack"
+      },
+      "door_opened": {
+        "name": "Door Opened"
+      },
+      "bucket_water_overheating": {
+        "name": "Bucket Water Overheating"
+      },
       "air_status": {
         "name": "Air Running"
       },
@@ -1445,6 +1457,9 @@
       }
     },
     "switch": {
+      "control_status": {
+        "name": "Start Pause"
+      },
       "add_water_flag": {
         "name": "Add Water Flag"
       },
@@ -1652,9 +1667,6 @@
       "bucket_clean_switch": {
         "name": "Bucket Clean Switch"
       },
-      "bucket_water_overheating": {
-        "name": "Bucket Water Overheating"
-      },
       "buzzer": {
         "name": "Buzzer"
       },
@@ -1736,9 +1748,6 @@
       "defrost_state": {
         "name": "Defrost State"
       },
-      "detergent_lack": {
-        "name": "Detergent Lack"
-      },
       "disinfect_on_off": {
         "name": "Disinfect On Off"
       },
@@ -1750,9 +1759,6 @@
       },
       "door_middlestair": {
         "name": "Door Middle Stair"
-      },
-      "door_opened": {
-        "name": "Door Opened"
       },
       "door_upstair": {
         "name": "Door Up Stair"
@@ -2008,9 +2014,6 @@
       },
       "soften": {
         "name": "Soften"
-      },
-      "softener_lack": {
-        "name": "Softener Lack"
       },
       "speedy": {
         "name": "Speedy"

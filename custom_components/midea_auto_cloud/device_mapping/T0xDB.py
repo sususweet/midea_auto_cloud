@@ -19,94 +19,30 @@ DEVICE_MAPPING = {
         },
         "entities": {
             Platform.BINARY_SENSOR: {
-                "power": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                "softener_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "detergent_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "door_opened": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "bucket_water_overheating": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
             },
             Platform.SWITCH: {
-                "softener_lack": {
+                "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "detergent_lack": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "door_opened": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "bucket_water_overheating": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "memory": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "appointment": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "spray_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "old_speedy": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "nightly": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "down_light": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "easy_ironing": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "super_clean_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "intelligent_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "strong_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "silent": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["0", "1"],
-                },
-                "speedy": {
-                    "device_class": SwitchDeviceClass.SWITCH,
+                "control_status": {
+                    "rationale": ["pause", "start"],
                 },
                 "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "flocks_switcher": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "fresh_anion_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "dry_weighing_already": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "keep_fresh_status": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "drying_tunnel_overheating": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "fast_clean_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "steam_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "beforehand_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "ai_flag": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "water_plus": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "soak": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "ultraviolet_lamp": {
@@ -128,27 +64,8 @@ DEVICE_MAPPING = {
                 "cycle_memory": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "disinfectant": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["0", "1"],
-                },
-                "add_rinse": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["0", "1"],
-                },
             },
             Platform.SELECT: {
-                "running_status": {
-                    "options": {
-                        "off": {"power": "off", "running_status": "off"},
-                        "standby": {"power": "on", "running_status": "standby"},
-                        "start": {"power": "on", "running_status": "start"},
-                        "pause": {"power": "on", "running_status": "pause"},
-                        "end": {"power": "on", "running_status": "end"},
-                        "fault": {"power": "on", "running_status": "fault"},
-                        "delay": {"power": "on", "running_status": "delay"}
-                    }
-                },
                 "dehydration_speed": {
                     "options": {
                         "0": {"dehydration_speed": "0"},
@@ -327,6 +244,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
                 "wash_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
@@ -353,40 +273,7 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "cloud_cycle_low": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_high": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_jiepai1": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_jiepai2": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_jiepai3": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_jiepai4": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "cloud_cycle_jiepai_time1": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
                 "dehydration_time_value": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "cloud_cycle_jiepai_time3": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "cloud_cycle_jiepai_time4": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
@@ -415,9 +302,6 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
-                },
-                "device_software_version": {
-                    "device_class": SensorDeviceClass.ENUM
                 },
                 "expert_step": {
                     "device_class": SensorDeviceClass.ENUM

@@ -7,23 +7,20 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": [
-            "power", "ai_switch", "light", "appointment", "prevent_wrinkle_switch",
-            "steam_switch", "damp_dry_signal", "eco_dry_switch", "bucket_clean_switch",
-            "water_box", "baby_lock", "remind_sound", "steam", "prevent_wrinkle",
-            "material", "sterilize", "dryness_level", "dry_temp", "intensity", "program"
-        ],
+        "centralized": [],
         "entities": {
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "control_status": {
+                    "rationale": ["pause", "start"],
+                },
                 "ai_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
                 "light": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
-                },
-                "appointment": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
@@ -63,9 +60,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
-                "power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                }
             },
             Platform.BINARY_SENSOR: {
                 "door_warn": {
@@ -73,61 +67,68 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
-                "prevent_wrinkle": {
-                    "options": {
-                        "off": {"prevent_wrinkle": "0"},
-                        "low": {"prevent_wrinkle": "1"},
-                        "medium": {"prevent_wrinkle": "2"},
-                        "high": {"prevent_wrinkle": "3"}
-                    }
-                },
-                "material": {
-                    "options": {
-                        "cotton": {"material": "0"},
-                        "synthetic": {"material": "1"},
-                        "wool": {"material": "2"},
-                        "delicate": {"material": "3"},
-                        "mixed": {"material": "4"}
-                    }
-                },
-                "sterilize": {
-                    "options": {
-                        "off": {"sterilize": "0"},
-                        "on": {"sterilize": "1"}
-                    }
-                },
-                "dryness_level": {
-                    "options": {
-                        "extra_dry": {"dryness_level": "0"},
-                        "dry": {"dryness_level": "1"},
-                        "normal": {"dryness_level": "2"},
-                        "damp": {"dryness_level": "3"}
-                    }
-                },
-                "dry_temp": {
-                    "options": {
-                        "low": {"dry_temp": "0"},
-                        "medium": {"dry_temp": "1"},
-                        "high": {"dry_temp": "2"},
-                        "extra_high": {"dry_temp": "3"}
-                    }
-                },
-                "intensity": {
-                    "options": {
-                        "low": {"intensity": "0"},
-                        "medium": {"intensity": "1"},
-                        "high": {"intensity": "2"}
-                    }
-                },
                 "program": {
                     "options": {
-                        "mixed_wash": {"program": "mixed_wash"},
                         "cotton": {"program": "cotton"},
-                        "synthetic": {"program": "synthetic"},
+                        "fiber": {"program": "fiber"},
+                        "mixed_wash": {"program": "mixed_wash"},
+                        "jean": {"program": "jean"},
+                        "bedsheet": {"program": "bedsheet"},
+                        "outdoor": {"program": "outdoor"},
+                        "down_jacket": {"program": "down_jacket"},
+                        "plush": {"program": "plush"},
                         "wool": {"program": "wool"},
-                        "delicate": {"program": "delicate"},
-                        "quick": {"program": "quick"},
-                        "eco": {"program": "eco"}
+                        "dehumidify": {"program": "dehumidify"},
+                        "cold_air_fresh_air": {"program": "cold_air_fresh_air"},
+                        "hot_air_dry": {"program": "hot_air_dry"},
+                        "sport_clothes": {"program": "sport_clothes"},
+                        "underwear": {"program": "underwear"},
+                        "baby_clothes": {"program": "baby_clothes"},
+                        "shirt": {"program": "shirt"},
+                        "standard": {"program": "standard"},
+                        "quick_dry": {"program": "quick_dry"},
+                        "fresh_air": {"program": "fresh_air"},
+                        "low_temp_dry": {"program": "low_temp_dry"},
+                        "eco_dry": {"program": "eco_dry"},
+                        "quick_dry_30": {"program": "quick_dry_30"},
+                        "towel": {"program": "towel"},
+                        "intelligent_dry": {"program": "intelligent_dry"},
+                        "steam_care": {"program": "steam_care"},
+                        "big": {"program": "big"},
+                        "fixed_time_dry": {"program": "fixed_time_dry"},
+                        "night_dry": {"program": "night_dry"},
+                        "bracket_dry": {"program": "bracket_dry"},
+                        "western_trouser": {"program": "western_trouser"},
+                        "dehumidification": {"program": "dehumidification"},
+                        "smart_dry": {"program": "smart_dry"},
+                        "four_piece_suit": {"program": "four_piece_suit"},
+                        "warm_clothes": {"program": "warm_clothes"},
+                        "quick_dry_20": {"program": "quick_dry_20"},
+                        "steam_sterilize": {"program": "steam_sterilize"},
+                        "enzyme": {"program": "enzyme"},
+                        "big_60": {"program": "big_60"},
+                        "steam_no_iron": {"program": "steam_no_iron"},
+                        "air_wash": {"program": "air_wash"},
+                        "bed_clothes": {"program": "bed_clothes"},
+                        "little_fast_dry": {"program": "little_fast_dry"},
+                        "small_piece_dry": {"program": "small_piece_dry"},
+                        "big_dry": {"program": "big_dry"},
+                        "wool_nurse": {"program": "wool_nurse"},
+                        "sun_quilt": {"program": "sun_quilt"},
+                        "fresh_remove_smell": {"program": "fresh_remove_smell"},
+                        "bucket_self_clean": {"program": "bucket_self_clean"},
+                        "silk": {"program": "silk"},
+                        "sterilize": {"program": "sterilize"},
+                        "heavy_duty": {"program": "heavy_duty"},
+                        "towel_warmer": {"program": "towel_warmer"},
+                        "air_fluff": {"program": "air_fluff"},
+                        "delicates": {"program": "delicates"},
+                        "time_drying_30": {"program": "time_drying_30"},
+                        "time_drying_60": {"program": "time_drying_60"},
+                        "time_drying_90": {"program": "time_drying_90"},
+                        "dry_softnurse": {"program": "dry_softnurse"},
+                        "uniforms": {"program": "uniforms"},
+                        "remove_electricity": {"program": "remove_electricity"}
                     }
                 }
             },
