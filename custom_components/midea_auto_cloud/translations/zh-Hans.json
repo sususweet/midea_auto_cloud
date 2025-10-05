@@ -506,7 +506,7 @@
       "variable_mode": {
         "name": "变温模式"
       },
-      "water_level": {
+      "water_tank_setting": {
         "name": "水位"
       },
       "wind_gear": {

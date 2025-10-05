@@ -1,3 +1,4 @@
+from homeassistant.components.smartthings.sensor import value
 from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, UnitOfTime, UnitOfArea, UnitOfVolume
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -10,90 +11,37 @@ DEVICE_MAPPING = {
         "centralized": [],
         "entities": {
             Platform.SELECT: {
-                "fan_level": {
+                "fan_setting": {
                     "options": {
-                        "low": {"fan_level": "low"},
-                        "medium": {"fan_level": "medium"},
-                        "high": {"fan_level": "high"},
-                        "auto": {"fan_level": "auto"}
+                        "soft": {"level": "soft"},
+                        "normal": {"level": "normal"},
+                        "high": {"level": "high"},
+                        "super": {"level": "super"}
                     }
                 },
                 "work_mode": {
                     "options": {
-                        "none": {"work_mode": "none"},
-                        "auto": {"work_mode": "auto"},
-                        "spot": {"work_mode": "spot"},
-                        "edge": {"work_mode": "edge"},
-                        "single_room": {"work_mode": "single_room"},
-                        "custom": {"work_mode": "custom"}
+                        "sweep_and_mop": {"work_mode": "sweep_and_mop"},
+                        "sweep": {"work_mode": "sweep"},
+                        "mop": {"work_mode": "mop"},
+                        "sweep_then_mop": {"work_mode": "sweep_then_mop"}
                     }
                 },
                 "work_status": {
                     "options": {
-                        "idle": {"work_status": "idle"},
-                        "cleaning": {"work_status": "cleaning"},
-                        "returning": {"work_status": "returning"},
-                        "docked": {"work_status": "docked"},
-                        "on_base": {"work_status": "on_base"},
-                        "charging": {"work_status": "charging"},
-                        "error": {"work_status": "error"}
+                        "auto_clean": {"work_status": "auto_clean"},
+                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
+                        "charge": {"work_status": "charge"},
+                        "charge_pause": {"work_status": "charge_pause"},
                     }
                 },
-                "move_direction": {
+                "water_tank_setting": {
                     "options": {
-                        "none": {"move_direction": "none"},
-                        "forward": {"move_direction": "forward"},
-                        "backward": {"move_direction": "backward"},
-                        "left": {"move_direction": "left"},
-                        "right": {"move_direction": "right"}
+                        "low": {"level": "low"},
+                        "normal": {"level": "normal"},
+                        "high": {"level": "high"}
                     }
                 },
-                "query_type": {
-                    "options": {
-                        "work": {"query_type": "work"},
-                        "status": {"query_type": "status"},
-                        "battery": {"query_type": "battery"},
-                        "error": {"query_type": "error"}
-                    }
-                },
-                "sub_work_status": {
-                    "options": {
-                        "idle": {"sub_work_status": "idle"},
-                        "cleaning": {"sub_work_status": "cleaning"},
-                        "charging": {"sub_work_status": "charging"},
-                        "charge_finish": {"sub_work_status": "charge_finish"},
-                        "error": {"sub_work_status": "error"}
-                    }
-                },
-                "water_level": {
-                    "options": {
-                        "low": {"water_level": "low"},
-                        "normal": {"water_level": "normal"},
-                        "high": {"water_level": "high"}
-                    }
-                },
-                "mop_status": {
-                    "options": {
-                        "normal": {"mop_status": "normal"},
-                        "lack_water": {"mop_status": "lack_water"},
-                        "full_water": {"mop_status": "full_water"}
-                    }
-                },
-                "error_type": {
-                    "options": {
-                        "no_error": {"error_type": "no_error"},
-                        "can_fix": {"error_type": "can_fix"},
-                        "need_help": {"error_type": "need_help"}
-                    }
-                },
-                "control_type": {
-                    "options": {
-                        "none": {"control_type": "none"},
-                        "app": {"control_type": "app"},
-                        "remote": {"control_type": "remote"},
-                        "auto": {"control_type": "auto"}
-                    }
-                }
             },
             Platform.BINARY_SENSOR: {
                 "carpet_switch": {
@@ -104,6 +52,21 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "control_type": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "mop_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "sub_work_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "query_type": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "move_direction": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
                 "dust_count": {
                     "device_class": SensorDeviceClass.ENUM
                 },
