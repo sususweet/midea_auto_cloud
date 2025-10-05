@@ -387,7 +387,7 @@
       "error_type": {
         "name": "Error Type"
       },
-      "fan_level": {
+      "fan_setting": {
         "name": "Fan Level"
       },
       "fan_set": {

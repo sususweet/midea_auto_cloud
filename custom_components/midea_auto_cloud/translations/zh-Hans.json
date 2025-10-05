@@ -387,7 +387,7 @@
       "error_type": {
         "name": "错误类型"
       },
-      "fan_level": {
+      "fan_setting": {
         "name": "风扇档位"
       },
       "fan_set": {

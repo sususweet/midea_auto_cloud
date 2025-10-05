@@ -1,8 +1,6 @@
-from homeassistant.components.smartthings.sensor import value
-from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, UnitOfTime, UnitOfArea, UnitOfVolume
+from homeassistant.const import Platform, UnitOfTime, UnitOfArea
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
     "default": {
@@ -29,10 +27,18 @@ DEVICE_MAPPING = {
                 },
                 "work_status": {
                     "options": {
-                        "auto_clean": {"work_status": "auto_clean"},
-                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
                         "charge": {"work_status": "charge"},
                         "charge_pause": {"work_status": "charge_pause"},
+                        "charge_continue": {"work_status": "charge_continue"},
+                        "auto_clean": {"work_status": "auto_clean"},
+                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
+                        "auto_clean_continue": {"work_status": "auto_clean_continue"},
+                        "pause": {"work_status": "pause"},
+                        "stop": {"work_status": "stop"},
+                        "work": {"work_status": "work"},
+                        "video_cruise_start": {"work_status": "video_cruise_start"},
+                        "video_cruise_pause": {"work_status": "video_cruise_pause"},
+                        "quickly_build_map": {"work_status": "quickly_build_map"},
                     }
                 },
                 "water_tank_setting": {
