@@ -1475,6 +1475,12 @@
       },
       "delay_time": {
         "name": "Delay Time"
+      },
+      "input_temperature_sensing": {
+        "name": "Input Temperature Sensing"
+      },
+      "hot_pot_temperature": {
+        "name": "Hot Pot Temperature"
       }
     },
     "switch": {
@@ -2308,6 +2314,9 @@
       },
       "drying_direction": {
         "name": "Drying Direction"
+      },
+      "antifreeze": {
+        "name": "Antifreeze"
       }
     }
   }

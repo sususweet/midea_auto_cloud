@@ -1475,6 +1475,12 @@
       },
       "delay_time": {
         "name": "延时时间"
+      },
+      "input_temperature_sensing": {
+        "name": "输入温度"
+      },
+      "hot_pot_temperature": {
+        "name": "热水温度"
       }
     },
     "switch": {
@@ -2308,6 +2314,9 @@
       },
       "drying_direction": {
         "name": "烘干方向"
+      },
+      "antifreeze": {
+        "name": "防冻模式"
       }
     }
   }

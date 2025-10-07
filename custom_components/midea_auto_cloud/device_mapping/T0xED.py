@@ -14,9 +14,11 @@ DEVICE_MAPPING = {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "heat_start": {
+                "heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
+                },
+                "antifreeze": {
+                    "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -111,6 +113,16 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "input_temperature_sensing": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "hot_pot_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
                 "cool_target_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
@@ -185,6 +197,9 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.SECONDS,
                     "state_class": SensorStateClass.MEASUREMENT
+                },
+                "heat_start": {
+                    "device_class": SensorDeviceClass.ENUM,
                 },
                 "regeneration_stages": {
                     "device_class": SensorDeviceClass.ENUM,
