@@ -1707,16 +1707,16 @@
         "name": "CO2检测启用"
       },
       "cold_water": {
-        "name": "冷水"
+        "name": "零冷水"
       },
       "cold_water_ai": {
-        "name": "冷水AI"
+        "name": "AI零冷水"
       },
       "cold_water_dot": {
-        "name": "冷水点"
+        "name": "点动零冷水"
       },
       "cold_water_pressure": {
-        "name": "冷水压力"
+        "name": "双增压"
       },
       "comp_state": {
         "name": "压缩机状态"
