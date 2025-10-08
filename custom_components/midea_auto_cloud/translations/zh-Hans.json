@@ -2317,6 +2317,9 @@
       },
       "antifreeze": {
         "name": "防冻模式"
+      },
+      "cold_water_master": {
+        "name": "单次零冷水"
       }
     }
   }

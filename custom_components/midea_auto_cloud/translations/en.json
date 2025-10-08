@@ -2317,6 +2317,9 @@
       },
       "antifreeze": {
         "name": "Antifreeze"
+      },
+      "cold_water_master": {
+        "name": "Cold Water Master"
       }
     }
   }
