@@ -116,7 +116,8 @@ DEVICE_MAPPING = {
                 "input_temperature_Sensing": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "input_temperature_sensing"
                 },
                 "hot_pot_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
