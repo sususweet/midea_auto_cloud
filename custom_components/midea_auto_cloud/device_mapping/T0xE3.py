@@ -7,19 +7,14 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": [
-            "power", "bubble", "cold_water", "bathtub", "safe", "cold_water_dot",
-            "change_litre_switch", "cold_water_ai", "cold_water_pressure",
-            "person_mode_one", "person_mode_two", "person_mode_three", "gesture_function",
-            "mode", "power_level", "type_machine", "capacity", "temperature"
-        ],
+        "centralized": [],
         "entities": {
             Platform.SWITCH: {
                 "bubble": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
-                "cold_water": {
+                "cold_water_master": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "bathtub": {

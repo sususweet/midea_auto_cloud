@@ -1475,6 +1475,12 @@
       },
       "delay_time": {
         "name": "延时时间"
+      },
+      "input_temperature_sensing": {
+        "name": "输入温度"
+      },
+      "hot_pot_temperature": {
+        "name": "热水温度"
       }
     },
     "switch": {
@@ -1707,16 +1713,16 @@
         "name": "CO2检测启用"
       },
       "cold_water": {
-        "name": "冷水"
+        "name": "零冷水"
       },
       "cold_water_ai": {
-        "name": "冷水AI"
+        "name": "AI零冷水"
       },
       "cold_water_dot": {
-        "name": "冷水点"
+        "name": "点动零冷水"
       },
       "cold_water_pressure": {
-        "name": "冷水压力"
+        "name": "双增压"
       },
       "comp_state": {
         "name": "压缩机状态"
@@ -2308,6 +2314,12 @@
       },
       "drying_direction": {
         "name": "烘干方向"
+      },
+      "antifreeze": {
+        "name": "防冻模式"
+      },
+      "cold_water_master": {
+        "name": "单次零冷水"
       }
     }
   }
