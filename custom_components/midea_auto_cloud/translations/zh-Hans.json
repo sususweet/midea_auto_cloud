@@ -594,15 +594,7 @@
         "name": "垂直摆风"
       },
       "left_cookmode": {
-        "name": "左侧烹饪模式",
-        "options": {
-          "default": "默认",
-          "order": "预约",
-          "keep_temperature": "保温",
-          "local_recipe": "本地食谱",
-          "cloud_recipe": "云食谱",
-          "order_keep_temperature": "预约保温"
-        }
+        "name": "左侧烹饪模式"
       },
       "left_gear": {
         "name": "左侧档位"

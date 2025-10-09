@@ -594,15 +594,7 @@
         "name": "Swing Vertical"
       },
       "left_cookmode": {
-        "name": "Left Cook Mode",
-        "options": {
-          "default": "Default",
-          "order": "Order",
-          "keep_temperature": "Keep Temperature",
-          "local_recipe": "Local Recipe",
-          "cloud_recipe": "Cloud Recipe",
-          "order_keep_temperature": "Order Keep Temperature"
-        }
+        "name": "Left Cook Mode"
       },
       "left_gear": {
         "name": "Left Gear"
