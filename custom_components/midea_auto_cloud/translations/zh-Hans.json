@@ -1476,7 +1476,7 @@
       "delay_time": {
         "name": "延时时间"
       },
-      "input_temperature_sensing": {
+      "input_temperature_Sensing": {
         "name": "输入温度"
       },
       "hot_pot_temperature": {

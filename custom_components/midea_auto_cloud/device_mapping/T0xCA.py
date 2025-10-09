@@ -138,7 +138,7 @@ DEVICE_MAPPING = {
                     "power": "storage_power",
                     "hvac_modes": {
                         "off": {"storage_power": "off"},
-                        "heat": {"storage_power": "on"}
+                        "cool": {"storage_power": "on"}
                     },
                     "target_temperature": "storage_temperature",
                     "current_temperature": "refrigeration_real_temperature",
@@ -152,7 +152,7 @@ DEVICE_MAPPING = {
                     "power": "freezing_power",
                     "hvac_modes": {
                         "off": {"freezing_power": "off"},
-                        "heat": {"freezing_power": "on"}
+                        "cool": {"freezing_power": "on"}
                     },
                     "target_temperature": "freezing_temperature",
                     "current_temperature": "freezing_real_temperature",
@@ -165,7 +165,7 @@ DEVICE_MAPPING = {
                     "power": "left_flexzone_power",
                     "hvac_modes": {
                         "off": {"left_flexzone_power": "off"},
-                        "heat": {"left_flexzone_power": "on"}
+                        "cool": {"left_flexzone_power": "on"}
                     },
                     "target_temperature": "left_flexzone_temperature",
                     "current_temperature": "left_variable_real_temperature",
@@ -178,7 +178,7 @@ DEVICE_MAPPING = {
                     "power": "right_flexzone_power",
                     "hvac_modes": {
                         "off": {"right_flexzone_power": "off"},
-                        "heat": {"right_flexzone_power": "on"}
+                        "cool": {"right_flexzone_power": "on"}
                     },
                     "target_temperature": "right_flexzone_temperature",
                     "current_temperature": "right_variable_real_temperature",
