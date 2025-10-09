@@ -464,9 +464,6 @@
       "mop_status": {
         "name": "拖地状态"
       },
-      "move_direction": {
-        "name": "移动方向"
-      },
       "power_level": {
         "name": "功率等级"
       },
@@ -502,9 +499,6 @@
       },
       "sterilize": {
         "name": "杀菌"
-      },
-      "sub_work_status": {
-        "name": "子工作状态"
       },
       "tank_status": {
         "name": "水箱状态"
@@ -636,6 +630,18 @@
       }
     },
     "sensor": {
+      "fan_level": {
+        "name": "风扇档位"
+      },
+      "mop": {
+        "name": "拖布模式"
+      },
+      "move_direction": {
+        "name": "移动方向"
+      },
+      "sub_work_status": {
+        "name": "子工作状态"
+      },
       "mode": {
         "name": "运行模式"
       },

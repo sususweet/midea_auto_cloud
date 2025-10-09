@@ -149,7 +149,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "left_salt": {
-                    "device_class": SensorDeviceClass.POWER,
+                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },

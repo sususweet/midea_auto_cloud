@@ -38,7 +38,9 @@ DEVICE_MAPPING = {
                         "work": {"work_status": "work"},
                         "video_cruise_start": {"work_status": "video_cruise_start"},
                         "video_cruise_pause": {"work_status": "video_cruise_pause"},
-                        "quickly_build_map": {"work_status": "quickly_build_map"},
+                        "mop_clean": {"mop_clean_setting": {"mode_type": "common", "clean_level": "normal"}},
+                        "dry_mop_on": {"work_status": "dry_mop", "switch": "on"},
+                        "dry_mop_off": {"work_status": "dry_mop", "switch": "off"},
                     }
                 },
                 "water_tank_setting": {
@@ -58,16 +60,13 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
-                "control_type": {
+                "fan_level": {
                     "device_class": SensorDeviceClass.ENUM
                 },
-                "mop_status": {
+                "mop": {
                     "device_class": SensorDeviceClass.ENUM
                 },
                 "sub_work_status": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "query_type": {
                     "device_class": SensorDeviceClass.ENUM
                 },
                 "move_direction": {

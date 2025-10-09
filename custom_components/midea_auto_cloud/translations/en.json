@@ -464,9 +464,6 @@
       "mop_status": {
         "name": "Mop Status"
       },
-      "move_direction": {
-        "name": "Move Direction"
-      },
       "power_level": {
         "name": "Power Level"
       },
@@ -502,9 +499,6 @@
       },
       "sterilize": {
         "name": "Sterilize"
-      },
-      "sub_work_status": {
-        "name": "Sub Work Status"
       },
       "tank_status": {
         "name": "Tank Status"
@@ -636,6 +630,18 @@
       }
     },
     "sensor": {
+      "fan_level": {
+        "name": "Fan Level"
+      },
+      "mop": {
+        "name": "Mop Mode"
+      },
+      "move_direction": {
+        "name": "Move Direction"
+      },
+      "sub_work_status": {
+        "name": "Sub Work Status"
+      },
       "mode": {
         "name": "Running Mode"
       },
