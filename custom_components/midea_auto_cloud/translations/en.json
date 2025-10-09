@@ -442,21 +442,7 @@
         "name": "Middle Stair Work Status"
       },
       "mode": {
-        "name": "Mode",
-        "options": {
-          "close_all": "Close All",
-          "strong_heating": "Strong Heating",
-          "weak_heating": "Weak Heating",
-          "heating": "Heating",
-          "bath": "Bath",
-          "soft_wind": "Soft Wind",
-          "ventilation": "Ventilation",
-          "morning_ventilation": "Morning Ventilation",
-          "drying": "Drying",
-          "blowing": "Blowing",
-          "drying_safe_power": "Drying Safe Power",
-          "drying_fast": "Drying Fast"
-        }
+        "name": "Mode"
       },
       "mode_state": {
         "name": "Mode State"
@@ -606,13 +592,7 @@
         "name": "Heating Direction"
       },
       "light_mode": {
-        "name": "Light Mode",
-        "options": {
-          "close_all": "Close All",
-          "night_light": "Night Light",
-          "main_light": "Main Light",
-          "all_on": "All On"
-        }
+        "name": "Light Mode"
       },
       "bath_direction": {
         "name": "Bath Direction"

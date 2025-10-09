@@ -442,21 +442,7 @@
         "name": "中层工作状态"
       },
       "mode": {
-        "name": "模式",
-        "options": {
-          "close_all": "全部关闭",
-          "strong_heating": "强力加热",
-          "weak_heating": "弱力加热",
-          "heating": "加热",
-          "bath": "浴室",
-          "soft_wind": "柔风",
-          "ventilation": "通风",
-          "morning_ventilation": "晨间通风",
-          "drying": "烘干",
-          "blowing": "吹风",
-          "drying_safe_power": "安全功率烘干",
-          "drying_fast": "快速烘干"
-        }
+        "name": "模式"
       },
       "mode_state": {
         "name": "模式状态"
@@ -606,13 +592,7 @@
         "name": "加热方向"
       },
       "light_mode": {
-        "name": "灯光模式",
-        "options": {
-          "close_all": "全部关闭",
-          "night_light": "夜灯",
-          "main_light": "主灯",
-          "all_on": "全部开启"
-        }
+        "name": "灯光模式"
       },
       "bath_direction": {
         "name": "浴室方向"
