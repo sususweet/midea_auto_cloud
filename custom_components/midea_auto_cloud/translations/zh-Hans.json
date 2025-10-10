@@ -1678,7 +1678,7 @@
       "control_status": {
         "name": "启停"
       },
-      "airdry_on_off": {
+      "airDry_on_off": {
         "name": "风干开关"
       },
       "airswitch": {
@@ -1954,7 +1954,7 @@
       "middlestair_ispreheat": {
         "name": "中层预热"
       },
-      "netions_on_off": {
+      "netIons_on_off": {
         "name": "负离子开关"
       },
       "nightly": {
