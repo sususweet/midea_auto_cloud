@@ -1,6 +1,6 @@
 from homeassistant.components.humidifier import (
     HumidifierEntity,
-    HumidifierDeviceClass
+    HumidifierDeviceClass, HumidifierEntityFeature
 )
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
@@ -61,6 +61,8 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
             rationale=rationale,
             config=config,
         )
+        self._attr_supported_features = HumidifierEntityFeature.MODES
+        self._attr_available_modes = self._config.get("modes").keys()
 
     @property
     def device_class(self):
