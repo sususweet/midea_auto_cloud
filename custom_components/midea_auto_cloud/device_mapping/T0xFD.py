@@ -16,9 +16,11 @@ DEVICE_MAPPING = {
                 },
                 "netIons_on_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "netions_on_off"
                 },
                 "airDry_on_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "airdry_on_off"
                 },
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,

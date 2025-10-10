@@ -1681,7 +1681,7 @@
       "ai_switch": {
         "name": "AI Switch"
       },
-      "airDry_on_off": {
+      "airdry_on_off": {
         "name": "Air Dry On Off"
       },
       "airswitch": {
@@ -1957,7 +1957,7 @@
       "middlestair_ispreheat": {
         "name": "Middle Stair Is Preheat"
       },
-      "netIons_on_off": {
+      "netions_on_off": {
         "name": "Net Ions On Off"
       },
       "nightly": {
