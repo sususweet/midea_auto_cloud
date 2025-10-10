@@ -132,6 +132,55 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "26093139": {
+        "rationale": [0, 3],
+        "queries": [{}, {"query_type": "run_status"}],
+        "centralized": ["fresh_air", "fresh_air_mode", "fresh_air_fan_speed", "fresh_air_temp"],
+        "entities": {
+            Platform.FAN: {
+                "fan": {
+                    "power": "fresh_air",
+                    "speeds": [
+                        {"fresh_air": 3, "fresh_air_fan_speed": 20},
+                        {"fresh_air": 3, "fresh_air_fan_speed": 40},
+                        {"fresh_air": 3, "fresh_air_fan_speed": 60},
+                        {"fresh_air": 3, "fresh_air_fan_speed": 80},
+                        {"fresh_air": 3, "fresh_air_fan_speed": 100},
+                    ],
+                    "preset_modes": {
+                        "heat_exchange": {
+                            "fresh_air_mode": 1,
+                            "wind_strength": 0
+                        },
+                        "smooth_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 0
+                        },
+                        "rough_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 1
+                        },
+                        "smooth_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 0
+                        },
+                        "rough_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 1
+                        },
+                        "auto": {
+                            "fresh_air_mode": 4,
+                            "wind_strength": 0
+                        },
+                        "innercycle": {
+                            "fresh_air_mode": 5,
+                            "wind_strength": 0
+                        },
+                    }
+                }
+            },
+        }
+    },
     "22012227": {
         "rationale": ["off", "on"],
         "queries": [{}],
