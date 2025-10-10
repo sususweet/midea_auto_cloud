@@ -320,6 +320,9 @@
       },
       "standby_status": {
         "name": "Standby Status"
+      },
+      "tank_status": {
+        "name": "Tank Status"
       }
     },
     "climate": {
@@ -345,6 +348,9 @@
     "humidifier": {
       "humidifier": {
         "name": "Humidifier"
+      },
+      "dehumidifier": {
+        "name": "Dehumidifier"
       }
     },
     "select": {
@@ -605,6 +611,12 @@
       },
       "air_set_hour": {
         "name": "Drying Storage Set Time"
+      },
+      "power_on_time": {
+        "name": "Power On Time"
+      },
+      "power_off_time": {
+        "name": "Power Off Time"
       }
     },
     "sensor": {
@@ -1462,9 +1474,27 @@
       },
       "hot_pot_temperature": {
         "name": "Hot Pot Temperature"
+      },
+      "water_full_time": {
+        "name": "Water Full Time"
+      },
+      "water_full_level": {
+        "name": "Water Full Level"
       }
     },
     "switch": {
+      "anion": {
+        "name": "Anion"
+      },
+      "child_lock": {
+        "name": "Child Lock"
+      },
+      "wind_swing_ud": {
+        "name": "Wind Swing UD"
+      },
+      "filter_tip": {
+        "name": "Filter Tip"
+      },
       "control_status": {
         "name": "Start Pause"
       },
@@ -1953,12 +1983,6 @@
       },
       "power": {
         "name": "Power"
-      },
-      "power_off_timer": {
-        "name": "Power Off Timer"
-      },
-      "power_on_timer": {
-        "name": "Power On Timer"
       },
       "power_state": {
         "name": "Power State"
