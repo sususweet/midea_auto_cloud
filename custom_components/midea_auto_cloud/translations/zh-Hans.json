@@ -366,6 +366,9 @@
       "control_type": {
         "name": "控制类型"
       },
+      "dehydration_speed": {
+        "name": "脱水转速"
+      },
       "db_dehydration_speed": {
         "name": "脱水转速"
       },
@@ -389,6 +392,9 @@
       },
       "db_temperature": {
         "name": "温度"
+      },
+      "water_level": {
+        "name": "水位"
       },
       "db_water_level": {
         "name": "水位"
@@ -793,9 +799,6 @@
       },
       "db_wash_time": {
         "name": "洗涤时间"
-      },
-      "dehydration_speed": {
-        "name": "脱水转速"
       },
       "dehydration_time": {
         "name": "脱水时间"

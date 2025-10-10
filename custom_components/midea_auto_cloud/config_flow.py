@@ -44,9 +44,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             try:
                 if await cloud.login():
-                    await self.async_set_unique_id(user_input[CONF_ACCOUNT])
-                    self._abort_if_unique_id_configured()
-                    
+
                     # 保存云实例和用户输入，用于后续步骤
                     self._cloud = cloud
                     self._user_input = user_input

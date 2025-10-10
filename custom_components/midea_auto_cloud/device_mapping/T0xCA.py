@@ -11,7 +11,7 @@ DEVICE_MAPPING = {
             "freezing_mode", "intelligent_mode", "energy_saving_mode", "holiday_mode",
             "moisturize_mode", "preservation_mode", "acme_freezing_mode", "variable_mode",
             "storage_power", "left_flexzone_power", "right_flexzone_power", "freezing_power",
-            "function_zone_power", "storage_temperature", "freezing_temperature",
+            "storage_temperature", "freezing_temperature",
             "left_flexzone_temperature", "right_flexzone_temperature"
         ],
         "entities": {
@@ -47,9 +47,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "freezing_power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "function_zone_power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "cross_peak_electricity": {
@@ -192,26 +189,27 @@ DEVICE_MAPPING = {
                 "variable_mode": {
                     "options": {
                         "none_mode": {"variable_mode": "none_mode"},
-                        "freezing": {"variable_mode": "freezing"},
-                        "refrigeration": {"variable_mode": "refrigeration"},
-                        "wine": {"variable_mode": "wine"},
-                        "vegetable": {"variable_mode": "vegetable"}
+                        "soft_freezing_mode": {"variable_mode": "soft_freezing_mode"},
+                        "zero_fresh_mode": {"variable_mode": "zero_fresh_mode"},
+                        "cold_drink_mode": {"variable_mode": "cold_drink_mode"},
+                        "fresh_product_mode": {"variable_mode": "fresh_product_mode"},
+                        "partial_freezing_mode": {"variable_mode": "partial_freezing_mode"},
+                        "dry_zone_mode": {"variable_mode": "dry_zone_mode"},
+                        "freeze_warm_mode": {"variable_mode": "freeze_warm_mode"},
+                        "freeze_mode": {"variable_mode": "freeze_mode"},
                     }
                 },
                 "icea_bar_function_switch": {
                     "options": {
                         "default": {"icea_bar_function_switch": "default"},
-                        "ice": {"icea_bar_function_switch": "ice"},
-                        "water": {"icea_bar_function_switch": "water"},
-                        "off": {"icea_bar_function_switch": "off"}
+                        "refrigeration": {"icea_bar_function_switch": "refrigeration"},
+                        "freezing": {"icea_bar_function_switch": "freezing"},
                     }
                 },
                 "food_site": {
                     "options": {
                         "left_freezing_room": {"food_site": "left_freezing_room"},
                         "right_freezing_room": {"food_site": "right_freezing_room"},
-                        "storage_room": {"food_site": "storage_room"},
-                        "function_zone": {"food_site": "function_zone"}
                     }
                 },
                 "temperature_unit": {
@@ -222,9 +220,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
-                "mode": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
                 "storage_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,

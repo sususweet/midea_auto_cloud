@@ -366,6 +366,9 @@
       "control_type": {
         "name": "Control Type"
       },
+      "dehydration_speed": {
+        "name": "Dehydration Speed"
+      },
       "db_dehydration_speed": {
         "name": "DB Dehydration Speed"
       },
@@ -389,6 +392,9 @@
       },
       "db_temperature": {
         "name": "DB Temperature"
+      },
+      "water_level": {
+        "name": "Water Level"
       },
       "db_water_level": {
         "name": "DB Water Level"
@@ -793,9 +799,6 @@
       },
       "db_wash_time": {
         "name": "DB Wash Time"
-      },
-      "dehydration_speed": {
-        "name": "Dehydration Speed"
       },
       "dehydration_time": {
         "name": "Dehydration Time"
