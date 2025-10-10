@@ -44,9 +44,9 @@ DEVICE_MAPPING = {
                 "person_mode_three": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "gesture_function": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                }
+                # "gesture_function": {
+                #     "device_class": SwitchDeviceClass.SWITCH,
+                # }
             },
             Platform.CLIMATE: {
                 "water_heater": {
@@ -69,39 +69,48 @@ DEVICE_MAPPING = {
                         "shower": {"mode": "shower"},
                         "bath": {"mode": "bath"},
                         "mixed": {"mode": "mixed"},
-                        "eco": {"mode": "eco"}
+                        "eco": {"mode": "eco"},
+                        "kitchen": {"mode": "kitchen"},
+                        "thalposis": {"mode": "thalposis"},
+                        "intelligence": {"mode": "intelligence"},
+                        "unfreeze": {"mode": "unfreeze"},
+                        "wash_bowl": {"mode": "wash_bowl"},
+                        "high_temperature": {"mode": "high_temperature"},
+                        "baby": {"mode": "baby"},
+                        "adult": {"mode": "adult"},
+                        "old": {"mode": "old"}
                     }
                 },
                 "power_level": {
                     "options": {
-                        "low": {"power_level": "0"},
-                        "medium": {"power_level": "1"},
-                        "high": {"power_level": "2"},
-                        "max": {"power_level": "3"}
+                        "low": {"power_level": 0},
+                        "medium": {"power_level": 1},
+                        "high": {"power_level": 2},
+                        "max": {"power_level": 3}
                     }
                 },
                 "type_machine": {
                     "options": {
-                        "standard": {"type_machine": "20"},
-                        "premium": {"type_machine": "21"},
-                        "deluxe": {"type_machine": "22"}
+                        "standard": {"type_machine": 20},
+                        "premium": {"type_machine": 21},
+                        "deluxe": {"type_machine": 22}
                     }
                 },
                 "capacity": {
                     "options": {
-                        "small": {"capacity": "1"},
-                        "medium": {"capacity": "2"},
-                        "large": {"capacity": "3"}
+                        "small": {"capacity": 1},
+                        "medium": {"capacity": 2},
+                        "large": {"capacity": 3}
                     }
                 },
-                "gesture_function_type": {
-                    "options": {
-                        "none": {"gesture_function_type": "0"},
-                        "wave": {"gesture_function_type": "1"},
-                        "touch": {"gesture_function_type": "2"},
-                        "proximity": {"gesture_function_type": "3"}
-                    }
-                }
+                # "gesture_function_type": {
+                #     "options": {
+                #         "none": {"gesture_function_type": "0"},
+                #         "wave": {"gesture_function_type": "1"},
+                #         "touch": {"gesture_function_type": "2"},
+                #         "proximity": {"gesture_function_type": "3"}
+                #     }
+                # }
             },
             Platform.SENSOR: {
                 "out_water_tem": {
