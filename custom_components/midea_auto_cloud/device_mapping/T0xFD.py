@@ -8,19 +8,18 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": [],
+        "centralized": [
+            "power", "disinfect_on_off", "netIons_on_off", "airDry_on_off",
+            "wind_gear", "wind_speed", "light_color", "bright_led",
+            "humidity_mode", "tank_status", "humidity", "cur_humidity"
+        ],
         "entities": {
             Platform.SWITCH: {
-                "disinfect_on_off": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "netIons_on_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "netions_on_off"
                 },
                 "airDry_on_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "airdry_on_off"
                 },
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -28,17 +27,17 @@ DEVICE_MAPPING = {
                 "buzzer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "display_on_off": {
+                "power_on_timer": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "power_off_timer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 }
             },
             Platform.BINARY_SENSOR: {
                 "add_water_flag": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
-                },
-                "tank_status": {
-                    "device_class": BinarySensorDeviceClass.PROBLEM
-                },
+                }
             },
             Platform.HUMIDIFIER: {
                 "humidifier": {
@@ -51,59 +50,45 @@ DEVICE_MAPPING = {
                     "mode": "humidity_mode",
                     "modes": {
                         "manual": {"humidity_mode": "manual"},
-                        "auto": {"humidity_mode": "auto"},
-                        "sleep": {"humidity_mode": "sleep"},
-                        "continue": {"humidity_mode": "continue"},
-                        "parlour": {"humidity_mode": "parlour"},
-                        "bedroom": {"humidity_mode": "bedroom"},
-                        "kitchen": {"humidity_mode": "kitchen"},
                         "moist_skin": {"humidity_mode": "moist_skin"},
+                        "sleep": {"humidity_mode": "sleep"}
                     }
                 }
             },
             Platform.SELECT: {
-                "power_on_time": {
+                "humidity_mode": {
                     "options": {
-                        "off": {"power_on_timer": "off"},
-                        "15": {"power_on_timer": "on", "time_on": "15"},
-                        "30": {"power_on_timer": "on", "time_on": "30"},
-                        "45": {"power_on_timer": "on", "time_on": "45"},
-                        "60": {"power_on_timer": "on", "time_on": "60"},
-                    }
-                },
-                "power_off_time": {
-                    "options": {
-                        "off": {"power_off_timer": "off"},
-                        "15": {"power_off_timer": "on", "time_off": "15"},
-                        "30": {"power_off_timer": "on", "time_off": "30"},
-                        "45": {"power_off_timer": "on", "time_off": "45"},
-                        "60": {"power_off_timer": "on", "time_off": "60"},
+                        "manual": {"humidity_mode": "manual"},
+                        "moist_skin": {"humidity_mode": "moist_skin"},
+                        "sleep": {"humidity_mode": "sleep"}
                     }
                 },
                 "wind_gear": {
                     "options": {
-                        "lowest": {"wind_gear": "lowest"},
                         "low": {"wind_gear": "low"},
-                        "middle": {"wind_gear": "middle"},
+                        "medium": {"wind_gear": "medium"},
                         "high": {"wind_gear": "high"},
                         "auto": {"wind_gear": "auto"},
+                        "invalid": {"wind_gear": "invalid"}
                     }
                 },
                 "wind_speed": {
                     "options": {
-                        "lowest": {"wind_speed": "lowest"},
                         "low": {"wind_speed": "low"},
-                        "middle": {"wind_speed": "middle"},
+                        "medium": {"wind_speed": "medium"},
                         "high": {"wind_speed": "high"},
                         "auto": {"wind_speed": "auto"},
+                        "invalid": {"wind_speed": "invalid"}
                     }
                 },
                 "light_color": {
                     "options": {
                         "warm": {"light_color": "warm"},
-                        "blue": {"light_color": "blue"},
-                        "green": {"light_color": "green"},
-                        "red": {"light_color": "red"},
+                        #"cool": {"light_color": "cool"},
+                        #"white": {"light_color": "white"},
+                        #"blue": {"light_color": "blue"},
+                        #"green": {"light_color": "green"},
+                        #"red": {"light_color": "red"},
                         "off": {"light_color": "off"}
                     }
                 },
@@ -149,6 +134,21 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "time_on": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "time_off": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "tank_status": {
+                    "device_class": SensorDeviceClass.POWER_FACTOR,
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
             }
         }
     }
