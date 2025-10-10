@@ -123,6 +123,9 @@
   },
   "entity": {
     "binary_sensor": {
+      "doorswitch": {
+        "name": "Door Switch"
+      },
       "softener_lack": {
         "name": "Softener Lack"
       },
@@ -145,7 +148,7 @@
         "name": "Bottom Hot"
       },
       "bright_lack": {
-        "name": "Brightness Lack"
+        "name": "Brightener Lack"
       },
       "carpet_switch": {
         "name": "Carpet Switch"
@@ -208,7 +211,7 @@
         "name": "RTC Error"
       },
       "softwater_lack": {
-        "name": "Soft Water Lack"
+        "name": "Lack of Soft Water Salt"
       },
       "storage_door_state": {
         "name": "Storage Door State"
@@ -599,6 +602,9 @@
       },
       "drying_direction": {
         "name": "Drying Direction"
+      },
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
       }
     },
     "sensor": {
@@ -624,10 +630,7 @@
         "name": "Air Dry Left Time"
       },
       "air_left_hour": {
-        "name": "AC Remaining Time"
-      },
-      "air_set_hour": {
-        "name": "AC Set Time"
+        "name": "Drying Storage Remaining Time"
       },
       "appointment_time": {
         "name": "Appointment Time"
@@ -657,7 +660,7 @@
         "name": "Bottom Temperature"
       },
       "bright": {
-        "name": "Brightness"
+        "name": "Brightener Level"
       },
       "category": {
         "name": "Category"
@@ -1074,7 +1077,7 @@
         "name": "Softener Global"
       },
       "softwater": {
-        "name": "Soft Water Temp"
+        "name": "Soft Water Level"
       },
       "station_error_desc": {
         "name": "Station Error Description"
@@ -1649,7 +1652,7 @@
         "name": "Air Dry On Off"
       },
       "airswitch": {
-        "name": "AC Switch"
+        "name": "Drying Storage Switch"
       },
       "appointment": {
         "name": "Appointment"
@@ -1770,9 +1773,6 @@
       },
       "door_warn": {
         "name": "Door Warning"
-      },
-      "doorswitch": {
-        "name": "Door Switch"
       },
       "down_light": {
         "name": "Down Light"

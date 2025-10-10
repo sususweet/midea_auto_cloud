@@ -123,6 +123,9 @@
   },
   "entity": {
     "binary_sensor": {
+      "doorswitch": {
+        "name": "门锁开关"
+      },
       "air_status": {
         "name": "空气运行"
       },
@@ -133,7 +136,7 @@
         "name": "底部加热"
       },
       "bright_lack": {
-        "name": "亮光不足"
+        "name": "亮光剂不足"
       },
       "carpet_switch": {
         "name": "地毯开关"
@@ -196,7 +199,7 @@
         "name": "RTC 错误"
       },
       "softwater_lack": {
-        "name": "软水不足"
+        "name": "软水盐不足"
       },
       "storage_door_state": {
         "name": "冷藏门状态"
@@ -599,6 +602,9 @@
       },
       "drying_direction": {
         "name": "烘干方向"
+      },
+      "air_set_hour": {
+        "name": "烘干存储设置时间"
       }
     },
     "sensor": {
@@ -624,10 +630,7 @@
         "name": "风干剩余时间"
       },
       "air_left_hour": {
-        "name": "空调剩余时间"
-      },
-      "air_set_hour": {
-        "name": "空调设置时间"
+        "name": "烘干存储剩余时间"
       },
       "appointment_time": {
         "name": "预约时间"
@@ -657,7 +660,7 @@
         "name": "底部温度"
       },
       "bright": {
-        "name": "亮度"
+        "name": "亮光剂档位"
       },
       "category": {
         "name": "类别"
@@ -1074,7 +1077,7 @@
         "name": "柔顺剂全局"
       },
       "softwater": {
-        "name": "软水温度"
+        "name": "软水盐档位"
       },
       "station_error_desc": {
         "name": "基站错误描述"
@@ -1649,7 +1652,7 @@
         "name": "风干开关"
       },
       "airswitch": {
-        "name": "空调开关"
+        "name": "烘干存储开关"
       },
       "appointment": {
         "name": "预约"
@@ -1771,9 +1774,6 @@
       "door_warn": {
         "name": "门警告"
       },
-      "doorswitch": {
-        "name": "门锁开关"
-      },
       "down_light": {
         "name": "下灯"
       },
@@ -1796,7 +1796,7 @@
         "name": "烘干通道过热"
       },
       "dryswitch": {
-        "name": "烘干开关"
+        "name": "晶焰烘干开关"
       },
       "easy_ironing": {
         "name": "易熨烫"

@@ -19,9 +19,6 @@ DEVICE_MAPPING = {
                 "uvswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "doorswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "dryswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -30,6 +27,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
                 "air_status": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
                 },
@@ -59,6 +59,16 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
+                "air_set_hour": {
+                     "options": {
+                        "12": {"air_set_hour": "12" },
+                        "24": {"air_set_hour": "24" },
+                        "36": {"air_set_hour": "36" },
+                        "48": {"air_set_hour": "48" },
+                        "60": {"air_set_hour": "60" },
+                        "72": {"air_set_hour": "72" },
+                    }
+                },
                 "work_status": {
                     "options": {
                         "power_off": {"work_status": "power_off" },
@@ -96,9 +106,7 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "bright": {
-                    "device_class": SensorDeviceClass.ILLUMINANCE,
-                    "unit_of_measurement": "lx",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
@@ -106,18 +114,11 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "softwater": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "left_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "air_set_hour": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "air_left_hour": {
