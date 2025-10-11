@@ -620,6 +620,9 @@
       },
       "power_off_time": {
         "name": "Power Off Time"
+      },
+      "wind_pressure": {
+        "name": "Wind Pressure"
       }
     },
     "sensor": {

@@ -620,6 +620,9 @@
       },
       "power_off_time": {
         "name": "关机时间"
+      },
+      "wind_pressure": {
+        "name": "风压"
       }
     },
     "sensor": {
