@@ -320,9 +320,6 @@
       },
       "standby_status": {
         "name": "待机状态"
-      },
-      "tank_status": {
-        "name": "水箱状态"
       }
     },
     "climate": {
@@ -626,6 +623,9 @@
       }
     },
     "sensor": {
+      "tank_status": {
+        "name": "水箱状态"
+      },
       "fan_level": {
         "name": "风扇档位"
       },

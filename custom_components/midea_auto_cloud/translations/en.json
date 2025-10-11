@@ -320,9 +320,6 @@
       },
       "standby_status": {
         "name": "Standby Status"
-      },
-      "tank_status": {
-        "name": "Tank Status"
       }
     },
     "climate": {
@@ -626,6 +623,9 @@
       }
     },
     "sensor": {
+      "tank_status": {
+        "name": "Tank Status"
+      },
       "fan_level": {
         "name": "Fan Level"
       },
