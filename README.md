@@ -41,11 +41,13 @@
 
 合作开发方法：添加本插件后，找到未能正确识别的设备，点击对应设备`传感器`分类下的`连通性`：
 
-![img.png](img.png)
+![img.png](./img/img.png)
 
-展开下面的`属性`卡片，把里面这些字段复制给我或随issue提交，等待适配就可以了。
+展开下面的`属性`卡片，把里面这些字段随issue提交。 着重关注Device type、Subtype这两个字段，这是后续获得设备控制对应lua文件的基础。
 
-![img_1.png](img_1.png)
+再进入Homeassistant的安装目录， 在`.storage/midea_auto_cloud/lua/`目录下找到设备对应的T_0000_`Device type`_`Subtype`_***.lua文件，等待适配就可以了。
+
+![img_1.png](./img/img_1.png)
 
 ## 实体映射
 
