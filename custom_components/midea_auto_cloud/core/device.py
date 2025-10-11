@@ -166,14 +166,15 @@ class MiedaDevice(threading.Thread):
             
             # Convert dot-notation attributes to nested structure for transmission
             nested_status = self._convert_to_nested_structure(new_status)
-            
-            try:
-                if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
-                    await self._build_send(set_cmd)
-                    return
-            except Exception as e:
-                MideaLogger.debug(f"LuaRuntimeError in set_attribute {nested_status}: {repr(e)}")
-                traceback.print_exc()
+
+            if self._lua_runtime is not None:
+                try:
+                    if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
+                        await self._build_send(set_cmd)
+                        return
+                except Exception as e:
+                    MideaLogger.debug(f"LuaRuntimeError in set_attribute {nested_status}: {repr(e)}")
+                    traceback.print_exc()
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
@@ -193,13 +194,14 @@ class MiedaDevice(threading.Thread):
         nested_status = self._convert_to_nested_structure(new_status)
         
         if has_new:
-            try:
-                if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
-                    await self._build_send(set_cmd)
-                    return
-            except Exception as e:
-                    MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
-                    traceback.print_exc()
+            if self._lua_runtime is not None:
+                try:
+                    if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
+                        await self._build_send(set_cmd)
+                        return
+                except Exception as e:
+                        MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
+                        traceback.print_exc()
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
@@ -267,8 +269,13 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
-            if query_cmd := self._lua_runtime.build_query(query):
-                await self._build_send(query_cmd)
+            if self._lua_runtime is not None:
+                if query_cmd := self._lua_runtime.build_query(query):
+                    await self._build_send(query_cmd)
+            else:
+                cloud = self._cloud
+                if cloud and hasattr(cloud, "get_device_status"):
+                    await cloud.get_device_status(self._device_id, query=query)
 
     def _parse_cloud_message(self, decrypted):
         # MideaLogger.debug(f"Received: {decrypted}")

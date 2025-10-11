@@ -304,11 +304,11 @@ class MeijuCloud(MideaCloud):
             return appliances
         return None
 
-    async def get_device_status(self, appliance_code: int) -> dict | None:
+    async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
             "applianceCode": str(appliance_code),
             "command": {
-                "query": {}
+                "query": query
             }
         }
         if response := await self._api_request(
