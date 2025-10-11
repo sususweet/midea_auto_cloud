@@ -62,7 +62,7 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
             config=config,
         )
         self._attr_supported_features = HumidifierEntityFeature.MODES
-        self._attr_available_modes = self._config.get("modes").keys()
+        self._attr_available_modes = list(self._config.get("modes").keys())
 
     @property
     def device_class(self):
@@ -124,13 +124,14 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
         """Turn the humidifier on."""
         power_key = self._config.get("power")
         if power_key:
-            await self._device.set_attribute(power_key, True)
+            await self._device.set_attribute(power_key, self._rationale[int(True)])
 
     async def async_turn_off(self, **kwargs):
         """Turn the humidifier off."""
         power_key = self._config.get("power")
         if power_key:
-            await self._device.set_attribute(power_key, False)
+            await self._device.set_attribute(power_key, self._rationale[int(False)])
+            await self._device.set_attribute(power_key, self._rationale[int(False)])
 
     async def async_set_humidity(self, humidity: int):
         """Set the target humidity."""
