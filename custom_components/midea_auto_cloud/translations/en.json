@@ -1486,6 +1486,15 @@
       },
       "water_full_level": {
         "name": "Water Full Level"
+      },
+      "room_temp": {
+        "name": "Room Temperature"
+      },
+      "cool_temp_set": {
+        "name": "Cool Temperature Set"
+      },
+      "heat_temp_set": {
+        "name": "Heat Temperature Set"
       }
     },
     "switch": {
@@ -2328,6 +2337,18 @@
       },
       "cold_water_master": {
         "name": "Cold Water Master"
+      },
+      "is_lock_heat": {
+        "name": "Heat Lock"
+      },
+      "is_lock_cool": {
+        "name": "Cool Lock"
+      },
+      "fan_speed_lock": {
+        "name": "Fan Speed Lock"
+      },
+      "is_lock_rc": {
+        "name": "Remote Control Lock"
       }
     }
   }

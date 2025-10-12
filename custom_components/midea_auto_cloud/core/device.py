@@ -272,10 +272,6 @@ class MiedaDevice(threading.Thread):
             if self._lua_runtime is not None:
                 if query_cmd := self._lua_runtime.build_query(query):
                     await self._build_send(query_cmd)
-            else:
-                cloud = self._cloud
-                if cloud and hasattr(cloud, "get_device_status"):
-                    await cloud.get_device_status(self._device_id, query=query)
 
     def _parse_cloud_message(self, decrypted):
         # MideaLogger.debug(f"Received: {decrypted}")

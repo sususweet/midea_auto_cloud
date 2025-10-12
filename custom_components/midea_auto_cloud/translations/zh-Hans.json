@@ -1486,6 +1486,15 @@
       },
       "water_full_level": {
         "name": "满水水位"
+      },
+      "room_temp": {
+        "name": "室内温度"
+      },
+      "cool_temp_set": {
+        "name": "制冷设定温度"
+      },
+      "heat_temp_set": {
+        "name": "制热设定温度"
       }
     },
     "switch": {
@@ -2328,6 +2337,18 @@
       },
       "cold_water_master": {
         "name": "单次零冷水"
+      },
+      "is_lock_heat": {
+        "name": "制热锁定"
+      },
+      "is_lock_cool": {
+        "name": "制冷锁定"
+      },
+      "fan_speed_lock": {
+        "name": "风速锁定"
+      },
+      "is_lock_rc": {
+        "name": "遥控锁定"
       }
     }
   }

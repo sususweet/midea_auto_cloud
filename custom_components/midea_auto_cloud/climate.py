@@ -51,6 +51,9 @@ async def async_setup_entry(
 
 class MideaClimateEntity(MideaEntity, ClimateEntity):
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        # 自动判断是否为中央空调设备（T0x21）
+        self._is_central_ac = device.device_type == 0x21
+
         super().__init__(
             coordinator,
             device.device_id,
@@ -108,23 +111,31 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def target_temperature(self):
-        if isinstance(self._key_target_temperature, list):
-            temp_int = self._get_nested_value(self._key_target_temperature[0])
-            tem_dec = self._get_nested_value(self._key_target_temperature[1])
-            if temp_int is not None and tem_dec is not None:
-                try:
-                    return float(temp_int) + float(tem_dec)
-                except (ValueError, TypeError):
-                    return None
+        if self._is_central_ac:
+            run_mode = self._get_nested_value(self._key_power) or "0"
+            if run_mode == "2":  # 制冷模式
+                return self._get_nested_value("cool_temp_set")
+            elif run_mode == "3":  # 制热模式
+                return self._get_nested_value("cool_temp_set")
             return None
         else:
-            temp = self._get_nested_value(self._key_target_temperature)
-            if temp is not None:
-                try:
-                    return float(temp)
-                except (ValueError, TypeError):
-                    return None
-            return None
+            if isinstance(self._key_target_temperature, list):
+                temp_int = self._get_nested_value(self._key_target_temperature[0])
+                tem_dec = self._get_nested_value(self._key_target_temperature[1])
+                if temp_int is not None and tem_dec is not None:
+                    try:
+                        return float(temp_int) + float(tem_dec)
+                    except (ValueError, TypeError):
+                        return None
+                return None
+            else:
+                temp = self._get_nested_value(self._key_target_temperature)
+                if temp is not None:
+                    try:
+                        return float(temp)
+                    except (ValueError, TypeError):
+                        return None
+                return None
 
     @property
     def min_temp(self):
@@ -166,11 +177,21 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def swing_modes(self):
-        return list(self._key_swing_modes.keys())
+        if self._is_central_ac:
+            return ["off", "on"]
+        else:
+            return list(self._key_swing_modes.keys())
 
     @property
     def swing_mode(self):
-        return self._dict_get_selected(self._key_swing_modes)
+        if self._is_central_ac:
+            extflag = self._get_nested_value("extflag") or "0"
+            # extflag: 4=摇摆, 6=电辅热+摇摆
+            if extflag in ["4", "6"]:
+                return "on"
+            return "off"
+        else:
+            return self._dict_get_selected(self._key_swing_modes)
 
     @property
     def is_on(self) -> bool:
@@ -204,35 +225,80 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = kwargs.get(ATTR_TEMPERATURE)
-        temp_int, temp_dec = divmod(temperature, 1)
-        temp_int = int(temp_int)
-        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-        if hvac_mode is not None:
-            new_status = self._key_hvac_modes.get(hvac_mode)
+        
+        if self._is_central_ac:
+            run_mode = self._get_nested_value(self._key_power) or "0"
+            control = {}
+            
+            if run_mode == "2":  # 制冷模式
+                control["cooling_temp"] = str(temperature)
+            elif run_mode == "3":  # 制热模式
+                control["cooling_temp"] = str(temperature)
+                control["heating_temp"] = str(temperature)
+            
+            if control:
+                await self.coordinator.async_send_central_ac_control(control)
         else:
-            new_status = {}
-        if isinstance(self._key_target_temperature, list):
-            new_status[self._key_target_temperature[0]] = temp_int
-            new_status[self._key_target_temperature[1]] = temp_dec
-        else:
-            new_status[self._key_target_temperature] = temperature
-        await self.async_set_attributes(new_status)
+            temp_int, temp_dec = divmod(temperature, 1)
+            temp_int = int(temp_int)
+            hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+            if hvac_mode is not None:
+                new_status = self._key_hvac_modes.get(hvac_mode)
+            else:
+                new_status = {}
+            if isinstance(self._key_target_temperature, list):
+                new_status[self._key_target_temperature[0]] = temp_int
+                new_status[self._key_target_temperature[1]] = temp_dec
+            else:
+                new_status[self._key_target_temperature] = temperature
+            await self.async_set_attributes(new_status)
 
     async def async_set_fan_mode(self, fan_mode: str):
-        new_status = self._key_fan_modes.get(fan_mode)
-        await self.async_set_attributes(new_status)
+        if self._is_central_ac:
+            fan_speed = self._key_fan_modes.get(fan_mode)
+            await self.coordinator.async_send_central_ac_control(fan_speed)
+        else:
+            new_status = self._key_fan_modes.get(fan_mode)
+            await self.async_set_attributes(new_status)
 
     async def async_set_preset_mode(self, preset_mode: str):
-        new_status = self._key_preset_modes.get(preset_mode)
-        await self.async_set_attributes(new_status)
+        if self._is_central_ac:
+            new_status = self._key_preset_modes.get(preset_mode)
+            await self.coordinator.async_send_central_ac_control(new_status)
+        else:
+            new_status = self._key_preset_modes.get(preset_mode)
+            await self.async_set_attributes(new_status)
 
     async def async_set_hvac_mode(self, hvac_mode: str):
-        new_status = self._key_hvac_modes.get(hvac_mode)
-        await self.async_set_attributes(new_status)
+        if self._is_central_ac:
+            run_mode = self._key_hvac_modes.get(hvac_mode)
+            await self.coordinator.async_send_central_ac_control(run_mode)
+        else:
+            new_status = self._key_hvac_modes.get(hvac_mode)
+            await self.async_set_attributes(new_status)
 
     async def async_set_swing_mode(self, swing_mode: str):
-        new_status = self._key_swing_modes.get(swing_mode)
-        await self.async_set_attributes(new_status)
+        if self._is_central_ac:
+            current_extflag = self._get_nested_value("extflag") or "0"
+            
+            if swing_mode == "on":
+                # 开启摆风：如果当前有电辅热(2)，则设为6(电辅热+摆风)，否则设为4(摆风)
+                if current_extflag == "2":
+                    new_extflag = "6"  # 电辅热+摆风
+                else:
+                    new_extflag = "4"  # 仅摆风
+            else:
+                # 关闭摆风：如果当前是6(电辅热+摆风)，则设为2(仅电辅热)，否则设为0(关闭)
+                if current_extflag == "6":
+                    new_extflag = "2"  # 仅电辅热
+                else:
+                    new_extflag = "0"  # 关闭
+            
+            control = {"extflag": new_extflag}
+            await self.coordinator.async_send_central_ac_control(control)
+        else:
+            new_status = self._key_swing_modes.get(swing_mode)
+            await self.async_set_attributes(new_status)
 
     async def async_turn_aux_heat_on(self) -> None:
         await self._async_set_status_on_off(self._key_aux_heat, True)

@@ -198,6 +198,14 @@ class MideaCloud:
     async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
         """Send control to a device via cloud. Subclasses should implement if supported."""
         raise NotImplementedError()
+    
+    async def send_central_ac_control(self, appliance_code: int, nodeid: str, modelid: str, idtype: int, control: dict) -> bool:
+        """Send control to central AC subdevice. Subclasses should implement if supported."""
+        raise NotImplementedError()
+    
+    async def get_central_ac_status(self, appliance_codes: list) -> dict | None:
+        """Get status of central AC devices. Subclasses should implement if supported."""
+        raise NotImplementedError()
 
 
 class MeijuCloud(MideaCloud):
@@ -223,6 +231,7 @@ class MeijuCloud(MideaCloud):
             password=password,
             api_url=clouds[cloud_name]["api_url"]
         )
+        self._homegroup_id = None
 
     async def login(self) -> bool:
         if login_id := await self._get_login_id():
@@ -275,6 +284,8 @@ class MeijuCloud(MideaCloud):
         return None
 
     async def list_appliances(self, home_id) -> dict | None:
+        # 存储当前使用的 homegroupId 用于后续的中央空调控制
+        self._homegroup_id = str(home_id)
         data = {
             "homegroupId": home_id
         }
@@ -333,6 +344,66 @@ class MeijuCloud(MideaCloud):
             data=data
         )
         return response is not None
+    
+    async def send_central_ac_control(self, appliance_code: int, nodeid: str, modelid: str, idtype: int, control: dict) -> bool:
+        """Send control to central AC subdevice using the special T0x21 API."""
+        import uuid
+        import json
+        
+        # 构建中央空调控制命令
+        command_data = {
+            "nodeid": nodeid,
+            "acattri_ctrl": {
+                "aclist": [{
+                    "nodeid": nodeid,
+                    "modelid": modelid,
+                    "type": idtype
+                }],
+                "event": control
+            }
+        }
+        
+        # 构建完整的请求数据
+        request_data = {
+            "applianceCode": str(appliance_code),
+            "modelId": modelid,
+            "topic": "/subdevice/multicontrol",
+            "command": command_data,
+            "msgId": str(uuid.uuid4()).replace("-", "")
+        }
+        request_data_str = json.dumps(request_data).encode("utf-8")
+        MideaLogger.debug(f"Sending control to central AC device {appliance_code}: {request_data_str}")
+        # 发送到特殊的中央空调API
+        if response := await self._api_request(
+            endpoint="/v1/gateway/transport/send",
+            data={
+                'applianceCode': str(appliance_code),
+                'order': self._security.aes_encrypt(request_data_str).hex(),
+                'homegroupId': self._homegroup_id,
+            }
+        ):
+            if response and response.get('reply'):
+                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
+                MideaLogger.debug(f"[{appliance_code}] Gateway command response: {reply_data}")
+                return reply_data
+            else:
+                MideaLogger.warning(f"[{appliance_code}] Gateway command failed: {response}")
+
+
+    async def get_central_ac_status(self, appliance_codes: list) -> dict | None:
+        """Get status of central AC devices using the aggregator API."""
+
+        # 构建请求数据
+        request_data = {
+            "entities": ["endlist", "tips"],
+            "appliances": [{"id": str(code), "type": "0x21"} for code in appliance_codes],
+        }
+        
+        response = await self._api_request(
+            endpoint="/api/v1/aggregator/appliances",
+            data=request_data
+        )
+        return response
 
     async def download_lua(
             self, path: str,

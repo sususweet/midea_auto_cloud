@@ -25,6 +25,7 @@ DEVICE_MAPPING = {
                 },
                 "filter_tip": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
             },
             Platform.HUMIDIFIER: {
