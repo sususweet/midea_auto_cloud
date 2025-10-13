@@ -626,6 +626,9 @@
       }
     },
     "sensor": {
+      "running_status": {
+        "name": "Running Status"
+      },
       "tank_status": {
         "name": "Tank Status"
       },

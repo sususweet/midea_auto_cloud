@@ -626,6 +626,9 @@
       }
     },
     "sensor": {
+      "running_status": {
+        "name": "运行状态"
+      },
       "tank_status": {
         "name": "水箱状态"
       },
