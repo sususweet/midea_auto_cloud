@@ -133,6 +133,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
                 "appointment_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.MINUTES,
