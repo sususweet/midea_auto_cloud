@@ -55,6 +55,7 @@ PLATFORMS: list[Platform] = [
     Platform.SELECT,
     Platform.WATER_HEATER,
     Platform.FAN,
+    Platform.LIGHT,
     Platform.HUMIDIFIER
 ]
 

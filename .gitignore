@@ -153,6 +153,7 @@ cython_debug/
 
 .idea
 
+decrypt_lua.py
 test.py
 *.lua
 

@@ -182,12 +182,12 @@ DEVICE_MAPPING = {
                 "water_consumption_today": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "water_consumption_average": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "soft_available_big": {
                     "device_class": SensorDeviceClass.VOLUME,

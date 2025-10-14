@@ -1497,6 +1497,16 @@
         "name": "Heat Temperature Set"
       }
     },
+    "light": {
+      "light": {
+        "name": "Light"
+      }
+    },
+    "fan": {
+      "fan": {
+        "name": "Fan"
+      }
+    },
     "switch": {
       "anion": {
         "name": "Anion"

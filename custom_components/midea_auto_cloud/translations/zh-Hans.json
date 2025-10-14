@@ -1497,6 +1497,16 @@
         "name": "制热设定温度"
       }
     },
+    "light": {
+      "light": {
+        "name": "电灯"
+      }
+    },
+    "fan": {
+      "fan": {
+        "name": "风扇"
+      }
+    },
     "switch": {
       "anion": {
         "name": "负离子"
