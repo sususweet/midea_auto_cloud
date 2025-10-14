@@ -226,10 +226,8 @@ class MideaLightEntity(MideaEntity, LightEntity):
             **kwargs,
     ):
         new_status = {}
-        # 处理预设模式/效果 - 支持 effect 和 preset_mode 参数
-        selected_effect = effect or _key_preset_modes
-        if selected_effect is not None and self._key_preset_modes is not None:
-            effect_config = self._key_preset_modes.get(selected_effect, {})
+        if effect is not None and self._key_preset_modes is not None:
+            effect_config = self._key_preset_modes.get(effect, {})
             new_status.update(effect_config)
         
         # 处理亮度设置 - 支持多种参数格式
