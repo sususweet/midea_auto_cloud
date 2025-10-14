@@ -120,7 +120,7 @@ class MideaLightEntity(MideaEntity, LightEntity):
         """返回支持的色彩模式"""
         modes = set()
         if self._brightness_is_range and self._color_temp_is_range:
-            modes.add(ColorMode.BRIGHTNESS)
+            # 如果同时支持亮度和色温，优先支持色温模式（更高级的功能）
             modes.add(ColorMode.COLOR_TEMP)
         elif self._brightness_is_range:
             modes.add(ColorMode.BRIGHTNESS)
@@ -134,7 +134,7 @@ class MideaLightEntity(MideaEntity, LightEntity):
     def color_mode(self):
         """返回当前色彩模式"""
         if self._brightness_is_range and self._color_temp_is_range:
-            # 如果同时支持亮度和色温，优先返回色温模式
+            # 如果同时支持亮度和色温，优先返回色温模式（与supported_color_modes保持一致）
             return ColorMode.COLOR_TEMP
         elif self._brightness_is_range:
             return ColorMode.BRIGHTNESS
@@ -227,11 +227,9 @@ class MideaLightEntity(MideaEntity, LightEntity):
     ):
         new_status = {}
         # 处理预设模式/效果 - 支持 effect 和 preset_mode 参数
-        selected_effect = effect or preset_mode
-        MideaLogger.debug(f"effect: {effect}, preset_mode: {preset_mode}, selected_effect: {selected_effect}")
+        selected_effect = effect or _key_preset_modes
         if selected_effect is not None and self._key_preset_modes is not None:
             effect_config = self._key_preset_modes.get(selected_effect, {})
-            MideaLogger.debug(f"effect_config: {effect_config}")
             new_status.update(effect_config)
         
         # 处理亮度设置 - 支持多种参数格式
