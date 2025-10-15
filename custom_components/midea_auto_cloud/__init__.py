@@ -1,6 +1,7 @@
 import os
 import base64
 from importlib import import_module
+import re
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.util.json import load_json
 
@@ -100,10 +101,16 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8):
         device_path = f".device_mapping.{'T0x%02X' % device_type}"
         try:
             mapping_module = import_module(device_path, __package__)
-            if sn8 in mapping_module.DEVICE_MAPPING.keys():
-                json_data = mapping_module.DEVICE_MAPPING[sn8]
-            elif "default" in mapping_module.DEVICE_MAPPING:
-                json_data = mapping_module.DEVICE_MAPPING["default"]
+            for key, config in mapping_module.DEVICE_MAPPING.items():
+                # support tuple & regular expression pattern to support multiple sn8 sharing one mapping
+                if (key == sn8) or (isinstance(key, tuple) and sn8 in key) or (isinstance(key, str) and re.match(key, sn8)):
+                    json_data = config
+                    break
+            else:
+                if "default" in mapping_module.DEVICE_MAPPING:
+                    json_data = mapping_module.DEVICE_MAPPING["default"]
+                else:
+                    MideaLogger.warning(f"No mapping found for sn8 {sn8} in type {'T0x%02X' % device_type}")
         except ModuleNotFoundError:
             MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
 

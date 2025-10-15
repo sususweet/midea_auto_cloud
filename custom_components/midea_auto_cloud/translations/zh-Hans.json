@@ -336,7 +336,30 @@
         "name": "冷藏区"
       },
       "thermostat": {
-        "name": "温控器"
+        "name": "温控器",
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "静音",
+              "full": "强劲"
+            }
+          }
+        }
+      },
+      "colmo_turing_central_ac_climate": {
+        "name": "温控器",
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "静音",
+              "full": "强劲"
+            }
+          }
+        },
+        "state": {
+          "auto": "温湿灵控",
+          "dry": "自动抽湿"
+        }
       },
       "water_heater": {
         "name": "热水器"

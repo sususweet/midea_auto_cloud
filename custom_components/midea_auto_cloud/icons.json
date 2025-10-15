@@ -1,0 +1,26 @@
+{
+  "entity": {
+    "climate": {
+      "thermostat": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "mdi:weather-night",
+              "full": "mdi:fan"
+            }
+          }
+        }
+      },
+      "colmo_turing_central_ac_climate": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "mdi:weather-night",
+              "full": "mdi:fan"
+            }
+          }
+        }
+      }
+    }
+  }
+}

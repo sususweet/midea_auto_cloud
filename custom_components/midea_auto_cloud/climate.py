@@ -79,6 +79,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_max_temp = self._config.get("max_temp")
         self._key_current_temperature = self._config.get("current_temperature")
         self._key_target_temperature = self._config.get("target_temperature")
+        self._key_min_humidity = self._config.get("min_humidity")
+        self._key_max_humidity = self._config.get("max_humidity")
+        self._key_current_humidity = self._config.get("current_humidity")
+        self._key_target_humidity = self._config.get("target_humidity")
         self._attr_temperature_unit = self._config.get("temperature_unit")
         self._attr_precision = self._config.get("precision")
 
@@ -89,6 +93,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         features |= ClimateEntityFeature.TURN_OFF
         if self._key_target_temperature is not None:
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
+        if self._key_target_humidity is not None:
+            features |= ClimateEntityFeature.TARGET_HUMIDITY
         if self._key_preset_modes is not None:
             features |= ClimateEntityFeature.PRESET_MODE
         # if self._key_aux_heat is not None:
@@ -138,6 +144,28 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                 return None
 
     @property
+    def current_humidity(self) -> float | None:
+        """Return the current humidity."""
+        humidity = self._get_nested_value(self._key_current_humidity)
+        if humidity is not None:
+            try:
+                return float(humidity)
+            except (ValueError, TypeError):
+                return None
+        return None
+
+    @property
+    def target_humidity(self) -> float | None:
+        """Return the humidity we try to reach."""
+        humidity = self._get_nested_value(self._key_target_humidity)
+        if humidity is not None:
+            try:
+                return float(humidity)
+            except (ValueError, TypeError):
+                return None
+        return None
+
+    @property
     def min_temp(self):
         if isinstance(self._key_min_temp, str):
             return float(self.device_attributes.get(self._key_min_temp, 16))
@@ -152,12 +180,34 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return float(self._key_max_temp)
 
     @property
+    def min_humidity(self):
+        if isinstance(self._key_min_humidity, str):
+            return float(self.device_attributes.get(self._key_min_humidity, 45))
+        else:
+            return float(self._key_min_humidity)
+
+    @property
+    def max_humidity(self):
+        if isinstance(self._key_max_humidity, str):
+            return float(self.device_attributes.get(self._key_max_humidity, 65))
+        else:
+            return float(self._key_max_humidity)
+
+    @property
     def target_temperature_low(self):
         return self.min_temp
 
     @property
     def target_temperature_high(self):
         return self.max_temp
+
+    @property
+    def target_humidity_low(self):
+        return self.min_humidity
+
+    @property
+    def target_humidity_high(self):
+        return self.max_humidity
 
     @property
     def preset_modes(self):
@@ -252,6 +302,13 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             else:
                 new_status[self._key_target_temperature] = temperature
             await self.async_set_attributes(new_status)
+
+    async def async_set_humidity(self, humidity: int):
+        if self._key_target_humidity is None:
+            return
+        new_status = {}
+        new_status[self._key_target_humidity] = int(humidity)
+        await self.async_set_attributes(new_status)
 
     async def async_set_fan_mode(self, fan_mode: str):
         if self._is_central_ac:

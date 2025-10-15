@@ -336,7 +336,26 @@
         "name": "Storage Zone"
       },
       "thermostat": {
-        "name": "Thermostat"
+        "name": "Thermostat",
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "Silent",
+              "full": "Full"
+            }
+          }
+        }
+      },
+      "colmo_turing_central_ac_climate": {
+        "name": "Thermostat",
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "Silent",
+              "full": "Full"
+            }
+          }
+        }
       },
       "water_heater": {
         "name": "Water Heater"
