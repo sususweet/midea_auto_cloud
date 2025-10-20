@@ -267,5 +267,86 @@ DEVICE_MAPPING = {
                 },
             }
         }
+    },
+    # Colmo Turing Central AC indoor units, different cooling capacity models share the same config.
+    ("22396961", "22396963", "22396965", "22396969", "22396973"): {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type":"run_status"}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "translation_key": "colmo_turing_central_ac_climate",
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "fan_only": {"power": "on", "mode": "fan"},
+                        "dry": {"power": "on", "mode": "dryauto"},
+                        "auto": {"power": "on", "mode": "dryconstant"},
+                        # Note:
+                        # For Colmo Turing AC, dry and auto mode is not displayed in the app/controller explicitly.
+                        # Instead it defined 2 custom modes: dryauto (自动抽湿) and dryconstant (温湿灵控/恒温恒湿).
+                        # So I mapped the custom modes to the similar pre-defineds:
+                        #   - auto -> dryconstant (温湿灵控/恒温恒湿): able to set target T and H, and auto adjust them to maintain a comfortable environment.
+                        #   - dry -> dryauto (自动抽湿): dehumidification mode, under which temperature is not adjustable.
+                        # Translations are also modified (for only colmo_turing_central_ac_climate) accordingly.
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "energy_save": "off",
+                        },
+                        "sleep": {"energy_save": "on"}
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "target_humidity": "dehumidity",
+                    "current_humidity": "indoor_humidity",
+                    "pre_mode": "mode",
+                    "aux_heat": "ptc",
+                    "min_temp": 16,
+                    "max_temp": 30,
+                    "min_humidity": 45,
+                    "max_humidity": 65,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "wind_speed_real": {
+                    "device_class": SensorDeviceClass.WIND_SPEED,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "name": "电源",
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+        }
     }
 }
