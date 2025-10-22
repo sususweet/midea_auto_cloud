@@ -359,6 +359,9 @@
       },
       "water_heater": {
         "name": "Water Heater"
+      },
+      "electric_heater": {
+        "name": "Electric Heater"
       }
     },
     "humidifier": {
@@ -1530,6 +1533,9 @@
       }
     },
     "switch": {
+      "screen_close": {
+        "name": "Screen Close"
+      },
       "anion": {
         "name": "Anion"
       },

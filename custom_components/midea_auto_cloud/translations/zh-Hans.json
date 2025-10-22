@@ -363,6 +363,9 @@
       },
       "water_heater": {
         "name": "热水器"
+      },
+      "electric_heater": {
+        "name": "取暖器"
       }
     },
     "humidifier": {
@@ -1534,6 +1537,9 @@
       }
     },
     "switch": {
+      "screen_close": {
+        "name": "屏幕关闭"
+      },
       "anion": {
         "name": "负离子"
       },
