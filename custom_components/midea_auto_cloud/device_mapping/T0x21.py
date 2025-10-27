@@ -3,7 +3,24 @@ from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
-    "default": {
+    "00000000": {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "endpoint_1_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ['0', '1']
+                },
+                "endpoint_2_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ['0', '1']
+                }
+            },
+        }
+    },
+    "b17-0000": {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": ["run_mode", "fan_speed", "cooling_temp", "heating_temp", "extflag"],

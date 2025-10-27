@@ -123,9 +123,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     for appliance in status_data["appliances"]:
                         if appliance.get("type") == "0x21" and "extraData" in appliance:
                             extra_data = appliance["extraData"]
-                            if "attr" in extra_data and "state" in extra_data["attr"]:
-                                state = extra_data["attr"]["state"]
-
+                            if "attr" in extra_data:
                                 if "nodeid" in extra_data["attr"]:
                                     self.device._attributes["nodeid"] = extra_data["attr"]["nodeid"]
                                 if "masterId" in extra_data["attr"]:
@@ -135,7 +133,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                                 if "idType" in extra_data["attr"]:
                                     self.device._attributes["idType"] = extra_data["attr"]["idType"]
 
-                                if "condition_attribute" in state:
+                                if "state" in extra_data["attr"] and "condition_attribute" in extra_data["attr"]["state"]:
+                                    state = extra_data["attr"]["state"]
                                     condition = state["condition_attribute"]
                                     # 将状态数据更新到设备属性中
                                     for key, value in condition.items():
@@ -153,6 +152,32 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                                                 self.device._attributes[key] = value
                                         else:
                                             self.device._attributes[key] = value
+
+                                if "endlist" in extra_data["attr"]:
+                                    endlist = extra_data["attr"]["endlist"]
+                                    # endlist是一个数组，包含多个endpoint对象
+                                    if isinstance(endlist, list):
+                                        for endpoint in endlist:
+                                            if "event" in endpoint:
+                                                event = endpoint["event"]
+                                                endpoint_id = endpoint.get("endpoint", 1)
+                                                endpoint_name = endpoint.get("name", f"按键{endpoint_id}")
+                                                
+                                                # 为每个endpoint创建独立的状态属性
+                                                for key, value in event.items():
+                                                    # 创建带endpoint标识的属性名
+                                                    attr_key = f"endpoint_{endpoint_id}_{key}"
+                                                    attr_name_key = f"endpoint_{endpoint_id}_name"
+                                                    
+                                                    # 保存endpoint名称
+                                                    self.device._attributes[attr_name_key] = endpoint_name
+                                                    self.device._attributes[attr_key] = value
+                                                
+                                                # 同时保持原有的属性名（用于兼容性）
+                                                for key, value in event.items():
+                                                    # 尝试将数字字符串转换为数字
+                                                    self.device._attributes[key] = value
+
                                 break
         except Exception as e:
             MideaLogger.debug(f"Error polling central AC state: {e}")
@@ -222,6 +247,78 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         except Exception as e:
             MideaLogger.debug(f"Error sending control to {self.device.device_name}: {e}")
             return False
+
+    async def async_send_switch_control(self, control: dict) -> bool:
+        """发送开关控制命令（subtype为00000000的设备）"""
+        try:
+            cloud = self._cloud
+            if cloud and hasattr(cloud, "send_switch_control"):
+                # 获取设备ID和nodeId
+                masterid = str(self.device.attributes.get("masterId"))
+                nodeid = str(self.device.attributes.get("nodeid"))
+                
+                if not nodeid:
+                    MideaLogger.warning(f"No nodeid found for switch device {self._device_id}")
+                    return False
+                
+                # 根据控制命令确定endPoint和attribute值
+                end_point = control.get("endpoint", 1)  # 从control中获取endpoint，默认1
+                attribute = 0  # 默认attribute
+                
+                # 根据control内容设置attribute值
+                if "run_mode" in control:
+                    if control["run_mode"] == "1":
+                        attribute = 1  # 开启
+                    else:
+                        attribute = 0  # 关闭
+                
+                # 构建控制数据
+                switch_control = {
+                    "endPoint": end_point,
+                    "attribute": attribute
+                }
+                
+                MideaLogger.debug(f"Sending switch control to {self.device.device_name}: {switch_control}")
+                success = await cloud.send_switch_control(masterid, nodeid, switch_control)
+                
+                if success:
+                    # 更新本地状态 - 使用类似poll_central的解析方法
+                    await self._update_switch_status_from_control(control)
+                    self.mute_state_update_for_a_while()
+                    self.async_update_listeners()
+                    return True
+                else:
+                    MideaLogger.debug(f"Failed to send switch control to {self.device.device_name}")
+                    return False
+            else:
+                MideaLogger.debug("Cloud service not available for switch control")
+                return False
+        except Exception as e:
+            MideaLogger.debug(f"Error sending switch control to {self.device.device_name}: {e}")
+            return False
+
+    async def _update_switch_status_from_control(self, control: dict) -> None:
+        """根据控制命令更新开关状态，参照poll_central的解析方法"""
+        try:
+            # 获取endpoint ID
+            endpoint_id = control.get("endpoint", 1)
+            run_mode = control.get("run_mode", "0")
+            
+            # 模拟endlist数据结构来更新状态
+            # 根据run_mode设置OnOff状态
+            onoff_value = "1" if run_mode == "1" else "0"
+            
+            # 更新endpoint特定的状态属性
+            attr_key = f"endpoint_{endpoint_id}_OnOff"
+            self.device._attributes[attr_key] = onoff_value
+            
+            # 同时更新兼容性属性
+            self.device._attributes["OnOff"] = onoff_value
+            
+            MideaLogger.debug(f"Updated switch status for endpoint {endpoint_id}: OnOff={onoff_value}")
+            
+        except Exception as e:
+            MideaLogger.debug(f"Error updating switch status from control: {e}")
 
     def _build_full_central_ac_control(self, new_control: dict) -> dict:
         """构建完整控制命令"""

@@ -63,7 +63,7 @@ class MideaCloud:
     def _make_general_data(self):
         return {}
 
-    async def _api_request(self, endpoint: str, data: dict, header=None) -> dict | None:
+    async def _api_request(self, endpoint: str, data: dict, header=None, method="POST") -> dict | None:
         header = header or {}
         if not data.get("reqId"):
             data.update({
@@ -91,15 +91,18 @@ class MideaCloud:
         _LOGGER.debug(f"Midea cloud API header: {header}")
         _LOGGER.debug(f"Midea cloud API dump_data: {dump_data}")
         try:
-            r = await self._session.request("POST", url, headers=header, data=dump_data, timeout=5)
+            r = await self._session.request(method, url, headers=header, data=dump_data, timeout=5)
             raw = await r.read()
             _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
             response = json.loads(raw)
         except Exception as e:
             _LOGGER.debug(f"API request attempt failed: {e}")
 
-        if int(response["code"]) == 0 and "data" in response:
-            return response["data"]
+        if int(response["code"]) == 0:
+            if "data" in response:
+                return response["data"]
+            else:
+                return {"message": "ok"}
 
         return None
 
@@ -205,6 +208,10 @@ class MideaCloud:
     
     async def get_central_ac_status(self, appliance_codes: list) -> dict | None:
         """Get status of central AC devices. Subclasses should implement if supported."""
+        raise NotImplementedError()
+
+    async def send_switch_control(self, device_id: str, nodeid: str, switch_control: dict) -> bool:
+        """Send control to switch device. Subclasses should implement if supported."""
         raise NotImplementedError()
 
 
@@ -404,6 +411,39 @@ class MeijuCloud(MideaCloud):
             data=request_data
         )
         return response
+
+    async def send_switch_control(self, device_id: str, nodeid: str, switch_control: dict) -> bool:
+        """Send control to switch device using the controlPanelFour API with PUT method."""
+        import uuid
+        
+        # switch_control 格式: {"endPoint": 1, "attribute": 0}
+        end_point = switch_control.get("endPoint", 1)
+        attribute = switch_control.get("attribute", 0)
+        
+        # 构建请求数据
+        request_data = {
+            "msgId": str(uuid.uuid4()).replace("-", ""),
+            "deviceControlList": [{
+                "endPoint": end_point,
+                "attribute": attribute
+            }],
+            "deviceId": device_id,
+            "nodeId": nodeid
+        }
+        
+        MideaLogger.debug(f"Sending switch control to device {device_id}: {request_data}")
+        
+        # 使用PUT方法发送到开关控制API
+        if response := await self._api_request(
+            endpoint="/v1/appliance/operation/controlPanelFour/" + device_id,
+            data=request_data,
+            method="PUT"
+        ):
+            MideaLogger.debug(f"[{device_id}] Switch control response: {response}")
+            return True
+        else:
+            MideaLogger.warning(f"[{device_id}] Switch control failed: {response}")
+            return False
 
     async def download_lua(
             self, path: str,
