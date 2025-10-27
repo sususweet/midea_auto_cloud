@@ -377,6 +377,12 @@
       }
     },
     "select": {
+      "warm_target_temp": {
+        "name": "保温目标温度"
+      },
+      "boil_target_temp": {
+        "name": "煮沸目标温度"
+      },
       "add_rinse": {
         "name": "加漂洗"
       },
@@ -2391,6 +2397,33 @@
       },
       "is_lock_rc": {
         "name": "遥控锁定"
+      },
+      "endpoint_1_onoff": {
+        "name": "按键一"
+      },
+      "endpoint_2_onoff": {
+        "name": "按键二"
+      },
+      "endpoint_3_onoff": {
+        "name": "按键三"
+      },
+      "endpoint_4_onoff": {
+        "name": "按键四"
+      },
+      "endpoint_5_onoff": {
+        "name": "按键五"
+      },
+      "endpoint_6_onoff": {
+        "name": "按键六"
+      },
+      "endpoint_7_onoff": {
+        "name": "按键七"
+      },
+      "endpoint_8_onoff": {
+        "name": "按键八"
+      },
+      "work_switch": {
+        "name": "工作开关"
       }
     }
   }

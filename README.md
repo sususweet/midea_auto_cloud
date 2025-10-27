@@ -21,6 +21,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0x13 Electric Light
 - T0x21 Central Air Conditioning Gateway
 - T0x26 Bath Heater
+- T0x3D Water Heater
 - T0xA1 Dehumidifier
 - T0xAC Air Conditioner
 - T0xB2 Electric Steamer

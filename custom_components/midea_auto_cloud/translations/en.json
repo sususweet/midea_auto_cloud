@@ -373,6 +373,12 @@
       }
     },
     "select": {
+      "warm_target_temp": {
+        "name": "Warm Target Temperature"
+      },
+      "boil_target_temp": {
+        "name": "Boil Target Temperature"
+      },
       "add_rinse": {
         "name": "Add Rinse"
       },
@@ -2387,6 +2393,33 @@
       },
       "is_lock_rc": {
         "name": "Remote Control Lock"
+      },
+      "endpoint_1_onoff": {
+        "name": "Button 1"
+      },
+      "endpoint_2_onoff": {
+        "name": "Button 2"
+      },
+      "endpoint_3_onoff": {
+        "name": "Button 3"
+      },
+      "endpoint_4_onoff": {
+        "name": "Button 4"
+      },
+      "endpoint_5_onoff": {
+        "name": "Button 5"
+      },
+      "endpoint_6_onoff": {
+        "name": "Button 6"
+      },
+      "endpoint_7_onoff": {
+        "name": "Button 7"
+      },
+      "endpoint_8_onoff": {
+        "name": "Button 8"
+      },
+      "work_switch": {
+        "name": "Work Switch"
       }
     }
   }
