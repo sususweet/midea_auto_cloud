@@ -3,7 +3,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Stable](https://img.shields.io/github/v/release/sususweet/midea-meiju-codec)](https://github.com/sususweet/midea-meiju-codec/releases/latest)
 
-English | [简体中文](README_zh_CN.md)
+English | [简体中文](README_hans)
 
 Get devices from MSmartHome/Midea Meiju homes through the network and control them via Midea's cloud API.
 
