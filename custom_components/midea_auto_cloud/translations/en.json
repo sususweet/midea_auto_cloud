@@ -291,30 +291,6 @@
       "execute": {
         "name": "Execute"
       },
-      "power": {
-        "name": "Power"
-      },
-      "humidify": {
-        "name": "Humidify"
-      },
-      "swing": {
-        "name": "Swing"
-      },
-      "anion": {
-        "name": "Anion"
-      },
-      "display_on_off": {
-        "name": "Display On/Off"
-      },
-      "dust_reset": {
-        "name": "Dust Reset"
-      },
-      "temp_wind_switch": {
-        "name": "Temp Wind Switch"
-      },
-      "filter_reset": {
-        "name": "Filter Reset"
-      },
       "heat_status": {
         "name": "Heat Status"
       },
@@ -1539,6 +1515,9 @@
       }
     },
     "switch": {
+      "temp_wind_switch": {
+        "name": "Wind Change with Temperature"
+      },
       "screen_close": {
         "name": "Screen Close"
       },

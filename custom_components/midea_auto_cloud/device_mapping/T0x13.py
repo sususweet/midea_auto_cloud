@@ -45,7 +45,7 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "fan_power",
-                    "fan_speed": [
+                    "speeds": [
                         {"fan_speed": "1"},
                         {"fan_speed": "2"},
                         {"fan_speed": "3"},

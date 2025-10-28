@@ -291,30 +291,6 @@
       "execute": {
         "name": "执行"
       },
-      "power": {
-        "name": "电源"
-      },
-      "humidify": {
-        "name": "加湿"
-      },
-      "swing": {
-        "name": "摆风"
-      },
-      "anion": {
-        "name": "负离子"
-      },
-      "display_on_off": {
-        "name": "显示开关"
-      },
-      "dust_reset": {
-        "name": "灰尘重置"
-      },
-      "temp_wind_switch": {
-        "name": "温风开关"
-      },
-      "filter_reset": {
-        "name": "滤网重置"
-      },
       "heat_status": {
         "name": "加热状态"
       },
@@ -1543,6 +1519,9 @@
       }
     },
     "switch": {
+      "temp_wind_switch": {
+        "name": "风随温变"
+      },
       "screen_close": {
         "name": "屏幕关闭"
       },

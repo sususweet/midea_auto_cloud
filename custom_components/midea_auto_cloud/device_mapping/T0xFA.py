@@ -8,34 +8,38 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
-            "power", "humidify", "swing", "anion", "display_on_off", 
-            "dust_reset", "temp_wind_switch", "filter_reset"
+            "power", "swing", "display_on_off", "temp_wind_switch",
         ],
         "entities": {
-            Platform.BINARY_SENSOR: {
-                "power": {
-                    "device_class": BinarySensorDeviceClass.POWER,
-                },
-                "humidify": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
-                },
-                "swing": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
-                },
-                "anion": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
-                },
+            Platform.SWITCH: {
                 "display_on_off": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
-                },
-                "dust_reset": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"]
                 },
                 "temp_wind_switch": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "filter_reset": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": [
+                        {"gear": "1"},
+                        {"gear": "2"},
+                        {"gear": "3"},
+                        {"gear": "4"},
+                        {"gear": "5"},
+                        {"gear": "6"},
+                        {"gear": "7"},
+                        {"gear": "8"},
+                        {"gear": "9"},
+                    ],
+                    "oscillate": "swing",
+                    "preset_modes": {
+                        "normal": {"mode": "normal"},
+                        "sleep": {"mode": "sleep"},
+                        "baby": {"mode": "baby"}
+                    }
                 }
             },
             Platform.SELECT: {
@@ -65,16 +69,6 @@ DEVICE_MAPPING = {
                         "both": {"swing_direction": "both"}
                     }
                 },
-                "scene": {
-                    "options": {
-                        "none": {"scene": "none"},
-                        "auto": {"scene": "auto"},
-                        "sleep": {"scene": "sleep"},
-                        "work": {"scene": "work"},
-                        "study": {"scene": "study"},
-                        "party": {"scene": "party"}
-                    }
-                },
                 "sleep_sensor": {
                     "options": {
                         "none": {"sleep_sensor": "none"},
@@ -83,27 +77,6 @@ DEVICE_MAPPING = {
                         "both": {"sleep_sensor": "both"}
                     }
                 },
-                "mode": {
-                    "options": {
-                        "normal": {"mode": "normal"},
-                        "auto": {"mode": "auto"},
-                        "manual": {"mode": "manual"},
-                        "sleep": {"mode": "sleep"},
-                        "turbo": {"mode": "turbo"},
-                        "quiet": {"mode": "quiet"}
-                    }
-                },
-                "gear": {
-                    "options": {
-                        "1": {"gear": "1"},
-                        "2": {"gear": "2"},
-                        "3": {"gear": "3"},
-                        "4": {"gear": "4"},
-                        "5": {"gear": "5"},
-                        "6": {"gear": "6"},
-                        "auto": {"gear": "auto"}
-                    }
-                }
             },
             Platform.SENSOR: {
                 "real_gear": {
@@ -118,19 +91,6 @@ DEVICE_MAPPING = {
                 "filter_life_time": {
                     "device_class": SensorDeviceClass.DURATION,
                     "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "battery_status": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "battery_level": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": PERCENTAGE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "error_code": {
-                    "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "temperature_feedback": {
@@ -162,10 +122,6 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "version": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
                 "pm25": {
                     "device_class": SensorDeviceClass.PM25,
                     "unit_of_measurement": "µg/m³",
@@ -176,22 +132,22 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "lr_diy_down_percent": {
-                    "device_class": SensorDeviceClass.ENUM,
+                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "lr_diy_up_percent": {
-                    "device_class": SensorDeviceClass.ENUM,
+                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ud_diy_down_percent": {
-                    "device_class": SensorDeviceClass.ENUM,
+                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "ud_diy_up_percent": {
-                    "device_class": SensorDeviceClass.ENUM,
+                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
