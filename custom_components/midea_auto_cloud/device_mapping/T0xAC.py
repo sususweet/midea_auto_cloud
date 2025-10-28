@@ -1,4 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES
+from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, PRECISION_WHOLE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 # from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -130,6 +130,32 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }
+        }
+    },
+    "106J6363": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "water_model_power",
+                    "hvac_modes": {
+                        "off": {"water_model_power": "off"},
+                        "heat": {"water_model_power": "on", "water_model_temperature_auto": "off"},
+                        "auto": {"water_model_power": "on", "water_model_temperature_auto": "on"},
+                    },
+                    "preset_modes": {
+                        "none": {"water_model_go_out": "off"},
+                        "go out": {"water_model_go_out": "on"},
+                    },
+                    "target_temperature": "water_model_temperature_set",
+                    "min_temp": 25,
+                    "max_temp": 60,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_WHOLE,
+                }
+            },
         }
     },
     "26093139": {
