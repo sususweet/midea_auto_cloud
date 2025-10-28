@@ -20,7 +20,7 @@ DEVICE_MAPPING = {
             },
         }
     },
-    "b17-0000": {
+    "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": ["run_mode", "fan_speed", "cooling_temp", "heating_temp", "extflag"],
