@@ -145,8 +145,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
     config_dir = hass.config.path(DOMAIN)
     os.makedirs(config_dir, exist_ok=True)
 
-    cjson = os.path.join(config_dir, "cjson.lua")
-    bit = os.path.join(config_dir, "bit.lua")
+    os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
+    lua_path = hass.config.path(STORAGE_PATH)
+
+    cjson = os.path.join(lua_path, "cjson.lua")
+    bit = os.path.join(lua_path, "bit.lua")
 
     # 只有文件不存在时才创建
     if not os.path.exists(cjson):
