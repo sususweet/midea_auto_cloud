@@ -57,7 +57,9 @@ PLATFORMS: list[Platform] = [
     Platform.WATER_HEATER,
     Platform.FAN,
     Platform.LIGHT,
-    Platform.HUMIDIFIER
+    Platform.HUMIDIFIER,
+    Platform.NUMBER,
+    Platform.BUTTON
 ]
 
 
@@ -138,14 +140,14 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
-    
+
     # 使用Home Assistant配置目录而不是当前工作目录
     config_dir = hass.config.path(DOMAIN)
     os.makedirs(config_dir, exist_ok=True)
-    
+
     cjson = os.path.join(config_dir, "cjson.lua")
     bit = os.path.join(config_dir, "bit.lua")
-    
+
     # 只有文件不存在时才创建
     if not os.path.exists(cjson):
         from .const import CJSON_LUA
@@ -162,7 +164,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             with open(cjson, "wt") as fp:
                 fp.write(cjson_lua)
             MideaLogger.warning(f"Using temporary file for cjson.lua: {cjson}")
-    
+
     if not os.path.exists(bit):
         from .const import BIT_LUA
         bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
@@ -178,9 +180,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             with open(bit, "wt") as fp:
                 fp.write(bit_lua)
             MideaLogger.warning(f"Using temporary file for bit.lua: {bit}")
-    
-    return True
 
+    return True
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     device_type = config_entry.data.get(CONF_TYPE)

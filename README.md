@@ -19,6 +19,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 ## Currently Supported Device Types
 
 - T0x13 Electric Light
+- T0x15 Water Heater
 - T0x21 Central Air Conditioning Gateway
 - T0x26 Bath Heater
 - T0x3D Water Heater

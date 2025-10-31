@@ -1,3 +1,4 @@
+import os
 import traceback
 import os
 import lupa
@@ -9,11 +10,11 @@ from .logger import MideaLogger
 class LuaRuntime:
     def __init__(self, file):
         self._runtimes = lupa.lua51.LuaRuntime()
-        
+
         # 设置Lua路径，包含cjson.lua和bit.lua的目录
         lua_dir = os.path.dirname(os.path.abspath(file))
         self._runtimes.execute(f'package.path = package.path .. ";{lua_dir}/?.lua"')
-        
+
         # 加载必需的Lua库
         try:
             self._runtimes.execute('require "cjson"')
