@@ -15,28 +15,28 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 }
             },
-            # Platform.NUMBER: {
-            #     "warm_time_min": {
-            #         "min": 0,
-            #         "max": 480,
-            #         "step": 60
-            #     },
-            #     "max_work_time": {
-            #         "min": 0,
-            #         "max": 12,
-            #         "step": 1
-            #     },
-            #     "warm_target_temp": {
-            #        "min": 0,
-            #        "max": 100,
-            #        "step": 1
-            #     },
-            #     "boil_target_temp": {
-            #         "min": 0,
-            #         "max": 100,
-            #         "step": 1
-            #     },
-            # },
+            Platform.NUMBER: {
+                "warm_time_min": {
+                    "min": 0,
+                    "max": 480,
+                    "step": 60
+                },
+                "max_work_time": {
+                    "min": 0,
+                    "max": 12,
+                    "step": 1
+                },
+                "warm_target_temp": {
+                   "min": 0,
+                   "max": 100,
+                   "step": 1
+                },
+                "boil_target_temp": {
+                    "min": 0,
+                    "max": 100,
+                    "step": 1
+                },
+            },
             Platform.SELECT: {
                 "work_mode": {
                     "options": {
