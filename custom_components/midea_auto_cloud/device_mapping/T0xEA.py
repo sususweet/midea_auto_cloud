@@ -66,30 +66,30 @@ DEVICE_MAPPING = {
             Platform.SELECT: {
                 "mode": {
                     "options": {
-                        "Rice": {"mode": "essence_rice", "work_status": "cooking"},
-                        "Porridge": {"mode": "gruel", "work_status": "cooking"},
+                        "精华饭": {"mode": "essence_rice", "work_status": "cooking"},
+                        "稀饭": {"mode": "gruel", "work_status": "cooking"},
                         "热饭": {"mode": "heat_rice", "work_status": "cooking"},
-                        "Congee": {"mode": "boil_congee", "work_status": "cooking"},
-                        "Soup": {"mode": "cook_soup", "work_status": "cooking"},
-                        "Steam": {"mode": "stewing", "work_status": "cooking"},
+                        "煮粥": {"mode": "boil_congee", "work_status": "cooking"},
+                        "煲汤": {"mode": "cook_soup", "work_status": "cooking"},
+                        "蒸煮": {"mode": "stewing", "work_status": "cooking"},
                     }
                 },
                 "rice_type": {
                     "options": {
-                        "None": {"rice_type": "none"},
-                        "Northeast rice": {"rice_type": "northeast"},
-                        "Long-grain rice": {"rice_type": "longrain"},
-                        "Fragrant rice": {"rice_type": "fragrant"},
-                        "Wuchang rice": {"rice_type": "five"},
+                        "无": {"rice_type": "none"},
+                        "东北大米": {"rice_type": "northeast"},
+                        "长粒米": {"rice_type": "longrain"},
+                        "香米": {"rice_type": "fragrant"},
+                        "五常大米": {"rice_type": "five"},
                     }
                 },
                 "work_status": {
                     "options": {
-                        "Stop": {"work_status": "cancel"},
-                        "Cooking": {"work_status": "cooking"},
-                        "Warming": {"work_status": "keep_warm"},
-                        "Soaking": {"work_status": "awakening_rice"},
-                        "Delay": {"work_status": "schedule"}
+                        "停止": {"work_status": "cancel"},
+                        "烹饪": {"work_status": "cooking"},
+                        "保温": {"work_status": "keep_warm"},
+                        "醒米": {"work_status": "awakening_rice"},
+                        "预约": {"work_status": "schedule"}
                     }
                 }
             }
