@@ -1,6 +1,6 @@
 import os
 import traceback
-
+import os
 import lupa
 import threading
 import json
@@ -20,12 +20,12 @@ class LuaRuntime:
             self._runtimes.execute('require "cjson"')
         except Exception as e:
             MideaLogger.warning(f"Failed to load cjson: {e}")
-
+        
         try:
             self._runtimes.execute('require "bit"')
         except Exception as e:
             MideaLogger.warning(f"Failed to load bit: {e}")
-
+        
         # 加载设备特定的Lua文件
         string = f'dofile("{file}")'
         self._runtimes.execute(string)
