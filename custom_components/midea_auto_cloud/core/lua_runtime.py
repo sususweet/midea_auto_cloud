@@ -1,5 +1,5 @@
 import traceback
-
+import os
 import lupa
 import threading
 import json
@@ -9,6 +9,23 @@ from .logger import MideaLogger
 class LuaRuntime:
     def __init__(self, file):
         self._runtimes = lupa.lua51.LuaRuntime()
+        
+        # 设置Lua路径，包含cjson.lua和bit.lua的目录
+        lua_dir = os.path.dirname(os.path.abspath(file))
+        self._runtimes.execute(f'package.path = package.path .. ";{lua_dir}/?.lua"')
+        
+        # 加载必需的Lua库
+        try:
+            self._runtimes.execute('require "cjson"')
+        except Exception as e:
+            MideaLogger.warning(f"Failed to load cjson: {e}")
+        
+        try:
+            self._runtimes.execute('require "bit"')
+        except Exception as e:
+            MideaLogger.warning(f"Failed to load bit: {e}")
+        
+        # 加载设备特定的Lua文件
         string = f'dofile("{file}")'
         self._runtimes.execute(string)
         self._lock = threading.Lock()

@@ -138,18 +138,47 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
-    cjson = os.getcwd() + "/cjson.lua"
-    bit = os.getcwd() + "/bit.lua"
-    # if not os.path.exists(cjson):
-    from .const import CJSON_LUA
-    cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
-    with open(cjson, "wt") as fp:
-        fp.write(cjson_lua)
-    # if not os.path.exists(bit):
-    from .const import BIT_LUA
-    bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
-    with open(bit, "wt") as fp:
-        fp.write(bit_lua)
+    
+    # 使用Home Assistant配置目录而不是当前工作目录
+    config_dir = hass.config.path(DOMAIN)
+    os.makedirs(config_dir, exist_ok=True)
+    
+    cjson = os.path.join(config_dir, "cjson.lua")
+    bit = os.path.join(config_dir, "bit.lua")
+    
+    # 只有文件不存在时才创建
+    if not os.path.exists(cjson):
+        from .const import CJSON_LUA
+        cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
+        try:
+            with open(cjson, "wt") as fp:
+                fp.write(cjson_lua)
+        except PermissionError as e:
+            MideaLogger.error(f"Failed to create cjson.lua at {cjson}: {e}")
+            # 如果无法创建文件，尝试使用临时目录
+            import tempfile
+            temp_dir = tempfile.gettempdir()
+            cjson = os.path.join(temp_dir, "cjson.lua")
+            with open(cjson, "wt") as fp:
+                fp.write(cjson_lua)
+            MideaLogger.warning(f"Using temporary file for cjson.lua: {cjson}")
+    
+    if not os.path.exists(bit):
+        from .const import BIT_LUA
+        bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
+        try:
+            with open(bit, "wt") as fp:
+                fp.write(bit_lua)
+        except PermissionError as e:
+            MideaLogger.error(f"Failed to create bit.lua at {bit}: {e}")
+            # 如果无法创建文件，尝试使用临时目录
+            import tempfile
+            temp_dir = tempfile.gettempdir()
+            bit = os.path.join(temp_dir, "bit.lua")
+            with open(bit, "wt") as fp:
+                fp.write(bit_lua)
+            MideaLogger.warning(f"Using temporary file for bit.lua: {bit}")
+    
     return True
 
 
