@@ -361,11 +361,8 @@ class MeijuCloud(MideaCloud):
         command_data = {
             "nodeid": nodeid,
             "acattri_ctrl": {
-                "aclist": [{
-                    "nodeid": nodeid,
-                    "modelid": modelid,
-                    "type": idtype
-                }],
+                "nodeid": nodeid,
+                "modelid": modelid, "type": idtype, "aclist_data": nodeid[-2:],
                 "event": control
             }
         }
