@@ -353,6 +353,27 @@
       }
     },
     "select": {
+      "b6_power": {
+        "name": "烟机开关"
+      },
+      "b6_power_on_light": {
+        "name": "烟机开机开灯"
+      },
+      "b6_lock": {
+        "name": "烟机锁屏"
+      },
+      "b6_gear": {
+        "name": "烟机档位"
+      },
+      "b6_smoke_stove_linkage_gear": {
+        "name": "烟灶联动档位"
+      },
+      "b6_delay_gear_linkage_gear": {
+        "name": "烟机延时关机风速档位"
+      },
+      "b6_delay_time_value": {
+        "name": "烟机延时关机时间（分钟）"
+      },
       "warm_target_temp": {
         "name": "保温目标温度"
       },
@@ -1513,12 +1534,20 @@
         "name": "电灯"
       }
     },
+    "number": {
+      "b6_lightness": {
+        "name": "烟机照明"
+      }
+    },
     "fan": {
       "fan": {
         "name": "风扇"
       }
     },
     "switch": {
+      "b6_light": {
+        "name": "烟机灯"
+      },
       "temp_wind_switch": {
         "name": "风随温变"
       },

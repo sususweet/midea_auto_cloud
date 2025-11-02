@@ -349,6 +349,27 @@
       }
     },
     "select": {
+      "b6_power": {
+        "name": "Smoke Machine Power"
+      },
+      "b6_power_on_light": {
+        "name": "Smoke Machine Power On Light"
+      },
+      "b6_lock": {
+        "name": "Smoke Machine Lock"
+      },
+      "b6_gear": {
+        "name": "Smoke Machine Gear"
+      },
+      "b6_smoke_stove_linkage_gear": {
+        "name": "Smoke Stove Linkage Gear"
+      },
+      "b6_delay_gear_linkage_gear": {
+        "name": "Smoke Machine Delay Gear Linkage Gear"
+      },
+      "b6_delay_time_value": {
+        "name": "Smoke Machine Delay Time (Minute)"
+      },
       "warm_target_temp": {
         "name": "Warm Target Temperature"
       },
@@ -1509,12 +1530,20 @@
         "name": "Light"
       }
     },
+    "number": {
+      "b6_lightness": {
+        "name": "Smoke Machine Lightness"
+      }
+    },
     "fan": {
       "fan": {
         "name": "Fan"
       }
     },
     "switch": {
+      "b6_light": {
+        "name": "Smoke Machine Light"
+      },
       "temp_wind_switch": {
         "name": "Wind Change with Temperature"
       },

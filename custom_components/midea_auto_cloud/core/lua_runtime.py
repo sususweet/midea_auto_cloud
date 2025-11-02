@@ -87,6 +87,17 @@ class MideaCodec(LuaRuntime):
                 query_dict["control"]["bucket"] = prefix
             else:
                 query_dict["control"]["bucket"] = "db"
+        # 针对T0x9C集成灶特殊处理
+        elif self._device_type == "T0x9C":
+            control_keys = list(append.keys())
+            if len(control_keys) > 0:
+                # 从第一个键名中提取前缀，例如从 'db_power' 中提取 'db'
+                first_key = control_keys[0]
+                prefix = first_key.split("_")[0]
+            else:
+                prefix = "total"
+
+            query_dict["control"]["type"] = prefix
         json_str = json.dumps(query_dict)
         MideaLogger.debug(f"LuaRuntime json_str {json_str}")
         try:
