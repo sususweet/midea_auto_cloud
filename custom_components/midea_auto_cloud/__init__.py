@@ -140,11 +140,6 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
-
-    # 使用Home Assistant配置目录而不是当前工作目录
-    config_dir = hass.config.path(DOMAIN)
-    os.makedirs(config_dir, exist_ok=True)
-
     os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
     lua_path = hass.config.path(STORAGE_PATH)
 

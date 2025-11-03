@@ -10,6 +10,9 @@ DEVICE_MAPPING = {
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "bubble": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]

@@ -10,10 +10,10 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
-            Platform.WATER_HEATER: {
+            Platform.CLIMATE: {
                 "water_heater": {
                     "power": "power",
-                    "operation_list": {
+                    "hvac_modes": {
                         "off": {"power": "off"},
                         "on": {"power": "on"},
                     },
@@ -26,6 +26,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "ti_protect": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
