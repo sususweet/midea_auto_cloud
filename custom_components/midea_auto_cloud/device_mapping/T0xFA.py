@@ -1,4 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, DEGREE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -23,17 +23,7 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "power",
-                    "speeds": [
-                        {"gear": "1"},
-                        {"gear": "2"},
-                        {"gear": "3"},
-                        {"gear": "4"},
-                        {"gear": "5"},
-                        {"gear": "6"},
-                        {"gear": "7"},
-                        {"gear": "8"},
-                        {"gear": "9"},
-                    ],
+                    "speeds": list({"gear": value + 1} for value in range(0, 9)),
                     "oscillate": "swing",
                     "preset_modes": {
                         "normal": {"mode": "normal"},
@@ -102,26 +92,6 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENUM,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "timer_off_hour": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "timer_off_minute": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "timer_on_hour": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "timer_on_minute": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
                 "pm25": {
                     "device_class": SensorDeviceClass.PM25,
                     "unit_of_measurement": "µg/m³",
@@ -149,6 +119,87 @@ DEVICE_MAPPING = {
                 "ud_diy_up_percent": {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
+    "xxxxxx": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "power", "gear"
+        ],
+        "entities": {
+            Platform.SWITCH: {
+                "display_on_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"]
+                },
+                "anion": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "temp_wind_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": list({"gear": value + 1} for value in range(0, 100)),
+                    "preset_modes": {
+                        "self_selection": {"mode": "self_selection"},
+                        "sleeping_wind": {"mode": "sleeping_wind"},
+                        "purified_wind": {"mode": "purified_wind"}
+                    }
+                }
+            },
+            Platform.SELECT: {
+                "voice": {
+                    "options": {
+                        "open_buzzer": {"voice": "open_buzzer"},
+                        "close_buzzer": {"voice": "close_buzzer"},
+                        "mute": {"voice": "mute"}
+                    }
+                },
+                "lr_shake_switch": {
+                    "options": {
+                        "off": {"lr_shake_switch": "off"},
+                        "default": {"lr_shake_switch": "default"},
+                        "normal": {"lr_shake_switch": "normal"},
+                    }
+                },
+                "ud_shake_switch": {
+                    "options": {
+                        "off": {"ud_shake_switch": "off"},
+                        "default": {"ud_shake_switch": "default"},
+                        "normal": {"ud_shake_switch": "normal"},
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "real_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "dust_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "filter_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "current_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "target_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }

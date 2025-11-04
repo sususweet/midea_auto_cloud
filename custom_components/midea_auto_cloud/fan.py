@@ -54,7 +54,18 @@ class MideaFanEntity(MideaEntity, FanEntity):
         )
         self._key_power = self._config.get("power")
         self._key_preset_modes = self._config.get("preset_modes")
-        self._key_speeds = self._config.get("speeds")
+        speeds_config = self._config.get("speeds")
+        # 处理范围形式的 speeds 配置: {"key": "gear", "value": [1, 9]}
+        if isinstance(speeds_config, dict) and "key" in speeds_config and "value" in speeds_config:
+            key_name = speeds_config["key"]
+            value_range = speeds_config["value"]
+            if isinstance(value_range, list) and len(value_range) == 2:
+                start, end = value_range[0], value_range[1]
+                self._key_speeds = [{key_name: str(i)} for i in range(start, end + 1)]
+            else:
+                self._key_speeds = speeds_config
+        else:
+            self._key_speeds = speeds_config
         self._key_oscillate = self._config.get("oscillate")
         self._key_directions = self._config.get("directions")
         self._attr_speed_count = len(self._key_speeds) if self._key_speeds else 0

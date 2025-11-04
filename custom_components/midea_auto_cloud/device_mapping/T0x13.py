@@ -45,14 +45,7 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "fan_power",
-                    "speeds": [
-                        {"fan_speed": "1"},
-                        {"fan_speed": "2"},
-                        {"fan_speed": "3"},
-                        {"fan_speed": "4"},
-                        {"fan_speed": "5"},
-                        {"fan_speed": "6"},
-                    ],
+                    "speeds": list({"fan_speed": value + 1} for value in range(0, 6)),
                     "preset_modes": {
                         "breathing_wind": {"fan_scene": "breathing_wind"},
                         "const_temperature": {"fan_scene": "const_temperature"},

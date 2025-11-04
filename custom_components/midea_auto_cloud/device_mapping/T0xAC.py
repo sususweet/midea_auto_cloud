@@ -12,13 +12,7 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "new_wind_machine",
-                    "speeds": [
-                        {"fresh_air_fan_speed": 20},
-                        {"fresh_air_fan_speed": 40},
-                        {"fresh_air_fan_speed": 60},
-                        {"fresh_air_fan_speed": 80},
-                        {"fresh_air_fan_speed": 100},
-                    ],
+                    "speeds": list({"fresh_air_fan_speed": value + 1} for value in range(0, 100)),
                     "preset_modes": {
                         "heat_exchange": {
                             "fresh_air_mode": 1,
@@ -166,13 +160,7 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "fresh_air",
-                    "speeds": [
-                        {"fresh_air": 3, "fresh_air_fan_speed": 20},
-                        {"fresh_air": 3, "fresh_air_fan_speed": 40},
-                        {"fresh_air": 3, "fresh_air_fan_speed": 60},
-                        {"fresh_air": 3, "fresh_air_fan_speed": 80},
-                        {"fresh_air": 3, "fresh_air_fan_speed": 100},
-                    ],
+                    "speeds": list({"fresh_air": 3, "fresh_air_fan_speed": value + 1} for value in range(0, 100)),
                     "preset_modes": {
                         "heat_exchange": {
                             "fresh_air_mode": 1,
