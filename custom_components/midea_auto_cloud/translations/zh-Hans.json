@@ -392,12 +392,6 @@
       "control_type": {
         "name": "控制类型"
       },
-      "dehydration_speed": {
-        "name": "脱水转速"
-      },
-      "db_dehydration_speed": {
-        "name": "脱水转速"
-      },
       "db_detergent": {
         "name": "洗涤剂"
       },
@@ -427,9 +421,6 @@
       },
       "detergent_density": {
         "name": "洗涤剂浓度"
-      },
-      "dirty_degree": {
-        "name": "脏污程度"
       },
       "disinfectant": {
         "name": "消毒剂"
@@ -515,9 +506,6 @@
       "season": {
         "name": "季节"
       },
-      "soak_count": {
-        "name": "浸泡次数"
-      },
       "softener_density": {
         "name": "柔顺剂浓度"
       },
@@ -595,15 +583,6 @@
       },
       "gear": {
         "name": "档位"
-      },
-      "detergent": {
-        "name": "洗涤剂"
-      },
-      "softener": {
-        "name": "柔顺剂"
-      },
-      "temperature": {
-        "name": "温度"
       },
       "ptc": {
         "name": "电辅热"
@@ -1537,6 +1516,48 @@
     "number": {
       "b6_lightness": {
         "name": "烟机照明"
+      },
+      "dehydration_speed": {
+        "name": "脱水转速"
+      },
+      "db_dehydration_speed": {
+        "name": "脱水转速"
+      },
+      "detergent": {
+        "name": "洗涤剂"
+      },
+      "softener": {
+        "name": "柔顺剂"
+      },
+      "temperature": {
+        "name": "温度"
+      },
+      "soak_count": {
+        "name": "浸泡次数"
+      },
+      "dirty_degree": {
+        "name": "脏污程度"
+      },
+      "soak_time": {
+        "name": "浸泡时间"
+      },
+      "wash_time": {
+        "name": "洗涤时间"
+      },
+      "rinse_count": {
+        "name": "漂洗次数"
+      },
+      "dehydration_time": {
+        "name": "脱水时间"
+      },
+      "wash_level": {
+        "name": "洗涤水位"
+      },
+      "rinse_level": {
+        "name": "漂洗水位"
+      },
+      "wash_strength": {
+        "name": "水流强度"
       }
     },
     "fan": {

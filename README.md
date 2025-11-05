@@ -37,7 +37,8 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xCE Fresh Air System
 - T0xCF Central Air Conditioning Heating
 - T0xD9 Twin Tub Washing Machine
-- T0xDB Front Load Washing Machine
+- T0xDA Impeller Washing Machine
+- T0xDB Cylinder Washing Machine
 - T0xDC Clothes Dryer
 - T0xE1 Dishwasher
 - T0xE2 Electric Water Heater

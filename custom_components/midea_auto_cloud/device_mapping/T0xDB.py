@@ -18,6 +18,48 @@ DEVICE_MAPPING = {
             }
         },
         "entities": {
+            Platform.NUMBER: {
+                "temperature": {
+                    "min": 0,
+                    "max": 100,
+                    "step": 1
+                },
+                "detergent": {
+                    "min": 0,
+                    "max": 5,
+                    "step": 1
+                },
+                "softener": {
+                    "min": 0,
+                    "max": 5,
+                    "step": 1
+                },
+                "dehydration_time": {
+                    "min": 0,
+                    "max": 9,
+                    "step": 1
+                },
+                "dehydration_speed": {
+                    "min": 0,
+                    "max": 1600,
+                    "step": 100
+                },
+                "dirty_degree": {
+                    "min": 0,
+                    "max": 4,
+                    "step": 1
+                },
+                "soak_count": {
+                    "min": 0,
+                    "max": 5,
+                    "step": 1
+                },
+                "wash_time": {
+                    "min": 0,
+                    "max": 20,
+                    "step": 1
+                },
+            },
             Platform.BINARY_SENSOR: {
                 "softener_lack": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
@@ -66,19 +108,6 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
-                "dehydration_speed": {
-                    "options": {
-                        "0": {"dehydration_speed": "0"},
-                        "400": {"dehydration_speed": "400"},
-                        "600": {"dehydration_speed": "600"},
-                        "800": {"dehydration_speed": "800"},
-                        "1000": {"dehydration_speed": "1000"},
-                        "1200": {"dehydration_speed": "1200"},
-                        "1400": {"dehydration_speed": "1400"},
-                        "1600": {"dehydration_speed": "1600"},
-                        "1300": {"dehydration_speed": "1300"}
-                    }
-                },
                 "mode": {
                     "options": {
                         "normal": {"mode": "normal"},
@@ -190,67 +219,10 @@ DEVICE_MAPPING = {
                         "hanfu_wash": {"program": "hanfu_wash"}
                     }
                 },
-                "temperature": {
-                    "options": {
-                        "0": {"temperature": "0"},
-                        "20": {"temperature": "20"},
-                        "30": {"temperature": "30"},
-                        "40": {"temperature": "40"},
-                        "50": {"temperature": "50"},
-                        "60": {"temperature": "60"},
-                        "70": {"temperature": "70"},
-                        "90": {"temperature": "90"},
-                        "95": {"temperature": "95"}
-                    }
-                },
-                "detergent": {
-                    "options": {
-                        "0": {"detergent": "0"},
-                        "1": {"detergent": "1"},
-                        "2": {"detergent": "2"},
-                        "3": {"detergent": "3"},
-                        "4": {"detergent": "4"},
-                        "5": {"detergent": "5"}
-                    }
-                },
-                "softener": {
-                    "options": {
-                        "0": {"softener": "0"},
-                        "1": {"softener": "1"},
-                        "2": {"softener": "2"},
-                        "3": {"softener": "3"},
-                        "4": {"softener": "4"},
-                        "5": {"softener": "5"}
-                    }
-                },
-                "dirty_degree": {
-                    "options": {
-                        "0": {"dirty_degree": "0"},
-                        "1": {"dirty_degree": "1"},
-                        "2": {"dirty_degree": "2"},
-                        "3": {"dirty_degree": "3"},
-                        "4": {"dirty_degree": "4"}
-                    }
-                },
-                "soak_count": {
-                    "options": {
-                        "0": {"soak_count": "0"},
-                        "1": {"soak_count": "1"},
-                        "2": {"soak_count": "2"},
-                        "3": {"soak_count": "3"},
-                        "4": {"soak_count": "4"},
-                        "5": {"soak_count": "5"}
-                    }
-                }
             },
             Platform.SENSOR: {
                 "running_status": {
                     "device_class": SensorDeviceClass.ENUM
-                },
-                "wash_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
                 },
                 "appointment_time": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -271,11 +243,6 @@ DEVICE_MAPPING = {
                 "progress": {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "dehydration_time_value": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "customize_machine_cycle": {
@@ -314,11 +281,6 @@ DEVICE_MAPPING = {
                 },
                 "active_oxygen": {
                     "device_class": SensorDeviceClass.ENUM
-                },
-                "dehydration_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
                 },
                 "cloud_cycle_jiepai_time2": {
                     "device_class": SensorDeviceClass.DURATION,
