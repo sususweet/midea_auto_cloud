@@ -10,12 +10,23 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
+            Platform.NUMBER: {
+                "water_quality": {
+                    "min": 0,
+                    "max": 3,
+                    "step": 1
+                },
+                "cur_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                }
+            },
             Platform.CLIMATE: {
                 "water_heater": {
                     "power": "power",
                     "hvac_modes": {
                         "off": {"power": "off"},
-                        "on": {"power": "on"},
+                        "heat": {"power": "on"},
                     },
                     "target_temperature": "temperature",
                     "current_temperature": "cur_temperature",
@@ -52,14 +63,6 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
-                "water_quality": {
-                    "options": {
-                        "0": {"water_quality": 0},
-                        "1": {"water_quality": 1},
-                        "2": {"water_quality": 2},
-                        "3": {"water_quality": 3}
-                    }
-                },
                 "func_select": {
                     "options": {
                         "low": {"func_select": "low"},

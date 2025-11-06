@@ -553,9 +553,6 @@
       "type_select": {
         "name": "Type Select"
       },
-      "water_quality": {
-        "name": "Water Quality"
-      },
       "work_status": {
         "name": "Work Status"
       },
@@ -1510,6 +1507,9 @@
       }
     },
     "number": {
+      "water_quality": {
+        "name": "Water Quality"
+      },
       "b6_lightness": {
         "name": "Smoke Machine Lightness"
       },

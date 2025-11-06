@@ -560,9 +560,6 @@
       "type_select": {
         "name": "类型选择"
       },
-      "water_quality": {
-        "name": "水质"
-      },
       "work_status": {
         "name": "工作状态"
       },
@@ -1514,6 +1511,9 @@
       }
     },
     "number": {
+      "water_quality": {
+        "name": "水质"
+      },
       "b6_lightness": {
         "name": "烟机照明"
       },
