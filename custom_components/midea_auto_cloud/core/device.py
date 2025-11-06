@@ -295,19 +295,20 @@ class MiedaDevice(threading.Thread):
                                 break
                         if calculate:
                             calculate_str1 = \
-                                (f"{lvalue.replace('[', 'self._attributes[')} = "
-                                 f"{rvalue.replace('[', 'self._attributes[')}") \
-                                    .replace("[", "[\"").replace("]", "\"]")
+                                (f"{lvalue.replace('[', 'self._attributes[').replace("]", "\"]")} = "
+                                f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                                    .replace("[", "[\"")
                             calculate_str2 = \
-                                (f"{lvalue.replace('[', 'new_status[')} = "
-                                 f"{rvalue.replace('[', 'self._attributes[')}") \
-                                    .replace("[", "[\"").replace("]", "\"]")
+                                (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
+                                 f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                                    .replace("[", "[\"")
                             try:
                                 exec(calculate_str1)
                                 exec(calculate_str2)
-                            except Exception:
+                            except Exception as e:
+                                traceback.print_exc()
                                 MideaLogger.warning(
-                                    f"Calculation Error: {lvalue} = {rvalue}", self._device_id
+                                    f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}", self._device_id
                                 )
                 self._update_all(new_status)
         return ParseMessageResult.SUCCESS

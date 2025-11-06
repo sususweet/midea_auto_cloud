@@ -1,9 +1,11 @@
 """Data coordinator for Midea Auto Cloud integration."""
 
 import logging
+import traceback
 from datetime import datetime, timedelta
 from typing import NamedTuple
 
+from attr import attributes
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later
@@ -184,14 +186,35 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
 
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""
-        # 云端控制：构造 control 与 status（携带当前状态作为上下文）
-        await self.device.set_attribute(attribute, value)
-        self.device.attributes[attribute] = value
-        self.mute_state_update_for_a_while()
-        self.async_update_listeners()
+        attributes = {}
+        attributes[attribute] = value
+        await self.async_set_attributes(attributes)
 
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
+        # 云端控制：构造 control 与 status（携带当前状态作为上下文）
+        for c in self.device._calculate_set:
+            lvalue = c.get("lvalue")
+            rvalue = c.get("rvalue")
+            if lvalue and rvalue:
+                calculate = False
+                for s, v in attributes.items():
+                    if rvalue.find(f"[{s}]") >= 0:
+                        calculate = True
+                        break
+                if calculate:
+                    calculate_str1 = \
+                        (f"{lvalue.replace('[', 'attributes[').replace("]", "\"]")} = "
+                         f"{rvalue.replace('[', 'float(attributes[').replace(']', "\"])")}") \
+                            .replace("[", "[\"")
+                    try:
+                        exec(calculate_str1)
+                    except Exception as e:
+                        traceback.print_exc()
+                        MideaLogger.warning(
+                            f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                            self._device_id
+                        )
         await self.device.set_attributes(attributes)
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()

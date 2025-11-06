@@ -34,6 +34,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xB8 Smart Robot Vacuum
 - T0xCA French Door Refrigerator
 - T0xCC Central Air Conditioning (Ducted) Wi-Fi Controller
+- T0xCD Air Energy Water Heater
 - T0xCE Fresh Air System
 - T0xCF Central Air Conditioning Heating
 - T0xD9 Twin Tub Washing Machine
