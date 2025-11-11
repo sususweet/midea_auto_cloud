@@ -3,7 +3,7 @@ import socket
 import traceback
 from enum import IntEnum
 
-from .cloud import MideaCloud
+from .cloud import MideaCloud, MSmartHomeCloud
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 from .message import MessageQuestCustom
@@ -42,6 +42,7 @@ class MiedaDevice(threading.Thread):
                  protocol: int,
                  model: str | None,
                  subtype: int | None,
+                 manufacturer_code: str | None,
                  connected: bool,
                  sn: str | None,
                  sn8: str | None,
@@ -65,6 +66,7 @@ class MiedaDevice(threading.Thread):
         self._subtype = subtype
         self._sn = sn
         self._sn8 = sn8
+        self._manufacturer_code = manufacturer_code
         self._attributes = {
             "device_type": "T0x%02X" % device_type,
             "sn": sn,
@@ -269,48 +271,70 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
-            if self._lua_runtime is not None:
-                if query_cmd := self._lua_runtime.build_query(query):
-                    await self._build_send(query_cmd)
+            cloud = self._cloud
+            if cloud and hasattr(cloud, "get_device_status"):
+                if isinstance(cloud, MSmartHomeCloud):
+                    status = await cloud.get_device_status(
+                        appliance_code=self._device_id,
+                        device_type=self.device_type,
+                        sn=self.sn,
+                        model_number=self.subtype,
+                        manufacturer_code=self._manufacturer_code,
+                        query=query
+                    )
+                else:
+                    status = await cloud.get_device_status(
+                        appliance_code=self._device_id,
+                        query=query
+                    )
 
-    def _parse_cloud_message(self, decrypted):
+                self._parse_cloud_message(status)
+            # if self._lua_runtime is not None:
+            #     if query_cmd := self._lua_runtime.build_query(query):
+            #         try:
+            #             await self._build_send(query_cmd)
+            #             return
+            #         except Exception as e:
+            #             traceback.print_exc()
+
+
+    def _parse_cloud_message(self, status):
         # MideaLogger.debug(f"Received: {decrypted}")
-        if status := self._lua_runtime.decode_status(dec_string_to_bytes(decrypted).hex()):
-            MideaLogger.debug(f"Decoded: {status}")
-            new_status = {}
-            for single in status.keys():
-                value = status.get(single)
-                if single not in self._attributes or self._attributes[single] != value:
-                    self._attributes[single] = value
-                    new_status[single] = value
-            if len(new_status) > 0:
-                for c in self._calculate_get:
-                    lvalue = c.get("lvalue")
-                    rvalue = c.get("rvalue")
-                    if lvalue and rvalue:
-                        calculate = False
-                        for s, v in new_status.items():
-                            if rvalue.find(f"[{s}]") >= 0:
-                                calculate = True
-                                break
-                        if calculate:
-                            calculate_str1 = \
-                                (f"{lvalue.replace('[', 'self._attributes[').replace("]", "\"]")} = "
-                                f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
-                                    .replace("[", "[\"")
-                            calculate_str2 = \
-                                (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
-                                 f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
-                                    .replace("[", "[\"")
-                            try:
-                                exec(calculate_str1)
-                                exec(calculate_str2)
-                            except Exception as e:
-                                traceback.print_exc()
-                                MideaLogger.warning(
-                                    f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}", self._device_id
-                                )
-                self._update_all(new_status)
+        new_status = {}
+        for single in status.keys():
+            value = status.get(single)
+            if single not in self._attributes or self._attributes[single] != value:
+                self._attributes[single] = value
+                new_status[single] = value
+        if len(new_status) > 0:
+            for c in self._calculate_get:
+                lvalue = c.get("lvalue")
+                rvalue = c.get("rvalue")
+                if lvalue and rvalue:
+                    calculate = False
+                    for s, v in new_status.items():
+                        if rvalue.find(f"[{s}]") >= 0:
+                            calculate = True
+                            break
+                    if calculate:
+                        calculate_str1 = \
+                            (f"{lvalue.replace('[', 'self._attributes[').replace("]", "\"]")} = "
+                             f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                                .replace("[", "[\"")
+                        calculate_str2 = \
+                            (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
+                             f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                                .replace("[", "[\"")
+                        try:
+                            exec(calculate_str1)
+                            exec(calculate_str2)
+                        except Exception as e:
+                            traceback.print_exc()
+                            MideaLogger.warning(
+                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}",
+                                self._device_id
+                            )
+            self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
     def _parse_message(self, msg):
@@ -372,11 +396,13 @@ class MiedaDevice(threading.Thread):
 
     async def _send_message(self, data):
         if reply := await self._cloud.send_cloud(self._device_id, data):
-            result = self._parse_cloud_message(reply)
-            if result == ParseMessageResult.ERROR:
-                MideaLogger.debug(f"Message 'ERROR' received")
-            elif result == ParseMessageResult.SUCCESS:
-                timeout_counter = 0
+            if reply_dec := self._lua_runtime.decode_status(dec_string_to_bytes(reply).hex()):
+                MideaLogger.debug(f"Decoded: {reply_dec}")
+                result = self._parse_cloud_message(reply_dec)
+                if result == ParseMessageResult.ERROR:
+                    MideaLogger.debug(f"Message 'ERROR' received")
+                elif result == ParseMessageResult.SUCCESS:
+                    timeout_counter = 0
 
     # if self._protocol == 3:
     #     self._send_message_v3(data, msg_type=MSGTYPE_ENCRYPTED_REQUEST)

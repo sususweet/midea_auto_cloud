@@ -27,6 +27,7 @@ clouds = {
         "app_key": "ac21b9f9cbfe4ca5a88562ef25e2b768",
         "iot_key": bytes.fromhex(format(7882822598523843940, 'x')).decode(),
         "hmac_key": bytes.fromhex(format(117390035944627627450677220413733956185864939010425, 'x')).decode(),
+        # "api_url": "https://mp-eu-prod.appsmb.com/mas/v5/app/proxy?alias=",
         "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
     },
 }
@@ -635,6 +636,55 @@ class MSmartHomeCloud(MideaCloud):
                     with open(fnm, "w") as fp:
                         fp.write(stream)
         return fnm
+
+    async def get_device_status(
+        self,
+        appliance_code: int,
+        device_type: int,
+        sn: str,
+        model_number: str | None,
+        manufacturer_code: str = "0000",
+        query: dict = {}
+    ) -> dict | None:
+        data = {
+            "clientType": "1",
+            "appId": self.APP_ID,
+            "format": "2",
+            "deviceId": self._device_id,
+            "iotAppId": self.APP_ID,
+            "applianceMFCode": manufacturer_code,
+            "applianceType": "0x%02X" % device_type,
+            "modelNumber": model_number,
+            "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
+            "version": "0",
+            "encryptedType ": "2",
+            "applianceCode": appliance_code,
+            "command": {
+                "query": query
+            }
+        }
+        if response := await self._api_request(
+            endpoint="/v1/device/status/lua/get",
+            data=data
+        ):
+            # 预期返回形如 { ... 状态键 ... }
+            return response
+        return None
+
+    async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
+        data = {
+            "applianceCode": str(appliance_code),
+            "command": {
+                "control": control
+            }
+        }
+        if status and isinstance(status, dict):
+            data["command"]["status"] = status
+        response = await self._api_request(
+            endpoint="/v1/device/lua/control",
+            data=data
+        )
+        return response is not None
 
 
 def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str) -> MideaCloud | None:

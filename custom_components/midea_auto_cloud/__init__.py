@@ -258,6 +258,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 protocol=info.get(CONF_PROTOCOL) or 2,
                                 model=info.get(CONF_MODEL),
                                 subtype=info.get(CONF_MODEL_NUMBER),
+                                manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
                                 sn=info.get(CONF_SN),
                                 sn8=info.get(CONF_SN8),
                                 lua_file=file,
