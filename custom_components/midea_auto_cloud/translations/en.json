@@ -349,6 +349,15 @@
       }
     },
     "select": {
+      "bright": {
+        "name": "Brightness"
+      },
+      "bias_gear": {
+        "name": "Bias Gear"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
       "b6_power": {
         "name": "Smoke Machine Power"
       },
@@ -1562,6 +1571,9 @@
       }
     },
     "switch": {
+      "waterions": {
+        "name": "Disinfection"
+      },
       "mute": {
         "name": "Mute"
       },

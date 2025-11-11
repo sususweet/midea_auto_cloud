@@ -48,6 +48,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xED Water Softener
 - T0xFA Electric Fan
 - T0xFB Electric Heater
+- T0xFC Air Purifier
 - T0xFD Humidifier
 
 Welcome to collaborate on adding support for more devices.

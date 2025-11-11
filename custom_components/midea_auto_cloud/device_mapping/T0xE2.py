@@ -1,4 +1,5 @@
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, PRECISION_HALVES
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, PRECISION_HALVES, \
+    CONCENTRATION_PARTS_PER_MILLION
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -155,7 +156,7 @@ DEVICE_MAPPING = {
                 },
                 "tds_value": {
                     "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "ppm",
+                    "unit_of_measurement": CONCENTRATION_PARTS_PER_MILLION,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "heat_water_level": {

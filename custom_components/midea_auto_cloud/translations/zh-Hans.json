@@ -353,6 +353,15 @@
       }
     },
     "select": {
+      "bright": {
+        "name": "亮度"
+      },
+      "bias_gear": {
+        "name": "降噪设置"
+      },
+      "humidity": {
+        "name": "设定湿度"
+      },
       "b6_power": {
         "name": "烟机开关"
       },
@@ -1566,6 +1575,9 @@
       }
     },
     "switch": {
+      "waterions": {
+        "name": "消杀"
+      },
       "mute": {
         "name": "静音"
       },

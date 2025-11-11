@@ -1,4 +1,5 @@
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, \
+    CONCENTRATION_PARTS_PER_MILLION
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -168,12 +169,12 @@ DEVICE_MAPPING = {
                 },
                 "pm25_value": {
                     "device_class": SensorDeviceClass.PM25,
-                    "unit_of_measurement": "µg/m³",
+                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "co2_value": {
                     "device_class": SensorDeviceClass.CO2,
-                    "unit_of_measurement": "ppm",
+                    "unit_of_measurement": CONCENTRATION_PARTS_PER_MILLION,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "machine_type": {
