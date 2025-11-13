@@ -1827,7 +1827,7 @@
         "name": "CO2 Check Enable"
       },
       "cold_water": {
-        "name": "Cold Water"
+        "name": "Cold Water Single Loop"
       },
       "cold_water_ai": {
         "name": "Cold Water AI"

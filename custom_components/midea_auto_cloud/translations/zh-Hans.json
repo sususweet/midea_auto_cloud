@@ -1831,7 +1831,7 @@
         "name": "CO2检测启用"
       },
       "cold_water": {
-        "name": "零冷水"
+        "name": "零冷水单次循环"
       },
       "cold_water_ai": {
         "name": "AI零冷水"

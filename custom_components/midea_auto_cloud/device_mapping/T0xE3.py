@@ -17,6 +17,9 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
+                "cold_water": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "cold_water_master": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
