@@ -1443,6 +1443,9 @@
       "left_status": {
         "name": "Left Status"
       },
+      "right_status": {
+        "name": "Right Status"
+      },
       "eq_recipe_action": {
         "name": "Eq Recipe Action"
       },

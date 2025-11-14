@@ -1447,6 +1447,9 @@
       "left_status": {
         "name": "左侧状态"
       },
+      "right_status": {
+        "name": "右侧状态"
+      },
       "eq_recipe_action": {
         "name": "等量食谱动作"
       },
