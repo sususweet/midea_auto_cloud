@@ -283,20 +283,20 @@ class MiedaDevice(threading.Thread):
                         query=query
                     )
                 else:
+                    if self._lua_runtime is not None:
+                        if query_cmd := self._lua_runtime.build_query(query):
+                            try:
+                                await self._build_send(query_cmd)
+                                return
+                            except Exception as e:
+                                traceback.print_exc()
+
                     status = await cloud.get_device_status(
                         appliance_code=self._device_id,
                         query=query
                     )
 
                 self._parse_cloud_message(status)
-            # if self._lua_runtime is not None:
-            #     if query_cmd := self._lua_runtime.build_query(query):
-            #         try:
-            #             await self._build_send(query_cmd)
-            #             return
-            #         except Exception as e:
-            #             traceback.print_exc()
-
 
     def _parse_cloud_message(self, status):
         # MideaLogger.debug(f"Received: {decrypted}")
