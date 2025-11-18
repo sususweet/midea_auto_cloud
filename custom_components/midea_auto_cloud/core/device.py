@@ -291,13 +291,13 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
-            try:
-                if self._lua_runtime is not None:
-                    if query_cmd := self._lua_runtime.build_query(query):
-                        await self._build_send(query_cmd)
-                        return
-            except Exception as e:
-                traceback.print_exc()
+            # try:
+            #     if self._lua_runtime is not None:
+            #         if query_cmd := self._lua_runtime.build_query(query):
+            #             await self._build_send(query_cmd)
+            #             return
+            # except Exception as e:
+            #     traceback.print_exc()
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
