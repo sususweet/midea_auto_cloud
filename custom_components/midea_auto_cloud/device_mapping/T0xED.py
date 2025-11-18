@@ -17,9 +17,6 @@ DEVICE_MAPPING = {
                 "heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "antifreeze": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -29,22 +26,13 @@ DEVICE_MAPPING = {
                 "keep_warm": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "vacation": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "germicidal": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lack_water": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "drainage": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "wash_enable": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "water_way": {
+                "wash": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "soften": {
@@ -65,13 +53,13 @@ DEVICE_MAPPING = {
                 "cl_sterilization": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "holiday_mode": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
             },
             Platform.BINARY_SENSOR: {
                 "heat_status": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "lack_water": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
                 "standby_status": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
