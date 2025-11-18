@@ -162,28 +162,6 @@ class MideaCloud:
     async def login(self) -> bool:
         raise NotImplementedError()
 
-    async def send_cloud(self, appliance_id: int, data: bytearray):
-        appliance_code = str(appliance_id)
-        params = {
-            'applianceCode': appliance_code,
-            'order': self._security.aes_encrypt(bytes_to_dec_string(data)).hex(),
-            'timestamp': 'true',
-            "isFull": "false"
-        }
-
-        if response := await self._api_request(
-            endpoint='/v1/appliance/transparent/send',
-            data=params,
-        ):
-            if response and response.get('reply'):
-                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
-                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
-                return reply_data
-            else:
-                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
-
-        return None
-
     async def list_home(self) -> dict | None:
         return {1: "My home"}
 
@@ -197,10 +175,6 @@ class MideaCloud:
             model_number: str | None,
             manufacturer_code: str = "0000",
     ):
-        raise NotImplementedError()
-
-    async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
-        """Send control to a device via cloud. Subclasses should implement if supported."""
         raise NotImplementedError()
     
     async def send_central_ac_control(self, appliance_code: int, nodeid: str, modelid: str, idtype: int, control: dict) -> bool:
@@ -321,6 +295,28 @@ class MeijuCloud(MideaCloud):
                             device_info["model"] = device_info["sn8"]
                         appliances[int(appliance["applianceCode"])] = device_info
             return appliances
+        return None
+
+    async def send_cloud(self, appliance_id: int, data: bytearray):
+        appliance_code = str(appliance_id)
+        params = {
+            'applianceCode': appliance_code,
+            'order': self._security.aes_encrypt(bytes_to_dec_string(data)).hex(),
+            'timestamp': 'true',
+            "isFull": "false"
+        }
+
+        if response := await self._api_request(
+            endpoint='/v1/appliance/transparent/send',
+            data=params,
+        ):
+            if response and response.get('reply'):
+                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
+                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
+                return reply_data
+            else:
+                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
+
         return None
 
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
@@ -637,6 +633,32 @@ class MSmartHomeCloud(MideaCloud):
                         fp.write(stream)
         return fnm
 
+    async def send_cloud(self, appliance_code: int, data: bytearray):
+        appliance_code = str(appliance_code)
+        params = {
+            "clientType": "1",
+            "appId": self.APP_ID,
+            "format": "2",
+            "deviceId": self._device_id,
+            "applianceCode": appliance_code,
+            'order': self._security.aes_encrypt(bytes_to_dec_string(data)).hex(),
+            'timestamp': 'true',
+            "isFull": "false"
+        }
+
+        if response := await self._api_request(
+            endpoint='/v1/appliance/transparent/send',
+            data=params,
+        ):
+            if response and response.get('reply'):
+                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
+                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
+                return reply_data
+            else:
+                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
+
+        return None
+
     async def get_device_status(
         self,
         appliance_code: int,
@@ -671,9 +693,29 @@ class MSmartHomeCloud(MideaCloud):
             return response
         return None
 
-    async def send_device_control(self, appliance_code: int, control: dict, status: dict | None = None) -> bool:
+    async def send_device_control(
+        self,
+        appliance_code: int,
+        device_type: int,
+        sn: str,
+        model_number: str | None,
+        manufacturer_code: str = "0000",
+        control: dict | None = None,
+        status: dict | None = None
+    ) -> bool:
         data = {
-            "applianceCode": str(appliance_code),
+            "clientType": "1",
+            "appId": self.APP_ID,
+            "format": "2",
+            "deviceId": self._device_id,
+            "iotAppId": self.APP_ID,
+            "applianceMFCode": manufacturer_code,
+            "applianceType": "0x%02X" % device_type,
+            "modelNumber": model_number,
+            "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
+            "version": "0",
+            "encryptedType ": "2",
+            "applianceCode": appliance_code,
             "command": {
                 "control": control
             }

@@ -85,6 +85,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_target_humidity = self._config.get("target_humidity")
         self._attr_temperature_unit = self._config.get("temperature_unit")
         self._attr_precision = self._config.get("precision")
+        self._attr_target_temperature_step = self._config.get("precision")
 
     @property
     def supported_features(self):

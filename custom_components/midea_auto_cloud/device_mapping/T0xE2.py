@@ -1,5 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, PRECISION_HALVES, \
-    CONCENTRATION_PARTS_PER_MILLION
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PRECISION_WHOLE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -16,10 +15,6 @@ DEVICE_MAPPING = {
                     "min": 0,
                     "max": 3,
                     "step": 1
-                },
-                "cur_temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "state_class": SensorStateClass.MEASUREMENT,
                 }
             },
             Platform.CLIMATE: {
@@ -32,9 +27,9 @@ DEVICE_MAPPING = {
                     "target_temperature": "temperature",
                     "current_temperature": "cur_temperature",
                     "min_temp": 30,
-                    "max_temp": 75,
+                    "max_temp": 80,
                     "temperature_unit": UnitOfTemperature.CELSIUS,
-                    "precision": PRECISION_HALVES,
+                    "precision": PRECISION_WHOLE,
                 }
             },
             Platform.SWITCH: {
@@ -62,25 +57,8 @@ DEVICE_MAPPING = {
                 "water_flow": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-            },
-            Platform.SELECT: {
-                "func_select": {
-                    "options": {
-                        "low": {"func_select": "low"},
-                        "medium": {"func_select": "medium"}
-                    }
-                },
-                "type_select": {
-                    "options": {
-                        "normal": {"type_select": "normal"},
-                        "valve": {"type_select": "valve"},
-                    }
-                },
-                "machine": {
-                    "options": {
-                        "real_machine": {"machine": "real_machine"},
-                        "virtual_machine": {"machine": "virtual_machine"}
-                    }
+                "sterilization": {
+                    "device_class": SwitchDeviceClass.SWITCH,
                 }
             },
             Platform.SENSOR: {
@@ -112,22 +90,18 @@ DEVICE_MAPPING = {
                 "passwater_lowbyte": {
                     "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "L",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL
                 },
                 "passwater_highbyte": {
                     "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "L",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL
                 },
                 "rate": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "L/min",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "cur_rate": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "L/min",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "sterilize_left_days": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -155,19 +129,13 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "tds_value": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": CONCENTRATION_PARTS_PER_MILLION,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "heat_water_level": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "flow": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "L/min",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "end_time_hour": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -202,19 +170,17 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "mg_remain": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "mg",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM
                 },
                 "waterday_lowbyte": {
                     "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "L",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL
                 },
                 "waterday_highbyte": {
                     "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "L",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.TOTAL
                 }
             },
             Platform.BINARY_SENSOR: {

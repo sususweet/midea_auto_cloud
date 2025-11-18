@@ -3,7 +3,7 @@ import socket
 import traceback
 from enum import IntEnum
 
-from .cloud import MideaCloud, MSmartHomeCloud
+from .cloud import MideaCloud, MSmartHomeCloud, MeijuCloud
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 from .message import MessageQuestCustom
@@ -180,7 +180,17 @@ class MiedaDevice(threading.Thread):
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
-                await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
+                if isinstance(cloud, MSmartHomeCloud):
+                    await cloud.send_device_control(
+                        appliance_code=self._device_id,
+                        device_type=self.device_type,
+                        sn=self.sn,
+                        model_number=self.subtype,
+                        manufacturer_code=self._manufacturer_code,
+                        control=nested_status,
+                        status=self._attributes)
+                elif isinstance(cloud, MeijuCloud):
+                    await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     async def set_attributes(self, attributes):
         new_status = {}
@@ -207,7 +217,17 @@ class MiedaDevice(threading.Thread):
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
-                await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
+                if isinstance(cloud, MSmartHomeCloud):
+                    await cloud.send_device_control(
+                        appliance_code=self._device_id,
+                        device_type=self.device_type,
+                        sn=self.sn,
+                        model_number=self.subtype,
+                        manufacturer_code=self._manufacturer_code,
+                        control=nested_status,
+                        status=self._attributes)
+                elif isinstance(cloud, MeijuCloud):
+                    await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     def set_ip_address(self, ip_address):
         MideaLogger.debug(f"Update IP address to {ip_address}")
@@ -271,6 +291,14 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
+            try:
+                if self._lua_runtime is not None:
+                    if query_cmd := self._lua_runtime.build_query(query):
+                        await self._build_send(query_cmd)
+                        return
+            except Exception as e:
+                traceback.print_exc()
+
             cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
                 if isinstance(cloud, MSmartHomeCloud):
@@ -282,21 +310,13 @@ class MiedaDevice(threading.Thread):
                         manufacturer_code=self._manufacturer_code,
                         query=query
                     )
-                else:
-                    if self._lua_runtime is not None:
-                        if query_cmd := self._lua_runtime.build_query(query):
-                            try:
-                                await self._build_send(query_cmd)
-                                return
-                            except Exception as e:
-                                traceback.print_exc()
-
+                    self._parse_cloud_message(status)
+                elif isinstance(cloud, MeijuCloud):
                     status = await cloud.get_device_status(
                         appliance_code=self._device_id,
                         query=query
                     )
-
-                self._parse_cloud_message(status)
+                    self._parse_cloud_message(status)
 
     def _parse_cloud_message(self, status):
         # MideaLogger.debug(f"Received: {decrypted}")
@@ -395,7 +415,13 @@ class MiedaDevice(threading.Thread):
         return ParseMessageResult.SUCCESS
 
     async def _send_message(self, data):
-        if reply := await self._cloud.send_cloud(self._device_id, data):
+        reply = None
+        if isinstance(self._cloud, MSmartHomeCloud):
+            reply = await self._cloud.send_cloud(self._device_id, data)
+        elif isinstance(self._cloud, MeijuCloud):
+            reply = await self._cloud.send_cloud(self._device_id, data)
+
+        if reply is not None:
             if reply_dec := self._lua_runtime.decode_status(dec_string_to_bytes(reply).hex()):
                 MideaLogger.debug(f"Decoded: {reply_dec}")
                 result = self._parse_cloud_message(reply_dec)
