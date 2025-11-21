@@ -1574,6 +1574,9 @@
       }
     },
     "switch": {
+      "follow_body_sense": {
+        "name": "Follow Body Sense"
+      },
       "waterions": {
         "name": "Disinfection"
       },

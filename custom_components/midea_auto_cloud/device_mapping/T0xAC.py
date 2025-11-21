@@ -107,7 +107,10 @@ DEVICE_MAPPING = {
                 },
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                }
+                },
+                "follow_body_sense": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
             },
             Platform.SENSOR: {
                 "mode": {
@@ -252,16 +255,13 @@ DEVICE_MAPPING = {
             },
             Platform.SWITCH: {
                 "dry": {
-                    "name": "干燥",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "prevent_straight_wind": {
-                    "name": "防直吹",
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [1, 2]
                 },
                 "aux_heat": {
-                    "name": "电辅热",
                     "device_class": SwitchDeviceClass.SWITCH,
                 }
             },
@@ -357,7 +357,6 @@ DEVICE_MAPPING = {
             },
             Platform.SWITCH: {
                 "power": {
-                    "name": "电源",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
             },

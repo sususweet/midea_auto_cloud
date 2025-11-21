@@ -1578,6 +1578,9 @@
       }
     },
     "switch": {
+      "follow_body_sense": {
+        "name": "随身感"
+      },
       "waterions": {
         "name": "消杀"
       },
