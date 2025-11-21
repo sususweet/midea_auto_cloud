@@ -123,6 +123,12 @@
   },
   "entity": {
     "binary_sensor": {
+      "heating_work": {
+        "name": "采暖功能状态"
+      },
+      "bathing_work": {
+        "name": "生活热水工作状态"
+      },
       "doorswitch": {
         "name": "门锁开关"
       },
@@ -1399,6 +1405,48 @@
       "ud_diy_up_percent": {
         "name": "上下自定义上百分比"
       },
+      "heat_exchanger": {
+        "name": "采暖模式"
+      },
+      "fan_type": {
+        "name": "风机模式"
+      },
+      "ignitor_output": {
+        "name": "点火状态"
+      },
+      "fan_output": {
+        "name": "风机状态"
+      },
+      "current_heat_set_temperature": {
+        "name": "当前采暖设定温度"
+      },
+      "current_bath_set_temperature": {
+        "name": "当前生活热水设定温度"
+      },
+      "heat_out_water_temperature": {
+        "name": "采暖出水实际温度"
+      },
+      "bath_out_water_temperature": {
+        "name": "生活用水出水实际温度"
+      },
+      "water_gage": {
+        "name": "水压"
+      },
+      "in_tds": {
+        "name": "进水TDS"
+      },
+      "out_tds": {
+        "name": "出水TDS"
+      },
+      "life_1": {
+        "name": "RO滤芯寿命"
+      },
+      "life_2": {
+        "name": "MPC滤芯寿命"
+      },
+      "water_consumption": {
+        "name": "用水量"
+      },
       "water_consumption_ml": {
         "name": "用水量(毫升)"
       },
@@ -1584,6 +1632,12 @@
       }
     },
     "switch": {
+      "winter_mode": {
+        "name": "冬季模式"
+      },
+      "summer_mode": {
+        "name": "夏季模式"
+      },
       "follow_body_sense": {
         "name": "随身感"
       },

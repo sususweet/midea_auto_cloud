@@ -117,9 +117,14 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "water_consumption_ml": {
+                "water_consumption": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
+                    "state_class": SensorStateClass.TOTAL_INCREASING
+                },
+                "water_consumption_ml": {
+                    "device_class": SensorDeviceClass.VOLUME,
+                    "unit_of_measurement": UnitOfVolume.MILLILITERS,
                     "state_class": SensorStateClass.TOTAL_INCREASING
                 },
                 "keep_warm_time": {
@@ -246,11 +251,23 @@ DEVICE_MAPPING = {
                 "velocity": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
-                "error": {
-                    "device_class": SensorDeviceClass.ENUM,
+                "life_1": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.DAYS,
                 },
-                "category": {
-                    "device_class": SensorDeviceClass.ENUM,
+                "life_2": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.DAYS,
+                },
+                "in_tds": {
+                    "device_class": SensorDeviceClass.WATER,
+                    "unit_of_measurement": "mg/L",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "out_tds": {
+                    "device_class": SensorDeviceClass.WATER,
+                    "unit_of_measurement": "mg/L",
+                    "state_class": SensorStateClass.MEASUREMENT
                 },
             }
         }

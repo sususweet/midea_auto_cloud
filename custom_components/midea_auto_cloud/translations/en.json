@@ -123,6 +123,12 @@
   },
   "entity": {
     "binary_sensor": {
+      "heating_work": {
+        "name": "Heating Work"
+      },
+      "bathing_work": {
+        "name": "Bathing Work"
+      },
       "doorswitch": {
         "name": "Door Switch"
       },
@@ -1395,6 +1401,48 @@
       "ud_diy_up_percent": {
         "name": "UD DIY Up Percent"
       },
+      "heat_exchanger": {
+        "name": "Heat Exchanger Mode"
+      },
+      "fan_type": {
+        "name": "Fan Type"
+      },
+      "ignitor_output": {
+        "name": "Ignitor Output"
+      },
+      "fan_output": {
+        "name": "Fan Output"
+      },
+      "current_heat_set_temperature": {
+        "name": "Current Heat Set Temperature"
+      },
+      "current_bath_set_temperature": {
+        "name": "Current Bath Set Temperature"
+      },
+      "heat_out_water_temperature": {
+        "name": "Heat Out Water Temperature"
+      },
+      "bath_out_water_temperature": {
+        "name": "Bath Out Water Temperature"
+      },
+      "water_gage": {
+        "name": "Water Gage"
+      },
+      "in_tds": {
+        "name": "In TDS"
+      },
+      "out_tds": {
+        "name": "Out TDS"
+      },
+      "life_1": {
+        "name": "RO Filter Cartridge Lifespan"
+      },
+      "life_2": {
+        "name": "MPC Filter Cartridge Lifespan"
+      },
+      "water_consumption": {
+        "name": "Water Consumption"
+      },
       "water_consumption_ml": {
         "name": "Water Consumption (ml)"
       },
@@ -1580,6 +1628,12 @@
       }
     },
     "switch": {
+      "winter_mode": {
+        "name": "Winter Mode"
+      },
+      "summer_mode": {
+        "name": "Summer Mode"
+      },
       "follow_body_sense": {
         "name": "Follow Body Sense"
       },
