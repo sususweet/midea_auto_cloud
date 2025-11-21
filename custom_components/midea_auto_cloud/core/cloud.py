@@ -3,7 +3,7 @@ import time
 import datetime
 import json
 import base64
-import asyncio
+import traceback
 import aiofiles
 import requests
 from aiohttp import ClientSession
@@ -90,13 +90,14 @@ class MideaCloud:
                 "accesstoken": self._access_token
             })
         response:dict = {"code": -1}
+        _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}")
         try:
-            r = await self._session.request(method, url, headers=header, data=dump_data, timeout=5)
+            r = await self._session.request(method, url, headers=header, data=dump_data, timeout=30)
             raw = await r.read()
             _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}, response: {raw}")
             response = json.loads(raw)
         except Exception as e:
-            _LOGGER.debug(f"API request attempt failed: {e}")
+            traceback.print_exc()
 
         if int(response["code"]) == 0:
             if "data" in response:
@@ -139,7 +140,7 @@ class MideaCloud:
             _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
             response = json.loads(raw)
         except Exception as e:
-            _LOGGER.debug(f"API request attempt failed: {e}")
+            traceback.print_exc()
 
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
