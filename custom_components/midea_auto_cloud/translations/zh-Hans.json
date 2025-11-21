@@ -655,6 +655,9 @@
       "move_direction": {
         "name": "移动方向"
       },
+      "work_status": {
+        "name": "工作状态"
+      },
       "sub_work_status": {
         "name": "子工作状态"
       },
@@ -1209,6 +1212,9 @@
       },
       "work_time": {
         "name": "工作时间"
+      },
+      "set_time": {
+        "name": "设置工作时间"
       },
       "zero_cold_tem": {
         "name": "零冷水温度"

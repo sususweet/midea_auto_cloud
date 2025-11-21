@@ -651,6 +651,9 @@
       "move_direction": {
         "name": "Move Direction"
       },
+      "work_status": {
+        "name": "Work Status"
+      },
       "sub_work_status": {
         "name": "Sub Work Status"
       },
@@ -1205,6 +1208,9 @@
       },
       "work_time": {
         "name": "Work Time"
+      },
+      "set_time": {
+        "name": "Set Time"
       },
       "zero_cold_tem": {
         "name": "Zero Cold Temperature"
