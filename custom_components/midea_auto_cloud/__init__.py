@@ -1,3 +1,4 @@
+import asyncio
 import os
 import base64
 from importlib import import_module
@@ -62,6 +63,9 @@ PLATFORMS: list[Platform] = [
     Platform.BUTTON
 ]
 
+async def import_module_async(module_name):
+    # 在线程池中执行导入操作
+    return await asyncio.to_thread(import_module, module_name, __package__)
 
 def get_sn8_used(hass: HomeAssistant, sn8):
     entries = hass.config_entries.async_entries(DOMAIN)
@@ -102,7 +106,7 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8):
     # if not json_data:
     device_path = f".device_mapping.{'T0x%02X' % device_type}"
     try:
-        mapping_module = import_module(device_path, __package__)
+        mapping_module = await import_module_async(device_path)
         for key, config in mapping_module.DEVICE_MAPPING.items():
             # support tuple & regular expression pattern to support multiple sn8 sharing one mapping
             if (key == sn8) or (isinstance(key, tuple) and sn8 in key) or (isinstance(key, str) and re.match(key, sn8)):
