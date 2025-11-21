@@ -4,6 +4,7 @@ import datetime
 import json
 import base64
 import asyncio
+import aiofiles
 import requests
 from aiohttp import ClientSession
 from secrets import token_hex
@@ -89,12 +90,10 @@ class MideaCloud:
                 "accesstoken": self._access_token
             })
         response:dict = {"code": -1}
-        _LOGGER.debug(f"Midea cloud API header: {header}")
-        _LOGGER.debug(f"Midea cloud API dump_data: {dump_data}")
         try:
             r = await self._session.request(method, url, headers=header, data=dump_data, timeout=5)
             raw = await r.read()
-            _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
+            _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}, response: {raw}")
             response = json.loads(raw)
         except Exception as e:
             _LOGGER.debug(f"API request attempt failed: {e}")
@@ -467,8 +466,8 @@ class MeijuCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    with open(fnm, "w") as fp:
-                        fp.write(stream)
+                    async with aiofiles.open(fnm, "w") as fp:
+                        await fp.write(stream)
         return fnm
 
 
@@ -629,8 +628,8 @@ class MSmartHomeCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    with open(fnm, "w") as fp:
-                        fp.write(stream)
+                    async with aiofiles.open(fnm, "w") as fp:
+                        await fp.write(stream)
         return fnm
 
     async def send_cloud(self, appliance_code: int, data: bytearray):
