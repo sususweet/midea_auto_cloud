@@ -1,5 +1,5 @@
 from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, UnitOfElectricPotential, \
-    UnitOfVolume, UnitOfMass
+    UnitOfVolume, UnitOfMass, PERCENTAGE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -252,12 +252,12 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENUM,
                 },
                 "life_1": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.DAYS,
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": PERCENTAGE,
                 },
                 "life_2": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.DAYS,
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": PERCENTAGE,
                 },
                 "in_tds": {
                     "device_class": SensorDeviceClass.WATER,
