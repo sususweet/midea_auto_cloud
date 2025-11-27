@@ -335,6 +335,12 @@
           }
         }
       },
+      "Zone1": {
+        "name": "区域1"
+      },
+      "DHW": {
+        "name": "DHW"
+      },
       "colmo_turing_central_ac_climate": {
         "name": "Thermostat",
         "state_attributes": {
@@ -2567,6 +2573,12 @@
       },
       "water_model_go_out": {
         "name": "Away Mode"
+      },
+      "fastdhw_state": {
+        "name": "Fast Hot Water"
+      },
+      "forcetbh_state": {
+        "name": "Force Standby"
       }
     }
   }

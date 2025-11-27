@@ -125,7 +125,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     @property
     def device_attributes(self) -> dict:
         """Return device attributes."""
-        return self.coordinator.data.attributes
+        return self.coordinator.data.attributes if self.coordinator.data else {}
 
     @property
     def available(self) -> bool:

@@ -335,6 +335,12 @@
           }
         }
       },
+      "Zone1": {
+        "name": "区域1"
+      },
+      "DHW": {
+        "name": "DHW"
+      },
       "colmo_turing_central_ac_climate": {
         "name": "温控器",
         "state_attributes": {
@@ -2571,6 +2577,12 @@
       },
       "water_model_go_out": {
         "name": "外出模式"
+      },
+      "fastdhw_state": {
+        "name": "快速生活热水"
+      },
+      "forcetbh_state": {
+        "name": "强制待机"
       }
     }
   }

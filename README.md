@@ -33,6 +33,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xB7 Gas Stove
 - T0xB8 Smart Robot Vacuum
 - T0xBF Microwave Steam Oven
+- T0xC3 Heat Pump
 - T0xCA French Door Refrigerator
 - T0xCC Central Air Conditioning (Ducted) Wi-Fi Controller
 - T0xCD Air Energy Water Heater
