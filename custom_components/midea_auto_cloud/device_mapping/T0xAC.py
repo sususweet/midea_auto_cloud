@@ -131,72 +131,10 @@ DEVICE_MAPPING = {
             }
         }
     },
-    "17497071": {
-        "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "water_model_run_status"}],
-        "centralized": [],
-        "entities": {
-            Platform.CLIMATE: {
-                "thermostat": {
-                    "power": "water_model_power",
-                    "hvac_modes": {
-                        "off": {"water_model_power": "off"},
-                        "heat": {"water_model_power": "on"},
-                    },
-                    "preset_modes": {
-                        "auto": {"water_model_temperature_auto": "on", "water_temp_linkage_switch": 0},
-                        "link": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 1},
-                        "manual": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 0}
-                    },
-                    "target_temperature": "water_model_temperature_set",
-                    "current_temperature": ["temperature", "small_temperature"],
-                    "pre_mode": "mode",
-                    "aux_heat": "water_model_ptc",
-                    "min_temp": 25,
-                    "max_temp": 60,
-                    "temperature_unit": UnitOfTemperature.CELSIUS,
-                    "precision": PRECISION_HALVES,
-                }
-            },
-            Platform.SWITCH: {
-                "water_model_power_save": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "water_model_go_out": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "water_model_ptc": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "aux_heat",
-                },
-            },
-            Platform.SENSOR: {
-                "tw1_in_water_temp": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "tw1_out_water_temp": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "humidity": {
-                    "device_class": SensorDeviceClass.HUMIDITY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
-                }
-            }
-        }
-    },
     "22259015": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "run_status"}, {"query_type": "module_30"}, {"query_type": "module_31"}, {"query_type": "module_32"}],
+        "queries": [{}, {"query_type": "run_status"}, {"query_type": "module_30"}, {"query_type": "module_31"},
+                    {"query_type": "module_32"}],
         "centralized": [],
         "calculate": {
             "get": [
@@ -220,42 +158,6 @@ DEVICE_MAPPING = {
             "set": []
         },
         "entities": {
-            Platform.FAN: {
-                "fan": {
-                    "power": "new_wind_machine",
-                    "speeds": list({"fresh_air_fan_speed": value + 1} for value in range(0, 100)),
-                    "preset_modes": {
-                        "heat_exchange": {
-                            "fresh_air_mode": 1,
-                            "wind_strength": 0
-                        },
-                        "smooth_in": {
-                            "fresh_air_mode": 2,
-                            "wind_strength": 0
-                        },
-                        "rough_in": {
-                            "fresh_air_mode": 2,
-                            "wind_strength": 1
-                        },
-                        "smooth_out": {
-                            "fresh_air_mode": 3,
-                            "wind_strength": 0
-                        },
-                        "rough_out": {
-                            "fresh_air_mode": 3,
-                            "wind_strength": 1
-                        },
-                        "auto": {
-                            "fresh_air_mode": 4,
-                            "wind_strength": 0
-                        },
-                        "innercycle": {
-                            "fresh_air_mode": 5,
-                            "wind_strength": 0
-                        },
-                    }
-                }
-            },
             Platform.CLIMATE: {
                 "thermostat": {
                     "power": "power",
@@ -317,6 +219,18 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1]
                 },
+                "manul_fresh_air": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "auto_comfort_fresh_air": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "auto_fresh_off_co2": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "comfort_fresh_air": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
             },
             Platform.SENSOR: {
                 "mode": {
@@ -342,6 +256,180 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                     "state_class": SensorStateClass.MEASUREMENT,
                 },
+            }
+        }
+    },
+    ("22019031", "22019035", "22019045"): {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type":"fresh_air"}, {"query_type":"indoor_humidity"}, {"query_type":"indoor_temperature"}, {"query_type":"outdoor_temperature"}],
+        "centralized": [],
+        "entities": {
+            Platform.FAN: {
+                "fan": {
+                    "power": "fresh_air",
+                    "speeds": [
+                        {"fresh_air": "on", "fresh_air_fan_speed": 40},
+                        {"fresh_air": "on", "fresh_air_fan_speed": 60},
+                        {"fresh_air": "on", "fresh_air_fan_speed": 80},
+                        {"fresh_air": "on", "fresh_air_fan_speed": 100}
+                    ],
+                }
+            },
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "auto": {"power": "on", "mode": "auto"},
+                        "dry": {"power": "on", "mode": "dry"},
+                        "fan_only": {"power": "on", "mode": "fan"}
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "eco": "off",
+                            "comfort_power_save": "off",
+                            "cool_power_saving": 0,
+                            # "comfort_sleep": "off",
+                            "strong_wind": "off"
+                        },
+                        "eco": {"eco": "on", "cool_power_saving": 1},
+                        "comfort": {"comfort_power_save": "on"},
+                        # "sleep": {"comfort_sleep": "on"},
+                        "boost": {"strong_wind": "on"}
+                    },
+                    "swing_modes": {
+                        "off": {"wind_swing_lr": "off", "wind_swing_ud": "off"},
+                        "both": {"wind_swing_lr": "on", "wind_swing_ud": "on"},
+                        "horizontal": {"wind_swing_lr": "on", "wind_swing_ud": "off"},
+                        "vertical": {"wind_swing_lr": "off", "wind_swing_ud": "on"},
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
+                    "aux_heat": "ptc",
+                    "min_temp": 17,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "fresh_air_remove_odor": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+                "dry": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "prevent_straight_wind": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
+                },
+                "aux_heat": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "follow_body_sense_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "outdoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "fresh_air_temp": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
+    "17497071": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "water_model_run_status"}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "water_model_power",
+                    "hvac_modes": {
+                        "off": {"water_model_power": "off"},
+                        "heat": {"water_model_power": "on"},
+                    },
+                    "preset_modes": {
+                        "auto": {"water_model_temperature_auto": "on", "water_temp_linkage_switch": 0},
+                        "link": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 1},
+                        "manual": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 0}
+                    },
+                    "target_temperature": "water_model_temperature_set",
+                    "current_temperature": ["temperature", "small_temperature"],
+                    "pre_mode": "mode",
+                    "aux_heat": "water_model_ptc",
+                    "min_temp": 25,
+                    "max_temp": 60,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "water_model_power_save": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "water_model_go_out": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "water_model_ptc": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "aux_heat",
+                },
+            },
+            Platform.SENSOR: {
+                "tw1_in_water_temp": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "tw1_out_water_temp": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
             }
         }
     },

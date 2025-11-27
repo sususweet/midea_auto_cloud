@@ -662,6 +662,9 @@
       }
     },
     "sensor": {
+      "fresh_air_temp": {
+        "name": "新风温度"
+      },
       "running_status": {
         "name": "运行状态"
       },
@@ -1675,7 +1678,7 @@
       "summer_mode": {
         "name": "夏季模式"
       },
-      "follow_body_sense": {
+      "follow_body_sense_enable": {
         "name": "随身感"
       },
       "waterions": {

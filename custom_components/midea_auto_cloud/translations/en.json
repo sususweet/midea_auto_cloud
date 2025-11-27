@@ -658,6 +658,9 @@
       }
     },
     "sensor": {
+      "fresh_air_temp": {
+        "name": "Fresh Air Temp"
+      },
       "running_status": {
         "name": "Running Status"
       },
@@ -1671,7 +1674,7 @@
       "summer_mode": {
         "name": "Summer Mode"
       },
-      "follow_body_sense": {
+      "follow_body_sense_enable": {
         "name": "Follow Body Sense"
       },
       "waterions": {

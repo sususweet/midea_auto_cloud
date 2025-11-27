@@ -91,10 +91,14 @@ class MideaFanEntity(MideaEntity, FanEntity):
 
     @property
     def preset_modes(self):
+        if self._key_preset_modes is None:
+            return None
         return list(self._key_preset_modes.keys())
 
     @property
     def preset_mode(self):
+        if self._key_preset_modes is None:
+            return None
         return self._dict_get_selected(self._key_preset_modes)
 
     @property
