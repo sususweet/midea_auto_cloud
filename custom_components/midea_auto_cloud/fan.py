@@ -108,6 +108,10 @@ class MideaFanEntity(MideaEntity, FanEntity):
     def oscillating(self):
         return self._get_status_on_off(self._key_oscillate)
 
+    @property
+    def current_direction(self):
+        return self._dict_get_selected(self._key_directions)
+
     async def async_turn_on(
             self,
             percentage: int | None = None,
@@ -147,3 +151,9 @@ class MideaFanEntity(MideaEntity, FanEntity):
         if self.oscillating != oscillating:
             await self._async_set_status_on_off(self._key_oscillate, oscillating)
 
+    async def async_set_direction(self, direction: str):
+        if not self._key_directions:
+            return
+        new_status = self._key_directions.get(direction)
+        if new_status:
+            await self.async_set_attributes(new_status)
