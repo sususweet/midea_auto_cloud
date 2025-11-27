@@ -109,8 +109,9 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "follow_body_sense": {
+                "follow_body_sense_enable": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
             },
             Platform.SENSOR: {
@@ -312,8 +313,9 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "follow_body_sense": {
+                "follow_body_sense_enable": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
             },
             Platform.SENSOR: {
