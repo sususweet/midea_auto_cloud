@@ -11,6 +11,7 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.CLIMATE: {
                 "Zone1": {
+                    "translation_key": "zone1",
                     "power": "zone1_power_state",
                     "hvac_modes": {
                         "off": {"zone1_power_state": "off"},
@@ -24,6 +25,7 @@ DEVICE_MAPPING = {
                     "precision": PRECISION_HALVES,
                 },
                 "DHW": {
+                    "translation_key": "dhw",
                     "power": "dhw_power_state",
                     "hvac_modes": {
                         "off": {"dhw_power_state": "off"},

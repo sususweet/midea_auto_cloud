@@ -335,10 +335,10 @@
           }
         }
       },
-      "Zone1": {
+      "zone1": {
         "name": "区域1"
       },
-      "DHW": {
+      "dhw": {
         "name": "DHW"
       },
       "colmo_turing_central_ac_climate": {
