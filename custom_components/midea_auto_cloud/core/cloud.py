@@ -4,6 +4,7 @@ import datetime
 import json
 import base64
 import traceback
+import os
 import aiofiles
 import requests
 from aiohttp import ClientSession
@@ -176,7 +177,19 @@ class MideaCloud:
             manufacturer_code: str = "0000",
     ):
         raise NotImplementedError()
-    
+
+    async def download_plugin(
+            self, path: str,
+            appliance_code: str,
+            smart_product_id: str,
+            device_type: int,
+            sn: str,
+            sn8: str,
+            model_number: str | None,
+            manufacturer_code: str = "0000",
+    ):
+        raise NotImplementedError()
+
     async def send_central_ac_control(self, appliance_code: int, nodeid: str, modelid: str, idtype: int, control: dict) -> bool:
         """Send control to central AC subdevice. Subclasses should implement if supported."""
         raise NotImplementedError()
@@ -284,6 +297,7 @@ class MeijuCloud(MideaCloud):
                             "type": int(appliance.get("type"), 16),
                             "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
                             "sn8": appliance.get("sn8", "00000000"),
+                            "smart_product_id": appliance.get("smartProductId", "0"),
                             "model_number": appliance.get("modelNumber", "0"),
                             "manufacturer_code": appliance.get("enterpriseCode", "0000"),
                             "model": appliance.get("productModel"),
@@ -471,6 +485,93 @@ class MeijuCloud(MideaCloud):
                         await fp.write(stream)
         return fnm
 
+
+    async def download_plugin(
+            self, path: str,
+            appliance_code: str,
+            smart_product_id: str,
+            device_type: int,
+            sn: str,
+            sn8: str,
+            model_number: str | None,
+            manufacturer_code: str = "0000",
+    ):
+        # 构建 applianceList，根据传入的参数动态生成
+        appliance_info = {
+            "appModel": sn8,
+            "appEnterprise": manufacturer_code,
+            "appType": f"0x{device_type:02X}",
+            "applianceCode": str(appliance_code) if isinstance(appliance_code, int) else appliance_code,
+            "smartProductId": str(smart_product_id) if isinstance(smart_product_id, int) else smart_product_id,
+            "modelNumber": model_number or "0",
+            "versionCode": 0
+        }
+        appliance_list = [appliance_info]
+        data = {
+            "applianceList": json.dumps(appliance_list),
+            "iotAppId": self.APP_ID,
+            "match": "1",
+            "clientType": "1",
+            "clientVersion": 201
+        }
+        fnm = None
+        if response := await self._api_request(
+            endpoint="/v1/plugin/update/getPluginV3",
+            data=data
+        ):
+            # response 是 {"list": [...]}
+            plugin_list = response.get("list", [])
+            if not plugin_list:
+                MideaLogger.warning(f"No plugin found for device type 0x{device_type:02X}, sn: {sn}")
+                return None
+            
+            # 找到匹配的设备（优先匹配 applianceCode，其次匹配 appType）
+            matched_plugin = None
+            # 首先尝试精确匹配 applianceCode
+            for plugin in plugin_list:
+                if plugin.get("applianceCode") == sn and plugin.get("appType") == f"0x{device_type:02X}":
+                    matched_plugin = plugin
+                    break
+            
+            # 如果没有精确匹配，使用第一个匹配 appType 的
+            if not matched_plugin:
+                for plugin in plugin_list:
+                    if plugin.get("appType") == f"0x{device_type:02X}":
+                        matched_plugin = plugin
+                        break
+            
+            if not matched_plugin:
+                MideaLogger.warning(f"No matching plugin found for device type 0x{device_type:02X}, sn: {sn}")
+                return None
+            
+            # 下载 zip 文件
+            zip_url = matched_plugin.get("url")
+            zip_title = matched_plugin.get("title", f"plugin_0x{device_type:02X}.zip")
+            
+            if not zip_url:
+                MideaLogger.warning(f"No download URL found for plugin: {zip_title}")
+                return None
+            
+            try:
+                # 确保目录存在
+                os.makedirs(path, exist_ok=True)
+                
+                res = await self._session.get(zip_url)
+                if res.status == 200:
+                    zip_data = await res.read()
+                    if zip_data:
+                        fnm = f"{path}/{zip_title}"
+                        async with aiofiles.open(fnm, "wb") as fp:
+                            await fp.write(zip_data)
+                        MideaLogger.info(f"Downloaded plugin file: {fnm}")
+                    else:
+                        MideaLogger.warning(f"Downloaded zip file is empty: {zip_url}")
+                else:
+                    MideaLogger.warning(f"Failed to download plugin, status: {res.status}, url: {zip_url}")
+            except Exception as e:
+                MideaLogger.error(f"Error downloading plugin: {e}")
+                traceback.print_exc()
+        return fnm
 
 class MSmartHomeCloud(MideaCloud):
     APP_ID = "1010"

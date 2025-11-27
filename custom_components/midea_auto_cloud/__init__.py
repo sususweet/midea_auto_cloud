@@ -1,6 +1,7 @@
 import asyncio
 import os
 import base64
+import traceback
 from importlib import import_module
 import re
 from homeassistant.config_entries import ConfigEntry
@@ -44,7 +45,7 @@ from .const import (
     CONF_SN,
     CONF_MODEL_NUMBER,
     CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE,
-    CONF_SELECTED_HOMES
+    CONF_SELECTED_HOMES, CONF_SMART_PRODUCT_ID, STORAGE_PLUGIN_PATH
 )
 # 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
 from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
@@ -249,6 +250,22 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                             model_number=info.get(CONF_MODEL_NUMBER),
                             manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
                         )
+                        try:
+                            os.makedirs(hass.config.path(STORAGE_PLUGIN_PATH), exist_ok=True)
+                            plugin_path = hass.config.path(STORAGE_PLUGIN_PATH)
+                            await cloud.download_plugin(
+                                path=plugin_path,
+                                appliance_code=appliance_code,
+                                smart_product_id=info.get(CONF_SMART_PRODUCT_ID),
+                                device_type=info.get(CONF_TYPE),
+                                sn=info.get(CONF_SN),
+                                sn8=info.get(CONF_SN8),
+                                model_number=info.get(CONF_MODEL_NUMBER),
+                                manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                            )
+                        except Exception as e:
+                            traceback.print_exc()
+
                         try:
                             device = MiedaDevice(
                                 name=info.get(CONF_NAME),

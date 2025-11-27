@@ -7,6 +7,7 @@ class MideaLogType(IntEnum):
     DEBUG = 1
     WARN = 2
     ERROR = 3
+    INFO = 4
 
 
 class MideaLogger:
@@ -18,6 +19,8 @@ class MideaLogger:
             log = f"[{device_id}] {log}"
         if log_type == MideaLogType.DEBUG:
             logging.getLogger(mod.__name__).debug(log)
+        elif log_type == MideaLogType.INFO:
+            logging.getLogger(mod.__name__).info(log)
         elif log_type == MideaLogType.WARN:
             logging.getLogger(mod.__name__).warning(log)
         elif log_type == MideaLogType.ERROR:
@@ -26,6 +29,10 @@ class MideaLogger:
     @staticmethod
     def debug(log, device_id=None):
         MideaLogger._log(MideaLogType.DEBUG, log, device_id)
+
+    @staticmethod
+    def info(log, device_id=None):
+        MideaLogger._log(MideaLogType.INFO, log, device_id)
 
     @staticmethod
     def warning(log, device_id=None):
