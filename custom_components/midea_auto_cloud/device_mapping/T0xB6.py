@@ -11,7 +11,7 @@ DEVICE_MAPPING = {
             "get": [
                 {
                     "lvalue": "[b7_vbattery]",
-                    "rvalue": "[b7_vbatt] / 1000.0"
+                    "rvalue": "float([b7_vbatt] / 1000.0)"
                 },
             ],
         },

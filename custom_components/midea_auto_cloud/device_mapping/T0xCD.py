@@ -12,17 +12,17 @@ DEVICE_MAPPING = {
             "get": [
                 {
                     "lvalue": "[temperature]",
-                    "rvalue": "([set_temperature] - 106) / 74 * 37 + 38"
+                    "rvalue": "float(([set_temperature] - 106) / 74 * 37 + 38)"
                 },
                 {
                     "lvalue": "[cur_temperature]",
-                    "rvalue": "([water_box_temperature] - 106) / 74 * 37 + 38"
+                    "rvalue": "float(([water_box_temperature] - 106) / 74 * 37 + 38)"
                 }
             ],
             "set": [
                 {
                     "lvalue": "[set_temperature]",
-                    "rvalue": "([temperature] - 38) / 37 * 74 + 106"
+                    "rvalue": "float(([temperature] - 38) / 37 * 74 + 106)"
                 },
             ]
         },

@@ -205,7 +205,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 if calculate:
                     calculate_str1 = \
                         (f"{lvalue.replace('[', 'attributes[').replace("]", "\"]")} = "
-                         f"{rvalue.replace('[', 'float(attributes[').replace(']', "\"])")}") \
+                         f"{rvalue.replace('[', 'attributes[').replace(']', "\"]")}") \
                             .replace("[", "[\"")
                     try:
                         exec(calculate_str1)

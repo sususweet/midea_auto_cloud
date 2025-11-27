@@ -341,11 +341,11 @@ class MiedaDevice(threading.Thread):
                     if calculate:
                         calculate_str1 = \
                             (f"{lvalue.replace('[', 'self._attributes[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                             f"{rvalue.replace('[', 'self._attributes[').replace(']', "\"]")}") \
                                 .replace("[", "[\"")
                         calculate_str2 = \
                             (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'float(self._attributes[').replace(']', "\"])")}") \
+                             f"{rvalue.replace('[', 'self._attributes[').replace(']', "\"]")}") \
                                 .replace("[", "[\"")
                         try:
                             exec(calculate_str1)
