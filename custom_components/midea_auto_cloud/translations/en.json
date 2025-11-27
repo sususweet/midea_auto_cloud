@@ -124,25 +124,13 @@
   "entity": {
     "binary_sensor": {
       "heating_work": {
-        "name": "Heating Work"
+        "name": "Heating Work Status"
       },
       "bathing_work": {
-        "name": "Bathing Work"
+        "name": "Bathing Work Status"
       },
       "doorswitch": {
         "name": "Door Switch"
-      },
-      "softener_lack": {
-        "name": "Softener Lack"
-      },
-      "detergent_lack": {
-        "name": "Detergent Lack"
-      },
-      "door_opened": {
-        "name": "Door Opened"
-      },
-      "bucket_water_overheating": {
-        "name": "Bucket Water Overheating"
       },
       "air_status": {
         "name": "Air Running"
@@ -240,6 +228,18 @@
       "door_status": {
         "name": "Door Status"
       },
+      "softener_lack": {
+        "name": "Softener Lack"
+      },
+      "detergent_lack": {
+        "name": "Detergent Lack"
+      },
+      "door_opened": {
+        "name": "Door Opened"
+      },
+      "bucket_water_overheating": {
+        "name": "Bucket Water Overheating"
+      },
       "ele_exception": {
         "name": "Ele Exception"
       },
@@ -333,10 +333,30 @@
         "state_attributes": {
           "fan_mode": {
             "state": {
-              "silent": "Silent",
-              "full": "Full"
+              "silent": "silent",
+              "low": "low",
+              "medium": "medium",
+              "high": "high",
+              "full": "full",
+              "auto": "auto"
+            }
+          },
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "eco": "eco",
+              "comfort": "comfort",
+              "boost": "boost"
             }
           }
+        },
+        "state": {
+          "off": "off",
+          "heat": "heat",
+          "cool": "cool",
+          "auto": "auto",
+          "dry": "dry",
+          "fan_only": "fan_only"
         }
       },
       "water_heater": {
@@ -426,6 +446,12 @@
       },
       "water_level": {
         "name": "Water Level"
+        "state": {
+          "low": "low",
+          "medium": "medium",
+          "high": "high",
+          "auto": "auto"
+		}
       },
       "db_water_level": {
         "name": "DB Water Level"
@@ -486,6 +512,12 @@
       },
       "mode": {
         "name": "Mode"
+        "state": {
+          "normal": "normal",
+          "factory_test": "factory_test",
+          "service": "service",
+          "normal_continus": "normal_continus"
+		}
       },
       "mode_state": {
         "name": "Mode State"
@@ -501,6 +533,99 @@
       },
       "program": {
         "name": "Program"
+        "state": {
+          "cotton": "cotton",
+          "eco": "eco",
+          "fast_wash": "fast wash 15min",
+          "mixed_wash": "mixed wash",
+          "wool": "wool",
+          "ssp": "self-cleaning mode",
+          "sport_clothes": "sport clothes",
+          "single_dehytration": "single dehytration",
+          "rinsing_dehydration": "rinsing and dehydration",
+          "big": "big clothes",
+          "baby_clothes": "baby clothes",
+          "down_jacket": "down jacket",
+          "color": "color clothes",
+          "intelligent": "intelligent",
+          "quick_wash": "quick wash",
+          "shirt": "shirt",
+          "fiber": "fiber",
+          "enzyme": "enzyme",
+          "underwear": "underwear",
+          "outdoor": "outdoor",
+          "air_wash": "air wash",
+          "single_drying": "single drying",
+          "steep": "steep",
+          "kids": "kids",
+          "water_cotton": "water cotton",
+          "fast_wash_30": "fast wash 30min",
+          "fast_wash_60": "fast wash 60min",
+          "water_mixed_wash": "water mixed wash",
+          "water_fiber": "water fiber",
+          "water_kids": "water kids",
+          "water_underwear": "water underwear",
+          "specialist": "specialist wash",
+          "love": "love wash",
+          "water_intelligent": "water intelligent",
+          "water_steep": "water steep",
+          "water_fast_wash_30": "water fast wash 30min",
+          "new_water_cotton": "new water cotton",
+          "water_eco": "water eco",
+          "wash_drying_60": "wash drying 60min",
+          "self_wash_5": "self wash 5min",
+          "fast_wash_min": "fast wash(min)",
+          "mixed_wash_min": "mixed wash（min）",
+          "dehydration_min": "dehydration（min）",
+          "self_wash_min": "self wash（min）",
+          "baby_clothes_min": "baby clothes（min）",
+          "diy0": "diy0",
+          "diy1": "diy1",
+          "diy2": "diy2",
+          "silk_wash": "silk wash",
+          "prevent_allergy": "prevent allergy",
+          "cold_wash": "cold wash",
+          "soft_wash": "soft wash",
+          "remove_mite_wash": "remove mite wash",
+          "water_intense_wash": "water intense wash",
+          "fast_dry": "fast dry",
+          "water_outdoor": "water outdoor",
+          "spring_autumn_wash": "spring autumn wash",
+          "summer_wash": "summer wash",
+          "winter_wash": "winter wash",
+          "jean": "jean",
+          "new_clothes_wash": "new clothes wash",
+          "silk": "silk",
+          "insight_wash": "insight wash",
+          "fitness_clothes": "fitness clothes",
+          "mink": "mink",
+          "fresh_air": "fresh air",
+          "bucket_dry": "bucket dry",
+          "jacket": "jacket",
+          "bath_towel": "bath towel",
+          "night_fresh_wash": "night fresh wash",
+          "heart_wash": "heart wash",
+          "water_cold_wash": "water cold wash",
+          "water_prevent_allergy": "water prevent allergy",
+          "water_remove_mite_wash": "water remove mite wash",
+          "water_ssp": "water self-cleaning mode",
+          "standard": "standard",
+          "green_wool": "green wool",
+          "cook_wash": "cook wash",
+          "fresh_remove_wrinkle": "fresh remove wrinkle",
+          "steam_sterilize_wash": "steam sterilize wash",
+          "aromatherapy": "aromatherapy",
+          "sterilize_wash": "sterilize wash",
+          "white_clothes_clean": "white clothes clean",
+          "clean_stains": "clean stains",
+          "tube_clean_all": "tube clean all",
+          "no_channeling_color": "no channeling color",
+          "scald_wash": "scald wash",
+          "hanfu_spring_summer": "hanfu spring summer",
+          "hanfu_autumn_winter": "hanfu autumn winter",
+          "skin_care_wash": "skin care wash",
+          "hanfu_wash": "hanfu wash"
+		}
       },
       "query_type": {
         "name": "Query Type"
@@ -559,6 +684,44 @@
       "work_mode": {
         "name": "Work Mode"
       },
+      "wash_mode": {
+        "name": "wash mode",
+        "state": {
+		  "neutral_gear": "neutral gear",
+		  "auto_wash": "auto wash",
+		  "strong_wash": "strong wash",
+		  "standard_wash": "standard wash",
+		  "eco_wash": "eco wash",
+		  "glass_wash": "glass wash",
+		  "hour_wash": "hour wash",
+		  "fast_wash": "fast wash",
+		  "soak_wash": "soak wash",
+		  "90min_wash": "90min wash",
+		  "self_clean": "self clean",
+		  "fruit_wash": "fruit wash",
+		  "self_define": "self define",
+		  "germ": "germ",
+		  "bowl_wash": "bowl wash",
+		  "kill_germ": "kill germ",
+		  "seafood_wash": "seafood wash",
+		  "hotpot_wash": "hotpot wash",
+		  "quietnight_wash": "quietnight wash",
+		  "less_wash": "less wash",
+		  "oilnet_wash": "oilnet wash",
+		  "max_rapid_wash": "max rapid wash",
+		  "hot_bowl_wash": "hot bowl wash",
+		  "cloud_wash": "cloud wash",
+		  "baby_wash": "baby wash",
+		  "single_dry": "single dry",
+		  "single_disinfect": "single disinfect",
+		  "wahin_wash_dry": "wahin wash dry",
+		  "high_temp_wash": "high temp wash",
+		  "wash_dry": "wash dry",
+		  "auto_dry": "auto dry",
+		  "fire_disinfect": "fire disinfect",
+		  "toy_wash": "toy wash"
+        }
+      },
       "func_select": {
         "name": "Func Select"
       },
@@ -570,9 +733,13 @@
       },
       "work_status": {
         "name": "Work Status"
-      },
-      "wash_mode": {
-        "name": "Wash Mode"
+        "state": {
+          "power_off": "power off",
+          "power_on": "power on",
+          "cancel": "cancel",
+          "pause": "pause",
+          "resume": "resume"
+        }
       },
       "voice": {
         "name": "Voice"
@@ -1402,46 +1569,46 @@
         "name": "UD DIY Up Percent"
       },
       "heat_exchanger": {
-        "name": "Heat Exchanger Mode"
+        "name": "heat exchanger"
       },
       "fan_type": {
-        "name": "Fan Type"
+        "name": "fan type"
       },
       "ignitor_output": {
-        "name": "Ignitor Output"
+        "name": "ignitor output"
       },
       "fan_output": {
-        "name": "Fan Output"
+        "name": "fan output"
       },
       "current_heat_set_temperature": {
-        "name": "Current Heat Set Temperature"
+        "name": "current heat set temperature"
       },
       "current_bath_set_temperature": {
-        "name": "Current Bath Set Temperature"
+        "name": "current bath set temperature"
       },
       "heat_out_water_temperature": {
-        "name": "Heat Out Water Temperature"
+        "name": "heat out water temperature"
       },
       "bath_out_water_temperature": {
-        "name": "Bath Out Water Temperature"
+        "name": "bath out water temperature"
       },
       "water_gage": {
-        "name": "Water Gage"
+        "name": "water gage"
       },
       "in_tds": {
-        "name": "In TDS"
+        "name": "in tds"
       },
       "out_tds": {
-        "name": "Out TDS"
+        "name": "out tds"
       },
       "life_1": {
-        "name": "RO Filter Cartridge Lifespan"
+        "name": "life_1"
       },
       "life_2": {
-        "name": "MPC Filter Cartridge Lifespan"
+        "name": "life_2"
       },
       "water_consumption": {
-        "name": "Water Consumption"
+        "name": "water consumption"
       },
       "water_consumption_ml": {
         "name": "Water Consumption (ml)"
@@ -1629,10 +1796,10 @@
     },
     "switch": {
       "winter_mode": {
-        "name": "Winter Mode"
+        "name": "winter mode"
       },
       "summer_mode": {
-        "name": "Summer Mode"
+        "name": "summer mode"
       },
       "follow_body_sense": {
         "name": "Follow Body Sense"
@@ -1663,9 +1830,6 @@
       },
       "filter_tip": {
         "name": "Filter Tip"
-      },
-      "control_status": {
-        "name": "Start Pause"
       },
       "add_water_flag": {
         "name": "Add Water Flag"
@@ -1846,6 +2010,9 @@
       },
       "ai_switch": {
         "name": "AI Switch"
+      },
+      "control_status": {
+        "name": "Start Pause"
       },
       "airdry_on_off": {
         "name": "Air Dry On Off"
