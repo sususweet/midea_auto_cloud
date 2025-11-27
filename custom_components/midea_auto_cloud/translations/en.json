@@ -445,13 +445,13 @@
         "name": "DB Temperature"
       },
       "water_level": {
-        "name": "Water Level"
+        "name": "Water Level",
         "state": {
           "low": "low",
           "medium": "medium",
           "high": "high",
           "auto": "auto"
-		}
+        }
       },
       "db_water_level": {
         "name": "DB Water Level"
@@ -511,13 +511,13 @@
         "name": "Middle Stair Work Status"
       },
       "mode": {
-        "name": "Mode"
+        "name": "Mode",
         "state": {
           "normal": "normal",
           "factory_test": "factory_test",
           "service": "service",
           "normal_continus": "normal_continus"
-		}
+        }
       },
       "mode_state": {
         "name": "Mode State"
@@ -532,7 +532,7 @@
         "name": "Prevent Wrinkle"
       },
       "program": {
-        "name": "Program"
+        "name": "Program",
         "state": {
           "cotton": "cotton",
           "eco": "eco",
@@ -625,7 +625,7 @@
           "hanfu_autumn_winter": "hanfu autumn winter",
           "skin_care_wash": "skin care wash",
           "hanfu_wash": "hanfu wash"
-		}
+        }
       },
       "query_type": {
         "name": "Query Type"
@@ -687,39 +687,39 @@
       "wash_mode": {
         "name": "wash mode",
         "state": {
-		  "neutral_gear": "neutral gear",
-		  "auto_wash": "auto wash",
-		  "strong_wash": "strong wash",
-		  "standard_wash": "standard wash",
-		  "eco_wash": "eco wash",
-		  "glass_wash": "glass wash",
-		  "hour_wash": "hour wash",
-		  "fast_wash": "fast wash",
-		  "soak_wash": "soak wash",
-		  "90min_wash": "90min wash",
-		  "self_clean": "self clean",
-		  "fruit_wash": "fruit wash",
-		  "self_define": "self define",
-		  "germ": "germ",
-		  "bowl_wash": "bowl wash",
-		  "kill_germ": "kill germ",
-		  "seafood_wash": "seafood wash",
-		  "hotpot_wash": "hotpot wash",
-		  "quietnight_wash": "quietnight wash",
-		  "less_wash": "less wash",
-		  "oilnet_wash": "oilnet wash",
-		  "max_rapid_wash": "max rapid wash",
-		  "hot_bowl_wash": "hot bowl wash",
-		  "cloud_wash": "cloud wash",
-		  "baby_wash": "baby wash",
-		  "single_dry": "single dry",
-		  "single_disinfect": "single disinfect",
-		  "wahin_wash_dry": "wahin wash dry",
-		  "high_temp_wash": "high temp wash",
-		  "wash_dry": "wash dry",
-		  "auto_dry": "auto dry",
-		  "fire_disinfect": "fire disinfect",
-		  "toy_wash": "toy wash"
+          "neutral_gear": "neutral gear",
+          "auto_wash": "auto wash",
+          "strong_wash": "strong wash",
+          "standard_wash": "standard wash",
+          "eco_wash": "eco wash",
+          "glass_wash": "glass wash",
+          "hour_wash": "hour wash",
+          "fast_wash": "fast wash",
+          "soak_wash": "soak wash",
+          "90min_wash": "90min wash",
+          "self_clean": "self clean",
+          "fruit_wash": "fruit wash",
+          "self_define": "self define",
+          "germ": "germ",
+          "bowl_wash": "bowl wash",
+          "kill_germ": "kill germ",
+          "seafood_wash": "seafood wash",
+          "hotpot_wash": "hotpot wash",
+          "quietnight_wash": "quietnight wash",
+          "less_wash": "less wash",
+          "oilnet_wash": "oilnet wash",
+          "max_rapid_wash": "max rapid wash",
+          "hot_bowl_wash": "hot bowl wash",
+          "cloud_wash": "cloud wash",
+          "baby_wash": "baby wash",
+          "single_dry": "single dry",
+          "single_disinfect": "single disinfect",
+          "wahin_wash_dry": "wahin wash dry",
+          "high_temp_wash": "high temp wash",
+          "wash_dry": "wash dry",
+          "auto_dry": "auto dry",
+          "fire_disinfect": "fire disinfect",
+          "toy_wash": "toy wash"
         }
       },
       "func_select": {
@@ -732,7 +732,7 @@
         "name": "Type Select"
       },
       "work_status": {
-        "name": "Work Status"
+        "name": "Work Status",
         "state": {
           "power_off": "power off",
           "power_on": "power on",
@@ -2701,3 +2701,6 @@
     }
   }
 }
+
+
+
