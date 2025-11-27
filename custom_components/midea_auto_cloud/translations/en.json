@@ -320,6 +320,13 @@
       "thermostat": {
         "name": "Thermostat",
         "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "auto": "auto",
+              "link": "link",
+              "manual": "manual"
+            }
+          },
           "fan_mode": {
             "state": {
               "silent": "Silent",
@@ -1565,6 +1572,12 @@
       },
       "heat_temp_set": {
         "name": "Heat Temperature Set"
+      },
+      "tw1_in_water_temp": {
+        "name": "Inlet Water Temperature"
+      },
+      "tw1_out_water_temp": {
+        "name": "Outlet Water Temperature"
       }
     },
     "light": {
@@ -2530,6 +2543,12 @@
       },
       "work_switch": {
         "name": "Work Switch"
+      },
+      "water_model_power_save": {
+        "name": "Power Save Mode"
+      },
+      "water_model_go_out": {
+        "name": "Away Mode"
       }
     }
   }

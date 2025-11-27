@@ -108,13 +108,23 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def current_temperature(self):
-        temp = self._get_nested_value(self._key_current_temperature)
-        if temp is not None:
-            try:
-                return float(temp)
-            except (ValueError, TypeError):
-                return None
-        return None
+        if isinstance(self._key_current_temperature, list):
+            temp_int = self._get_nested_value(self._key_current_temperature[0])
+            tem_dec = self._get_nested_value(self._key_current_temperature[1])
+            if temp_int is not None and tem_dec is not None:
+                try:
+                    return float(temp_int) + float(tem_dec)
+                except (ValueError, TypeError):
+                    return None
+            return None
+        else:
+            temp = self._get_nested_value(self._key_current_temperature)
+            if temp is not None:
+                try:
+                    return float(temp)
+                except (ValueError, TypeError):
+                    return None
+            return None
 
     @property
     def target_temperature(self):

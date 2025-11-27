@@ -320,6 +320,13 @@
       "thermostat": {
         "name": "温控器",
         "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "auto": "自动",
+              "link": "联动",
+              "manual": "手动"
+            }
+          },
           "fan_mode": {
             "state": {
               "silent": "静音",
@@ -1569,6 +1576,12 @@
       },
       "heat_temp_set": {
         "name": "制热设定温度"
+      },
+      "tw1_in_water_temp": {
+        "name": "进水温度"
+      },
+      "tw1_out_water_temp": {
+        "name": "出水温度"
       }
     },
     "light": {
@@ -2534,6 +2547,12 @@
       },
       "work_switch": {
         "name": "工作开关"
+      },
+      "water_model_power_save": {
+        "name": "节能模式"
+      },
+      "water_model_go_out": {
+        "name": "外出模式"
       }
     }
   }
