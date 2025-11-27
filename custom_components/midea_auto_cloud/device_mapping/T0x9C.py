@@ -8,7 +8,7 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": ["b6_light"],
+        "centralized": [],
         "entities": {
             Platform.NUMBER: {
                 "b6_lightness": {
@@ -18,11 +18,26 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "total_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "power"
+                },
+                "total_lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "lock"
+                },
                 "b6_light": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
             },
             Platform.SELECT: {
+                "b3_function_control":{
+                    "options": {
+                        "关闭": {"b3_work_cabinet_control": 1, "b3_function_control": 1},
+                        "消毒": {"b3_work_cabinet_control": 1, "b3_function_control": 2, "b3_work_destination_time": 60},
+                        "烘干": {"b3_work_cabinet_control": 1, "b3_function_control": 4, "b3_work_destination_time": 120},
+                    }
+                },
                 "b6_gear": {
                     "options": {
                         "关": {"b6_gear": "0"},
@@ -75,10 +90,25 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "b3_upstair_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "b6_wind_pressure": {
                     "device_class": SensorDeviceClass.PRESSURE,
                     "unit_of_measurement": UnitOfPressure.PA,
                     "state_class": SensorStateClass.MEASUREMENT
+                },
+                "b7_left_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "b7_left_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "b7_right_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "b7_right_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
                 }
             }
         }

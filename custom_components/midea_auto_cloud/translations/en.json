@@ -371,6 +371,9 @@
       "humidity": {
         "name": "Humidity"
       },
+      "b3_function_control": {
+        "name": "Disinfection Cabinet Control"
+      },
       "b6_power": {
         "name": "Smoke Machine Power"
       },
@@ -693,6 +696,21 @@
       },
       "auto_min_set_temp": {
         "name": "Auto Min Set Temp"
+      },
+      "b3_upstair_status": {
+        "name": "Disinfection Cabinet Status"
+      },
+      "b7_left_status": {
+        "name": "Left Stove Status"
+      },
+      "b7_left_gear": {
+        "name": "Left Stove Gear"
+      },
+      "b7_right_status": {
+        "name": "Right Stove Status"
+      },
+      "b7_right_gear": {
+        "name": "Left Stove Gear"
       },
       "bath_out_volume": {
         "name": "Bath Out Volume"

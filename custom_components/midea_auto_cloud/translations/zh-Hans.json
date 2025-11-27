@@ -375,6 +375,9 @@
       "humidity": {
         "name": "设定湿度"
       },
+      "b3_function_control": {
+        "name": "消毒柜控制"
+      },
       "b6_power": {
         "name": "烟机开关"
       },
@@ -697,6 +700,21 @@
       },
       "auto_min_set_temp": {
         "name": "自动最小设定温度"
+      },
+      "b3_upstair_status": {
+        "name": "消毒柜状态"
+      },
+      "b7_left_status": {
+        "name": "左灶状态"
+      },
+      "b7_left_gear": {
+        "name": "左灶档位"
+      },
+      "b7_right_status": {
+        "name": "右灶状态"
+      },
+      "b7_right_gear": {
+        "name": "右灶档位"
       },
       "bath_out_volume": {
         "name": "浴缸出水量"
