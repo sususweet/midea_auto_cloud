@@ -372,6 +372,9 @@
       }
     },
     "select": {
+      "follow_body_sense": {
+        "name": "随身感"
+      },
       "bright": {
         "name": "亮度"
       },
@@ -1677,9 +1680,6 @@
       },
       "summer_mode": {
         "name": "夏季模式"
-      },
-      "follow_body_sense_enable": {
-        "name": "随身感"
       },
       "waterions": {
         "name": "消杀"

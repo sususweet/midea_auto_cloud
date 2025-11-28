@@ -15,6 +15,7 @@ DEVICE_MAPPING = {
                 },
                 "bubble": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
                 },
                 "cold_water": {
                     "device_class": SwitchDeviceClass.SWITCH,

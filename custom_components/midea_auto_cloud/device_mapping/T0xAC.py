@@ -109,10 +109,14 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "follow_body_sense_enable": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
-                },
+            },
+            Platform.SELECT: {
+                "follow_body_sense": {
+                    "options": {
+                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
+                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
+                    }
+                }
             },
             Platform.SENSOR: {
                 "mode": {
@@ -214,10 +218,6 @@ DEVICE_MAPPING = {
                 },
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "follow_body_sense_enable": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
                 "manul_fresh_air": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -337,10 +337,6 @@ DEVICE_MAPPING = {
                 },
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "follow_body_sense_enable": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1]
                 },
             },
             Platform.SENSOR: {
