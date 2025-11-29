@@ -181,8 +181,14 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             try:
                 result = bool(self._rationale.index(status))
             except ValueError:
-                MideaLogger.error(f"The value of attribute {attribute_key} ('{status}') "
+                if int(status) == 0:
+                    result = False
+                else:
+                    result = True
+                MideaLogger.info(f"The value of attribute {attribute_key} ('{status}') "
                                   f"is not in rationale {self._rationale}")
+            finally:
+                return result
         return result
 
     def _set_nested_value(self, attribute_key: str, value: Any) -> None:
