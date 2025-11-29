@@ -187,7 +187,6 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                     result = True
                 MideaLogger.info(f"The value of attribute {attribute_key} ('{status}') "
                                   f"is not in rationale {self._rationale}")
-            finally:
                 return result
         return result
 
