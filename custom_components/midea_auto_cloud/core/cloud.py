@@ -29,8 +29,8 @@ clouds = {
         "app_key": "ac21b9f9cbfe4ca5a88562ef25e2b768",
         "iot_key": bytes.fromhex(format(7882822598523843940, 'x')).decode(),
         "hmac_key": bytes.fromhex(format(117390035944627627450677220413733956185864939010425, 'x')).decode(),
-        "api_url": "https://mp-eu-prod.appsmb.com/mas/v5/app/proxy?alias=",
-        # "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
+        # "api_url": "https://mp-eu-prod.appsmb.com/mas/v5/app/proxy?alias=",
+        "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
     },
 }
 
@@ -642,7 +642,7 @@ class MSmartHomeCloud(MideaCloud):
                 self._api_url = api_url
 
     async def login(self) -> bool:
-        # await self._re_route()
+        await self._re_route()
         if login_id := await self._get_login_id():
             self._login_id = login_id
             iot_data = self._make_general_data()
