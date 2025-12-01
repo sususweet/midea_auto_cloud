@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{}, {""}],
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -18,7 +18,7 @@ DEVICE_MAPPING = {
                         "heat": {"zone1_power_state": "on"},
                     },
                     "target_temperature": "room_temp_set",
-                    "current_temperature": "T4",
+                    "current_temperature": "t4",
                     "min_temp": "room_min_set_temp",
                     "max_temp": "room_max_set_temp",
                     "temperature_unit": UnitOfTemperature.CELSIUS,
@@ -32,7 +32,7 @@ DEVICE_MAPPING = {
                         "heat": {"dhw_power_state": "on"},
                     },
                     "target_temperature": "dhw_temp_set",
-                    "current_temperature": "T4",
+                    "current_temperature": "t4",
                     "min_temp": "dhw_min_set_temp",
                     "max_temp": "dhw_max_set_temp",
                     "temperature_unit": UnitOfTemperature.CELSIUS,
