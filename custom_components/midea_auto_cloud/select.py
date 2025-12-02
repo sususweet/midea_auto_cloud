@@ -56,6 +56,13 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
 
     @property
     def options(self):
+        """Return a list of available options.
+        
+        Note: To translate options, add translations in the translation file under:
+        entity.select.{translation_key}.state.{option_key}
+        
+        Home Assistant will automatically use these translations when displaying options.
+        """
         return list(self._key_options.keys())
 
     @property

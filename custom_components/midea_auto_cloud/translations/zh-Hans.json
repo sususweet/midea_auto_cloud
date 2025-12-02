@@ -436,10 +436,105 @@
         "name": "位置"
       },
       "db_program": {
-        "name": "洗涤程序"
+        "name": "洗涤程序",
+        "state": {
+          "cotton": "棉麻",
+          "eco": "节能",
+          "fast_wash": "快洗",
+          "mixed_wash": "混合洗",
+          "wool": "羊毛",
+          "ssp": "SSP",
+          "sport_clothes": "运动服",
+          "single_dehytration": "单脱水",
+          "rinsing_dehydration": "漂洗脱水",
+          "big": "大件",
+          "baby_clothes": "婴儿服",
+          "down_jacket": "羽绒服",
+          "color": "彩色",
+          "intelligent": "智能",
+          "quick_wash": "快速洗",
+          "shirt": "衬衫",
+          "fiber": "化纤",
+          "enzyme": "酶洗",
+          "underwear": "内衣",
+          "outdoor": "户外",
+          "air_wash": "空气洗",
+          "single_drying": "单烘干",
+          "steep": "浸泡",
+          "kids": "童装",
+          "water_baby_clothes": "水洗婴儿服",
+          "fast_wash_30": "快洗30",
+          "water_shirt": "水洗衬衫",
+          "water_mixed_wash": "水洗混合",
+          "water_fiber": "水洗化纤",
+          "water_kids": "水洗童装",
+          "water_underwear": "水洗内衣",
+          "specialist": "专家",
+          "love": "爱心",
+          "water_intelligent": "水洗智能",
+          "water_steep": "水洗浸泡",
+          "water_fast_wash_30": "水洗快洗30",
+          "new_water_cotton": "新水洗棉",
+          "water_eco": "水洗节能",
+          "wash_drying_60": "洗烘60",
+          "self_wash_5": "自洁5",
+          "fast_wash_min": "快洗分钟",
+          "mixed_wash_min": "混合洗分钟",
+          "dehydration_min": "脱水分钟",
+          "self_wash_min": "自洁分钟",
+          "baby_clothes_min": "婴儿服分钟",
+          "silk_wash": "真丝洗",
+          "prevent_allergy": "防过敏",
+          "cold_wash": "冷水洗",
+          "soft_wash": "轻柔洗",
+          "remove_mite_wash": "除螨洗",
+          "water_intense_wash": "水洗强洗",
+          "fast_dry": "快干",
+          "water_outdoor": "水洗户外",
+          "spring_autumn_wash": "春秋洗",
+          "summer_wash": "夏季洗",
+          "winter_wash": "冬季洗",
+          "jean": "牛仔",
+          "new_clothes_wash": "新衣洗",
+          "silk": "真丝",
+          "insight_wash": "洞察洗",
+          "fitness_clothes": "健身服",
+          "mink": "貂皮",
+          "fresh_air": "新风",
+          "bucket_dry": "桶烘干",
+          "jacket": "夹克",
+          "bath_towel": "浴巾",
+          "night_fresh_wash": "夜间清新洗",
+          "degerm": "除菌",
+          "heart_wash": "爱心洗",
+          "water_cold_wash": "水洗冷水",
+          "water_prevent_allergy": "水洗防过敏",
+          "water_remove_mite_wash": "水洗除螨",
+          "water_ssp": "水洗SSP",
+          "standard": "标准",
+          "green_wool": "绿色羊毛",
+          "cook_wash": "烹饪洗",
+          "fresh_remove_wrinkle": "清新去皱",
+          "steam_sterilize_wash": "蒸汽杀菌洗",
+          "sterilize_wash": "杀菌洗",
+          "white_clothes_clean": "白衣清洁",
+          "clean_stains": "去渍",
+          "prevent_cross_color": "防串色",
+          "quick_dry_clothes": "快干衣物",
+          "yoga_clothes": "瑜伽服"
+        }
       },
       "db_running_status": {
-        "name": "运行状态"
+        "name": "运行状态",
+        "state": {
+          "off": "关闭",
+          "standby": "待机",
+          "start": "启动",
+          "pause": "暂停",
+          "end": "结束",
+          "fault": "故障",
+          "delay": "延时"
+        }
       },
       "db_softener": {
         "name": "柔顺剂"
@@ -448,7 +543,13 @@
         "name": "温度"
       },
       "water_level": {
-        "name": "水位"
+        "name": "水位",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "auto": "自动"
+        }
       },
       "db_water_level": {
         "name": "水位"
@@ -508,7 +609,13 @@
         "name": "中层工作状态"
       },
       "mode": {
-        "name": "模式"
+        "name": "模式",
+        "state": {
+          "normal": "正常",
+          "factory_test": "工厂测试",
+          "service": "服务",
+          "normal_continus": "正常连续"
+        }
       },
       "mode_state": {
         "name": "模式状态"
@@ -523,7 +630,100 @@
         "name": "防皱"
       },
       "program": {
-        "name": "程序"
+        "name": "程序",
+        "state": {
+          "cotton": "棉麻",
+          "eco": "节能",
+          "fast_wash": "快洗",
+          "mixed_wash": "混合洗",
+          "wool": "羊毛",
+          "ssp": "SSP",
+          "sport_clothes": "运动服",
+          "single_dehytration": "单脱水",
+          "rinsing_dehydration": "漂洗脱水",
+          "big": "大件",
+          "baby_clothes": "婴儿服",
+          "down_jacket": "羽绒服",
+          "color": "彩色",
+          "intelligent": "智能",
+          "quick_wash": "快速洗",
+          "shirt": "衬衫",
+          "fiber": "化纤",
+          "enzyme": "酶洗",
+          "underwear": "内衣",
+          "outdoor": "户外",
+          "air_wash": "空气洗",
+          "single_drying": "单烘干",
+          "steep": "浸泡",
+          "kids": "童装",
+          "water_cotton": "水洗棉",
+          "fast_wash_30": "快洗30",
+          "fast_wash_60": "快洗60",
+          "water_mixed_wash": "水洗混合",
+          "water_fiber": "水洗化纤",
+          "water_kids": "水洗童装",
+          "water_underwear": "水洗内衣",
+          "specialist": "专家",
+          "love": "爱心",
+          "water_intelligent": "水洗智能",
+          "water_steep": "水洗浸泡",
+          "water_fast_wash_30": "水洗快洗30",
+          "new_water_cotton": "新水洗棉",
+          "water_eco": "水洗节能",
+          "wash_drying_60": "洗烘60",
+          "self_wash_5": "自洁5",
+          "fast_wash_min": "快洗分钟",
+          "mixed_wash_min": "混合洗分钟",
+          "dehydration_min": "脱水分钟",
+          "self_wash_min": "自洁分钟",
+          "baby_clothes_min": "婴儿服分钟",
+          "diy0": "自定义0",
+          "diy1": "自定义1",
+          "diy2": "自定义2",
+          "silk_wash": "真丝洗",
+          "prevent_allergy": "防过敏",
+          "cold_wash": "冷水洗",
+          "soft_wash": "轻柔洗",
+          "remove_mite_wash": "除螨洗",
+          "water_intense_wash": "水洗强洗",
+          "fast_dry": "快干",
+          "water_outdoor": "水洗户外",
+          "spring_autumn_wash": "春秋洗",
+          "summer_wash": "夏季洗",
+          "winter_wash": "冬季洗",
+          "jean": "牛仔",
+          "new_clothes_wash": "新衣洗",
+          "silk": "真丝",
+          "insight_wash": "洞察洗",
+          "fitness_clothes": "健身服",
+          "mink": "貂皮",
+          "fresh_air": "新风",
+          "bucket_dry": "桶烘干",
+          "jacket": "夹克",
+          "bath_towel": "浴巾",
+          "night_fresh_wash": "夜间清新洗",
+          "heart_wash": "爱心洗",
+          "water_cold_wash": "水洗冷水",
+          "water_prevent_allergy": "水洗防过敏",
+          "water_remove_mite_wash": "水洗除螨",
+          "water_ssp": "水洗SSP",
+          "standard": "标准",
+          "green_wool": "绿色羊毛",
+          "cook_wash": "烹饪洗",
+          "fresh_remove_wrinkle": "清新去皱",
+          "steam_sterilize_wash": "蒸汽杀菌洗",
+          "aromatherapy": "香薰",
+          "sterilize_wash": "杀菌洗",
+          "white_clothes_clean": "白衣清洁",
+          "clean_stains": "去渍",
+          "tube_clean_all": "桶清洁",
+          "no_channeling_color": "不串色",
+          "scald_wash": "烫洗",
+          "hanfu_spring_summer": "汉服春夏",
+          "hanfu_autumn_winter": "汉服秋冬",
+          "skin_care_wash": "护肤洗",
+          "hanfu_wash": "汉服洗"
+        }
       },
       "query_type": {
         "name": "查询类型"
@@ -583,7 +783,30 @@
         "name": "工作模式"
       },
       "wash_mode": {
-        "name": "洗涤模式"
+        "name": "洗涤模式",
+        "state": {
+          "neutral_gear": "空档",
+          "auto_wash": "自动洗",
+          "strong_wash": "强力洗",
+          "standard_wash": "标准洗",
+          "eco_wash": "节能洗",
+          "glass_wash": "玻璃洗",
+          "hour_wash": "小时洗",
+          "fast_wash": "快洗",
+          "soak_wash": "浸泡洗",
+          "90min_wash": "90分钟洗",
+          "self_clean": "自清洁",
+          "fruit_wash": "水果洗",
+          "self_define": "自定义",
+          "germ": "除菌",
+          "bowl_wash": "碗洗",
+          "kill_germ": "杀菌",
+          "seafood_wash": "海鲜洗",
+          "hotpot_wash": "火锅洗",
+          "quietnight_wash": "静夜洗",
+          "less_wash": "少量洗",
+          "oilnet_wash": "油网洗"
+        }
       },
       "func_select": {
         "name": "功能选择"
@@ -595,7 +818,14 @@
         "name": "类型选择"
       },
       "work_status": {
-        "name": "工作状态"
+        "name": "工作状态",
+        "state": {
+          "power_off": "关机",
+          "power_on": "开机",
+          "cancel": "取消",
+          "pause": "暂停",
+          "resume": "恢复"
+        }
       },
       "voice": {
         "name": "语音"
