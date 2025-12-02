@@ -155,6 +155,7 @@ cython_debug/
 
 decrypt_lua.py
 test.py
+test_cloud.py
 *.lua
 
 time.py

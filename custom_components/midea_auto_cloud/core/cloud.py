@@ -29,7 +29,6 @@ clouds = {
         "app_key": "ac21b9f9cbfe4ca5a88562ef25e2b768",
         "iot_key": bytes.fromhex(format(7882822598523843940, 'x')).decode(),
         "hmac_key": bytes.fromhex(format(117390035944627627450677220413733956185864939010425, 'x')).decode(),
-        # "api_url": "https://mp-eu-prod.appsmb.com/mas/v5/app/proxy?alias=",
         "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
     },
 }
@@ -51,7 +50,8 @@ class MideaCloud:
             app_key: str,
             account: str,
             password: str,
-            api_url: str
+            api_url: str,
+            proxy: str | None = None
     ):
         self._device_id = CloudSecurity.get_deviceid(account)
         self._session = session
@@ -60,6 +60,7 @@ class MideaCloud:
         self._account = account
         self._password = password
         self._api_url = api_url
+        self._proxy = proxy
         self._access_token = None
         self._login_id = None
 
@@ -93,7 +94,14 @@ class MideaCloud:
         response:dict = {"code": -1}
         _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}")
         try:
-            r = await self._session.request(method, url, headers=header, data=dump_data, timeout=30)
+            r = await self._session.request(
+                method, 
+                url, 
+                headers=header, 
+                data=dump_data, 
+                timeout=30,
+                proxy=self._proxy
+            )
             raw = await r.read()
             _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}, response: {raw}")
             response = json.loads(raw)
@@ -151,7 +159,8 @@ class MideaCloud:
     async def _get_login_id(self) -> str | None:
         data = self._make_general_data()
         data.update({
-            "loginAccount": f"{self._account}"
+            "loginAccount": f"{self._account}",
+            "type": "1",
         })
         if response := await self._api_request(
             endpoint="/v1/user/login/id/get",
@@ -213,6 +222,7 @@ class MeijuCloud(MideaCloud):
             session: ClientSession,
             account: str,
             password: str,
+            proxy: str | None = None,
     ):
         super().__init__(
             session=session,
@@ -224,7 +234,8 @@ class MeijuCloud(MideaCloud):
             app_key=clouds[cloud_name]["app_key"],
             account=account,
             password=password,
-            api_url=clouds[cloud_name]["api_url"]
+            api_url=clouds[cloud_name]["api_url"],
+            proxy=proxy
         )
         self._homegroup_id = None
 
@@ -584,6 +595,7 @@ class MSmartHomeCloud(MideaCloud):
             session: ClientSession,
             account: str,
             password: str,
+            proxy: str | None = None,
     ):
         super().__init__(
             session=session,
@@ -595,7 +607,8 @@ class MSmartHomeCloud(MideaCloud):
             app_key=clouds[cloud_name]["app_key"],
             account=account,
             password=password,
-            api_url=clouds[cloud_name]["api_url"]
+            api_url=clouds[cloud_name]["api_url"],
+            proxy=proxy
         )
         self._auth_base = base64.b64encode(
             f"{self._app_key}:{clouds['MSmartHome']['iot_key']}".encode("ascii")
@@ -631,11 +644,12 @@ class MSmartHomeCloud(MideaCloud):
     async def _re_route(self):
         data = self._make_general_data()
         data.update({
-            "userType": "0",
-            "userName": f"{self._account}"
+            "userName": f"{self._account}",
+            "platformId": "1",
+            "userType": "0"
         })
         if response := await self._api_request(
-            endpoint="/v1/multicloud/platform/user/route",
+            endpoint="/v1/unitcenter/router/user/name",
             data=data
         ):
             if api_url := response.get("masUrl"):
@@ -830,13 +844,14 @@ class MSmartHomeCloud(MideaCloud):
         return response is not None
 
 
-def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str) -> MideaCloud | None:
+def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str, proxy: str | None = None) -> MideaCloud | None:
     cloud = None
     if cloud_name in clouds.keys():
         cloud = globals()[clouds[cloud_name]["class_name"]](
             cloud_name=cloud_name,
             session=session,
             account=account,
-            password=password
+            password=password,
+            proxy=proxy
         )
     return cloud
