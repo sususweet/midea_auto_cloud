@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
+from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from . import load_device_config
 
@@ -63,6 +64,13 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
         )
         self._attr_supported_features = HumidifierEntityFeature.MODES
         self._attr_available_modes = list(self._config.get("modes").keys())
+        
+        # 新增：外部湿度传感器支持
+		# 设备当前使用加湿器内置湿度传感器。如需外接更高精度传感器，可在midea_auto_cloud/device_mapping设备对应文件中编辑 'external_humidity_sensor_map' 部分进行配置
+        external_map = self._config.get("external_humidity_sensor_map", {})
+        self._has_external_sensor = self._sn8 in external_map
+        if self._has_external_sensor:
+            self._external_sensor_id = external_map[self._sn8]
 
     @property
     def device_class(self):
@@ -91,6 +99,21 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
     @property
     def current_humidity(self):
         """Return the current humidity."""
+        # 支持外部湿度传感器 jesusya
+        if self._has_external_sensor:
+            state = self.hass.states.get(self._external_sensor_id)
+            if state and state.state not in (None, "unknown", "unavailable"):
+                try:
+                    new_humidity = round(float(state.state))
+                    self._current_humidity = new_humidity
+                    MideaLogger.debug(f"{self.entity_id} using external sensor humidity from {self._external_sensor_id}: {self._current_humidity}")
+                    return self._current_humidity
+                except (ValueError, TypeError, AttributeError) as e:
+                    MideaLogger.warning(f"{self.entity_id} failed to parse external sensor state from {self._external_sensor_id}: {e}")
+            else:
+                MideaLogger.warning(f"{self.entity_id} external sensor {self._external_sensor_id} unavailable")
+
+        # 回退到内部传感器或直接使用内部传感器
         current_humidity_key = self._config.get("current_humidity")
         if current_humidity_key:
             return self.device_attributes.get(current_humidity_key, 0)
@@ -131,7 +154,7 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
         power_key = self._config.get("power")
         if power_key:
             await self._device.set_attribute(power_key, self._rationale[int(False)])
-            await self._device.set_attribute(power_key, self._rationale[int(False)])
+            await self._device.set_attribute(power_key, self._rationale[int(False)])  #避免美的加湿器，挂机启动风干湿帘，噪音过大
 
     async def async_set_humidity(self, humidity: int):
         """Set the target humidity."""

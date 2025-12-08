@@ -52,7 +52,12 @@ DEVICE_MAPPING = {
                         "manual": {"humidity_mode": "manual"},
                         "moist_skin": {"humidity_mode": "moist_skin"},
                         "sleep": {"humidity_mode": "sleep"}
-                    }
+                    },
+                    # "external_humidity_sensor_map": {
+                    #     # "202Z3XXX": "sensor.temperature_humidity_sensor_6510_humidity",
+                    #     # "设备2-sn8": "sensor.master_bedroom_humidity",
+                    #     # "设备3-sn8": "sensor.studyroom_humidity"
+                    # }
                 }
             },
             Platform.SELECT: {
