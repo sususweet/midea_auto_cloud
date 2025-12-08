@@ -604,7 +604,12 @@
         "name": "手势功能类型"
       },
       "humidity_mode": {
-        "name": "湿度模式"
+        "name": "湿度模式",
+        "state": {
+          "manual": "手动",
+          "moist_skin": "润肤",
+          "sleep": "睡眠"
+        }
       },
       "icea_bar_function_switch": {
         "name": "制冰吧台功能开关"
@@ -790,10 +795,24 @@
         "name": "水位"
       },
       "wind_gear": {
-        "name": "风档"
+        "name": "风档",
+        "state": {
+          "low": "低速",
+          "medium": "中速",
+          "high": "高速",
+          "auto": "自动",
+          "invalid": "无效"
+        }
       },
       "wind_speed": {
-        "name": "风速"
+        "name": "风速",
+        "state": {
+          "low": "低速",
+          "medium": "中速",
+          "high": "高速",
+          "auto": "自动",
+          "invalid": "无效"
+        }
       },
       "work_mode": {
         "name": "工作模式"

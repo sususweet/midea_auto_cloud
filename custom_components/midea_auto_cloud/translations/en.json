@@ -509,7 +509,12 @@
         "name": "Gesture Function Type"
       },
       "humidity_mode": {
-        "name": "Humidity Mode"
+        "name": "Humidity Mode",
+        "state": {
+          "manual": "manual",
+          "moist_skin": "moist skin",
+          "sleep": "sleep"
+        }
       },
       "icea_bar_function_switch": {
         "name": "Icea Bar Function Switch"
@@ -695,10 +700,24 @@
         "name": "Water Level"
       },
       "wind_gear": {
-        "name": "Wind Gear"
+        "name": "Wind Gear",
+        "state": {
+          "low": "low",
+          "medium": "medium",
+          "high": "high",
+          "auto": "auto",
+          "invalid": "invalid"
+        }
       },
       "wind_speed": {
-        "name": "Wind Speed"
+        "name": "Wind Speed",
+        "state": {
+          "low": "low",
+          "medium": "medium",
+          "high": "high",
+          "auto": "auto",
+          "invalid": "invalid"
+        }
       },
       "work_mode": {
         "name": "Work Mode"
