@@ -469,7 +469,7 @@
           "name": "风速档位",
           "state": {
             "low": "低",
-            "medium": "中",
+            "middle": "中",
             "high": "高",
             "auto": "自动",
             "invalid": "不可用"
@@ -479,7 +479,7 @@
           "name": "风速",
           "state": {
             "low": "低",
-            "medium": "中",
+            "middle": "中",
             "high": "高",
             "auto": "自动",
             "invalid": "不可用"
