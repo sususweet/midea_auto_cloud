@@ -48,16 +48,17 @@ DEVICE_MAPPING = {
                     "min_humidity": 30,
                     "max_humidity": 80,
                     "mode": "humidity_mode",
+                    "airDry_on_off": "airDry_on_off",
                     "modes": {
                         "manual": {"humidity_mode": "manual"},
                         "moist_skin": {"humidity_mode": "moist_skin"},
                         "sleep": {"humidity_mode": "sleep"}
                     },
-                    # "external_humidity_sensor_map": {
-                    #     # "202Z3XXX": "sensor.temperature_humidity_sensor_6510_humidity",
-                    #     # "设备2-sn8": "sensor.master_bedroom_humidity",
-                    #     # "设备3-sn8": "sensor.studyroom_humidity"
-                    # }
+                    "external_humidity_sensor_map": {
+                        "202Z3119": "sensor.temperature_humidity_sensor_6510_humidity",
+                        "87654321": "sensor.master_bedroom_humidity",
+                        "abcdef12": "sensor.studyroom_humidity"
+                    }
                 }
             },
             Platform.SELECT: {
@@ -73,7 +74,7 @@ DEVICE_MAPPING = {
                         "low": {"wind_gear": "low"},
                         "medium": {"wind_gear": "medium"},
                         "high": {"wind_gear": "high"},
-                        "auto": {"wind_gear": "auto"},
+                        #"auto": {"wind_gear": "auto"},
                         "invalid": {"wind_gear": "invalid"}
                     }
                 },
@@ -82,7 +83,7 @@ DEVICE_MAPPING = {
                         "low": {"wind_speed": "low"},
                         "medium": {"wind_speed": "medium"},
                         "high": {"wind_speed": "high"},
-                        "auto": {"wind_speed": "auto"},
+                        #"auto": {"wind_speed": "auto"},
                         "invalid": {"wind_speed": "invalid"}
                     }
                 },
@@ -150,7 +151,7 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "tank_status": {
-                    "device_class": SensorDeviceClass.BATTERY,
+                    "device_class": SensorDeviceClass.POWER_FACTOR,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
