@@ -72,7 +72,7 @@ DEVICE_MAPPING = {
                 "wind_gear": {
                     "options": {
                         "low": {"wind_gear": "low"},
-                        "medium": {"wind_gear": "medium"},
+                        "middle": {"wind_gear": "middle"},
                         "high": {"wind_gear": "high"},
                         #"auto": {"wind_gear": "auto"},
                         "invalid": {"wind_gear": "invalid"}
@@ -81,7 +81,7 @@ DEVICE_MAPPING = {
                 "wind_speed": {
                     "options": {
                         "low": {"wind_speed": "low"},
-                        "medium": {"wind_speed": "medium"},
+                        "middle": {"wind_speed": "middle"},
                         "high": {"wind_speed": "high"},
                         #"auto": {"wind_speed": "auto"},
                         "invalid": {"wind_speed": "invalid"}
