@@ -2863,6 +2863,39 @@
       },
       "forcetbh_state": {
         "name": "强制待机"
+      },
+	  "manul_humi": {
+        "name": "加湿"
+      },
+      "manul_humi_value": {
+        "name": "设置湿度"
+      },
+      "down_wind_left_switch": {
+        "name": "左出风"
+      },
+      "down_wind_right_switch": {
+        "name": "右出风"
+      },
+      "disinfect": {
+        "name": "除菌"
+      },
+      "remove_arofene": {
+        "name": "除甲醛"
+      },
+      "remove_peculiar_smell": {
+        "name": "长效除味"
+      },
+      "auto_fresh_off_co2": {
+        "name": "自动新风"
+      },
+      "comfort_fresh_air": {
+        "name": "舒适新风"
+      },
+      "elec_dust_remove": {
+        "name": "除尘"
+      },
+      "air_exhaust": {
+        "name": "快速除味"
       }
     }
   }

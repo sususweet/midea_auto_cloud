@@ -219,17 +219,110 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "manul_fresh_air": {
+                "elec_dust_remove": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "auto_comfort_fresh_air": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "auto_fresh_off_co2": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
                 },
                 "comfort_fresh_air": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
+                },
+                "manul_humi":{
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "remove_arofene":{
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1]
+                },
+                "disinfect":{
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "remove_peculiar_smell":{
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                    "condition": {
+                        "not": ["remove_peculiar_smell", "air_exhaust"]
+                    }
+                },
+                "air_exhaust": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                    "condition": {
+                        "not": ["remove_peculiar_smell", "air_exhaust"]
+                    }
+                },
+                "down_wind_left_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [1, 0],
+                    "condition": {
+                        "not": ["down_wind_left_switch", "down_wind_right_switch"]
+                    }
+                },
+                "down_wind_right_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [1, 0],
+                    "condition": {
+                        "not": ["down_wind_left_switch", "down_wind_right_switch"]
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "manul_humi_value": {
+                    "device_class": NumberDeviceClass.HUMIDITY,
+                    "min": 40,
+                    "max": 70,
+                    "step": 1,
+                    "unit_of_measurement": "%",
+                    "mode": "slider"
+                },
+                "auto_purifier_on_pm": {
+                    "device_class": NumberDeviceClass.PM25,
+                    "min": 75,
+                    "max": 180,
+                    "step": 1,
+                    "unit_of_measurement": "µg/m³",
+                    "mode": "slider",
+                    "icon": "mdi:air-filter"
+                }
+            },
+            Platform.SELECT: {
+                "fresh_air_fan_speed": {
+                    "device_class": "enum",
+                    "query": "fresh_air_fan_speed",
+                    "value_mapping": {
+                        40: "低速",
+                        60: "中速",
+                        80: "高速",
+                        100: "全速"
+                    },
+                    "options": {
+                        "低速": {"fresh_air_fan_speed": 40},
+                        "中速": {"fresh_air_fan_speed": 60},
+                        "高速": {"fresh_air_fan_speed": 80},
+                        "全速": {"fresh_air_fan_speed": 100}
+                    }
+                },
+                "fresh_air_setting_mode": {
+                    "device_class": "enum",
+                    "query": "fresh_air_setting_mode",
+                    "value_mapping": {
+                        0: "内外循环",
+                        1: "外循环"
+                    },
+                    "options": {
+                        "内外循环": {"fresh_air_setting_mode": 0},
+                        "外循环": {"fresh_air_setting_mode": 1}
+                    },
+                    "condition": {
+                        "eq": ["comfort_fresh_air", 1]
+                    }
                 }
             },
             Platform.SENSOR: {

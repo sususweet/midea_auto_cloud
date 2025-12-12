@@ -2768,6 +2768,39 @@
       },
       "forcetbh_state": {
         "name": "Force Standby"
+      },
+	  "manul_humi": {
+        "name": "humidification"
+      },
+      "manul_humi_value": {
+        "name": "Set humidity"
+      },
+      "down_wind_left_switch": {
+        "name": "Down Wind Left Switch"
+      },
+      "down_wind_right_switch": {
+        "name": "Down Wind Right Switch"
+      },
+      "disinfect": {
+        "name": "Disinfect"
+      },
+      "remove_arofene": {
+        "name": "Remove Arofene"
+      },
+      "remove_peculiar_smell": {
+        "name": "Remove Peculiar Smell"
+      },
+      "auto_fresh_off_co2": {
+        "name": "Auto Fresh Off Co2"
+      },
+      "comfort_fresh_air": {
+        "name": "Comfort Fresh Air"
+      },
+      "elec_dust_remove": {
+        "name": "Elec Dust Remove"
+      },
+      "air_exhaust": {
+        "name": "Air Exhaust"
       }
     }
   }
