@@ -222,7 +222,15 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         """Set boolean attribute via coordinator, no-op if key is None."""
         if attribute_key is None:
             return
-        await self.async_set_attribute(attribute_key, self._rationale[int(turn_on)])
+        
+        # Check current value to determine if we need to use 0/1 instead of off/on
+        current_value = self._get_nested_value(attribute_key)
+        if isinstance(current_value, str) and current_value in ['0', '1']:
+            # Device uses numeric strings, so use 0/1
+            await self.async_set_attribute(attribute_key, '1' if turn_on else '0')
+        else:
+            # Use the default rationale
+            await self.async_set_attribute(attribute_key, self._rationale[int(turn_on)])
 
     def _list_get_selected(self, key_of_list: list, rationale: Rationale = Rationale.EQUALLY):
         for index in range(0, len(key_of_list)):
