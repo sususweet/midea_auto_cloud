@@ -125,7 +125,7 @@ DEVICE_MAPPING = {
             }
         }
     },
-    "xxxxxx": {
+    "56011CEN": {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
