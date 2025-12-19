@@ -388,6 +388,12 @@
       }
     },
     "select": {
+      "ud_swing_angle": {
+        "name": "UD Swing Angle"
+      },
+      "lr_swing_angle": {
+        "name": "LR Swing Angle"
+      },
       "follow_body_sense": {
         "name": "Follow Body Sense"
       },
@@ -1611,6 +1617,9 @@
       },
       "ud_swing_angle": {
         "name": "UD Swing Angle"
+      },
+      "lr_swing_angle": {
+        "name": "LR Swing Angle"
       },
       "lr_diy_down_percent": {
         "name": "LR DIY Down Percent"

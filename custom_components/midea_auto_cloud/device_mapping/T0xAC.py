@@ -275,7 +275,7 @@ DEVICE_MAPPING = {
             },
             Platform.NUMBER: {
                 "manul_humi_value": {
-                    "device_class": NumberDeviceClass.HUMIDITY,
+                    "device_class": SensorDeviceClass.HUMIDITY,
                     "min": 40,
                     "max": 70,
                     "step": 1,
@@ -283,7 +283,7 @@ DEVICE_MAPPING = {
                     "mode": "slider"
                 },
                 "auto_purifier_on_pm": {
-                    "device_class": NumberDeviceClass.PM25,
+                    "device_class": SensorDeviceClass.PM25,
                     "min": 75,
                     "max": 180,
                     "step": 1,

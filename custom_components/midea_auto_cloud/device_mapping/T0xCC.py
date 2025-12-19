@@ -215,5 +215,102 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "000K86JB": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "run_status"}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "dry": {"power": "on", "mode": "dry"},
+                        "fan_only": {"power": "on", "mode": "fan"}
+                    },
+                    "fan_modes": {
+                        "power": {"wind_speed": "power"},
+                        "super_high": {"wind_speed": "super_high"},
+                        "high": {"wind_speed": "high"},
+                        "middle": {"wind_speed": "middle"},
+                        "low": {"wind_speed": "low"},
+                        "micron": {"wind_speed": "micron"},
+                        "sleep": {"wind_speed": "sleep"},
+                        "auto": {"wind_speed": "auto"}
+                    },
+                    "target_temperature": "temperature",
+                    "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
+                    "min_temp": 17,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "eco": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "attribute": "wirectrl_child_lock",
+                    "rationale": ["wirectrl_child_unlocked", "wirectrl_child_locked"]
+                },
+                "light": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "attribute": "digit_display_switch"
+                },
+                "sleep": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "attribute": "sleep_switch"
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "room_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "attribute": "indoor_temperature"
+                }
+            },
+            Platform.SELECT: {
+                "ptc": {
+                    "options": {
+                        "on": {"ptc_setting": "ptc_setting_on", "eco":"off"},
+                        "off": {"ptc_setting": "ptc_setting_off"},
+                    },
+                },
+                "ud_swing_angle": {
+                    "options": {
+                        "swing_ud_no_site": {"wind_swing_ud_site": "swing_ud_no_site"},
+                        "swing_ud_site_1": {"wind_swing_ud_site": "swing_ud_site_1"},
+                        "swing_ud_site_2": {"wind_swing_ud_site": "swing_ud_site_2"},
+                        "swing_ud_site_3": {"wind_swing_ud_site": "swing_ud_site_3"},
+                        "swing_ud_site_4": {"wind_swing_ud_site": "swing_ud_site_4"},
+                        "swing_ud_site_5": {"wind_swing_ud_site": "swing_ud_site_5"},
+                        "swing_ud_site_6": {"wind_swing_ud_site": "swing_ud_site_6"},
+                    },
+                    "attribute": "wind_swing_ud_site"
+                },
+                "lr_swing_angle": {
+                    "options": {
+                        "swing_lr_no_site": {"wind_swing_lr_site": "swing_lr_no_site"},
+                        "swing_lr_site_1": {"wind_swing_lr_site": "swing_lr_site_1"},
+                        "swing_lr_site_2": {"wind_swing_lr_site": "swing_lr_site_2"},
+                        "swing_lr_site_3": {"wind_swing_lr_site": "swing_lr_site_3"},
+                        "swing_lr_site_4": {"wind_swing_lr_site": "swing_lr_site_4"},
+                        "swing_lr_site_5": {"wind_swing_lr_site": "swing_lr_site_5"},
+                        "swing_lr_site_6": {"wind_swing_lr_site": "swing_lr_site_6"},
+                    },
+                    "attribute": "wind_swing_lr_site"
+                }
+            }
+        }
     }
 }

@@ -388,6 +388,12 @@
       }
     },
     "select": {
+      "ud_swing_angle": {
+        "name": "上下摆风角度"
+      },
+      "lr_swing_angle": {
+        "name": "左右摆风角度"
+      },
       "follow_body_sense": {
         "name": "随身感"
       },
@@ -1706,6 +1712,9 @@
       },
       "ud_swing_angle": {
         "name": "上下摆风角度"
+      },
+      "lr_swing_angle": {
+        "name": "左右摆风角度"
       },
       "lr_diy_down_percent": {
         "name": "左右自定义下百分比"
