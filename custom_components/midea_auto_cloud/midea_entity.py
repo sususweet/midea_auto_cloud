@@ -181,14 +181,14 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             try:
                 result = bool(self._rationale.index(status))
             except ValueError:
-                if type(status) is int:
+                if isinstance(status, int) or status in ['0', '1']:
                     if int(status) == 0:
                         result = False
                     else:
                         result = True
-
-                MideaLogger.warning(f"The value of attribute {attribute_key} ('{status}') "
-                                  f"is not in rationale {self._rationale}")
+                else:
+                    MideaLogger.warning(f"The value of attribute {attribute_key} ('{status}') "
+                                      f"is not in rationale {self._rationale}")
                 return result
         return result
 
