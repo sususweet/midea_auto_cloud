@@ -388,6 +388,9 @@
       }
     },
     "select": {
+      "updown": {
+        "name": "上升/下降"
+      },
       "ud_swing_angle": {
         "name": "上下摆风角度"
       },
@@ -1906,6 +1909,12 @@
       }
     },
     "number": {
+      "light_brightness": {
+        "name": "灯光亮度"
+      },
+      "laundry_height": {
+        "name": "一键晾衣高度"
+      },
       "water_quality": {
         "name": "水质"
       },
@@ -1961,6 +1970,9 @@
       }
     },
     "switch": {
+      "laundry": {
+        "name": "一键晾衣"
+      },
       "winter_mode": {
         "name": "冬季模式"
       },

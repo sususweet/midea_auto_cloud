@@ -388,6 +388,9 @@
       }
     },
     "select": {
+      "updown": {
+        "name": "Up/Down"
+      },
       "ud_swing_angle": {
         "name": "UD Swing Angle"
       },
@@ -1811,6 +1814,12 @@
       }
     },
     "number": {
+      "light_brightness": {
+        "name": "Light Brightness"
+      },
+      "laundry_height": {
+        "name": "Laundry Height"
+      },
       "water_quality": {
         "name": "Water Quality"
       },
@@ -1866,6 +1875,9 @@
       }
     },
     "switch": {
+      "laundry": {
+        "name": "One Key Laundry"
+      },
       "winter_mode": {
         "name": "Winter Mode"
       },
