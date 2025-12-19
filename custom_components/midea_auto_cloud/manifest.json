@@ -7,5 +7,5 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/sususweet/midea-meiju-codec/issues",
   "requirements": ["lupa>=2.0"],
-  "version": "v0.2.0"
+  "version": "v0.2.1"
 }
