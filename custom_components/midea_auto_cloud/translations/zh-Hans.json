@@ -394,6 +394,9 @@
       },
       "electric_heater": {
         "name": "取暖器"
+      },
+      "heating": {
+        "name": "采暖"
       }
     },
     "humidifier": {
@@ -969,6 +972,21 @@
       },
       "wind_pressure": {
         "name": "风压"
+      },
+      "hot_style": {
+        "name": "供热方式"
+      },
+      "bash_mode": {
+        "name": "卫浴模式"
+      },
+      "heating_mode": {
+        "name": "采暖模式"
+      },
+      "three_way_mode": {
+        "name": "三通阀模式"
+      },
+      "heating_unit_type": {
+        "name": "采暖器件类型"
       }
     },
     "sensor": {
@@ -1596,6 +1614,63 @@
       "in_temperature": {
         "name": "进水温度"
       },
+      "out_temperature": {
+        "name": "出水温度"
+      },
+      "bash_temperature": {
+        "name": "卫浴温度"
+      },
+      "bash_target_temperature": {
+        "name": "卫浴目标温度"
+      },
+      "heating_temperature": {
+        "name": "采暖温度"
+      },
+      "heating_target_temperature": {
+        "name": "采暖目标温度"
+      },
+      "heating_gap_temperature": {
+        "name": "采暖回差温度"
+      },
+      "user_mode_target_temperature": {
+        "name": "用户模式目标温度"
+      },
+      "activity_mode_target_temperature": {
+        "name": "活动模式目标温度"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "睡眠模式目标温度"
+      },
+      "rated_power": {
+        "name": "额定功率"
+      },
+      "current_power": {
+        "name": "实时功率"
+      },
+      "flow_volume": {
+        "name": "流量"
+      },
+      "bash_mode": {
+        "name": "卫浴模式"
+      },
+      "heating_mode": {
+        "name": "采暖模式"
+      },
+      "hot_style": {
+        "name": "供热方式"
+      },
+      "bash_function": {
+        "name": "卫浴功能"
+      },
+      "three_way_mode": {
+        "name": "三通阀模式"
+      },
+      "heating_unit_type": {
+        "name": "采暖器件类型"
+      },
+      "light_gear": {
+        "name": "屏幕亮度"
+      },
       "mg_remain": {
         "name": "镁离子剩余"
       },
@@ -1933,6 +2008,33 @@
       "light_brightness": {
         "name": "灯光亮度"
       },
+      "bash_target_temperature": {
+        "name": "卫浴目标温度"
+      },
+      "bash_gap_temperature": {
+        "name": "卫浴回差温度"
+      },
+      "heating_target_temperature": {
+        "name": "采暖目标温度"
+      },
+      "heating_gap_temperature": {
+        "name": "采暖回差温度"
+      },
+      "last_time": {
+        "name": "持续加热时间"
+      },
+      "user_mode_target_temperature": {
+        "name": "用户模式目标温度"
+      },
+      "activity_mode_target_temperature": {
+        "name": "活动模式目标温度"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "睡眠模式目标温度"
+      },
+      "light_gear": {
+        "name": "屏幕亮度"
+      },
       "laundry_height": {
         "name": "一键晾衣高度"
       },
@@ -2239,6 +2341,18 @@
       },
       "buzzer": {
         "name": "蜂鸣器"
+      },
+      "pump": {
+        "name": "水泵"
+      },
+      "wait_power": {
+        "name": "待机"
+      },
+      "cold_power": {
+        "name": "防冻"
+      },
+      "sleep_power": {
+        "name": "休眠"
       },
       "change_litre_switch": {
         "name": "换水开关"

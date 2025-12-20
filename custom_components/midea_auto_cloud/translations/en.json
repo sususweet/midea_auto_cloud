@@ -394,6 +394,9 @@
       },
       "electric_heater": {
         "name": "Electric Heater"
+      },
+      "heating": {
+        "name": "Heating"
       }
     },
     "humidifier": {
@@ -874,6 +877,21 @@
       },
       "wind_pressure": {
         "name": "Wind Pressure"
+      },
+      "hot_style": {
+        "name": "Heating Style"
+      },
+      "bash_mode": {
+        "name": "Bath Mode"
+      },
+      "heating_mode": {
+        "name": "Heating Mode"
+      },
+      "three_way_mode": {
+        "name": "Three Way Valve Mode"
+      },
+      "heating_unit_type": {
+        "name": "Heating Unit Type"
       }
     },
     "sensor": {
@@ -1501,6 +1519,63 @@
       "in_temperature": {
         "name": "In Temperature"
       },
+      "out_temperature": {
+        "name": "Out Temperature"
+      },
+      "bash_temperature": {
+        "name": "Bath Temperature"
+      },
+      "bash_target_temperature": {
+        "name": "Bath Target Temperature"
+      },
+      "heating_temperature": {
+        "name": "Heating Temperature"
+      },
+      "heating_target_temperature": {
+        "name": "Heating Target Temperature"
+      },
+      "heating_gap_temperature": {
+        "name": "Heating Gap Temperature"
+      },
+      "user_mode_target_temperature": {
+        "name": "User Mode Target Temperature"
+      },
+      "activity_mode_target_temperature": {
+        "name": "Activity Mode Target Temperature"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "Sleep Mode Target Temperature"
+      },
+      "rated_power": {
+        "name": "Rated Power"
+      },
+      "current_power": {
+        "name": "Current Power"
+      },
+      "flow_volume": {
+        "name": "Flow Volume"
+      },
+      "bash_mode": {
+        "name": "Bath Mode"
+      },
+      "heating_mode": {
+        "name": "Heating Mode"
+      },
+      "hot_style": {
+        "name": "Heating Style"
+      },
+      "bash_function": {
+        "name": "Bath Function"
+      },
+      "three_way_mode": {
+        "name": "Three Way Valve Mode"
+      },
+      "heating_unit_type": {
+        "name": "Heating Unit Type"
+      },
+      "light_gear": {
+        "name": "Screen Brightness"
+      },
       "mg_remain": {
         "name": "Mg Remain"
       },
@@ -1838,6 +1913,33 @@
       "light_brightness": {
         "name": "Light Brightness"
       },
+      "bash_target_temperature": {
+        "name": "Bath Target Temperature"
+      },
+      "bash_gap_temperature": {
+        "name": "Bath Gap Temperature"
+      },
+      "heating_target_temperature": {
+        "name": "Heating Target Temperature"
+      },
+      "heating_gap_temperature": {
+        "name": "Heating Gap Temperature"
+      },
+      "last_time": {
+        "name": "Continuous Heating Time"
+      },
+      "user_mode_target_temperature": {
+        "name": "User Mode Target Temperature"
+      },
+      "activity_mode_target_temperature": {
+        "name": "Activity Mode Target Temperature"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "Sleep Mode Target Temperature"
+      },
+      "light_gear": {
+        "name": "Screen Brightness"
+      },
       "laundry_height": {
         "name": "Laundry Height"
       },
@@ -2144,6 +2246,18 @@
       },
       "buzzer": {
         "name": "Buzzer"
+      },
+      "pump": {
+        "name": "Pump"
+      },
+      "wait_power": {
+        "name": "Standby"
+      },
+      "cold_power": {
+        "name": "Antifreeze"
+      },
+      "sleep_power": {
+        "name": "Sleep"
       },
       "change_litre_switch": {
         "name": "Change Litre Switch"
