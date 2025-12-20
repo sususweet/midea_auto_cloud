@@ -1,6 +1,5 @@
-from homeassistant.components.playstation_network.media_player import PLATFORM_MAP
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.const import Platform, UnitOfPower, UnitOfElectricPotential
+from homeassistant.const import Platform, UnitOfElectricPotential
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
