@@ -1,3 +1,4 @@
+from homeassistant.components.playstation_network.media_player import PLATFORM_MAP
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 from homeassistant.const import Platform, UnitOfPower, UnitOfElectricPotential
 from homeassistant.components.switch import SwitchDeviceClass
@@ -6,7 +7,7 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": [],
+        "centralized": ["lightness"],
         "calculate": {
             "get": [
                 {
@@ -28,9 +29,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
-                "error_code": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
                 "b7_left_status": {
                     "device_class": SensorDeviceClass.ENUM,
                     "translation_key": "left_status",
@@ -44,6 +42,28 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfElectricPotential.VOLT,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "battery_voltage",
+                }
+            },
+            Platform.BUTTON: {
+                "light_off": {
+                    "command": {"electronic_control_version": 2, "type": "b6", "b6_action": "setting",
+                                "setting": "light", "light": "off"},
+                },
+                "light_on": {
+                    "command": {"electronic_control_version": 2, "type": "b6", "b6_action": "setting",
+                                "setting": "light", "light": "on"},
+                },
+                "left_stove_off": {
+                    "command": {"electronic_control_version": 2, "type": "b7", "b7_work_burner_control": 1,
+                                "b7_function_control": 1},
+                },
+                "right_stove_off": {
+                    "command": {"electronic_control_version": 2, "type": "b7", "b7_work_burner_control": 2,
+                                "b7_function_control": 1},
+                },
+                "middle_stove_off": {
+                    "command": {"electronic_control_version": 2, "type": "b7", "b7_work_burner_control": 3,
+                                "b7_function_control": 1},
                 }
             },
             Platform.SELECT: {

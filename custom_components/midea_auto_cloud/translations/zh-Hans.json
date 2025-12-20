@@ -122,6 +122,23 @@
     }
   },
   "entity": {
+    "button": {
+      "light_off": {
+        "name": "关闭灯光"
+      },
+      "light_on": {
+        "name": "打开灯光"
+      },
+      "left_stove_off": {
+        "name": "左灶关火"
+      },
+      "right_stove_off": {
+        "name": "右灶关火"
+      },
+      "middle_stove_off": {
+        "name": "中灶关火"
+      }
+    },
     "binary_sensor": {
       "heating_work": {
         "name": "采暖功能状态"
@@ -2869,6 +2886,9 @@
       },
       "endpoint_8_onoff": {
         "name": "按键八"
+      },
+      "wisdom_wind": {
+        "name": "智能风"
       },
       "work_switch": {
         "name": "工作开关"

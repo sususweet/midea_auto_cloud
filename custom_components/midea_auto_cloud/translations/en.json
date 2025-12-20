@@ -122,6 +122,23 @@
     }
   },
   "entity": {
+    "button": {
+      "light_off": {
+        "name": "Light off"
+      },
+      "light_on": {
+        "name": "Light on"
+      },
+      "left_stove_off": {
+        "name": "Left stove off"
+      },
+      "right_stove_off": {
+        "name": "Right stove off"
+      },
+      "middle_stove_off": {
+        "name": "Middle stove off"
+      }
+    },
     "binary_sensor": {
       "heating_work": {
         "name": "Heating Work Status"
@@ -2774,6 +2791,9 @@
       },
       "endpoint_8_onoff": {
         "name": "Button 8"
+      },
+      "wisdom_wind": {
+        "name": "Wisdom Wind"
       },
       "work_switch": {
         "name": "Work Switch"
