@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{"query_type": "db"}],
         "calculate": {
             "get": [
                 {
@@ -50,6 +50,12 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
+                "db_location_selection": {
+                    "options": {
+                        "left": {"db_location_selection": "left"},
+                        "right": {"db_location_selection": "right"}
+                    }
+                },
                 "db_running_status": {
                     "options": {
                         "off": {"db_power": "off", "db_running_status": "off"},

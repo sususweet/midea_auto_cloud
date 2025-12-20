@@ -471,8 +471,12 @@
       "db_detergent": {
         "name": "DB Detergent"
       },
-      "db_location": {
-        "name": "DB Location"
+      "db_location_selection": {
+        "name": "Bucket Selection",
+        "state": {
+          "left": "Left Bucket",
+          "right": "Right Bucket"
+        }
       },
       "db_position": {
         "name": "DB Position"

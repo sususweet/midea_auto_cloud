@@ -471,8 +471,12 @@
       "db_detergent": {
         "name": "洗涤剂"
       },
-      "db_location": {
-        "name": "地点"
+      "db_location_selection": {
+        "name": "选择筒",
+        "state": {
+          "left": "左筒",
+          "right": "右筒"
+        }
       },
       "db_position": {
         "name": "位置"
