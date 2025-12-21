@@ -2001,6 +2001,9 @@
       "laundry": {
         "name": "One Key Laundry"
       },
+      "offline_voice_function": {
+        "name": "Offline Voice"
+      },
       "winter_mode": {
         "name": "Winter Mode"
       },

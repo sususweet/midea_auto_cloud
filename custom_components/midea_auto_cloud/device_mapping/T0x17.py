@@ -37,6 +37,9 @@ DEVICE_MAPPING = {
                 },
                 "laundry": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "offline_voice_function": {
+                    "device_class": SwitchDeviceClass.SWITCH,
                 }
             },
         }

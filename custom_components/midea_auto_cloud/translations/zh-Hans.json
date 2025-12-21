@@ -2101,6 +2101,9 @@
       "laundry": {
         "name": "一键晾衣"
       },
+      "offline_voice_function": {
+        "name": "离线语音"
+      },
       "winter_mode": {
         "name": "冬季模式"
       },
