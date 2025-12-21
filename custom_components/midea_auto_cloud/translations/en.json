@@ -409,7 +409,7 @@
     },
     "select": {
       "updown": {
-        "name": "Up/Down"
+        "name": "Running Status"
       },
       "ud_swing_angle": {
         "name": "UD Swing Angle"

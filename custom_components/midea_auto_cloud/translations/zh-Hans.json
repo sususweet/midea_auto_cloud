@@ -409,7 +409,12 @@
     },
     "select": {
       "updown": {
-        "name": "上升/下降"
+        "name": "运行状态",
+        "state": {
+          "up": "上升",
+          "down": "下降",
+          "pause": "暂停"
+        }
       },
       "ud_swing_angle": {
         "name": "上下摆风角度"
@@ -2006,7 +2011,7 @@
     },
     "number": {
       "light_brightness": {
-        "name": "灯光亮度"
+        "name": "照明亮度"
       },
       "bash_target_temperature": {
         "name": "卫浴目标温度"
