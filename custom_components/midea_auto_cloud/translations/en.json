@@ -409,7 +409,7 @@
     },
     "select": {
       "updown": {
-        "name": "Up/Down"
+        "name": "Running Status"
       },
       "ud_swing_angle": {
         "name": "UD Swing Angle"
@@ -2000,6 +2000,9 @@
     "switch": {
       "laundry": {
         "name": "One Key Laundry"
+      },
+      "offline_voice_function": {
+        "name": "Offline Voice"
       },
       "winter_mode": {
         "name": "Winter Mode"
