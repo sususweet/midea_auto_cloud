@@ -16,6 +16,7 @@ DEVICE_MAPPING = {
                 },
                 "screen_close": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"],
                 }
             },
             Platform.CLIMATE: {
