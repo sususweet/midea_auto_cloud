@@ -544,6 +544,7 @@
       "humidity_mode": {
         "name": "Humidity Mode",
         "state": {
+          "auto": "auto",
           "manual": "manual",
           "moist_skin": "moist skin",
           "sleep": "sleep"
@@ -752,6 +753,7 @@
         "state": {
           "low": "low",
           "medium": "medium",
+          "middle": "middle",
           "high": "high",
           "auto": "auto",
           "invalid": "invalid"
@@ -2013,6 +2015,15 @@
     "switch": {
       "auto_power_off": {
         "name": "Auto Power Off"
+      },
+      "airDry_on_off": {
+        "name": "Air Dry"
+      },
+      "power_on_timer": {
+        "name": "Power On Timer"
+      },
+      "power_off_timer": {
+        "name": "Power Off Timer"
       },
       "voice": {
         "name": "Sound"

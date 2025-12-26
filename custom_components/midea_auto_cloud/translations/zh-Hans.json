@@ -644,6 +644,7 @@
       "humidity_mode": {
         "name": "湿度模式",
         "state": {
+          "auto": "AI湿随温变",
           "manual": "手动",
           "moist_skin": "润肤",
           "sleep": "睡眠"
@@ -852,6 +853,7 @@
         "state": {
           "low": "低速",
           "medium": "中速",
+          "middle": "中速",
           "high": "高速",
           "auto": "自动",
           "invalid": "无效"
@@ -2113,6 +2115,15 @@
     "switch": {
       "auto_power_off": {
         "name": "待机超时自动关机"
+      },
+      "airDry_on_off": {
+        "name": "湿帘风干"
+      },
+      "power_on_timer": {
+        "name": "定时开机"
+      },
+      "power_off_timer": {
+        "name": "定时关机"
       },
       "voice": {
         "name": "声音"
