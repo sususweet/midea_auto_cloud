@@ -2733,6 +2733,9 @@
       "function_zone_power": {
         "name": "Function Zone Power"
       },
+      "humidify": {
+        "name": "Cool Wind"
+      },
       "humidify_power": {
         "name": "Humidify Power"
       },

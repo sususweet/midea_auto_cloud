@@ -2833,6 +2833,9 @@
       "function_zone_power": {
         "name": "功能区电源"
       },
+      "humidify": {
+        "name": "清凉风"
+      },
       "humidify_power": {
         "name": "加湿电源"
       },
