@@ -670,9 +670,14 @@
       "mode": {
         "name": "运行模式",
         "state": {
+          "air_dry": "风芯模式",
+          "auto": "智能托管",
+          "manual": "手动模式",
           "normal": "正常",
           "factory_test": "工厂测试",
+          "fast": "速净模式",
           "service": "服务",
+          "sleep": "睡眠模式",
           "normal_continus": "正常连续"
         }
       },
@@ -930,6 +935,9 @@
       "gear": {
         "name": "档位",
         "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
           "left_warm": "左暖",
           "right_warm": "右暖",
           "full_on": "全开"

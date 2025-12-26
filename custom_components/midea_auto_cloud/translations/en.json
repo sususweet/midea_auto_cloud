@@ -570,9 +570,14 @@
       "mode": {
         "name": "Mode",
         "state": {
+          "air_dry": "Air Dry Mode",
+          "auto": "Auto Mode",
+          "manual": "Manual Mode",
           "normal": "normal",
           "factory_test": "factory test",
+          "fast": "Fast Mode",
           "service": "service",
+          "sleep": "Sleep Mode",
           "normal_continus": "normal continus"
         }
       },
@@ -830,6 +835,9 @@
       "gear": {
         "name": "Gear",
         "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
           "left_warm": "Left Warm",
           "right_warm": "Right Warm",
           "full_on": "Full On"
