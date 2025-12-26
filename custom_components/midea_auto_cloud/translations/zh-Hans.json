@@ -928,7 +928,12 @@
         "name": "睡眠传感器"
       },
       "gear": {
-        "name": "档位"
+        "name": "档位",
+        "state": {
+          "left_warm": "左暖",
+          "right_warm": "右暖",
+          "full_on": "全开"
+        }
       },
       "ptc": {
         "name": "电辅热"
@@ -2098,6 +2103,12 @@
       }
     },
     "switch": {
+      "auto_power_off": {
+        "name": "待机超时自动关机"
+      },
+      "voice": {
+        "name": "声音"
+      },
       "laundry": {
         "name": "一键晾衣"
       },

@@ -828,7 +828,12 @@
         "name": "Sleep Sensor"
       },
       "gear": {
-        "name": "Gear"
+        "name": "Gear",
+        "state": {
+          "left_warm": "Left Warm",
+          "right_warm": "Right Warm",
+          "full_on": "Full On"
+        }
       },
       "ptc": {
         "name": "PTC"
@@ -1998,6 +2003,12 @@
       }
     },
     "switch": {
+      "auto_power_off": {
+        "name": "Auto Power Off"
+      },
+      "voice": {
+        "name": "Sound"
+      },
       "laundry": {
         "name": "One Key Laundry"
       },
