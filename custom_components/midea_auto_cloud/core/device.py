@@ -167,7 +167,7 @@ class MiedaDevice(threading.Thread):
             new_status[attribute] = value
             
             # 针对T0xD9复式洗衣机，当切换筒选择时，立即刷新状态以显示新筒的状态
-            if self._device_type == 0xD9 and attribute == "db_location_selection":
+            if self._device_type == 0xD9 and attribute == "db_position":
                 # 更新属性
                 self._attributes[attribute] = value
                 # 立即刷新状态以显示新筒的状态
@@ -175,11 +175,11 @@ class MiedaDevice(threading.Thread):
                 return
             
             # 针对T0xD9复式洗衣机，根据选择的筒添加db_location参数
-            if self._device_type == 0xD9 and attribute != "db_location_selection":
-                location_selection = self._attributes.get("db_location_selection", "left")
-                if location_selection == "left":
+            if self._device_type == 0xD9 and attribute != "db_position":
+                location_selection = self._attributes.get("db_position")
+                if location_selection == "1":
                     new_status["db_location"] = 1
-                elif location_selection == "right":
+                elif location_selection == "0":
                     new_status["db_location"] = 2
             
             # Convert dot-notation attributes to nested structure for transmission
@@ -209,16 +209,23 @@ class MiedaDevice(threading.Thread):
                     await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     async def set_attributes(self, attributes):
-        # 针对T0xD9复式洗衣机，当切换筒选择时，立即刷新状态以显示新筒的状态
-        if self._device_type == 0xD9 and "db_location_selection" in attributes:
-            # 更新属性
-            for attribute, value in attributes.items():
-                if attribute in self._attributes.keys():
-                    self._attributes[attribute] = value
+        # 针对T0xD9复式洗衣机，当切换筒选择时
+        if self._device_type == 0xD9 and "db_position" in attributes:
+            position = attributes["db_position"]
+        
+            # 更新本地属性
+            self._attributes["db_position"] = position
+        
+            # 更新db_location（用于查询）
+            if position == "1":
+                self._attributes["db_location"] = 1
+            elif position == "0":
+                self._attributes["db_location"] = 2
+        
             # 立即刷新状态以显示新筒的状态
             await self.refresh_status()
-            return
-        
+            # 不要return！继续执行发送逻辑到美居
+    
         new_status = {}
         for attr in self._centralized:
             new_status[attr] = self._attributes.get(attr)
@@ -227,15 +234,26 @@ class MiedaDevice(threading.Thread):
             if attribute in self._attributes.keys():
                 has_new = True
                 new_status[attribute] = value
-        
-        # 针对T0xD9复式洗衣机，根据选择的筒添加db_location参数
-        if self._device_type == 0xD9 and "db_location_selection" not in attributes:
-            location_selection = self._attributes.get("db_location_selection", "left")
-            if location_selection == "left":
-                new_status["db_location"] = 1
-            elif location_selection == "right":
-                new_status["db_location"] = 2
-        
+    
+        # 针对T0xD9复式洗衣机，确保发送到云端的控制命令包含筒位置信息
+        if self._device_type == 0xD9:
+            # 如果attributes中有db_position，确保new_status也有
+            if "db_position" in attributes:
+                position = attributes["db_position"]
+                new_status["db_position"] = position
+                # 添加对应的db_location
+                if position == "1":
+                    new_status["db_location"] = 1
+                elif position == "0":
+                    new_status["db_location"] = 2
+            # 如果没有db_position，但当前有选择，添加db_location
+            elif "db_position" not in attributes and self._attributes.get("db_position"):
+                position = self._attributes.get("db_position")
+                if position == "1":
+                    new_status["db_location"] = 1
+                elif position == "0":
+                    new_status["db_location"] = 2
+    
         # Convert dot-notation attributes to nested structure for transmission
         nested_status = self._convert_to_nested_structure(new_status)
         
@@ -328,10 +346,10 @@ class MiedaDevice(threading.Thread):
             # 针对T0xD9复式洗衣机，根据选择的筒动态添加db_location参数
             actual_query = query.copy() if isinstance(query, dict) else query
             if self._device_type == 0xD9 and isinstance(actual_query, dict):
-                location_selection = self._attributes.get("db_location_selection", "left")
-                if location_selection == "left":
+                location_selection = self._attributes.get("db_position")
+                if location_selection == "1":
                     actual_query["db_location"] = 1
-                elif location_selection == "right":
+                elif location_selection == "0":
                     actual_query["db_location"] = 2
             
             cloud = self._cloud

@@ -369,9 +369,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 for k in preset_keys:
                                     if k not in device.attributes:
                                         device.attributes[k] = None
-                                # 针对T0xD9复式洗衣机，设置默认的筒选择为左筒
-                                if device.device_type == 0xD9:
-                                    device.attributes["db_location_selection"] = "left"
                             except Exception:
                                 pass
 
