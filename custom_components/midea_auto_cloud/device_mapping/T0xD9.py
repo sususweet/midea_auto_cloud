@@ -24,30 +24,6 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SWITCH: {
-                "db_clean_notification": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
-                "db_baby_lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
-                "db_light": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
-                "db_steam_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
-                "db_fast_clean_wash": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
-                "db_wash_dry_link": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                }
             },
             Platform.SELECT: {
                 "db_location_selection": {
