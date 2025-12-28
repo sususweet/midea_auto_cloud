@@ -24,23 +24,20 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SWITCH: {
+                "db_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "db_control_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["pause", "start"],
+                    "translation_key": "control_status",
+                }
             },
             Platform.SELECT: {
                 "db_location_selection": {
                     "options": {
                         "left": {"db_location_selection": "left"},
                         "right": {"db_location_selection": "right"}
-                    }
-                },
-                "db_running_status": {
-                    "options": {
-                        "off": {"db_power": "off", "db_running_status": "off"},
-                        "standby": {"db_power": "on", "db_running_status": "standby"},
-                        "start": {"db_power": "on", "db_running_status": "start"},
-                        "pause": {"db_power": "on", "db_running_status": "pause"},
-                        "end": {"db_power": "on", "db_running_status": "end"},
-                        "fault": {"db_power": "on", "db_running_status": "fault"},
-                        "delay": {"db_power": "on", "db_running_status": "delay"}
                     }
                 },
                 "db_program": {
