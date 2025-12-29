@@ -69,6 +69,8 @@ class MideaFanEntity(MideaEntity, FanEntity):
         self._key_oscillate = self._config.get("oscillate")
         self._key_directions = self._config.get("directions")
         self._attr_speed_count = len(self._key_speeds) if self._key_speeds else 0
+        self._current_preset_mode = None
+        self._current_speeds = self._key_speeds
 
     @property
     def supported_features(self):
@@ -77,7 +79,7 @@ class MideaFanEntity(MideaEntity, FanEntity):
         features |= FanEntityFeature.TURN_OFF
         if self._key_preset_modes is not None and len(self._key_preset_modes) > 0:
             features |= FanEntityFeature.PRESET_MODE
-        if self._key_speeds is not None and len(self._key_speeds) > 0:
+        if self._current_speeds is not None and len(self._current_speeds) > 0:
             features |= FanEntityFeature.SET_SPEED
         if self._key_oscillate is not None:
             features |= FanEntityFeature.OSCILLATE
@@ -99,11 +101,28 @@ class MideaFanEntity(MideaEntity, FanEntity):
     def preset_mode(self):
         if self._key_preset_modes is None:
             return None
-        return self._dict_get_selected(self._key_preset_modes)
+    
+        current_mode = self._dict_get_selected(self._key_preset_modes)
+    
+        if current_mode:
+            mode_config = self._key_preset_modes.get(current_mode, {})
+        
+            # 切换到该模式的档位配置
+            if "speeds" in mode_config:
+                self._current_speeds = mode_config["speeds"]
+                self._attr_speed_count = len(self._current_speeds)
+            else:
+                # 使用全局配置
+                self._current_speeds = self._key_speeds
+                self._attr_speed_count = len(self._current_speeds) if self._current_speeds else 0
+        
+            self._current_preset_mode = current_mode
+    
+        return current_mode
 
     @property
     def percentage(self):
-        index = self._list_get_selected(self._key_speeds)
+        index = self._list_get_selected(self._current_speeds)
         if index is None:
             return None
         return round((index + 1) * 100 / self._attr_speed_count)
@@ -124,11 +143,28 @@ class MideaFanEntity(MideaEntity, FanEntity):
     ):
         new_status = {}
         if preset_mode is not None and self._key_preset_modes is not None:
-            new_status.update(self._key_preset_modes.get(preset_mode, {}))
-        if percentage is not None and self._key_speeds:
+            mode_config = self._key_preset_modes.get(preset_mode, {})
+            new_status.update({"mode": mode_config.get("mode")})
+        
+            # 切换到该模式的档位配置
+            if "speeds" in mode_config:
+                self._current_speeds = mode_config["speeds"]
+                self._attr_speed_count = len(self._current_speeds)
+            else:
+                self._current_speeds = self._key_speeds
+                self._attr_speed_count = len(self._current_speeds) if self._current_speeds else 0
+        
+            self._current_preset_mode = preset_mode
+        
+            # 如果只有一个档位，自动设置
+            if "speeds" in mode_config and len(mode_config["speeds"]) == 1:
+                new_status.update(mode_config["speeds"][0])
+    
+        # 使用当前模式的速度配置
+        if percentage is not None and self._current_speeds:
             index = round(percentage * self._attr_speed_count / 100) - 1
-            index = max(0, min(index, len(self._key_speeds) - 1))
-            new_status.update(self._key_speeds[index])
+            index = max(0, min(index, len(self._current_speeds) - 1))
+            new_status.update(self._current_speeds[index])
         await self._async_set_status_on_off(self._key_power, True)
         if new_status:
             await self.async_set_attributes(new_status)
@@ -137,18 +173,36 @@ class MideaFanEntity(MideaEntity, FanEntity):
         await self._async_set_status_on_off(self._key_power, False)
 
     async def async_set_percentage(self, percentage: int):
-        if not self._key_speeds:
+        if not self._current_speeds:
             return
         index = round(percentage * self._attr_speed_count / 100)
-        if 0 < index <= len(self._key_speeds):
-            new_status = self._key_speeds[index - 1]
+        if 0 < index <= len(self._current_speeds):
+            new_status = self._current_speeds[index - 1]
             await self.async_set_attributes(new_status)
 
     async def async_set_preset_mode(self, preset_mode: str):
         if not self._key_preset_modes:
             return
-        new_status = self._key_preset_modes.get(preset_mode)
-        if new_status:
+    
+        mode_config = self._key_preset_modes.get(preset_mode, {})
+        if mode_config:
+            # 切换到该模式的档位配置
+            if "speeds" in mode_config:
+                self._current_speeds = mode_config["speeds"]
+                self._attr_speed_count = len(self._current_speeds)
+            else:
+                self._current_speeds = self._key_speeds
+                self._attr_speed_count = len(self._current_speeds) if self._current_speeds else 0
+        
+            self._current_preset_mode = preset_mode
+        
+            # 设置模式
+            new_status = {"mode": mode_config.get("mode")}
+        
+            # 如果只有一个档位，自动设置
+            if "speeds" in mode_config and len(mode_config["speeds"]) == 1:
+                new_status.update(mode_config["speeds"][0])
+        
             await self.async_set_attributes(new_status)
 
     async def async_oscillate(self, oscillating: bool):
