@@ -122,9 +122,18 @@ class MideaFanEntity(MideaEntity, FanEntity):
 
     @property
     def percentage(self):
+        # 如果风扇关闭，返回0%（这样UI会显示"关闭"）
+        if not self.is_on:
+            return 0
+
         index = self._list_get_selected(self._current_speeds)
         if index is None:
-            return None
+            return 0
+
+        # 计算百分比：档位1对应最小百分比，最大档位对应100%
+        if self._attr_speed_count <= 1:
+            return 100  # 只有一个档位时，开启就是100%
+
         return round((index + 1) * 100 / self._attr_speed_count)
 
     @property
@@ -162,9 +171,21 @@ class MideaFanEntity(MideaEntity, FanEntity):
     
         # 使用当前模式的速度配置
         if percentage is not None and self._current_speeds:
-            index = round(percentage * self._attr_speed_count / 100) - 1
-            index = max(0, min(index, len(self._current_speeds) - 1))
+            # 如果百分比为0，直接关闭（但async_turn_on不应该传入0）
+            if percentage == 0:
+                await self.async_turn_off()
+                return
+                    
+            # 计算档位索引（至少为1档）
+            if self._attr_speed_count <= 1:
+                index = 0
+            else:
+                index = round(percentage * self._attr_speed_count / 100) - 1
+                index = max(0, min(index, len(self._current_speeds) - 1))
+        
             new_status.update(self._current_speeds[index])
+
+        # 打开风扇
         await self._async_set_status_on_off(self._key_power, True)
         if new_status:
             await self.async_set_attributes(new_status)
@@ -175,9 +196,27 @@ class MideaFanEntity(MideaEntity, FanEntity):
     async def async_set_percentage(self, percentage: int):
         if not self._current_speeds:
             return
-        index = round(percentage * self._attr_speed_count / 100)
-        if 0 < index <= len(self._current_speeds):
-            new_status = self._current_speeds[index - 1]
+
+        # 处理关闭情况（0% 表示关闭）
+        if percentage == 0:
+            await self.async_turn_off()
+            return
+        
+        # 如果风扇当前是关闭状态，先打开风扇
+        if not self.is_on:
+            await self._async_set_status_on_off(self._key_power, True)
+    
+        # 将百分比转换为档位索引（从1开始，因为0%已处理）
+        if self._attr_speed_count <= 1:
+            index = 0
+        else:
+            # 百分比1-100对应档位1到最大档位
+            index = round((percentage / 100) * self._attr_speed_count)
+            index = max(1, min(index, self._attr_speed_count))  # 确保至少为1档
+    
+        # 获取对应档位的配置
+        if 1 <= index <= len(self._current_speeds):
+            new_status = self._current_speeds[index - 1]  # 索引从0开始，所以减1
             await self.async_set_attributes(new_status)
 
     async def async_set_preset_mode(self, preset_mode: str):
@@ -186,6 +225,11 @@ class MideaFanEntity(MideaEntity, FanEntity):
     
         mode_config = self._key_preset_modes.get(preset_mode, {})
         if mode_config:
+
+            # 如果风扇当前是关闭状态，先打开风扇
+            if not self.is_on:
+                await self._async_set_status_on_off(self._key_power, True)
+
             # 切换到该模式的档位配置
             if "speeds" in mode_config:
                 self._current_speeds = mode_config["speeds"]
