@@ -232,9 +232,18 @@ DEVICE_MAPPING = {
                     "speeds": list({"gear": value + 1} for value in range(0, 3)),
                     "oscillate": "swing",
                     "preset_modes": {
-                        "normal": {"mode": "normal"},
-                        "sleep": {"mode": "sleep"},
-                        "baby": {"mode": "baby"}
+                        "normal": {
+                            "mode": "normal",
+                            "speeds": list({"gear": value + 1} for value in range(0, 3))
+                        },
+                        "sleep": {
+                            "mode": "sleep",
+                            "speeds": list({"gear": value + 1} for value in range(0, 2))
+                        },
+                        "baby": {
+                            "mode": "baby",
+                            "speeds": list({"gear": value + 1} for value in range(0, 1))
+                        }
                     }
                 }
             },
