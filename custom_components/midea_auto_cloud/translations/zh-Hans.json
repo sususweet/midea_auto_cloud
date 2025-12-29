@@ -2114,7 +2114,19 @@
     },
     "fan": {
       "fan": {
-        "name": "风扇"
+        "name": "风扇",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "baby": "宝宝风",
+              "normal": "正常风",
+              "sleep": "睡眠风",
+              "self_selection": "自选风",
+              "sleeping_wind": "睡眠风",
+              "purified_wind": "净化风"
+            }
+          }
+        }
       }
     },
     "switch": {
