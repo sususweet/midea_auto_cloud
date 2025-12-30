@@ -684,7 +684,13 @@
           "fast": "速净模式",
           "service": "服务",
           "sleep": "睡眠模式",
-          "normal_continus": "正常连续"
+          "normal_continus": "正常连续",
+          "close_all": "关闭",
+          "heating": "取暖",
+          "bath": "安心沐浴",
+          "blowing": "吹风",
+          "ventilation": "换气",
+          "drying": "干燥"
         }
       },
       "mode_state": {
@@ -978,13 +984,31 @@
         "name": "加热方向"
       },
       "light_mode": {
-        "name": "灯光模式"
+        "name": "灯光模式",
+        "state": {
+          "close_all": "关闭",
+          "night_light": "夜灯",
+          "main_light": "照明"
+        }
       },
       "bath_direction": {
         "name": "浴室方向"
       },
       "drying_direction": {
         "name": "烘干方向"
+      },
+      "wind_direction": {
+        "name": "吹风方向",
+        "state": {
+          "60": "60°",
+          "70": "70°",
+          "80": "80°",
+          "90": "90°",
+          "100": "100°",
+          "110": "110°",
+          "120": "120°",
+          "swing": "自动摆风"
+        }
       },
       "air_set_hour": {
         "name": "烘干存储设置时间"
@@ -2030,6 +2054,15 @@
       }
     },
     "number": {
+      "bath_temperature": {
+        "name": "沐浴温度"
+      },
+      "heating_temperature": {
+        "name": "取暖温度"
+      },
+      "main_light_brightness": {
+        "name": "照明亮度"
+      },
       "light_brightness": {
         "name": "照明亮度"
       },
@@ -2130,6 +2163,9 @@
       }
     },
     "switch": {
+      "radar_induction_enable": {
+        "name": "人感夜灯"
+      },
       "auto_power_off": {
         "name": "待机超时自动关机"
       },
