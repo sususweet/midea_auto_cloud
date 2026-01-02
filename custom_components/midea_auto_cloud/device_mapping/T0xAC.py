@@ -95,6 +95,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "fresh_air_remove_odor": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1],
