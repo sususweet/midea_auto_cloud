@@ -215,7 +215,7 @@ DEVICE_MAPPING = {
                     "target_temperature": ["temperature", "small_temperature"],
                     "current_temperature": "indoor_temperature",
                     "pre_mode": "mode",
-                    "aux_heat": "aux_heat",
+                    "aux_heat": "ptc",
                     "min_temp": 17,
                     "max_temp": 30,
                     "temperature_unit": UnitOfTemperature.CELSIUS,
@@ -224,9 +224,6 @@ DEVICE_MAPPING = {
             },
             Platform.SWITCH: {
                 "power": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "ptc": {
@@ -238,6 +235,23 @@ DEVICE_MAPPING = {
                 "new_wind_model_exhaust_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
+            },
+            Platform.SELECT: {
+                "fresh_air_exhaust_fan_speed": {
+                    "device_class": "enum",
+                    "value_mapping": {
+                        40: "low",
+                        60: "medium",
+                        80: "high",
+                        100: "full"
+                    },
+                    "options": {
+                        "low": {"fresh_air_exhaust_fan_speed": 40},
+                        "medium": {"fresh_air_exhaust_fan_speed": 60},
+                        "high": {"fresh_air_exhaust_fan_speed": 80},
+                        "full": {"fresh_air_exhaust_fan_speed": 100}
+                    }
+                }
             },
             Platform.SENSOR: {
                 "mode": {

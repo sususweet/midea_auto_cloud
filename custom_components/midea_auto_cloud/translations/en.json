@@ -2968,16 +2968,19 @@
         "name": "Air Exhaust"
       },
       "ptc": {
-        "name": "PTC Aux Heat"
+        "name": "Aux Heat"
       },
       "new_wind_model_intake_switch": {
-        "name": "Fresh Air Intake"
+        "name": "Fresh Air"
       },
       "new_wind_model_exhaust_switch": {
-        "name": "Fresh Air Exhaust"
+        "name": "Exhaust"
       },
       "power": {
-        "name": "Power"
+        "name": "Power Switch"
+      },
+      "fresh_air_exhaust_fan_speed": {
+        "name": "Exhaust Fan Speed"
       }
     }
   }
