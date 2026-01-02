@@ -423,7 +423,11 @@
         "name": "左右摆风角度"
       },
       "follow_body_sense": {
-        "name": "随身感"
+        "name": "随身感",
+        "state": {
+          "on": "开",
+          "off": "关"
+        }
       },
       "bright": {
         "name": "亮度"
@@ -2046,6 +2050,9 @@
       },
       "tw1_out_water_temp": {
         "name": "出水温度"
+      },
+      "total_elec_value": {
+        "name": "总耗电量"
       }
     },
     "light": {

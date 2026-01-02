@@ -1917,6 +1917,9 @@
       },
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
+      },
+      "total_elec_value": {
+        "name": "Total Electricity"
       }
     },
     "light": {
