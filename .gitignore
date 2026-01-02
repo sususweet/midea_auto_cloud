@@ -151,6 +151,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# AI generated files
+.trae/
+.claude/
+
 .idea
 
 decrypt_lua.py
