@@ -1902,6 +1902,9 @@
       },
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
+      },
+      "total_elec": {
+        "name": "Total Electricity"
       }
     },
     "light": {
@@ -2963,6 +2966,18 @@
       },
       "air_exhaust": {
         "name": "Air Exhaust"
+      },
+      "ptc": {
+        "name": "PTC Aux Heat"
+      },
+      "new_wind_model_intake_switch": {
+        "name": "Fresh Air Intake"
+      },
+      "new_wind_model_exhaust_switch": {
+        "name": "Fresh Air Exhaust"
+      },
+      "power": {
+        "name": "Power"
       }
     }
   }

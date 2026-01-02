@@ -135,6 +135,132 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "23096633": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_humidity"},
+                    {"query_type": "indoor_temperature"}],
+        "centralized": [],
+        "entities": {
+            Platform.FAN: {
+                "fan": {
+                    "power": "new_wind_machine",
+                    "speeds": list({"fresh_air_fan_speed": value + 1} for value in range(0, 100)),
+                    "preset_modes": {
+                        "heat_exchange": {
+                            "fresh_air_mode": 1,
+                            "wind_strength": 0
+                        },
+                        "smooth_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 0
+                        },
+                        "rough_in": {
+                            "fresh_air_mode": 2,
+                            "wind_strength": 1
+                        },
+                        "smooth_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 0
+                        },
+                        "rough_out": {
+                            "fresh_air_mode": 3,
+                            "wind_strength": 1
+                        },
+                        "auto": {
+                            "fresh_air_mode": 4,
+                            "wind_strength": 0
+                        },
+                        "innercycle": {
+                            "fresh_air_mode": 5,
+                            "wind_strength": 0
+                        },
+                    }
+                }
+            },
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "auto": {"power": "on", "mode": "auto"},
+                        "dry": {"power": "on", "mode": "dry"},
+                        "fan_only": {"power": "on", "mode": "fan"}
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "eco": "off",
+                            "comfort_power_save": "off",
+                            "strong_wind": "off"
+                        },
+                        "eco": {"eco": "on", "cool_power_saving": 1},
+                        "comfort": {"comfort_power_save": "on"},
+                        "boost": {"strong_wind": "on"}
+                    },
+                    "swing_modes": {
+                        "off": {"wind_swing_lr": "off", "wind_swing_ud": "off"},
+                        "both": {"wind_swing_lr": "on", "wind_swing_ud": "on"},
+                        "horizontal": {"wind_swing_lr": "on", "wind_swing_ud": "off"},
+                        "vertical": {"wind_swing_lr": "off", "wind_swing_ud": "on"},
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
+                    "aux_heat": "aux_heat",
+                    "min_temp": 17,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "aux_heat": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "ptc": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "new_wind_model_intake_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "new_wind_model_exhaust_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "total_elec": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": "kWh",
+                    "state_class": SensorStateClass.TOTAL_INCREASING
+                }
+            }
+        }
+    },
     "22259015": {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type": "run_status"}, {"query_type": "module_30"}, {"query_type": "module_31"},

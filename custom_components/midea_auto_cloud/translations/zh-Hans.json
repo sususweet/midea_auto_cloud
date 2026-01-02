@@ -2002,6 +2002,9 @@
       },
       "tw1_out_water_temp": {
         "name": "出水温度"
+      },
+      "total_elec": {
+        "name": "总耗电量"
       }
     },
     "light": {
@@ -3063,6 +3066,18 @@
       },
       "air_exhaust": {
         "name": "快速除味"
+      },
+      "ptc": {
+        "name": "PTC电辅热"
+      },
+      "new_wind_model_intake_switch": {
+        "name": "新风进风"
+      },
+      "new_wind_model_exhaust_switch": {
+        "name": "新风排风"
+      },
+      "power": {
+        "name": "电源"
       }
     }
   }
