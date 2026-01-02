@@ -2976,9 +2976,6 @@
       "new_wind_model_exhaust_switch": {
         "name": "Exhaust"
       },
-      "power": {
-        "name": "Power Switch"
-      },
       "fresh_air_exhaust_fan_speed": {
         "name": "Exhaust Fan Speed"
       }
