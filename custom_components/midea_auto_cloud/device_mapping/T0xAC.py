@@ -141,42 +141,6 @@ DEVICE_MAPPING = {
                     {"query_type": "indoor_temperature"}],
         "centralized": [],
         "entities": {
-            Platform.FAN: {
-                "fan": {
-                    "power": "new_wind_machine",
-                    "speeds": list({"fresh_air_fan_speed": value + 1} for value in range(0, 100)),
-                    "preset_modes": {
-                        "heat_exchange": {
-                            "fresh_air_mode": 1,
-                            "wind_strength": 0
-                        },
-                        "smooth_in": {
-                            "fresh_air_mode": 2,
-                            "wind_strength": 0
-                        },
-                        "rough_in": {
-                            "fresh_air_mode": 2,
-                            "wind_strength": 1
-                        },
-                        "smooth_out": {
-                            "fresh_air_mode": 3,
-                            "wind_strength": 0
-                        },
-                        "rough_out": {
-                            "fresh_air_mode": 3,
-                            "wind_strength": 1
-                        },
-                        "auto": {
-                            "fresh_air_mode": 4,
-                            "wind_strength": 0
-                        },
-                        "innercycle": {
-                            "fresh_air_mode": 5,
-                            "wind_strength": 0
-                        },
-                    }
-                }
-            },
             Platform.CLIMATE: {
                 "thermostat": {
                     "power": "power",
@@ -235,23 +199,6 @@ DEVICE_MAPPING = {
                 "new_wind_model_exhaust_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-            },
-            Platform.SELECT: {
-                "fresh_air_exhaust_fan_speed": {
-                    "device_class": "enum",
-                    "value_mapping": {
-                        40: "low",
-                        60: "medium",
-                        80: "high",
-                        100: "full"
-                    },
-                    "options": {
-                        "low": {"fresh_air_exhaust_fan_speed": 40},
-                        "medium": {"fresh_air_exhaust_fan_speed": 60},
-                        "high": {"fresh_air_exhaust_fan_speed": 80},
-                        "full": {"fresh_air_exhaust_fan_speed": 100}
-                    }
-                }
             },
             Platform.SENSOR: {
                 "mode": {

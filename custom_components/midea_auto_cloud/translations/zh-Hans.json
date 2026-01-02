@@ -3075,9 +3075,6 @@
       },
       "new_wind_model_exhaust_switch": {
         "name": "排风"
-      },
-      "fresh_air_exhaust_fan_speed": {
-        "name": "排风风速"
       }
     }
   }
