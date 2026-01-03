@@ -408,6 +408,23 @@
       }
     },
     "select": {
+      "new_wind_model_intake_wind": {
+        "name": "Fresh Air Fan Speed",
+        "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
+          "full": "Turbo"
+        }
+      },
+      "new_wind_model_exhaust_wind": {
+        "name": "Exhaust Fan Speed",
+        "state": {
+          "silent": "Silent",
+          "high": "High",
+          "full": "Turbo"
+        }
+      },
       "updown": {
         "name": "Running Status"
       },
@@ -2975,23 +2992,6 @@
       },
       "new_wind_model_exhaust_switch": {
         "name": "Exhaust"
-      },
-      "new_wind_model_intake_wind": {
-        "name": "Fresh Air Fan Speed",
-        "state": {
-          "low": "Low",
-          "medium": "Medium",
-          "high": "High",
-          "full": "Turbo"
-        }
-      },
-      "new_wind_model_exhaust_wind": {
-        "name": "Exhaust Fan Speed",
-        "state": {
-          "silent": "Silent",
-          "high": "High",
-          "full": "Turbo"
-        }
       }
     }
   }
