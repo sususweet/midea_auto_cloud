@@ -2098,11 +2098,22 @@
       "wash_strength": {
         "name": "水流强度"
       },
-      "fresh_air_intake_fan_speed": {
-        "name": "新风风速"
+      "new_wind_model_intake_wind": {
+        "name": "新风风速",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "full": "强劲"
+        }
       },
-      "fresh_air_exhaust_fan_speed": {
-        "name": "排风风速"
+      "new_wind_model_exhaust_wind": {
+        "name": "排风风速",
+        "state": {
+          "silent": "静音",
+          "high": "高",
+          "full": "强劲"
+        }
       }
     },
     "fan": {

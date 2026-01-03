@@ -218,22 +218,34 @@ DEVICE_MAPPING = {
                         "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
                         "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
                     }
-                }
-            },
-            Platform.NUMBER: {
-                "fresh_air_intake_fan_speed": {
-                    "min": 1,
-                    "max": 100,
-                    "step": 1,
-                    "unit_of_measurement": "%",
-                    "mode": "slider"
                 },
-                "fresh_air_exhaust_fan_speed": {
-                    "min": 1,
-                    "max": 100,
-                    "step": 1,
-                    "unit_of_measurement": "%",
-                    "mode": "slider"
+                "new_wind_model_intake_wind": {
+                    "device_class": "enum",
+                    "value_mapping": {
+                        40: "low",
+                        60: "medium",
+                        80: "high",
+                        100: "full"
+                    },
+                    "options": {
+                        "low": {"new_wind_model_intake_wind": 40},
+                        "medium": {"new_wind_model_intake_wind": 60},
+                        "high": {"new_wind_model_intake_wind": 80},
+                        "full": {"new_wind_model_intake_wind": 100}
+                    }
+                },
+                "new_wind_model_exhaust_wind": {
+                    "device_class": "enum",
+                    "value_mapping": {
+                        20: "silent",
+                        80: "high",
+                        100: "full"
+                    },
+                    "options": {
+                        "silent": {"new_wind_model_exhaust_wind": 20},
+                        "high": {"new_wind_model_exhaust_wind": 80},
+                        "full": {"new_wind_model_exhaust_wind": 100}
+                    }
                 }
             },
             Platform.SENSOR: {
