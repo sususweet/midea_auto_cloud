@@ -143,6 +143,14 @@ DEVICE_MAPPING = {
         "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_humidity"},
                     {"query_type": "indoor_temperature"}],
         "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[total_elec_value]",
+                    "rvalue": "float([total_elec]) / 1000"
+                },
+            ],
+        },
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
@@ -195,6 +203,7 @@ DEVICE_MAPPING = {
                 },
                 "ptc": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "aux_heat",
                 },
                 "new_wind_model_intake_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -202,6 +211,30 @@ DEVICE_MAPPING = {
                 "new_wind_model_exhaust_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
+            },
+            Platform.SELECT: {
+                "follow_body_sense": {
+                    "options": {
+                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
+                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "fresh_air_intake_fan_speed": {
+                    "min": 1,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": "%",
+                    "mode": "slider"
+                },
+                "fresh_air_exhaust_fan_speed": {
+                    "min": 1,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": "%",
+                    "mode": "slider"
+                }
             },
             Platform.SENSOR: {
                 "mode": {

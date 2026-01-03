@@ -423,7 +423,11 @@
         "name": "左右摆风角度"
       },
       "follow_body_sense": {
-        "name": "随身感"
+        "name": "随身感",
+        "state": {
+          "on": "开",
+          "off": "关"
+        }
       },
       "bright": {
         "name": "亮度"
@@ -2093,6 +2097,12 @@
       },
       "wash_strength": {
         "name": "水流强度"
+      },
+      "fresh_air_intake_fan_speed": {
+        "name": "新风风速"
+      },
+      "fresh_air_exhaust_fan_speed": {
+        "name": "排风风速"
       }
     },
     "fan": {
@@ -3066,9 +3076,6 @@
       },
       "air_exhaust": {
         "name": "快速除味"
-      },
-      "ptc": {
-        "name": "电辅热"
       },
       "new_wind_model_intake_switch": {
         "name": "新风"
