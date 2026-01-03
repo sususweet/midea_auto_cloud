@@ -408,6 +408,23 @@
       }
     },
     "select": {
+      "new_wind_model_intake_enable": {
+        "name": "Intake Wind",
+        "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
+          "full": "Turbo"
+        }
+      },
+      "new_wind_model_exhaust_enable": {
+        "name": "Exhaust Wind",
+        "state": {
+          "silent": "Silent",
+          "high": "High",
+          "full": "Turbo"
+        }
+      },
       "updown": {
         "name": "Running Status"
       },

@@ -408,6 +408,23 @@
       }
     },
     "select": {
+      "new_wind_model_intake_enable": {
+        "name": "新风",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "full": "强劲"
+        }
+      },
+      "new_wind_model_exhaust_enable": {
+        "name": "排风",
+        "state": {
+          "silent": "静音",
+          "high": "高",
+          "full": "强劲"
+        }
+      },
       "updown": {
         "name": "运行状态",
         "state": {
