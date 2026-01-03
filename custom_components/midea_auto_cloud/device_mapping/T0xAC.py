@@ -221,6 +221,8 @@ DEVICE_MAPPING = {
                 },
                 "new_wind_model_intake_wind": {
                     "device_class": "enum",
+                    "translation_key": "new_wind_model_intake_wind",
+                    "icon": "mdi:weather-windy",
                     "value_mapping": {
                         40: "low",
                         60: "medium",
@@ -236,6 +238,8 @@ DEVICE_MAPPING = {
                 },
                 "new_wind_model_exhaust_wind": {
                     "device_class": "enum",
+                    "translation_key": "new_wind_model_exhaust_wind",
+                    "icon": "mdi:fan",
                     "value_mapping": {
                         20: "silent",
                         80: "high",
