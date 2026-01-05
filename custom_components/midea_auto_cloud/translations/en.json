@@ -2045,6 +2045,9 @@
       }
     },
     "number": {
+      "custom_timing": {
+        "name": "Light Off Timer" 
+      },
       "light_brightness": {
         "name": "Light Brightness"
       },

@@ -2178,6 +2178,9 @@
       }
     },
     "number": {
+      "custom_timing": {
+        "name": "延时关灯" 
+      },
       "bath_temperature": {
         "name": "沐浴温度"
       },
