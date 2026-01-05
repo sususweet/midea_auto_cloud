@@ -396,7 +396,16 @@
         "name": "Water Heater"
       },
       "electric_heater": {
-        "name": "Electric Heater"
+        "name": "Electric Heater",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "Left Warm",
+              "right_warm": "Right Warm",
+              "full_on": "Full On"
+            }
+          }
+        }
       },
       "heating": {
         "name": "Heating"
@@ -868,10 +877,7 @@
         "state": {
           "low": "Low",
           "medium": "Medium",
-          "high": "High",
-          "left_warm": "Left Warm",
-          "right_warm": "Right Warm",
-          "full_on": "Full On"
+          "high": "High"
         }
       },
       "ptc": {

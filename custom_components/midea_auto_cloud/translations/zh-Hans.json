@@ -396,7 +396,16 @@
         "name": "热水器"
       },
       "electric_heater": {
-        "name": "取暖器"
+        "name": "取暖器",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "左暖",
+              "right_warm": "右暖",
+              "full_on": "全开"
+            }
+          }
+        }
       },
       "heating": {
         "name": "采暖"
@@ -983,10 +992,7 @@
         "state": {
           "low": "低",
           "medium": "中",
-          "high": "高",
-          "left_warm": "左暖",
-          "right_warm": "右暖",
-          "full_on": "全开"
+          "high": "高"
         }
       },
       "ptc": {
