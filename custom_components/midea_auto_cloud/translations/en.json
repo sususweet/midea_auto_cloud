@@ -1030,6 +1030,9 @@
       }
     },
     "sensor": {
+      "deep_filter_percent": {
+        "name": "Filter Life Remaining"
+      },
       "fresh_air_temp": {
         "name": "Fresh Air Temp"
       },
