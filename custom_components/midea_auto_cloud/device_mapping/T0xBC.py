@@ -53,5 +53,31 @@ DEVICE_MAPPING = {
                 },
             }
         }
+    },
+    "79610129": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SENSOR: {
+                "env_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "indoor_temperature"
+                },
+                "env_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "humidity"
+                },
+                "battery_level": {
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+            }
+        }
     }
 }
