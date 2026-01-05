@@ -84,6 +84,11 @@ DEVICE_MAPPING = {
                         "off": {"power": "off"},
                         "heat": {"power": "on"}
                     },
+                    "preset_modes": {
+                        "left_warm": {"gear": 1},
+                        "right_warm": {"gear": 2},
+                        "full_on": {"gear": 3}
+                    },
                     "target_temperature": "temperature",
                     "current_temperature": "cur_temperature",
                     "min_temp": 5,
@@ -92,19 +97,15 @@ DEVICE_MAPPING = {
                     "precision": PRECISION_WHOLE,
                 }
             },
-            Platform.SELECT: {
-                "gear": {
-                    "options": {
-                        "left_warm": {"gear": 1},
-                        "right_warm": {"gear": 2},
-                        "full_on": {"gear": 3}
-                    }
-                }
-            },
             Platform.SENSOR: {
                 "power_statistics": {
                     "device_class": SensorDeviceClass.POWER,
                     "unit_of_measurement": UnitOfPower.WATT,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "cur_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 }
             }
