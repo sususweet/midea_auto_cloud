@@ -1170,6 +1170,9 @@
       }
     },
     "sensor": {
+      "deep_filter_percent": {
+        "name": "滤芯寿命"
+      },
       "fresh_air_temp": {
         "name": "新风温度"
       },
