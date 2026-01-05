@@ -2048,6 +2048,9 @@
       "custom_timing": {
         "name": "Light Off Timer" 
       },
+      "radar_induction_closing_time": {
+        "name": "Night Light Timer" 
+      },
       "light_brightness": {
         "name": "Light Brightness"
       },
