@@ -477,7 +477,7 @@ DEVICE_MAPPING = {
                         "manual": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 0}
                     },
                     "target_temperature": "water_model_temperature_set",
-                    "current_temperature": ["tw1_out_water_temp", "small_temperature"],
+                    "current_temperature": ["temperature", "small_temperature"],
                     "pre_mode": "mode",
                     "aux_heat": "water_model_ptc",
                     "min_temp": 25,
@@ -509,6 +509,16 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
             }
         }
     },
@@ -530,7 +540,7 @@ DEVICE_MAPPING = {
                         "manual": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 0}
                     },
                     "target_temperature": "water_model_temperature_set",
-                    "current_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": ["tw_out_water_temp", "small_temperature"],
                     "pre_mode": "mode",
                     "aux_heat": "water_model_ptc",
                     "min_temp": 25,
@@ -553,21 +563,11 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "tw1_out_water_temp": {
+                "tw_out_water_temp": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "humidity": {
-                    "device_class": SensorDeviceClass.HUMIDITY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
-                }
             }
         }
     },

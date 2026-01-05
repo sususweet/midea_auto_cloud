@@ -1902,6 +1902,9 @@
       },
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
+      },
+      "tw_out_water_temp": {
+        "name": "Outlet Water Temperature"
       }
     },
     "light": {

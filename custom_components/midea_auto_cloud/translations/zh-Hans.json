@@ -1998,9 +1998,12 @@
         "name": "制热设定温度"
       },
       "tw1_in_water_temp": {
-        "name": "进水温度"
+        "name": "回水温度"
       },
       "tw1_out_water_temp": {
+        "name": "出水温度"
+      },
+      "tw_out_water_temp": {
         "name": "出水温度"
       }
     },
