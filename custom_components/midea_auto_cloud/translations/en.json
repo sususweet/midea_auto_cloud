@@ -2055,6 +2055,9 @@
       "custom_timing": {
         "name": "Light Off Timer" 
       },
+      "radar_induction_closing_time": {
+        "name": "Night Light Timer" 
+      },
       "keep_warm_time": {
         "name": "Keep Warm Time"
       },

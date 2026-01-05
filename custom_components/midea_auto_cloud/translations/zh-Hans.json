@@ -2188,6 +2188,9 @@
       "custom_timing": {
         "name": "延时关灯" 
       },
+      "radar_induction_closing_time": {
+        "name": "夜灯延时关闭" 
+      },
       "keep_warm_time": {
         "name": "保温时间"
       },

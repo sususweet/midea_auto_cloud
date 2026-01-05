@@ -165,7 +165,13 @@ DEVICE_MAPPING = {
                     "max": 100,
                     "step": 1,
                     "unit_of_measurement": PERCENTAGE
-                }
+                },
+                "radar_induction_closing_time": {
+                    "min": 1,
+                    "max": 5,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES
+                } 
             },
             Platform.SWITCH: {
                 "radar_induction_enable": {
