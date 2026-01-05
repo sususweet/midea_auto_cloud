@@ -135,6 +135,68 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "21293193": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "query_all"}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "auto": {"power": "on", "mode": "smart_mode"},
+                    },
+                    "preset_modes": {
+                        "auto": {"water_model_temperature_auto": "on", "temperature_control_switch": 0},
+                        "manual": {"water_model_temperature_auto": "off", "temperature_control_switch": 0},
+                        "link": {"water_model_temperature_auto": "on", "temperature_control_switch": 1}
+                    },
+                    "target_temperature": "effluent_temperature",
+                    "pre_mode": "mode",
+                    "min_temp": 25,
+                    "max_temp": 60,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.NUMBER: {
+                "temperature": {
+                    "min": 16,
+                    "max": 30,
+                    "step": 0.5,
+                    "translation_key": "heating_target_temperature",
+                },
+            },
+            Platform.SWITCH: {
+                "out_mode": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                    "translation_key": "water_model_go_out",
+                },
+                "mute_voice": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                    "translation_key": "mute",
+                },
+                "eco": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "temperature_control_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                    "translation_key": "room_temp_ctrl",
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                }
+            }
+        }
+    },
     "22259015": {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type": "run_status"}, {"query_type": "module_30"}, {"query_type": "module_31"},
