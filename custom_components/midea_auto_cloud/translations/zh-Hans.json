@@ -2185,6 +2185,9 @@
       }
     },
     "number": {
+      "custom_timing": {
+        "name": "延时关灯" 
+      },
       "keep_warm_time": {
         "name": "保温时间"
       },

@@ -2052,6 +2052,9 @@
       }
     },
     "number": {
+      "custom_timing": {
+        "name": "Light Off Timer" 
+      },
       "keep_warm_time": {
         "name": "Keep Warm Time"
       },
