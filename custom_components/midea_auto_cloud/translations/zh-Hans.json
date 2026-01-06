@@ -3025,6 +3025,9 @@
       "water_model_power_save": {
         "name": "节能模式"
       },
+      "water_model_power": {
+        "name": "水力模块开关"
+      },
       "water_model_go_out": {
         "name": "外出模式"
       },

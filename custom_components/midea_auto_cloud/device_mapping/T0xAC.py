@@ -131,7 +131,7 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.HUMIDITY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
-                }
+                },
             }
         }
     },
@@ -550,6 +550,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "water_model_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "water_model_power_save": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },

@@ -2925,6 +2925,9 @@
       "water_model_power_save": {
         "name": "Power Save Mode"
       },
+      "water_model_power": {
+        "name": "Water Model Power"
+      },
       "water_model_go_out": {
         "name": "Away Mode"
       },
