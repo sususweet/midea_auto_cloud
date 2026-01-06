@@ -411,6 +411,13 @@
       }
     },
     "select": {
+      "heat_start": {
+        "name": "烧水",
+        "state": {
+          "start": "开始",
+          "stop": "停止"
+        }
+      },
       "new_wind_model_intake_enable": {
         "name": "新风",
         "state": {
@@ -2178,6 +2185,12 @@
       }
     },
     "number": {
+      "keep_warm_time": {
+        "name": "保温时间"
+      },
+      "target_temperature": {
+        "name": "目标温度"
+      },
       "bath_temperature": {
         "name": "沐浴温度"
       },

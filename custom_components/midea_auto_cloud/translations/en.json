@@ -411,6 +411,13 @@
       }
     },
     "select": {
+      "heat_start": {
+        "name": "Boil Water",
+        "state": {
+          "start": "Start",
+          "stop": "Stop"
+        }
+      },
       "new_wind_model_intake_enable": {
         "name": "Intake Wind",
         "state": {
@@ -2045,6 +2052,12 @@
       }
     },
     "number": {
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
+      "target_temperature": {
+        "name": "Target Temperature"
+      },
       "light_brightness": {
         "name": "Light Brightness"
       },
