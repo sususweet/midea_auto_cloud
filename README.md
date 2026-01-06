@@ -36,6 +36,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xBC Air Sensor
 - T0xBF Microwave Steam Oven
 - T0xC1 Wall hanging furnace
+- T0xC2 Intelligent Toilet
 - T0xC3 Heat Pump
 - T0xCA French Door Refrigerator
 - T0xCC Central Air Conditioning (Ducted) Wi-Fi Controller
