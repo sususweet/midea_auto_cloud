@@ -44,14 +44,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.BUTTON: {
-                "light_off": {
-                    "command": {"electronic_control_version": 2, "type": "b6", "b6_action": "setting",
-                                "setting": "light", "light": "off"},
-                },
-                "light_on": {
-                    "command": {"electronic_control_version": 2, "type": "b6", "b6_action": "setting",
-                                "setting": "light", "light": "on"},
-                },
                 "left_stove_off": {
                     "command": {"electronic_control_version": 2, "type": "b7", "b7_work_burner_control": 1,
                                 "b7_function_control": 1},
@@ -84,6 +76,18 @@ DEVICE_MAPPING = {
                         "extreme": {"gear": 4},
                     }
                 },
+                "light": {
+                    "options": {
+                        "off": {"light": "off"},
+                        "on": {"light": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light"
+                    }
+                }
             },
         }
     }
