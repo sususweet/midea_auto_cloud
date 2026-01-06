@@ -319,6 +319,9 @@
       },
       "standby_status": {
         "name": "Standby Status"
+      },
+      "on_seat": {
+        "name": "On Seat"
       }
     },
     "climate": {
@@ -926,6 +929,98 @@
       },
       "heating_unit_type": {
         "name": "Heating Unit Type"
+      },
+      "clean_mode": {
+        "name": "Clean Mode",
+        "state": {
+          "invalid": "None",
+          "normal": "Bidet Wash",
+          "woman": "Feminine Wash",
+          "maintain": "Nozzle Cleaning"
+        }
+      },
+      "dry_gear": {
+        "name": "Dry Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium",
+          "3": "High"
+        }
+      },
+      "water_gear": {
+        "name": "Water Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "seat_gear": {
+        "name": "Seat Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "rinse_volume": {
+        "name": "Rinse Volume",
+        "state": {
+          "full": "Full Flush",
+          "half": "Half Flush",
+          "invalid": "None"
+        }
+      },
+      "injector_position_normal": {
+        "name": "Bidet Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "injector_position_woman": {
+        "name": "Feminine Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "water_pressure_normal": {
+        "name": "Bidet Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "water_pressure_woman": {
+        "name": "Feminine Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
       }
     },
     "sensor": {
@@ -1939,6 +2034,9 @@
       },
       "total_elec_value": {
         "name": "Total Electricity"
+      },
+      "filter_use_per": {
+        "name": "Filter Use Percentage"
       }
     },
     "light": {
@@ -3015,6 +3113,21 @@
       },
       "air_exhaust": {
         "name": "Air Exhaust"
+      },
+      "auto_rinse": {
+        "name": "Auto Rinse"
+      },
+      "auto_deodorization": {
+        "name": "Auto Deodorization"
+      },
+      "light_sensor": {
+        "name": "Light Sensor"
+      },
+      "auto_eco": {
+        "name": "Auto Eco"
+      },
+      "sedentary_remind": {
+        "name": "Sedentary Remind"
       }
     }
   }
