@@ -688,6 +688,38 @@
       "gesture_function_type": {
         "name": "手势功能类型"
       },
+      "gesture": {
+        "name": "手势功能",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
+      "gesture_value": {
+        "name": "手势操作"
+      },
+      "gesture_sensitivity_value": {
+        "name": "手势灵敏度",
+          "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
+      "inverter": {
+        "name": "变频巡航",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
+      "light": {
+        "name": "照明",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
       "humidity_mode": {
         "name": "湿度模式",
         "state": {
@@ -990,9 +1022,11 @@
       "gear": {
         "name": "档位",
         "state": {
+          "off":"关闭",
           "low": "低",
           "medium": "中",
-          "high": "高"
+          "high": "高",
+          "extreme": "爆炒"
         }
       },
       "ptc": {
@@ -2194,6 +2228,9 @@
       }
     },
     "number": {
+      "lightness": {
+        "name": "照明亮度"
+      },
       "custom_timing": {
         "name": "延时关灯" 
       },
