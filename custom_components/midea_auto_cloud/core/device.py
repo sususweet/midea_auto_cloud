@@ -297,8 +297,8 @@ class MiedaDevice(threading.Thread):
                         await self._build_send(set_cmd)
                         return
                 except Exception as e:
-                        MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
-                        traceback.print_exc()
+                    MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
+                    traceback.print_exc()
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
@@ -414,13 +414,13 @@ class MiedaDevice(threading.Thread):
                                 await self._build_send(query_cmd)
 
 
-    def _parse_cloud_message(self, status):
+    def _parse_cloud_message(self, status, update=True):
         # MideaLogger.debug(f"Received: {decrypted}")
         new_status = {}
         for single in status.keys():
             value = status.get(single)
             if single not in self._attributes or self._attributes[single] != value:
-                self._attributes[single] = value
+                # self._attributes[single] = value
                 new_status[single] = value
         if len(new_status) > 0:
             for c in self._calculate_get:
@@ -450,10 +450,11 @@ class MiedaDevice(threading.Thread):
                                 f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}",
                                 self._device_id
                             )
-            self._update_all(new_status)
+            if update:
+                self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
-    def _parse_message(self, msg):
+    def _parse_message(self, msg, update=True):
         if self._protocol == 3:
             messages, self._buffer = self._security.decode_8370(self._buffer + msg)
         else:
@@ -507,14 +508,15 @@ class MiedaDevice(threading.Thread):
                                             MideaLogger.warning(
                                                 f"Calculation Error: {lvalue} = {rvalue}", self._device_id
                                             )
-                            self._update_all(new_status)
+                            if update:
+                                self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
     async def _send_message(self, data):
         if reply := await self._cloud.send_cloud(self._device_id, data):
             if reply_dec := self._lua_runtime.decode_status(dec_string_to_bytes(reply).hex()):
                 MideaLogger.debug(f"Decoded: {reply_dec}")
-                result = self._parse_cloud_message(reply_dec)
+                result = self._parse_cloud_message(reply_dec, update=False)
                 if result == ParseMessageResult.ERROR:
                     MideaLogger.debug(f"Message 'ERROR' received")
                 elif result == ParseMessageResult.SUCCESS:

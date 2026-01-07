@@ -22,6 +22,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0x15 Water Heater
 - T0x17 Laundry Machine
 - T0x21 Central Air Conditioning Gateway
+- T0x24 Electric Oven
 - T0x26 Bath Heater
 - T0x3D Water Heater
 - T0x9B Steam oven

@@ -420,6 +420,9 @@
       }
     },
     "select": {
+      "work_switch": {
+        "name": "Work Switch"
+      },
       "heat_start": {
         "name": "Boil Water",
         "state": {
@@ -1052,6 +1055,15 @@
       }
     },
     "sensor": {
+      "cur_fire_level": {
+        "name": "Current Fire Level"
+      },
+      "cur_step": {
+        "name": "Current Step"
+      },
+      "total_step": {
+        "name": "Total Step"
+      },
       "deep_filter_percent": {
         "name": "Filter Life Remaining"
       },
@@ -2076,6 +2088,12 @@
       }
     },
     "number": {
+      "fire_level": {
+        "name": "Fire Level"
+      },
+      "set_work_time_sec": {
+        "name": "Set Work Time(sec)"
+      },
       "custom_timing": {
         "name": "Light Off Timer" 
       },

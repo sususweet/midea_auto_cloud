@@ -420,6 +420,9 @@
       }
     },
     "select": {
+      "work_switch": {
+        "name": "工作开关"
+      },
       "heat_start": {
         "name": "烧水",
         "state": {
@@ -1229,6 +1232,15 @@
       }
     },
     "sensor": {
+      "cur_fire_level": {
+        "name": "当前火力等级"
+      },
+      "cur_step": {
+        "name": "当前步骤"
+      },
+      "total_step": {
+        "name": "总步骤"
+      },
       "deep_filter_percent": {
         "name": "滤芯寿命"
       },
@@ -2311,6 +2323,12 @@
       }
     },
     "number": {
+      "fire_level": {
+        "name": "火焰等级"
+      },
+      "set_work_time_sec": {
+        "name": "设置工作时间（秒）"
+      },
       "lightness": {
         "name": "照明亮度"
       },
