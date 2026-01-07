@@ -107,6 +107,18 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         """Set the value of the number entity."""
         # 确保值在有效范围内
         value = max(self._min_value, min(self._max_value, value))
+
+        # 首先尝试使用command字段（如果存在）
+        command = self._config.get("command")
+        if command and isinstance(command, dict):
+            # 替换{value}模板
+            import copy
+            merged_command = copy.deepcopy(command)
+            for key, val in merged_command.items():
+                if isinstance(val, str) and "{value}" in val:
+                    merged_command[key] = val.replace("{value}", str(int(value)))
+            await self.async_set_attributes(merged_command)
+            return
         
         # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)

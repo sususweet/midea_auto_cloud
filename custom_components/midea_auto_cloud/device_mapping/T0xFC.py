@@ -152,6 +152,10 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "deep_filter_percent": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
                 "temperature_feedback": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,

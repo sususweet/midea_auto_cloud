@@ -396,7 +396,16 @@
         "name": "热水器"
       },
       "electric_heater": {
-        "name": "取暖器"
+        "name": "取暖器",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "左暖",
+              "right_warm": "右暖",
+              "full_on": "全开"
+            }
+          }
+        }
       },
       "heating": {
         "name": "采暖"
@@ -679,6 +688,38 @@
       "gesture_function_type": {
         "name": "手势功能类型"
       },
+      "gesture": {
+        "name": "手势功能",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
+      "gesture_value": {
+        "name": "手势操作"
+      },
+      "gesture_sensitivity_value": {
+        "name": "手势灵敏度",
+          "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
+      "inverter": {
+        "name": "变频巡航",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
+      "light": {
+        "name": "照明",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
       "humidity_mode": {
         "name": "湿度模式",
         "state": {
@@ -960,7 +1001,32 @@
           "power_on": "开机",
           "cancel": "取消",
           "pause": "暂停",
-          "resume": "继续"
+          "resume": "继续",
+          "charge": "开始回充",
+          "charge_pause": "回充暂停",
+          "charge_continue":  "继续回充",
+          "auto_clean": "自动清扫",
+          "auto_clean_pause": "清扫暂停",
+          "auto_clean_continue": "继续清扫",
+          "stop": "停止",
+          "work": "清扫"
+        }
+      },
+      "fan_level": {
+        "name": "吸力",
+        "state": {
+          "soft": "轻柔",
+          "normal": "标准",
+          "high": "强力"
+        }
+      },
+      "sweep_mop_mode": {
+        "name": "清洁模式",
+        "state": {
+          "sweep_and_mop": "扫拖一体",
+          "sweep": "仅扫地",
+          "mop": "仅拖地",
+          "sweep_then_mop": "先扫后拖"
         }
       },
       "voice": {
@@ -981,12 +1047,11 @@
       "gear": {
         "name": "档位",
         "state": {
+          "off":"关闭",
           "low": "低",
           "medium": "中",
           "high": "高",
-          "left_warm": "左暖",
-          "right_warm": "右暖",
-          "full_on": "全开"
+          "extreme": "爆炒"
         }
       },
       "ptc": {
@@ -1164,6 +1229,9 @@
       }
     },
     "sensor": {
+      "deep_filter_percent": {
+        "name": "滤芯寿命"
+      },
       "fresh_air_temp": {
         "name": "新风温度"
       },
@@ -1177,16 +1245,65 @@
         "name": "风扇档位"
       },
       "mop": {
-        "name": "拖布模式"
+        "name": "拖布状态",
+        "state": {
+          "yes": "已安装",
+          "no": "未安装",
+          "lack_water": "缺水"
+        }
       },
       "move_direction": {
         "name": "移动方向"
       },
       "work_status": {
-        "name": "工作状态"
+        "name": "当前工作状态",
+        "state": {
+          "power_off": "关机",
+          "power_on": "开机",
+          "cancel": "取消",
+          "pause": "暂停",
+          "resume": "继续",
+          "charge": "开始回充",
+          "charge_pause": "回充暂停",
+          "charge_continue": "继续回充",
+          "auto_clean": "自动清扫",
+          "auto_clean_pause": "清扫暂停",
+          "auto_clean_continue": "继续清扫",
+          "clean_pause": "清扫暂停",
+          "clean_continue": "继续清扫",
+          "stop": "停止",
+          "work": "清扫",
+          "error": "错误",
+          "sleep": "休眠",
+          "relocate": "重定位",
+          "map_searching": "建图中",
+          "clean_mop": "清洗拖布",
+          "back_clean_mop": "返回清洗拖布",
+          "clean_mop_pause": "清洗拖布暂停",
+          "manual_control": "手动控制",
+          "on_base": "在基站",
+          "video_cruise": "视频巡航",
+          "video_cruise_pause": "视频巡航暂停",
+          "map_searching_pause": "建图暂停"
+        }
       },
       "sub_work_status": {
-        "name": "子工作状态"
+        "name": "子工作状态",
+        "state": {
+          "free": "空闲",
+          "charging": "充电",
+          "inject_water": "注水",
+          "clean_mop": "清洗拖布",
+          "dry_mop": "风干拖布",
+          "hot_dry_mop": "热风烘干",
+          "water_station_error": "基站错误",
+          "charge_finish": "充电完成",
+          "erp_mode": "节能模式",
+          "auto_clean": "自动清洁",
+          "dust_collect": "集尘",
+          "cut_hair": "基站自清洁",
+          "map_change": "地图管理"
+        }
       },
       "mode": {
         "name": "运行模式"
@@ -1204,7 +1321,7 @@
         "name": "预约时间"
       },
       "area": {
-        "name": "面积"
+        "name": "清扫面积"
       },
       "auto_max_set_temp": {
         "name": "自动最大设定温度"
@@ -1234,7 +1351,7 @@
         "name": "浴缸水位"
       },
       "battery_percent": {
-        "name": "电池百分比"
+        "name": "当前电量"
       },
       "battery_voltage": {
         "name": "电池电压"
@@ -1399,7 +1516,7 @@
         "name": "烘干机"
       },
       "dust_count": {
-        "name": "灰尘计数"
+        "name": "自动集尘频率"
       },
       "error": {
         "name": "错误"
@@ -1670,6 +1787,15 @@
       },
       "sweep_then_mop_mode_progress": {
         "name": "先扫后拖模式进度"
+      },
+      "sweep_mop_mode": {
+        "name": "当前清洁模式",
+        "state": {
+          "sweep_and_mop": "扫拖一体",
+          "sweep": "仅扫地",
+          "mop": "仅拖地",
+          "sweep_then_mop": "先扫后拖"
+        }
       },
       "switch_status": {
         "name": "开关状态"
@@ -2185,6 +2311,15 @@
       }
     },
     "number": {
+      "lightness": {
+        "name": "照明亮度"
+      },
+      "custom_timing": {
+        "name": "延时关灯" 
+      },
+      "radar_induction_closing_time": {
+        "name": "夜灯延时关闭" 
+      },
       "keep_warm_time": {
         "name": "保温时间"
       },
