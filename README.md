@@ -52,6 +52,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xE2 Electric Water Heater
 - T0xE3 Constant Temperature Gas Water Heater
 - T0xE6 Wall hanging furnace
+- T0xE7 Electric Oven
 - T0xEA Rice Cooker
 - T0xED Water Softener
 - T0xFA Electric Fan
