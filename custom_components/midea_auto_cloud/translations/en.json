@@ -420,6 +420,9 @@
       }
     },
     "select": {
+      "fire_level": {
+        "name": "Fire Level"
+      },
       "work_switch": {
         "name": "Work Switch"
       },
@@ -1055,6 +1058,12 @@
       }
     },
     "sensor": {
+      "time_surplus": {
+        "name": "Surplus Time"
+      },
+      "time_running": {
+        "name": "Running Time"
+      },
       "cur_fire_level": {
         "name": "Current Fire Level"
       },
@@ -2088,8 +2097,11 @@
       }
     },
     "number": {
-      "fire_level": {
-        "name": "Fire Level"
+      "definite_time_hr": {
+        "name": "Definite Time(hr)"
+      },
+      "definite_time_min": {
+        "name": "Definite Time(min)"
       },
       "set_work_time_sec": {
         "name": "Set Work Time(sec)"

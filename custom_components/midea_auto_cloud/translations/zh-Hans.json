@@ -420,6 +420,9 @@
       }
     },
     "select": {
+      "fire_level": {
+        "name": "火焰等级"
+      },
       "work_switch": {
         "name": "工作开关"
       },
@@ -1012,7 +1015,7 @@
           "auto_clean_pause": "清扫暂停",
           "auto_clean_continue": "继续清扫",
           "stop": "停止",
-          "work": "清扫"
+          "work": "工作"
         }
       },
       "fan_level": {
@@ -1232,6 +1235,12 @@
       }
     },
     "sensor": {
+      "time_surplus": {
+        "name": "剩余时间"
+      },
+      "time_running": {
+        "name": "运行时间"
+      },
       "cur_fire_level": {
         "name": "当前火力等级"
       },
@@ -2323,8 +2332,11 @@
       }
     },
     "number": {
-      "fire_level": {
-        "name": "火焰等级"
+      "definite_time_hr": {
+        "name": "设定时间（小时）"
+      },
+      "definite_time_min": {
+        "name": "设定时间（分钟）"
       },
       "set_work_time_sec": {
         "name": "设置工作时间（秒）"

@@ -1,4 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES
+from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 
 DEVICE_MAPPING = {
@@ -6,6 +6,19 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[time_running]",
+                    "rvalue": "[time_running_hr] * 60 + [time_running_min]"
+                },
+                {
+                    "lvalue": "[time_surplus]",
+                    "rvalue": "[time_surplus_hr] * 60 + [time_surplus_min]"
+                },
+            ],
+            "set": []
+        },
         "entities": {
             Platform.NUMBER: {
                 "temperature": {
@@ -13,18 +26,31 @@ DEVICE_MAPPING = {
                     "max": 100,
                     "step": 1,
                 },
-                "fire_level": {
-                    "min": 120,
-                    "max": 2200,
+                "definite_time_hr": {
+                    "min": 0,
+                    "max": 3,
                     "step": 1,
                 },
-                "set_work_time": {
+                "definite_time_min": {
                     "min": 1,
-                    "max": 180,
+                    "max": 59,
                     "step": 1,
                 },
             },
             Platform.SELECT: {
+                "fire_level": {
+                    "options": {
+                        "120W": {"fire_level": "1"},
+                        "300W": {"fire_level": "2"},
+                        "500W": {"fire_level": "3"},
+                        "800W": {"fire_level": "4"},
+                        "1200W": {"fire_level": "5"},
+                        "1400W": {"fire_level": "6"},
+                        "1600W": {"fire_level": "7"},
+                        "1800W": {"fire_level": "8"},
+                        "2200W": {"fire_level": "9"},
+                    }
+                },
                 "work_status": {
                     "options": {
                         "standby": {"work_status": "0"},
@@ -38,11 +64,15 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SENSOR: {
-                "work_mode": {
-                    "device_class": SensorDeviceClass.ENUM,
+                "time_surplus": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
                 },
-                "work_stage": {
-                    "device_class": SensorDeviceClass.ENUM,
+                "time_running": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
                 },
             }
         }
