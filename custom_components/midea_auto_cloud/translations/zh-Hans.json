@@ -140,6 +140,9 @@
       }
     },
     "binary_sensor": {
+      "probo_on": {
+        "name": "探针连接"
+      },
       "heating_work": {
         "name": "采暖功能状态"
       },
@@ -420,11 +423,14 @@
       }
     },
     "select": {
-      "fire_level": {
-        "name": "火焰等级"
-      },
-      "work_switch": {
-        "name": "工作开关"
+      "water_status": {
+        "name": "水位状态",
+        "state": {
+          "normal": "正常",
+          "lack_box": "缺盒",
+          "lack_water": "缺水",
+          "change_water": "换水"
+        }
       },
       "heat_start": {
         "name": "烧水",
@@ -951,7 +957,38 @@
         }
       },
       "work_mode": {
-        "name": "工作模式"
+        "name": "工作模式",
+        "state": {
+          "microwave": "微波",
+          "brittle": "脆烤",
+          "pure_steam": "纯蒸",
+          "hot_steam": "热风蒸汽",
+          "above_tube": "上管加热",
+          "hot_wind_bake": "热风烤",
+          "underside_tube_hot_wind_bake": "下管热风烤",
+          "cube_baking": "立体烤",
+          "core_baking": "核心烤",
+          "total_baking": "全烤",
+          "underside_tube": "下管加热",
+          "double_tube": "双管加热",
+          "revolve_bake": "旋转烤",
+          "double_upside_tube_fan": "双上管风扇",
+          "double_tube_fan": "双管风扇",
+          "fast_baking": "快速烤",
+          "fast_steam": "快速蒸汽",
+          "unfreeze": "解冻",
+          "unfreeze_t": "T解冻",
+          "zymosis": "发酵",
+          "smart_clean": "智能清洁",
+          "scale_clean": "除垢",
+          "metal_sterilize": "金属消毒",
+          "remove_odor": "除味",
+          "dry": "烘干",
+          "clean": "清洁",
+          "warm": "保温",
+          "auto_menu": "自动菜单",
+          "custom": "自定义"
+        }
       },
       "wash_mode": {
         "name": "洗涤模式",
@@ -1015,7 +1052,15 @@
           "auto_clean_pause": "清扫暂停",
           "auto_clean_continue": "继续清扫",
           "stop": "停止",
-          "work": "工作"
+          "work": "清扫",
+          "save_power": "节能模式",
+          "standby": "待机",
+          "open": "开门",
+          "start": "启动",
+          "work_finish": "工作完成",
+          "order": "预约",
+          "pause_c": "暂停中",
+          "three": "三种状态"
         }
       },
       "fan_level": {
@@ -1235,20 +1280,11 @@
       }
     },
     "sensor": {
-      "time_surplus": {
-        "name": "剩余时间"
+      "tips_code": {
+        "name": "提示代码"
       },
-      "time_running": {
-        "name": "运行时间"
-      },
-      "cur_fire_level": {
-        "name": "当前火力等级"
-      },
-      "cur_step": {
-        "name": "当前步骤"
-      },
-      "total_step": {
-        "name": "总步骤"
+      "version": {
+        "name": "版本"
       },
       "deep_filter_percent": {
         "name": "滤芯寿命"
@@ -2332,14 +2368,17 @@
       }
     },
     "number": {
-      "definite_time_hr": {
-        "name": "设定时间（小时）"
+      "steam_quantity": {
+        "name": "蒸汽量"
       },
-      "definite_time_min": {
-        "name": "设定时间（分钟）"
+      "hour_set": {
+        "name": "设置小时"
       },
-      "set_work_time_sec": {
-        "name": "设置工作时间（秒）"
+      "minute_set": {
+        "name": "设置分钟"
+      },
+      "second_set": {
+        "name": "设置秒"
       },
       "lightness": {
         "name": "照明亮度"

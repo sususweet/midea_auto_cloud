@@ -75,6 +75,8 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
             return None
             
         # 确保返回的是数值类型
+        if value == "ff":
+            value = 0
         try:
             return float(value)
         except (ValueError, TypeError):
