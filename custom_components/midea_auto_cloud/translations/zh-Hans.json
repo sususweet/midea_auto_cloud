@@ -2371,13 +2371,13 @@
       "steam_quantity": {
         "name": "蒸汽量"
       },
-      "hour_set": {
+      "work_hour": {
         "name": "设置小时"
       },
-      "minute_set": {
+      "work_minute": {
         "name": "设置分钟"
       },
-      "second_set": {
+      "work_second": {
         "name": "设置秒"
       },
       "lightness": {
