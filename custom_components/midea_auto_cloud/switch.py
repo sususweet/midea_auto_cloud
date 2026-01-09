@@ -24,6 +24,8 @@ async def async_setup_entry(
     coordinator_map = account_bucket.get("coordinator_map", {})
 
     devs = []
+
+    # Create device-specific switch entities
     for device_id, info in device_list.items():
         device_type = info.get("type")
         sn8 = info.get("sn8")
@@ -37,6 +39,14 @@ async def async_setup_entry(
             devs.append(MideaSwitchEntity(
                 coordinator, device, manufacturer, rationale, entity_key, ecfg
             ))
+
+    # Create global polling control switch (only once per account)
+    # This switch controls polling for all devices under this account
+    if coordinator_map:
+        global_switch = GlobalPollingControlSwitch(hass, config_entry, coordinator_map)
+        devs.append(global_switch)
+        MideaLogger.debug(f"Created global polling control switch for account {config_entry.entry_id}")
+
     async_add_entities(devs)
 
 
@@ -44,9 +54,9 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     """Midea switch entity."""
 
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
-        # 自动判断是否为中央空调设备（T0x21）
+        # Automatically detect if this is a central AC device (T0x21)
         self._is_central_ac = device.device_type == 0x21
-        
+
         super().__init__(
             coordinator,
             device.device_id,
@@ -105,3 +115,61 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             "endpoint": endpoint_id
         }
         await self.coordinator.async_send_switch_control(control)
+
+
+class GlobalPollingControlSwitch(SwitchEntity):
+    """Global polling control switch for all Midea devices."""
+
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, coordinators: dict):
+        """Initialize the global polling control switch.
+
+        Args:
+            hass: Home Assistant instance
+            config_entry: Config entry for this integration
+            coordinators: Dictionary of all coordinators {device_id: coordinator}
+        """
+        self.hass = hass
+        self._config_entry = config_entry
+        self._coordinators = coordinators
+        self._attr_name = "Polling Control"
+        self._attr_unique_id = f"{DOMAIN}_global_polling_control"
+        self._attr_icon = "mdi:refresh-circle"
+        self._is_on = True  # Default to enabled (polling active)
+
+        # Device info for the global switch
+        from homeassistant.helpers.device_registry import DeviceInfo
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, "global_control")},
+            name="Midea Global Control",
+            manufacturer="Midea",
+            model="Global Control"
+        )
+
+    @property
+    def is_on(self) -> bool:
+        """Return true if polling is enabled."""
+        return self._is_on
+
+    async def async_turn_on(self, **kwargs):
+        """Turn on polling for all devices."""
+        from datetime import timedelta
+
+        # Resume polling for all coordinators
+        for device_id, coordinator in self._coordinators.items():
+            coordinator.update_interval = timedelta(seconds=30)
+            MideaLogger.debug(f"Polling resumed for device {device_id}")
+
+        self._is_on = True
+        self.async_write_ha_state()
+        MideaLogger.debug("Global polling enabled for all devices")
+
+    async def async_turn_off(self, **kwargs):
+        """Turn off polling for all devices."""
+        # Pause polling for all coordinators
+        for device_id, coordinator in self._coordinators.items():
+            coordinator.update_interval = None
+            MideaLogger.debug(f"Polling paused for device {device_id}")
+
+        self._is_on = False
+        self.async_write_ha_state()
+        MideaLogger.debug("Global polling disabled for all devices")

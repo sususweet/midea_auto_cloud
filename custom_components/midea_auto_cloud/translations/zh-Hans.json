@@ -3502,6 +3502,9 @@
       },
       "sedentary_remind": {
         "name": "久坐提醒"
+      },
+      "polling_control": {
+        "name": "轮询控制"
       }
     }
   }

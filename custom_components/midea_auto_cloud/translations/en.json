@@ -3201,6 +3201,9 @@
       },
       "sedentary_remind": {
         "name": "Sedentary Remind"
+      },
+      "polling_control": {
+        "name": "Polling Control"
       }
     }
   }
