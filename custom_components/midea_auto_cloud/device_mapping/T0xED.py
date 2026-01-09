@@ -8,13 +8,45 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": [],
+        "centralized": ["custom_temperature_1"],
         "entities": {
+            Platform.SELECT: {
+                "heat_start": {
+                    "options": {
+                        "start": {"heat_start": 1},
+                        "stop": {"heat_start": 0}
+                    },
+                }
+            },
+            Platform.NUMBER: {
+                "custom_temperature_1": {
+                    "min": 87,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "translation_key": "target_temperature",
+                    "command": {
+                        "heat_start": 1,
+                    }
+                },
+                "keep_warm_time": {
+                    "min": 1,
+                    "max": 24,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "command": {
+                        "keep_warm": "on",
+                    }
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "heat": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "cool": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "lock": {
@@ -147,31 +179,6 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "salt_setting": {
-                    "device_class": SensorDeviceClass.WEIGHT,
-                    "unit_of_measurement": UnitOfMass.KILOGRAMS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "supply_voltage": {
-                    "device_class": SensorDeviceClass.VOLTAGE,
-                    "unit_of_measurement": UnitOfElectricPotential.VOLT,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "battery_voltage": {
-                    "device_class": SensorDeviceClass.VOLTAGE,
-                    "unit_of_measurement": UnitOfElectricPotential.VOLT,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "water_hardness": {
-                    "device_class": SensorDeviceClass.WATER,
-                    "unit_of_measurement": "mg/L",
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "water_consumption_big": {
-                    "device_class": SensorDeviceClass.VOLUME,
-                    "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.TOTAL_INCREASING
-                },
                 "water_consumption_today": {
                     "device_class": SensorDeviceClass.VOLUME,
                     "unit_of_measurement": UnitOfVolume.LITERS,
@@ -182,37 +189,8 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfVolume.LITERS,
                     "state_class": SensorStateClass.TOTAL_INCREASING
                 },
-                "soft_available_big": {
-                    "device_class": SensorDeviceClass.VOLUME,
-                    "unit_of_measurement": UnitOfVolume.LITERS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "regeneration_left_seconds": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.SECONDS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "heat_start": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
-                "regeneration_stages": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
-                "regeneration_current_stages": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
                 "regeneration_count": {
                     "device_class": SensorDeviceClass.ENUM,
-                },
-                "days_since_last_regeneration": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.DAYS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "days_since_last_two_regeneration": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.DAYS,
-                    "state_class": SensorStateClass.MEASUREMENT
                 },
                 "use_days": {
                     "device_class": SensorDeviceClass.DURATION,
@@ -234,18 +212,7 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTime.DAYS,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "maintenance_reminder_setting": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.DAYS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
                 "micro_leak_protection_value": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
-                "leak_water_protection_value": {
-                    "device_class": SensorDeviceClass.ENUM,
-                },
-                "mixed_water_gear": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
                 "velocity": {

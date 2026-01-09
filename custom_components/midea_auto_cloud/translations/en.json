@@ -319,6 +319,9 @@
       },
       "standby_status": {
         "name": "Standby Status"
+      },
+      "on_seat": {
+        "name": "On Seat"
       }
     },
     "climate": {
@@ -393,7 +396,16 @@
         "name": "Water Heater"
       },
       "electric_heater": {
-        "name": "Electric Heater"
+        "name": "Electric Heater",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "Left Warm",
+              "right_warm": "Right Warm",
+              "full_on": "Full On"
+            }
+          }
+        }
       },
       "heating": {
         "name": "Heating"
@@ -408,6 +420,38 @@
       }
     },
     "select": {
+      "fire_level": {
+        "name": "Fire Level"
+      },
+      "work_switch": {
+        "name": "Work Switch"
+      },
+      "heat_start": {
+        "name": "Boil Water",
+        "state": {
+          "start": "Start",
+          "stop": "Stop"
+        }
+      },
+      "new_wind_model_intake_enable": {
+        "name": "Intake Wind",
+        "state": {
+          "off": "Off",
+          "low": "Low Speed",
+          "medium": "Medium Speed",
+          "high": "High Speed",
+          "full": "Turbo"
+        }
+      },
+      "new_wind_model_exhaust_enable": {
+        "name": "Exhaust Wind",
+        "state": {
+          "off": "Off",
+          "silent": "Silent",
+          "high": "High Speed",
+          "full": "Turbo"
+        }
+      },
       "updown": {
         "name": "Running Status"
       },
@@ -541,9 +585,25 @@
       "gesture_function_type": {
         "name": "Gesture Function Type"
       },
+      "gesture": {
+        "name": "Gesture"
+      },
+      "gesture_value": {
+        "name": "Gesture Value"
+      },
+      "gesture_sensitivity_value": {
+        "name": "Gesture Sensitivity Value"
+      },
+      "inverter": {
+        "name": "Inverter"
+      },
+      "light": {
+        "name": "Light"
+      },
       "humidity_mode": {
         "name": "Humidity Mode",
         "state": {
+          "auto": "auto",
           "manual": "manual",
           "moist_skin": "moist skin",
           "sleep": "sleep"
@@ -570,9 +630,14 @@
       "mode": {
         "name": "Mode",
         "state": {
+          "air_dry": "Air Dry Mode",
+          "auto": "Auto Mode",
+          "manual": "Manual Mode",
           "normal": "normal",
           "factory_test": "factory test",
+          "fast": "Fast Mode",
           "service": "service",
+          "sleep": "Sleep Mode",
           "normal_continus": "normal continus"
         }
       },
@@ -747,6 +812,7 @@
         "state": {
           "low": "low",
           "medium": "medium",
+          "middle": "middle",
           "high": "high",
           "auto": "auto",
           "invalid": "invalid"
@@ -828,7 +894,12 @@
         "name": "Sleep Sensor"
       },
       "gear": {
-        "name": "Gear"
+        "name": "Gear",
+        "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
       },
       "ptc": {
         "name": "PTC"
@@ -892,9 +963,119 @@
       },
       "heating_unit_type": {
         "name": "Heating Unit Type"
+      },
+      "clean_mode": {
+        "name": "Clean Mode",
+        "state": {
+          "invalid": "None",
+          "normal": "Bidet Wash",
+          "woman": "Feminine Wash",
+          "maintain": "Nozzle Cleaning"
+        }
+      },
+      "dry_gear": {
+        "name": "Dry Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium",
+          "3": "High"
+        }
+      },
+      "water_gear": {
+        "name": "Water Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "seat_gear": {
+        "name": "Seat Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "rinse_volume": {
+        "name": "Rinse Volume",
+        "state": {
+          "full": "Full Flush",
+          "half": "Half Flush",
+          "invalid": "None"
+        }
+      },
+      "injector_position_normal": {
+        "name": "Bidet Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "injector_position_woman": {
+        "name": "Feminine Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "water_pressure_normal": {
+        "name": "Bidet Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "water_pressure_woman": {
+        "name": "Feminine Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
       }
     },
     "sensor": {
+      "time_surplus": {
+        "name": "Surplus Time"
+      },
+      "time_running": {
+        "name": "Running Time"
+      },
+      "cur_fire_level": {
+        "name": "Current Fire Level"
+      },
+      "cur_step": {
+        "name": "Current Step"
+      },
+      "total_step": {
+        "name": "Total Step"
+      },
+      "deep_filter_percent": {
+        "name": "Filter Life Remaining"
+      },
       "fresh_air_temp": {
         "name": "Fresh Air Temp"
       },
@@ -1905,6 +2086,12 @@
       },
       "tw_out_water_temp": {
         "name": "Outlet Water Temperature"
+      },
+      "total_elec_value": {
+        "name": "Total Electricity"
+      },
+      "filter_use_per": {
+        "name": "Filter Use Percentage"
       }
     },
     "light": {
@@ -1913,6 +2100,27 @@
       }
     },
     "number": {
+      "definite_time_hr": {
+        "name": "Definite Time(hr)"
+      },
+      "definite_time_min": {
+        "name": "Definite Time(min)"
+      },
+      "set_work_time_sec": {
+        "name": "Set Work Time(sec)"
+      },
+      "custom_timing": {
+        "name": "Light Off Timer" 
+      },
+      "radar_induction_closing_time": {
+        "name": "Night Light Timer" 
+      },
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
+      "target_temperature": {
+        "name": "Target Temperature"
+      },
       "light_brightness": {
         "name": "Light Brightness"
       },
@@ -2001,6 +2209,18 @@
       }
     },
     "switch": {
+      "auto_power_off": {
+        "name": "Auto Power Off"
+      },
+      "power_on_timer": {
+        "name": "Power On Timer"
+      },
+      "power_off_timer": {
+        "name": "Power Off Timer"
+      },
+      "voice": {
+        "name": "Sound"
+      },
       "laundry": {
         "name": "One Key Laundry"
       },
@@ -2026,7 +2246,7 @@
         "name": "Wind Change with Temperature"
       },
       "screen_close": {
-        "name": "Screen Close"
+        "name": "Screen Display"
       },
       "anion": {
         "name": "Anion"
@@ -2709,6 +2929,9 @@
       "function_zone_power": {
         "name": "Function Zone Power"
       },
+      "humidify": {
+        "name": "Cool Wind"
+      },
       "humidify_power": {
         "name": "Humidify Power"
       },
@@ -2969,6 +3192,21 @@
       },
       "air_exhaust": {
         "name": "Air Exhaust"
+      },
+      "auto_rinse": {
+        "name": "Auto Rinse"
+      },
+      "auto_deodorization": {
+        "name": "Auto Deodorization"
+      },
+      "light_sensor": {
+        "name": "Light Sensor"
+      },
+      "auto_eco": {
+        "name": "Auto Eco"
+      },
+      "sedentary_remind": {
+        "name": "Sedentary Remind"
       }
     }
   }

@@ -1,5 +1,5 @@
 from homeassistant.components.switch import SwitchDeviceClass
-from homeassistant.const import Platform, UnitOfTime, UnitOfArea, UnitOfTemperature
+from homeassistant.const import Platform, PERCENTAGE, UnitOfTime, UnitOfArea, UnitOfTemperature
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 
@@ -22,13 +22,20 @@ DEVICE_MAPPING = {
                 "light_brightness": {
                     "min": 20,
                     "max": 100,
-                    "step": 1
+                    "step": 1,
+                    "unit_of_measurement": PERCENTAGE
                 },
                 "custom_height": {
                     "min": 0,
                     "max": 100,
                     "step": 10,
                     "translation_key": "laundry_height",
+                },
+                "custom_timing": {
+                    "min": 0,
+                    "max": 180,
+                    "step": 5,
+                    "unit_of_measurement": UnitOfTime.MINUTES
                 }
             },
             Platform.SWITCH: {
