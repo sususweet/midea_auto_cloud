@@ -152,6 +152,18 @@
       "doorswitch": {
         "name": "门锁开关"
       },
+      "softener_lack": {
+        "name": "柔顺剂不足"
+      },
+      "detergent_lack": {
+        "name": "洗涤剂不足"
+      },
+      "door_opened": {
+        "name": "门已打开"
+      },
+      "bucket_water_overheating": {
+        "name": "桶内水温过热"
+      },
       "air_status": {
         "name": "空气运行"
       },
@@ -247,18 +259,6 @@
       },
       "door_status": {
         "name": "门状态"
-      },
-      "softener_lack": {
-        "name": "柔顺剂不足"
-      },
-      "detergent_lack": {
-        "name": "洗涤剂不足"
-      },
-      "door_opened": {
-        "name": "门已打开"
-      },
-      "bucket_water_overheating": {
-        "name": "桶内水温过热"
       },
       "ele_exception": {
         "name": "电气异常"
@@ -2455,6 +2455,9 @@
       "softener": {
         "name": "柔顺剂"
       },
+      "steam_set": {
+        "name": "水量"
+      },
       "temperature": {
         "name": "温度"
       },
@@ -2557,6 +2560,9 @@
       },
       "filter_tip": {
         "name": "除菌"
+      },
+      "control_status": {
+        "name": "启停"
       },
       "add_water_flag": {
         "name": "加水标志"
@@ -2737,9 +2743,6 @@
       },
       "ai_switch": {
         "name": "AI开关"
-      },
-      "control_status": {
-        "name": "启停"
       },
       "airdry_on_off": {
         "name": "湿帘风干"
