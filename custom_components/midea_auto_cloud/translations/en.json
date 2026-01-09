@@ -423,6 +423,18 @@
       }
     },
     "select": {
+      "dehydration_speed": {
+        "name": "Dehydration Speed"
+      },
+      "soak_count": {
+        "name": "Rinse Count"
+      },
+      "detergent": {
+        "name": "Detergent"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
       "water_status": {
         "name": "Water Status",
         "state": {
@@ -668,6 +680,7 @@
           "mixed_wash": "mixed wash",
           "wool": "wool",
           "ssp": "self-cleaning mode",
+          "deep_ssp": "deep self-cleaning",
           "sport_clothes": "sport clothes",
           "single_dehytration": "single dehytration",
           "rinsing_dehydration": "rinsing and dehydration",
@@ -1077,7 +1090,17 @@
         "name": "Fresh Air Temp"
       },
       "running_status": {
-        "name": "Running Status"
+        "name": "Running Status",
+        "state": {
+          "end": "End",
+          "standby": "Standby",
+          "start": "Start",
+          "pause": "Pause",
+          "idle": "Idle",
+          "fault": "Fault",
+          "delay": "Delay",
+          "delay_pause": "Delay Pause"
+        }
       },
       "tank_status": {
         "name": "Tank Status"
