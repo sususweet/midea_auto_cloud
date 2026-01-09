@@ -140,6 +140,9 @@
       }
     },
     "binary_sensor": {
+      "probo_on": {
+        "name": "Probo on"
+      },
       "heating_work": {
         "name": "Heating Work Status"
       },
@@ -420,11 +423,14 @@
       }
     },
     "select": {
-      "fire_level": {
-        "name": "Fire Level"
-      },
-      "work_switch": {
-        "name": "Work Switch"
+      "water_status": {
+        "name": "Water Status",
+        "state": {
+          "normal": "Normal",
+          "lack_box": "Lack Box",
+          "lack_water": "Lack Water",
+          "change_water": "Change Water"
+        }
       },
       "heat_start": {
         "name": "Boil Water",
@@ -1058,20 +1064,11 @@
       }
     },
     "sensor": {
-      "time_surplus": {
-        "name": "Surplus Time"
+     "tips_code": {
+        "name": "Tips Code"
       },
-      "time_running": {
-        "name": "Running Time"
-      },
-      "cur_fire_level": {
-        "name": "Current Fire Level"
-      },
-      "cur_step": {
-        "name": "Current Step"
-      },
-      "total_step": {
-        "name": "Total Step"
+      "version": {
+        "name": "Version"
       },
       "deep_filter_percent": {
         "name": "Filter Life Remaining"
@@ -2084,6 +2081,9 @@
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
       },
+      "tw_out_water_temp": {
+        "name": "Outlet Water Temperature"
+      },
       "total_elec_value": {
         "name": "Total Electricity"
       },
@@ -2097,14 +2097,20 @@
       }
     },
     "number": {
-      "definite_time_hr": {
-        "name": "Definite Time(hr)"
+      "steam_quantity": {
+        "name": "Steam Quantity"
       },
-      "definite_time_min": {
-        "name": "Definite Time(min)"
+      "work_hour": {
+        "name": "Work Hour"
       },
-      "set_work_time_sec": {
-        "name": "Set Work Time(sec)"
+      "work_minute": {
+        "name": "Work Minute"
+      },
+      "work_second": {
+        "name": "Work Second"
+      },
+      "lightness": {
+        "name": "Lightness"
       },
       "custom_timing": {
         "name": "Light Off Timer" 
@@ -2169,6 +2175,9 @@
       "softener": {
         "name": "Softener"
       },
+      "steam_set": {
+        "name": "Steam Set"
+      },
       "temperature": {
         "name": "Temperature"
       },
@@ -2206,6 +2215,9 @@
       }
     },
     "switch": {
+      "radar_induction_enable": {
+        "name": "Radar Induction"
+      },
       "auto_power_off": {
         "name": "Auto Power Off"
       },
@@ -3144,6 +3156,9 @@
       },
       "water_model_power_save": {
         "name": "Power Save Mode"
+      },
+      "water_model_power": {
+        "name": "Water Model Power"
       },
       "water_model_go_out": {
         "name": "Away Mode"
