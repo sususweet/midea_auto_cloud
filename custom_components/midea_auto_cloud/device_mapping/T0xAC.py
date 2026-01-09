@@ -131,7 +131,7 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.HUMIDITY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
-                }
+                },
             }
         }
     },
@@ -581,6 +581,58 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 }
+            }
+        }
+    },
+    "10693145": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "water_model_run_status"}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "water_model_power",
+                    "hvac_modes": {
+                        "off": {"water_model_power": "off"},
+                        "heat": {"water_model_power": "on"},
+                    },
+                    "preset_modes": {
+                        "auto": {"water_model_temperature_auto": "on", "water_temp_linkage_switch": 0},
+                        "link": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 1},
+                        "manual": {"water_model_temperature_auto": "off", "water_temp_linkage_switch": 0}
+                    },
+                    "target_temperature": "water_model_temperature_set",
+                    "current_temperature": ["tw_out_water_temp", "small_temperature"],
+                    "pre_mode": "mode",
+                    "aux_heat": "water_model_ptc",
+                    "min_temp": 25,
+                    "max_temp": 60,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "water_model_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "water_model_power_save": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "water_model_go_out": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.SENSOR: {
+                "tw1_in_water_temp": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "tw_out_water_temp": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
             }
         }
     },

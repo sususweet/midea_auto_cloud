@@ -2081,6 +2081,9 @@
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
       },
+      "tw_out_water_temp": {
+        "name": "Outlet Water Temperature"
+      },
       "total_elec_value": {
         "name": "Total Electricity"
       },
@@ -3153,6 +3156,9 @@
       },
       "water_model_power_save": {
         "name": "Power Save Mode"
+      },
+      "water_model_power": {
+        "name": "Water Model Power"
       },
       "water_model_go_out": {
         "name": "Away Mode"
