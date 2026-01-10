@@ -180,6 +180,13 @@
           "on": "过热"
         }
       },
+      "drying_tunnel_overheating": {
+        "name": "烘干通道状态",
+        "state": {
+          "off": "正常",
+          "on": "过热"
+        }
+      },
       "air_status": {
         "name": "空气运行"
       },
@@ -446,7 +453,7 @@
         "name": "漂洗次数"
       },
       "detergent": {
-        "name": "洗衣液"
+        "name": "洗衣液(智投)"
       },
       "temperature": {
         "name": "温度"
@@ -709,6 +716,9 @@
       },
       "dry_temp": {
         "name": "烘干温度"
+      },
+      "db_dry": {
+        "name": "烘干档位"
       },
       "dryness_level": {
         "name": "干燥程度"

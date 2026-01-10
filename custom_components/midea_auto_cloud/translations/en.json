@@ -164,6 +164,9 @@
       "bucket_water_overheating": {
         "name": "Bucket Water Overheating"
       },
+      "drying_tunnel_overheating": {
+        "name": "Drying Tunnel Overheating"
+      },
       "air_status": {
         "name": "Air Running"
       },
@@ -557,6 +560,9 @@
       },
       "db_temperature": {
         "name": "DB Temperature"
+      },
+      "db_dry": {
+        "name": "DB Dry"
       },
       "water_level": {
         "name": "Water Level",
