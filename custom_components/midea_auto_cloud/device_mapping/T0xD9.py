@@ -22,6 +22,15 @@ DEVICE_MAPPING = {
                 "db_power": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
                 },
+                "door_opened": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
+                "bucket_water_overheating": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "drying_tunnel_overheating": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                }
             },
             Platform.SWITCH: {
                 "db_power": {
@@ -31,6 +40,10 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["pause", "start"],
                     "translation_key": "control_status",
+                },
+                "db_baby_lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock",
                 }
             },
             Platform.SELECT: {
@@ -60,6 +73,54 @@ DEVICE_MAPPING = {
                         "underwear": {"db_program": "underwear"},
                         "water_ssp": {"db_program": "water_ssp"}
                    }
+                },
+                "db_temperature": {
+                    "options": {
+                        "冷水": {"db_temperature": "0"},
+                        "30℃": {"db_temperature": "3"},
+                        "40℃": {"db_temperature": "4"},
+                        "60℃": {"db_temperature": "5"},
+                        "95℃": {"db_temperature": "6"}
+                    },
+                    "translation_key": "temperature"
+                },
+                "db_detergent": {
+                    "options": {
+                        "关闭": {"db_detergent": "0"},
+                        "L1": {"db_detergent": "1"},
+                        "L2": {"db_detergent": "2"},
+                        "L3": {"db_detergent": "3"}
+                    },
+                    "translation_key": "detergent"
+                },
+                "db_dehydration_speed": {
+                    "options": {
+                        "免脱水": {"db_dehydration_speed": "0"},
+                        "800转": {"db_dehydration_speed": "3"},
+                        "1000转": {"db_dehydration_speed": "4"}
+                    },
+                    "translation_key": "dehydration_speed"
+                },
+                "db_rinse_count": {
+                    "options": {
+                        "1次": {"db_rinse_count": "1"},
+                        "2次": {"db_rinse_count": "2"},
+                        "3次": {"db_rinse_count": "3"},
+                        "4次": {"db_rinse_count": "4"},
+                        "5次": {"db_rinse_count": "5"}
+                    },
+                    "translation_key": "soak_count"
+                },
+                "db_dry": {
+                    "options": {
+                        "关闭": {"db_dry": "0"},
+                        "智能": {"db_dry": "1"},
+                        "定时240": {"db_dry": "12"},
+                        "定时180": {"db_dry": "11"},
+                        "定时120": {"db_dry": "7"},
+                        "定时60": {"db_dry": "5"},
+                        "定时30": {"db_dry": "4"}              
+                    }
                 }
             },
             Platform.SENSOR: {
@@ -73,41 +134,11 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "db_running_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "running_status"
+                },
                 "db_error_code": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "db_set_dewater_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "db_set_wash_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "db_rinse_count": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "db_wash_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "db_appointment_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "db_appointment": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "db_dehydration_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "db_cycle_memory": {
                     "device_class": SensorDeviceClass.ENUM
                 }
             }

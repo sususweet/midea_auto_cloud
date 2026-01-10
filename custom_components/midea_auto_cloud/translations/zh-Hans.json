@@ -153,16 +153,39 @@
         "name": "门锁开关"
       },
       "softener_lack": {
-        "name": "柔顺剂不足"
+        "name": "柔顺剂存量",
+        "state": {
+          "off": "正常",
+          "on": "不足"
+        }
       },
       "detergent_lack": {
-        "name": "洗涤剂不足"
+        "name": "洗衣液存量",
+        "state": {
+          "off": "正常",
+          "on": "不足"
+        }
       },
       "door_opened": {
-        "name": "门已打开"
+        "name": "洗衣机门状态",
+        "state": {
+          "off": "关闭",
+          "on": "打开"
+        }
       },
       "bucket_water_overheating": {
-        "name": "桶内水温过热"
+        "name": "桶内水温状态",
+        "state": {
+          "off": "正常",
+          "on": "过热"
+        }
+      },
+      "drying_tunnel_overheating": {
+        "name": "烘干通道状态",
+        "state": {
+          "off": "正常",
+          "on": "过热"
+        }
       },
       "air_status": {
         "name": "空气运行"
@@ -423,6 +446,18 @@
       }
     },
     "select": {
+      "dehydration_speed": {
+        "name": "转速"
+      },
+      "soak_count": {
+        "name": "漂洗次数"
+      },
+      "detergent": {
+        "name": "洗衣液(智投)"
+      },
+      "temperature": {
+        "name": "温度"
+      },
       "water_status": {
         "name": "水位状态",
         "state": {
@@ -682,6 +717,9 @@
       "dry_temp": {
         "name": "烘干温度"
       },
+      "db_dry": {
+        "name": "烘干档位"
+      },
       "dryness_level": {
         "name": "干燥程度"
       },
@@ -800,9 +838,10 @@
           "mixed_wash": "混合洗",
           "wool": "羊毛",
           "ssp": "筒自洁",
+          "deep_ssp": "深度筒自洁",
           "sport_clothes": "运动服",
           "single_dehytration": "单脱水",
-          "rinsing_dehydration": "漂洗+脱水",
+          "rinsing_dehydration": "漂+脱",
           "big": "大件",
           "baby_clothes": "婴儿服",
           "down_jacket": "羽绒服",
@@ -811,7 +850,7 @@
           "quick_wash": "快洗",
           "shirt": "衬衫",
           "fiber": "化纤",
-          "enzyme": "酵素洗",
+          "enzyme": "除菌洗",
           "underwear": "内衣",
           "outdoor": "户外服",
           "air_wash": "空气洗",
@@ -851,7 +890,7 @@
           "fast_dry": "快速烘干",
           "water_outdoor": "水韵户外服",
           "spring_autumn_wash": "春秋洗",
-          "summer_wash": "夏季洗",
+          "summer_wash": "夏日洗",
           "winter_wash": "冬季洗",
           "jean": "牛仔服",
           "new_clothes_wash": "新衣洗",
@@ -877,7 +916,7 @@
           "aromatherapy": "香薰洗",
           "sterilize_wash": "杀菌洗",
           "white_clothes_clean": "白衣洁净",
-          "clean_stains": "污渍清洁",
+          "clean_stains": "特渍洗",
           "tube_clean_all": "筒自洁（全）",
           "no_channeling_color": "防串色",
           "scald_wash": "烫洗",
@@ -906,7 +945,7 @@
         "name": "柔顺剂浓度"
       },
       "stains": {
-        "name": "污渍"
+        "name": "特渍"
       },
       "sterilize": {
         "name": "杀菌"
@@ -1293,7 +1332,17 @@
         "name": "新风温度"
       },
       "running_status": {
-        "name": "运行状态"
+        "name": "运行状态",
+        "state": {
+          "end": "结束",
+          "standby": "待机",
+          "start": "运行",
+          "pause": "暂停",
+          "idle": "空闲",
+          "fault": "故障",
+          "delay": "延时",
+          "delay_pause": "延时暂停"
+        }
       },
       "tank_status": {
         "name": "水箱状态"
@@ -3039,7 +3088,7 @@
         "name": "负离子开关"
       },
       "nightly": {
-        "name": "夜间"
+        "name": "夜间模式"
       },
       "no_salt": {
         "name": "无盐"
