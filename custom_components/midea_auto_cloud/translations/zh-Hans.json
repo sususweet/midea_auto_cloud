@@ -423,6 +423,19 @@
       }
     },
     "select": {
+		"fresh_air_mode_select": {
+        "name": "模式",
+        "state": {
+			"normal": "普通",
+			"smart": "智能",
+			"manual_recirculation": "手动内循环",
+			"auto_recirculation": "自动内循环",
+			"supply_air_gentle": "舒缓进风",
+			"supply_air_fast": "快速进风",
+			"exhaust_air_gentle": "舒缓排风",
+			"exhaust_air_fast": "快速排风"
+        }
+      },
       "water_status": {
         "name": "水位状态",
         "state": {
@@ -1280,6 +1293,15 @@
       }
     },
     "sensor": {
+	  "new wind humidity": {
+        "name": "湿度"
+      },
+      "new_wind_outdoor_temperature": {
+        "name": "室外温度"
+      },
+      "fresh_filter_time": {
+        "name": "滤网使用量"
+      },
       "tips_code": {
         "name": "提示代码"
       },
@@ -2371,6 +2393,9 @@
       }
     },
     "number": {
+	  "fresh_air_fan_speed": {
+        "name": "风量"
+      },
       "steam_quantity": {
         "name": "蒸汽量"
       },
@@ -2510,6 +2535,12 @@
       }
     },
     "switch": {
+	  "new_wind_machine": {
+        "name": "新风开关"
+      },
+	  "anion_status": {
+        "name": "除菌"
+      },
       "radar_induction_enable": {
         "name": "人感夜灯"
       },
