@@ -1066,37 +1066,13 @@ DEVICE_MAPPING = {
             }
         }
     },
-#     "26096947": {
-#     "rationale": ["off", "on"],
-#     "queries": [{}, {"query_type":"run_status"}, {"query_type":"fresh_air"}, {"query_type":"indoor_temperature"}],
-#     "centralized": [],
-#     "entities": {
-#         Platform.FAN: {
-#             "fan": {
-#                 "translation_key": "fresh_air_machine",
-#                 "power": "new_wind_machine",
-#                 "preset_modes": {
-#                     "normal": {"fresh_air_mode": 1, "new_wind_machine": "on"},
-#                     "smart": {"fresh_air_mode": 4, "new_wind_machine": "on"},
-#                     "manual_recirculation": {"fresh_air_mode": 5, "new_wind_machine": "on"},
-#                     "auto_recirculation": {"fresh_air_mode": 6, "new_wind_machine": "on"},
-#                     "supply_air_gentle": {"fresh_air_mode": 2, "wind_strength": 0, "new_wind_machine": "on"},
-#                     "supply_air_fast": {"fresh_air_mode": 2, "wind_strength": 1, "new_wind_machine": "on"},
-#                     "exhaust_air_gentle": {"fresh_air_mode": 3, "wind_strength": 0, "new_wind_machine": "on"},
-#                     "exhaust_air_fast": {"fresh_air_mode": 3, "wind_strength": 1, "new_wind_machine": "on"}
-#                 }
-#             }
-#         }
-#     }
-# }
 "26096947": {
     "rationale": ["off", "on"],
-    "queries": [{}, {"query_type":"run_status"}, {"query_type":"fresh_air"}, {"query_type":"indoor_temperature"}],
+    "queries": [{}, {"query_type":"run_status"}],
     "centralized": [],
     "entities": {
         Platform.SELECT: {
             "fresh_air_mode_select": {
-                "query": "run_status",
                 "device_class": "enum",
                 "options": {
                     "normal": {"fresh_air_mode": 1},
@@ -1124,29 +1100,21 @@ DEVICE_MAPPING = {
 				"unit_of_measurement": "%",
 				"min": 1,
 				"max": 100,
-				"step": 1,
-				"query": "fresh_air",
-				"available": "{{ fresh_air_mode not in [4, 6] }}"
+				"step": 1
 			}
         },
 		Platform.SENSOR: {
-            # 滤网剩余使用时间
             "fresh_filter_time": {
                 "device_class": "percentage",
-                "unit_of_measurement": "%",
-                "query": "run_status"
+                "unit_of_measurement": "%"
             },
-            # 新风湿度
             "new_wind_humidity": {
                 "device_class": "humidity",
-                "unit_of_measurement": "%",
-                "query": "fresh_air"
+                "unit_of_measurement": "%"
             },
-            # 新风室外温度
             "new_wind_outdoor_temperature": {
                 "device_class": "temperature",
-                "unit_of_measurement": "°C",
-                "query": "fresh_air"
+                "unit_of_measurement": "°C"
             }
         }
     }
