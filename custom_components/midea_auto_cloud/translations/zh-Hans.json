@@ -2450,6 +2450,12 @@
       }
     },
     "number": {
+      "hosting_upper": {
+        "name": "PM2.5上阈值(自动净化)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5下阈值(停止净化)"
+      },
       "steam_quantity": {
         "name": "蒸汽量"
       },

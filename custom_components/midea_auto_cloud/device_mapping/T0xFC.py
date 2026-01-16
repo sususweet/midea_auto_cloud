@@ -105,6 +105,18 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
+            Platform.NUMBER: {
+                "hosting_upper": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
+                },
+                "hosting_lower": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
+                }
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,

@@ -2156,6 +2156,12 @@
       }
     },
     "number": {
+      "hosting_upper": {
+        "name": "PM2.5 Upper(Auto Purification)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5 Lower(Stop Purification)"
+      },
       "steam_quantity": {
         "name": "Steam Quantity"
       },
