@@ -1098,6 +1098,12 @@
       }
     },
     "sensor": {
+      "total_working_time": {
+        "name": "Total Working Time"
+      },
+      "wind_pressure": {
+        "name": "Wind Pressure"
+      },
      "tips_code": {
         "name": "Tips Code"
       },

@@ -1,5 +1,5 @@
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.const import Platform, PERCENTAGE, UnitOfTime, UnitOfElectricPotential
+from homeassistant.const import Platform, PERCENTAGE, UnitOfPressure, UnitOfTime, UnitOfElectricPotential
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
@@ -137,6 +137,12 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENERGY,
                     "unit_of_measurement": "kWh",
                     "state_class": SensorStateClass.TOTAL_INCREASING,
+                    "translation_key": "total_elec_value"
+                },
+                "wind_pressure": {
+                    "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": UnitOfPressure.PA,
+                    "state_class": SensorStateClass.MEASUREMENT
                 }
             },
             Platform.BUTTON: {

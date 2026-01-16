@@ -1334,6 +1334,12 @@
       }
     },
     "sensor": {
+      "total_working_time": {
+        "name": "累计工作时间"
+      },
+      "wind_pressure": {
+        "name": "风压"
+      },
       "tips_code": {
         "name": "提示代码"
       },
