@@ -2406,7 +2406,7 @@
       "hot_power": {
         "name": "Hot Power"
       },
-	  "Heat_function": {
+	  "heat_function": {
         "name": "Heat Function"
       },
       "midea_manager": {
