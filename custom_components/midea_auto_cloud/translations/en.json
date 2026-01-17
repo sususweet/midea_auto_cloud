@@ -326,6 +326,12 @@
       "standby_status": {
         "name": "Standby Status"
       },
+	  "out_water": {
+        "name": "Out Water"
+      },
+      "out_hot_water": {
+        "name": "Out Hot Water"
+      },
       "on_seat": {
         "name": "On Seat"
       }
@@ -1068,6 +1074,15 @@
           "3": "Medium",
           "4": "Medium High",
           "5": "High"
+        }
+      },
+	  "clean_interval": {
+        "name": "Clean Interval",
+        "state": {
+          "0": "OFF",
+          "7": "7Day",
+          "15": "15Day",
+          "30": "30Day"
         }
       },
       "water_pressure_woman": {
@@ -1978,6 +1993,9 @@
       "life_2": {
         "name": "MPC Filter Cartridge Lifespan"
       },
+	  "life_2_PCB": {
+        "name": "Life2_PCB"
+      },
       "water_consumption": {
         "name": "Water Consumption"
       },
@@ -2116,6 +2134,12 @@
       "total_elec_value": {
         "name": "Total Electricity"
       },
+	  "clean_water_consumption_next_remaining": {
+        "name": "Clean Water Consumption Next Remaining"
+      },
+      "clean_interval_next_days_remaining": {
+        "name": "Clean Interval Next Days Remaining"
+      },
       "filter_use_per": {
         "name": "Filter Use Percentage"
       }
@@ -2233,6 +2257,18 @@
       },
       "rinse_level": {
         "name": "Rinse Level"
+      },
+	  "clean_water_consumption": {
+        "name": "Clean Water Consumption"
+      },
+      "quantify_21": {
+        "name": "Quantify 1"
+      },
+      "quantify_22": {
+        "name": "Quantify 2"
+      },
+      "quantify_23": {
+        "name": "Quantify 3"
       },
       "wash_strength": {
         "name": "Water Strength"
@@ -2369,6 +2405,9 @@
       },
       "hot_power": {
         "name": "Hot Power"
+      },
+	  "Heat_function": {
+        "name": "Heat Function"
       },
       "midea_manager": {
         "name": "Midea Manager"
@@ -3242,6 +3281,21 @@
       },
       "auto_eco": {
         "name": "Auto Eco"
+      },
+	  "open_close_switch": {
+        "name": "Open Close Switch"
+      },
+      "start_clean": {
+        "name": "Start Clean"
+      },
+      "filter_element_flushing": {
+        "name": "Filter Element Flushing"
+      },
+      "no_obsolete_water": {
+        "name": "No Obsolete Water"
+      },
+      "save_mode": {
+        "name": "Save Mode"
       },
       "sedentary_remind": {
         "name": "Sedentary Remind"
