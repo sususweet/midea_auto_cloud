@@ -1993,7 +1993,7 @@
       "life_2": {
         "name": "MPC Filter Cartridge Lifespan"
       },
-	  "life_2_PCB": {
+	  "life_2_pcb": {
         "name": "Life2_PCB"
       },
       "water_consumption": {
