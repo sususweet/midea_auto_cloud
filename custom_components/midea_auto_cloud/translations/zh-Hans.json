@@ -346,6 +346,12 @@
       "standby_status": {
         "name": "待机状态"
       },
+      "out_water": {
+        "name": "出水状态"
+      },
+      "out_hot_water": {
+        "name": "出热水状态"
+      },
       "on_seat": {
         "name": "坐圈状态"
       }
@@ -1304,6 +1310,15 @@
           "3": "中档",
           "4": "中高档",
           "5": "高档"
+        }
+      },
+      "clean_interval": {
+        "name": "间隔周期设置",
+        "state": {
+          "0": "OFF",
+          "7": "7天",
+          "15": "15天",
+          "30": "30天"
         }
       },
       "water_pressure_woman": {
@@ -2272,6 +2287,9 @@
       "life_2": {
         "name": "MPC滤芯寿命"
       },
+      "life_2_PCB": {
+        "name": "PCB滤芯寿命"
+      },
       "water_consumption": {
         "name": "用水量"
       },
@@ -2410,6 +2428,12 @@
       "total_elec_value": {
         "name": "总耗电量"
       },
+      "clean_water_consumption_next_remaining": {
+        "name": "距离下次冲洗剩余吨数"
+      },
+      "clean_interval_next_days_remaining": {
+        "name": "距离下次冲洗剩余天数"
+      },
       "filter_use_per": {
         "name": "滤芯使用百分比"
       }
@@ -2536,6 +2560,18 @@
       },
       "rinse_level": {
         "name": "漂洗水位"
+      },
+      "clean_water_consumption": {
+        "name": "清洗用水量设置"
+      },
+      "quantify_21": {
+        "name": "定量1"
+      },
+      "quantify_22": {
+        "name": "定量2"
+      },
+      "quantify_23": {
+        "name": "定量3"
       },
       "wash_strength": {
         "name": "水流强度"
@@ -2684,6 +2720,9 @@
       },
       "hot_power": {
         "name": "加热电源"
+      },
+      "Heat_function": {
+        "name": "加热功能"
       },
       "midea_manager": {
         "name": "美的管理"
@@ -3557,6 +3596,21 @@
       },
       "auto_eco": {
         "name": "自动节能"
+      },
+      "open_close_switch": {
+        "name": "全屋水开关"
+      },
+      "start_clean": {
+        "name": "立即冲洗"
+      },
+      "filter_element_flushing": {
+        "name": "滤芯冲洗"
+      },
+      "no_obsolete_water": {
+        "name": "零陈水_水质优先(推荐)"
+      },
+      "save_mode": {
+        "name": "零陈水_省水优先"
       },
       "sedentary_remind": {
         "name": "久坐提醒"
