@@ -482,11 +482,6 @@ DEVICE_MAPPING = {
             "set": {}
         },
         "entities": {
-            Platform.BINARY_SENSOR: {
-                "bucket_water_overheating": {
-                    "device_class": BinarySensorDeviceClass.PROBLEM,
-                }
-            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -520,22 +515,6 @@ DEVICE_MAPPING = {
                 },
                 "error_code": {
                     "device_class": SensorDeviceClass.ENUM
-                },
-                "wash_time_value": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "dehydration_time_value": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.MINUTES,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "temperature"
                 }
             }
         }
