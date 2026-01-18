@@ -43,6 +43,7 @@ DEVICE_MAPPING = {
                 },
                 "db_baby_lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
                     "translation_key": "child_lock",
                 }
             },
