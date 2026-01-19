@@ -1066,57 +1066,64 @@ DEVICE_MAPPING = {
             }
         }
     },
-"26096947": {
-    "rationale": ["off", "on"],
-    "queries": [{}, {"query_type":"run_status"}],
-    "centralized": [],
-    "entities": {
-        Platform.SELECT: {
-            "fresh_air_mode_select": {
-                "device_class": "enum",
-                "options": {
-                    "normal": {"fresh_air_mode": 1},
-                    "smart": {"fresh_air_mode": 4},
-                    "manual_recirculation": {"fresh_air_mode": 5},
-                    "auto_recirculation": {"fresh_air_mode": 6},
-                    "supply_air_gentle": {"fresh_air_mode": 2, "wind_strength": 0},
-                    "supply_air_fast": {"fresh_air_mode": 2, "wind_strength": 1},
-                    "exhaust_air_gentle": {"fresh_air_mode": 3, "wind_strength": 0},
-                    "exhaust_air_fast": {"fresh_air_mode": 3, "wind_strength": 1}
+    "26096947": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type":"run_status"}],
+        "centralized": [],
+        "entities": {
+            Platform.SELECT: {
+                "fresh_air_mode_select": {
+                    "translation_key": "fresh_air_mode_select",
+                    "device_class": "enum",
+                    "options": {
+                        "normal": {"fresh_air_mode": 1},
+                        "smart": {"fresh_air_mode": 4},
+                        "manual_recirculation": {"fresh_air_mode": 5},
+                        "auto_recirculation": {"fresh_air_mode": 6},
+                        "supply_air_gentle": {"fresh_air_mode": 2, "wind_strength": 0},
+                        "supply_air_fast": {"fresh_air_mode": 2, "wind_strength": 1},
+                        "exhaust_air_gentle": {"fresh_air_mode": 3, "wind_strength": 0},
+                        "exhaust_air_fast": {"fresh_air_mode": 3, "wind_strength": 1}
+                    }
                 }
-            }
-        },
-        Platform.SWITCH: {
-            "new_wind_machine": {
-                "device_class": SwitchDeviceClass.SWITCH
             },
-            "anion_status": {
-                "device_class": SwitchDeviceClass.SWITCH,
-				"rationale": [0, 1]
-            }
-        },
-        Platform.NUMBER: {
-			"fresh_air_fan_speed": {
-				"unit_of_measurement": "%",
-				"min": 1,
-				"max": 100,
-				"step": 1
-			}
-        },
-		Platform.SENSOR: {
-            "fresh_filter_time": {
-                "device_class": "percentage",
-                "unit_of_measurement": "%"
+            Platform.SWITCH: {
+                "new_wind_machine": {
+                    "translation_key": "new_wind_machine",
+                    "device_class": SwitchDeviceClass.SWITCH
+                },
+                "anion_status": {
+                    "translation_key": "anion_status",
+                    "device_class": SwitchDeviceClass.SWITCH,
+				    "rationale": [0, 1]
+                }
             },
-            "new_wind_humidity": {
-                "device_class": "humidity",
-                "unit_of_measurement": "%"
+            Platform.NUMBER: {
+			    "fresh_air_fan_speed": {
+                    "translation_key": "fresh_air_fan_speed",
+				    "unit_of_measurement": "%",
+				    "min": 1,
+				    "max": 100,
+				    "step": 1
+			    }
             },
-            "new_wind_outdoor_temperature": {
-                "device_class": "temperature",
-                "unit_of_measurement": "°C"
+		    Platform.SENSOR: {
+                "fresh_filter_time": {
+                    "translation_key": "fresh_filter_time",
+                    "device_class": "percentage",
+                    "unit_of_measurement": "%"
+                },
+                "new_wind_humidity": {
+                    "translation_key": "new_wind_humidity",
+                    "device_class": "humidity",
+                    "unit_of_measurement": "%"
+                },
+                "new_wind_outdoor_temperature": {
+                    "translation_key": "new_wind_outdoor_temperature",
+                    "device_class": "temperature",
+                    "unit_of_measurement": "°C"
+                }
             }
         }
     }
-}
 }
