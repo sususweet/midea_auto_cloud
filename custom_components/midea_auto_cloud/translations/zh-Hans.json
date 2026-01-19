@@ -1347,7 +1347,7 @@
       }
     },
     "sensor": {
-	  "new wind humidity": {
+	  "new_wind_humidity": {
         "name": "湿度"
       },
       "new_wind_outdoor_temperature": {
