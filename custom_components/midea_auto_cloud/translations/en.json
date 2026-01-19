@@ -432,6 +432,19 @@
       }
     },
     "select": {
+		"fresh_air_mode_select": {
+		    "name": "Mode",
+		    "state": {
+		        "normal": "Normal",
+		        "smart": "Smart",
+		        "manual_recirculation": "Manual Recirculation",
+		        "auto_recirculation": "Auto Recirculation",
+		        "supply_air_gentle": "Gentle Supply Air",
+		        "supply_air_fast": "Fast Supply Air",
+		        "exhaust_air_gentle": "Gentle Exhaust Air",
+		        "exhaust_air_fast": "Fast Exhaust Air"
+		    }
+		},
       "dehydration_speed": {
         "name": "Dehydration Speed"
       },
@@ -1103,6 +1116,15 @@
       },
       "wind_pressure": {
         "name": "Wind Pressure"
+      },
+		  "new_wind_humidity": {
+        "name": "Fresh air humidity"
+      },
+      "new_wind_outdoor_temperature": {
+        "name": "Fresh air outdoor temperature"
+      },
+      "fresh_filter_time": {
+        "name": "Filter remaining life"
       },
      "tips_code": {
         "name": "Tips Code"
@@ -2162,6 +2184,9 @@
       "hosting_lower": {
         "name": "PM2.5 Lower(Stop Purification)"
       },
+		  "fresh_air_fan_speed": {
+        "name": "Fresh air fan speed"
+      },
       "steam_quantity": {
         "name": "Steam Quantity"
       },
@@ -2292,6 +2317,12 @@
       }
     },
     "switch": {
+		"new_wind_machine": {
+			"name": "Fresh air switch"
+		},
+		"anion_status": {
+			"name": "Sterilization"
+		},
       "radar_induction_enable": {
         "name": "Radar Induction"
       },
