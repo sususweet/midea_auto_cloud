@@ -468,5 +468,158 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "38118384": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[remaining_time]",
+                    "rvalue": "[remain_time]"
+                }
+            ],
+            "set": {}
+        },
+        "entities": {
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock",
+                }
+            },
+            Platform.SELECT: {
+                "program": {
+                    "options": {
+                        "快洗": {"program": "fast_wash"},
+                        "童装": {"program": "kids"},
+                        "高温洗": {"program": "cook_wash"},
+                        "混合洗": {"program": "mixed_wash"},
+                        "单脱水": {"program": "single_dehytration"},
+                        "筒自洁": {"program": "ssp"},
+                        "内衣洗": {"program": "underwear"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "remain_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                }
+            }
+        }
+    },
+    "38132668": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[remaining_time]",
+                    "rvalue": "[remain_time]"
+                }
+            ],
+            "set": {}
+        },
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "door_opened": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
+                "detergent_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softener_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "control_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["pause", "start"],
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.SELECT: {
+                "program": {
+                    "options": {
+                        "混合洗(蓝氧/水魔方)": {"program": "water_mixed_wash"},
+                        "快洗15": {"program": "fast_wash"},
+                        "单脱水": {"program": "single_dehytration"},
+                        "漂+脱": {"program": "rinsing_dehydration"},
+                        "速洗30": {"program": "fast_wash_30"},
+                        "节能(水魔方)": {"program": "water_eco"},
+                        "浸泡洗(蓝氧/水魔方)": {"program": "water_steep"},
+                        "大件(蓝氧)": {"program": "big"},
+                        "筒自洁(蓝氧)": {"program": "water_ssp"},
+                        "春秋洗": {"program": "spring_autumn_wash"},
+                        "夏日洗": {"program": "summer_wash"},
+                        "冬季洗": {"program": "winter_wash"},
+                        "Auto智洗(蓝氧)": {"program": "water_intelligent"},
+                        "冷水洗(蓝氧/水魔方)": {"program": "water_cold_wash"},
+                        "蓝氧护色洗(蓝氧)": {"program": 164},
+                        "净渍洗(蓝氧)": {"program": "clean_stains"},
+                        "放串色(蓝氧)": {"program": "no_channeling_color"},
+                        "白衣净(蓝氧)": {"program": "white_clothes_clean"},
+                        "除菌洗(蓝氧)": {"program": "enzyme"},
+                        "除螨洗(蓝氧)": {"program": "water_remove_mite_wash"},
+                        "消毒洗": {"program": "sterilize_wash"},
+                        "深度筒自洁": {"program": 163},
+                        "羽绒服": {"program": "down_jacket"},
+                        "棉麻(蓝氧/水魔方)": {"program": "new_water_cotton"},
+                        "婴儿服(蓝氧/水魔方)": {"program": "water_cotton"},
+                        "衬衫(蓝氧/水魔方)": {"program": "fast_wash_60"},
+                        "羊毛": {"program": "green_wool"},
+                        "内衣": {"program": "water_underwear"},
+                        "丝绸": {"program": "silk"},
+                        "新衣洗": {"program": "new_clothes_wash"},
+                        "牛仔": {"program": "jean"},
+                        "浴巾": {"program": "bath_towel"},
+                        "化纤(水魔方)": {"program": "water_fiber"},
+                        "运动服": {"program": "sport_clothes"},
+                        "冲锋衣": {"program": "jacket"},
+                        "户外服(水魔方)": {"program": "water_outdoor"},
+                        "瑜伽服": {"program": 147},
+                        "速干衣": {"program": 145}      
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "options": {
+                        "空闲": {"running_status": "idle"},
+                        "待机": {"running_status": " standby"},
+                        "开始": {"running_status": " start"},
+                        "暂停": {"running_status": "pause"},
+                        "结束": {"running_status": "end"}
+                    }
+                },
+                "remain_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                }
+            }
+        }
     }
 }
