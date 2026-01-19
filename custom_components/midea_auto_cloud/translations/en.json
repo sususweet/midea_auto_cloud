@@ -1111,7 +1111,13 @@
       }
     },
     "sensor": {
-		"new_wind_humidity": {
+      "total_working_time": {
+        "name": "Total Working Time"
+      },
+      "wind_pressure": {
+        "name": "Wind Pressure"
+      },
+		  "new_wind_humidity": {
         "name": "Fresh air humidity"
       },
       "new_wind_outdoor_temperature": {
@@ -2172,7 +2178,13 @@
       }
     },
     "number": {
-		"fresh_air_fan_speed": {
+      "hosting_upper": {
+        "name": "PM2.5 Upper(Auto Purification)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5 Lower(Stop Purification)"
+      },
+		  "fresh_air_fan_speed": {
         "name": "Fresh air fan speed"
       },
       "steam_quantity": {

@@ -1347,7 +1347,13 @@
       }
     },
     "sensor": {
-	  "new_wind_humidity": {
+      "total_working_time": {
+        "name": "累计工作时间"
+      },
+      "wind_pressure": {
+        "name": "风压"
+      },
+	    "new_wind_humidity": {
         "name": "湿度"
       },
       "new_wind_outdoor_temperature": {
@@ -2466,7 +2472,13 @@
       }
     },
     "number": {
-	  "fresh_air_fan_speed": {
+      "hosting_upper": {
+        "name": "PM2.5上阈值(自动净化)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5下阈值(停止净化)"
+      },
+	    "fresh_air_fan_speed": {
         "name": "风量"
       },
       "steam_quantity": {

@@ -47,9 +47,10 @@ DEVICE_MAPPING = {
                     "attribute": "pm25"
                 },
                 "voltage": {
-                    "device_class": SensorDeviceClass.VOLTAGE,
-                    "unit_of_measurement": UnitOfElectricPotential.VOLT,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "battery_level"
                 },
             }
         }
