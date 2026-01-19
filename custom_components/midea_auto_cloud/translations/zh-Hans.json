@@ -1482,13 +1482,25 @@
         "name": "消毒柜状态"
       },
       "b7_left_status": {
-        "name": "左灶状态"
+        "name": "左灶状态",
+        "state": {
+          "initial": "初始化",
+          "power_off": "已关闭",
+          "working": "运行中",
+          "power_off_delay": "延时关闭"
+        }
       },
       "b7_left_gear": {
         "name": "左灶档位"
       },
       "b7_right_status": {
-        "name": "右灶状态"
+        "name": "右灶状态",
+        "state": {
+          "initial": "初始化",
+          "power_off": "已关闭",
+          "working": "运行中",
+          "power_off_delay": "延时关闭"
+        }
       },
       "b7_right_gear": {
         "name": "右灶档位"

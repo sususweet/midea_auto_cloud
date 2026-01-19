@@ -30,11 +30,9 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "b7_left_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "left_status",
                 },
                 "b7_right_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "right_status",
                 },
                 "b7_vbattery":{
                     "device_class": SensorDeviceClass.VOLTAGE,
@@ -91,7 +89,7 @@ DEVICE_MAPPING = {
             },
         }
     },
-    "730007H8": {
+    ("730007GC", "730007H8"): {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": ["lightness"],
@@ -116,11 +114,9 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "b7_left_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "left_status",
                 },
                 "b7_right_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "right_status",
                 },
                 "b7_vbattery":{
                     "device_class": SensorDeviceClass.VOLTAGE,
