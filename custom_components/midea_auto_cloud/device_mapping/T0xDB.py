@@ -602,13 +602,7 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "running_status": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "options": {
-                        "idle": {"running_status": "idle"},
-                        "standby": {"running_status": "standby"},
-                        "start": {"running_status": "start"},
-                        "pause": {"running_status": "pause"},
-                        "end": {"running_status": "end"}
+                    "device_class": SensorDeviceClass.ENUM
                     }
                 },
                 "remain_time": {
