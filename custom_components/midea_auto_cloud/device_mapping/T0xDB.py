@@ -603,7 +603,6 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "running_status": {
                     "device_class": SensorDeviceClass.ENUM
-                    }
                 },
                 "remain_time": {
                     "device_class": SensorDeviceClass.DURATION,
