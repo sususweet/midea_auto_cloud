@@ -604,11 +604,11 @@ DEVICE_MAPPING = {
                 "running_status": {
                     "device_class": SensorDeviceClass.ENUM,
                     "options": {
-                        "空闲": {"running_status": "idle"},
-                        "待机": {"running_status": " standby"},
-                        "开始": {"running_status": " start"},
-                        "暂停": {"running_status": "pause"},
-                        "结束": {"running_status": "end"}
+                        "idle": {"running_status": "idle"},
+                        "standby": {"running_status": "standby"},
+                        "start": {"running_status": "start"},
+                        "pause": {"running_status": "pause"},
+                        "end": {"running_status": "end"}
                     }
                 },
                 "remain_time": {
