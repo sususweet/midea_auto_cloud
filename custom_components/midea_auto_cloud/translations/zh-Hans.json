@@ -452,6 +452,12 @@
       }
     },
     "select": {
+      "custom_temperature": {
+        "name": "自定义烧水温度"
+      },
+      "keep_warm_time": {
+        "name": "保温时间"
+      },
 		"fresh_air_mode_select": {
         "name": "模式",
         "state": {
@@ -1347,6 +1353,13 @@
       }
     },
     "sensor": {
+      "ice_gall_status": {
+        "name": "制冷功能状态",
+        "state": {
+          "0": "未运行",
+          "1": "运行中"
+        }
+      },
       "total_working_time": {
         "name": "累计工作时间"
       },

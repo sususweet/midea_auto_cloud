@@ -432,6 +432,12 @@
       }
     },
     "select": {
+      "custom_temperature": {
+        "name": "Custom Temperature"
+      },
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
 		"fresh_air_mode_select": {
 		    "name": "Mode",
 		    "state": {
@@ -1111,6 +1117,13 @@
       }
     },
     "sensor": {
+      "ice_gall_status": {
+        "name": "Ice Gall Status",
+        "state": {
+          "0": "Stop",
+          "1": "Running"
+        }
+      },
       "total_working_time": {
         "name": "Total Working Time"
       },
