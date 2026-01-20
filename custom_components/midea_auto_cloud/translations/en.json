@@ -1197,13 +1197,25 @@
         "name": "Disinfection Cabinet Status"
       },
       "b7_left_status": {
-        "name": "Left Stove Status"
+        "name": "Left Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_left_gear": {
         "name": "Left Stove Gear"
       },
       "b7_right_status": {
-        "name": "Right Stove Status"
+        "name": "Right Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_right_gear": {
         "name": "Left Stove Gear"
