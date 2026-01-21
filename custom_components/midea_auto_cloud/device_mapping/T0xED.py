@@ -239,6 +239,114 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "63000629": {
+        "rationale": ["off", "on"],
+        "queries": [{"query_type": 6}],
+        "centralized": [],
+        "entities": {
+            Platform.SELECT: {
+                "heat_start": {
+                    "options": {
+                        "start": {"heat_start": 1},
+                        "stop": {"heat_start": 0}
+                    }
+                },
+                "custom_temperature_1": {
+                    "options": {
+                        "45℃": {"custom_temperature_1": 45},
+                        "50℃": {"custom_temperature_1": 50},
+                        "55℃": {"custom_temperature_1": 55},
+                        "80℃": {"custom_temperature_1": 80},
+                        "90℃": {"custom_temperature_1": 90},
+                        "95℃": {"custom_temperature_1": 95},
+                        "100℃": {"custom_temperature_1": 100}
+                    },
+                    "translation_key": "custom_temperature"
+                },
+                "keep_warm_time": {
+                    "options": {
+                        "1h": {"keep_warm_time": 1},
+                        "2h": {"keep_warm_time": 2},
+                        "3h": {"keep_warm_time": 3},
+                        "4h": {"keep_warm_time": 4},
+                        "5h": {"keep_warm_time": 5},
+                        "6h": {"keep_warm_time": 6},
+                        "7h": {"keep_warm_time": 7},
+                        "8h": {"keep_warm_time": 8},
+                        "9h": {"keep_warm_time": 9},
+                        "10h": {"keep_warm_time": 10},
+                        "11h": {"keep_warm_time": 11},
+                        "12h": {"keep_warm_time": 12},
+                        "13h": {"keep_warm_time": 13},
+                        "14h": {"keep_warm_time": 14},
+                        "15h": {"keep_warm_time": 15},
+                        "16h": {"keep_warm_time": 16},
+                        "17h": {"keep_warm_time": 17},
+                        "18h": {"keep_warm_time": 18},
+                        "19h": {"keep_warm_time": 19},
+                        "20h": {"keep_warm_time": 20},
+                        "21h": {"keep_warm_time": 21},
+                        "22h": {"keep_warm_time": 22},
+                        "23h": {"keep_warm_time": 23},
+                        "24h": {"keep_warm_time": 24}
+                    },
+                    "command": {
+                        "keep_warm": "on",
+                    }
+                }
+            },
+            Platform.SWITCH: {
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock"
+                },
+                "sleep": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "screen_off"
+                },
+                "keep_warm": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.BINARY_SENSOR: {
+                "heat_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "out_water": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "out_hot_water": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "standby_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "lack_water": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                }
+            },
+            Platform.SENSOR: {
+                "current_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "water_consumption": {
+                    "device_class": SensorDeviceClass.VOLUME,
+                    "unit_of_measurement": "L",
+                    "state_class": SensorStateClass.TOTAL_INCREASING
+                },
+                "keep_warm_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "ice_gall_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                }
+            }
+        }
+    },
     "63200854": {
         "rationale": ["off", "on"],
         "queries": [{}],
