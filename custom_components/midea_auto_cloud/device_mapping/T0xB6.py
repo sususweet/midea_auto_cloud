@@ -1,5 +1,5 @@
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.const import Platform, PERCENTAGE, UnitOfTime, UnitOfElectricPotential
+from homeassistant.const import Platform, PERCENTAGE, UnitOfPressure, UnitOfTime, UnitOfElectricPotential
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
@@ -30,11 +30,9 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "b7_left_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "left_status",
                 },
                 "b7_right_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "right_status",
                 },
                 "b7_vbattery":{
                     "device_class": SensorDeviceClass.VOLTAGE,
@@ -91,7 +89,7 @@ DEVICE_MAPPING = {
             },
         }
     },
-    "730007H8": {
+    ("730007GC", "730007H8"): {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": ["lightness"],
@@ -116,11 +114,9 @@ DEVICE_MAPPING = {
             Platform.SENSOR: {
                 "b7_left_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "left_status",
                 },
                 "b7_right_status": {
                     "device_class": SensorDeviceClass.ENUM,
-                    "translation_key": "right_status",
                 },
                 "b7_vbattery":{
                     "device_class": SensorDeviceClass.VOLTAGE,
@@ -137,6 +133,12 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENERGY,
                     "unit_of_measurement": "kWh",
                     "state_class": SensorStateClass.TOTAL_INCREASING,
+                    "translation_key": "total_elec_value"
+                },
+                "wind_pressure": {
+                    "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": UnitOfPressure.PA,
+                    "state_class": SensorStateClass.MEASUREMENT
                 }
             },
             Platform.BUTTON: {

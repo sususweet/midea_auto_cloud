@@ -432,6 +432,12 @@
       }
     },
     "select": {
+      "custom_temperature": {
+        "name": "Custom Temperature"
+      },
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
 		"fresh_air_mode_select": {
 		    "name": "Mode",
 		    "state": {
@@ -1111,7 +1117,20 @@
       }
     },
     "sensor": {
-		"new_wind_humidity": {
+      "ice_gall_status": {
+        "name": "Ice Gall Status",
+        "state": {
+          "0": "Stop",
+          "1": "Running"
+        }
+      },
+      "total_working_time": {
+        "name": "Total Working Time"
+      },
+      "wind_pressure": {
+        "name": "Wind Pressure"
+      },
+		  "new_wind_humidity": {
         "name": "Fresh air humidity"
       },
       "new_wind_outdoor_temperature": {
@@ -1191,13 +1210,25 @@
         "name": "Disinfection Cabinet Status"
       },
       "b7_left_status": {
-        "name": "Left Stove Status"
+        "name": "Left Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_left_gear": {
         "name": "Left Stove Gear"
       },
       "b7_right_status": {
-        "name": "Right Stove Status"
+        "name": "Right Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_right_gear": {
         "name": "Left Stove Gear"
@@ -2172,7 +2203,13 @@
       }
     },
     "number": {
-		"fresh_air_fan_speed": {
+      "hosting_upper": {
+        "name": "PM2.5 Upper(Auto Purification)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5 Lower(Stop Purification)"
+      },
+		  "fresh_air_fan_speed": {
         "name": "Fresh air fan speed"
       },
       "steam_quantity": {

@@ -452,6 +452,12 @@
       }
     },
     "select": {
+      "custom_temperature": {
+        "name": "自定义烧水温度"
+      },
+      "keep_warm_time": {
+        "name": "保温时间"
+      },
 		"fresh_air_mode_select": {
         "name": "模式",
         "state": {
@@ -1347,7 +1353,20 @@
       }
     },
     "sensor": {
-	  "new_wind_humidity": {
+      "ice_gall_status": {
+        "name": "制冷功能状态",
+        "state": {
+          "0": "未运行",
+          "1": "运行中"
+        }
+      },
+      "total_working_time": {
+        "name": "累计工作时间"
+      },
+      "wind_pressure": {
+        "name": "风压"
+      },
+	    "new_wind_humidity": {
         "name": "湿度"
       },
       "new_wind_outdoor_temperature": {
@@ -1476,13 +1495,25 @@
         "name": "消毒柜状态"
       },
       "b7_left_status": {
-        "name": "左灶状态"
+        "name": "左灶状态",
+        "state": {
+          "initial": "初始化",
+          "power_off": "已关闭",
+          "working": "运行中",
+          "power_off_delay": "延时关闭"
+        }
       },
       "b7_left_gear": {
         "name": "左灶档位"
       },
       "b7_right_status": {
-        "name": "右灶状态"
+        "name": "右灶状态",
+        "state": {
+          "initial": "初始化",
+          "power_off": "已关闭",
+          "working": "运行中",
+          "power_off_delay": "延时关闭"
+        }
       },
       "b7_right_gear": {
         "name": "右灶档位"
@@ -2466,7 +2497,13 @@
       }
     },
     "number": {
-	  "fresh_air_fan_speed": {
+      "hosting_upper": {
+        "name": "PM2.5上阈值(自动净化)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5下阈值(停止净化)"
+      },
+	    "fresh_air_fan_speed": {
         "name": "风量"
       },
       "steam_quantity": {
