@@ -393,13 +393,13 @@ DEVICE_MAPPING = {
                 },
                 "input_pressure_Sensing": {
                     "device_class": SensorDeviceClass.PRESSURE,
-                    "unit_of_measurement": "kPa",
+                    "unit_of_measurement": "MPa",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "water_gage"
                 },
                 "all_water_consumption": {
-                    "device_class": SensorDeviceClass.VOLUME,
-                    "unit_of_measurement": "L",
+                    "device_class": SensorDeviceClass.WATER,
+                    "unit_of_measurement": "m³",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "water_consumption_big"
                 },
@@ -416,7 +416,7 @@ DEVICE_MAPPING = {
                 },
                 "clean_interval_next_days_remaining": {
                     "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": "D",
+                    "unit_of_measurement": "d",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "clean_interval_next_days_remaining"
                 },
