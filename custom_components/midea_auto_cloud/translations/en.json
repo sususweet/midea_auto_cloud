@@ -2203,6 +2203,9 @@
       }
     },
     "number": {
+      "delay_light_off": {
+        "name": "Delay Light Off"
+      },
       "hosting_upper": {
         "name": "PM2.5 Upper(Auto Purification)"
       },
