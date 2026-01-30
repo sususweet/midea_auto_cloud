@@ -84,29 +84,54 @@ class MideaLightEntity(MideaEntity, LightEntity):
                             self._brightness_key = key
                             break
 
-        # 检测色温配置类型：范围 [min_kelvin, max_kelvin] 或嵌套格式 {"color_temp": [min_kelvin, max_kelvin]}
+        # 检测色温配置类型：直接格式 或 嵌套格式
         self._color_temp_is_range = False
         self._color_temp_min = 2700  # 默认最小色温（暖白）
         self._color_temp_max = 6500  # 默认最大色温（冷白）
         self._color_temp_key = "color_temp"  # 默认键名
-        
+        self._color_temp_device_range = [1, 100]  # 默认设备范围
+
         if self._key_color_temp:
-            if isinstance(self._key_color_temp, list) and len(self._key_color_temp) == 2:
-                # 直接范围格式：[min_kelvin, max_kelvin]
-                if isinstance(self._key_color_temp[0], (int, float)) and isinstance(self._key_color_temp[1], (int, float)):
-                    self._color_temp_is_range = True
-                    self._color_temp_min = self._key_color_temp[0]
-                    self._color_temp_max = self._key_color_temp[1]
-            elif isinstance(self._key_color_temp, dict):
-                # 嵌套格式：{"color_temp": [min_kelvin, max_kelvin]} 或其他键名
-                for key, value in self._key_color_temp.items():
-                    if isinstance(value, list) and len(value) == 2:
-                        if isinstance(value[0], (int, float)) and isinstance(value[1], (int, float)):
-                            self._color_temp_is_range = True
-                            self._color_temp_min = value[0]
-                            self._color_temp_max = value[1]
-                            self._color_temp_key = key
-                            break
+            # 直接格式：{"kelvin_range": [min, max], "device_range": [min, max]}
+            if isinstance(self._key_color_temp, dict):
+                # 检查是否为直接格式（包含kelvin_range和device_range）
+                if "kelvin_range" in self._key_color_temp and "device_range" in self._key_color_temp:
+                    kelvin_range = self._key_color_temp["kelvin_range"]
+                    device_range = self._key_color_temp["device_range"]
+                    if (
+                        isinstance(kelvin_range, list)
+                        and len(kelvin_range) == 2
+                        and isinstance(device_range, list)
+                        and len(device_range) == 2
+                    ):
+                        self._color_temp_is_range = True
+                        self._color_temp_min = kelvin_range[0]
+                        self._color_temp_max = kelvin_range[1]
+                        self._color_temp_device_range = device_range
+                        # 直接格式没有外层key，使用默认键名
+                        self._color_temp_key = "color_temp"
+
+                # 嵌套格式：{"color_temperature": {"kelvin_range": [min, max], "device_range": [min, max]}}
+                else:
+                    # 遍历字典中的每个键值对
+                    for key, value in self._key_color_temp.items():
+                        if isinstance(value, dict):
+                            # 检测嵌套格式
+                            if "kelvin_range" in value and "device_range" in value:
+                                kelvin_range = value["kelvin_range"]
+                                device_range = value["device_range"]
+                                if (
+                                    isinstance(kelvin_range, list)
+                                    and len(kelvin_range) == 2
+                                    and isinstance(device_range, list)
+                                    and len(device_range) == 2
+                                ):
+                                    self._color_temp_is_range = True
+                                    self._color_temp_min = kelvin_range[0]
+                                    self._color_temp_max = kelvin_range[1]
+                                    self._color_temp_device_range = device_range
+                                    self._color_temp_key = key
+                                    break
 
     @property
     def supported_features(self):
@@ -181,18 +206,26 @@ class MideaLightEntity(MideaEntity, LightEntity):
         """返回当前色温值（开尔文）"""
         if not self._color_temp_is_range:
             return None
-            
-        # 从设备属性读取色温值（1-100范围）
+
+        # 从设备属性读取色温值
         color_temp_value = self._get_nested_value(self._color_temp_key)
         if color_temp_value is not None:
             try:
-                device_color_temp = int(color_temp_value)
-                # 将设备的1-100值转换为开尔文值
+                device_value = int(color_temp_value)
+                device_min, device_max = self._color_temp_device_range
+
+                # 将设备值转换为开尔文值
                 kelvin_range = self._color_temp_max - self._color_temp_min
                 if kelvin_range > 0:
-                    # 将1-100范围映射回开尔文范围
-                    ha_color_temp = self._color_temp_min + device_color_temp * kelvin_range / 100
-                    return round(ha_color_temp)
+                    # 将设备值映射到开尔文范围
+                    device_range = device_max - device_min
+                    if device_range > 0:
+                        # 设备值 -> 开尔文
+                        normalized = (device_value - device_min) / device_range
+                        ha_color_temp = self._color_temp_min + normalized * kelvin_range
+                        return round(ha_color_temp)
+                    else:
+                        return self._color_temp_min
                 else:
                     return self._color_temp_min
             except (ValueError, TypeError):
@@ -261,18 +294,23 @@ class MideaLightEntity(MideaEntity, LightEntity):
         if color_temp_kelvin is not None and self._color_temp_is_range:
             # 确保色温值在配置的范围内
             ha_color_temp = max(self._color_temp_min, min(self._color_temp_max, color_temp_kelvin))
-            
-            # 将开尔文值转换为设备范围（1-100）
+
+            device_min, device_max = self._color_temp_device_range
+
             kelvin_range = self._color_temp_max - self._color_temp_min
             if kelvin_range > 0:
-                # 将开尔文值映射到1-100范围
-                device_color_temp = round((ha_color_temp - self._color_temp_min) * 100 / kelvin_range)
-                device_color_temp = max(0, min(100, device_color_temp))
+                device_range = device_max - device_min
+                if device_range > 0:
+                    normalized = (ha_color_temp - self._color_temp_min) / kelvin_range
+                    device_value = round(device_min + normalized * device_range)
+                    device_value = max(device_min, min(device_max, device_value))
+                else:
+                    device_value = device_min
             else:
-                device_color_temp = 50  # 默认中间值
-            
-            new_status[self._color_temp_key] = str(device_color_temp)
-                
+                device_value = device_min
+
+            new_status[self._color_temp_key] = str(device_value)
+
         await self._async_set_status_on_off(self._key_power, True)
         if new_status:
             await self.async_set_attributes(new_status)

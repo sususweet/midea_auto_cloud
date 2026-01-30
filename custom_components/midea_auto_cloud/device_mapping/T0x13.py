@@ -11,7 +11,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [3000, 5700]},  # 添加色温配置
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [3000, 5700],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "night": {"scene_light": "night"},
                         "read": {"scene_light": "read"},
@@ -33,7 +38,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "led_power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [2700, 6500]},
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [2700, 6500],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "work": {"led_scene_light": "work"},
                         "eating": {"led_scene_light": "eating"},
@@ -82,7 +92,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "led_power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [2700, 6500]},
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [2700, 6500],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "work": {"led_scene_light": "work"},
                         "eating": {"led_scene_light": "eating"},
