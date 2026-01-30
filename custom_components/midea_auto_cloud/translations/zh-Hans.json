@@ -2493,10 +2493,25 @@
     },
     "light": {
       "light": {
-        "name": "电灯"
+        "name": "电灯",
+        "state_attributes": {
+          "effect": {
+            "state": {
+              "night": "夜灯",
+              "read": "阅读",
+              "mild": "柔和",
+              "life": "生活",
+              "film": "影院",
+              "manual": "自定义"
+            }
+          }
+        }
       }
     },
     "number": {
+      "delay_light_off": {
+        "name": "延时关灯"
+      },
       "hosting_upper": {
         "name": "PM2.5上阈值(自动净化)"
       },
