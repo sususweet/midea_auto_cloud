@@ -165,11 +165,9 @@ class MideaLightEntity(MideaEntity, LightEntity):
         if brightness_value is not None:
             brightness_value = int(brightness_value)
         if brightness_value is not None:
-            # 如果配置是[0, 255]但实际设备范围是1-100，需要特殊处理
+            # 配置是[0, 255]直接使用
             if self._brightness_min == 0 and self._brightness_max == 255:
-                # 特殊处理：设备1-100范围映射到HA的0-255范围
-                ha_brightness = round(brightness_value * 2.55)  # 1-100 -> 0-255
-                return max(1, min(255, ha_brightness))
+                return max(1, min(255, brightness_value))
             else:
                 # 正常范围映射
                 device_range = self._brightness_max - self._brightness_min
@@ -244,11 +242,11 @@ class MideaLightEntity(MideaEntity, LightEntity):
             
         if target_brightness is not None and self._key_brightness and self._brightness_is_range:
             # 范围模式：将Home Assistant的0-255映射到设备范围
-            # 如果配置是[0, 255]但实际设备范围是1-100，需要特殊处理
+            target_brightness = max(0, min(255, target_brightness))
+
+            # 配置是[0, 255]直接使用
             if self._brightness_min == 0 and self._brightness_max == 255:
-                # 特殊处理：配置[0,255]但实际设备范围是1-100
-                device_brightness = round(target_brightness / 2.55)  # 0-255 -> 0-100
-                device_brightness = max(1, min(100, device_brightness))  # 确保在1-100范围内
+                device_brightness = target_brightness
             else:
                 # 正常范围映射
                 device_range = self._brightness_max - self._brightness_min
