@@ -548,7 +548,8 @@
       "humidity": {
         "name": "设定湿度",
         "state": {
-          "off": "关闭"
+          "off": "关闭",
+          "auto": "自动"
         }
       },
       "b3_function_control": {
