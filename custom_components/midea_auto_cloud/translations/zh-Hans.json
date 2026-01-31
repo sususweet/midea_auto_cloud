@@ -546,7 +546,10 @@
         "name": "降噪设置"
       },
       "humidity": {
-        "name": "设定湿度"
+        "name": "设定湿度",
+        "state": {
+          "off": "关闭"
+        }
       },
       "b3_function_control": {
         "name": "消毒柜控制"
