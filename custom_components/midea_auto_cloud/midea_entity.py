@@ -84,7 +84,6 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             name_cfg = self._config.get("name")
             if name_cfg is not None:
                 self._attr_name = f"{name_cfg}"
-            self.entity_id = self._attr_unique_id
             # Register device updates for HA state refresh
             try:
                 self._device.register_update(self.update_state)  # type: ignore[attr-defined]
