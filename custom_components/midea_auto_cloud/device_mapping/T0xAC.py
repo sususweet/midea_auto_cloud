@@ -1126,7 +1126,7 @@ DEVICE_MAPPING = {
             }
         }
     },
-    ("22040023", "22270043"): {
+    ("22012369", "22040023", "22270043"): {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_temperature"}],
         "centralized": ["power", "temperature", "mode", "eco", "comfort_power_save",
@@ -1156,6 +1156,81 @@ DEVICE_MAPPING = {
                         "both": {"wind_swing_lr": "on", "wind_swing_ud": "on"},
                         "horizontal": {"wind_swing_lr": "on", "wind_swing_ud": "off"},
                         "vertical": {"wind_swing_lr": "off", "wind_swing_ud": "on"},
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
+                    "aux_heat": "ptc",
+                    "min_temp": 17,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "dry": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "ptc": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "aux_heat",
+                }
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "outdoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
+    "22251077": {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_temperature"}],
+        "centralized": ["power", "temperature", "mode", "eco", "comfort_power_save",
+                        "wind_swing_lr", "wind_swing_lr_under", "wind_swing_ud", "wind_speed", "ptc", "dry"],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "auto": {"power": "on", "mode": "auto"},
+                        "dry": {"power": "on", "mode": "dry"},
+                        "fan_only": {"power": "on", "mode": "fan"}
+                    },
+                    "preset_modes": {
+                        "none": {"eco": "off"},
+                        "eco": {"eco": "on"}
+                    },
+                    "swing_modes": {
+                        "off": {"wind_swing_lr": "off", "wind_swing_lr_under": "off", "wind_swing_ud": "off"},
+                        "both": {"wind_swing_lr": "on", "wind_swing_lr_under": "on", "wind_swing_ud": "on"},
+                        "horizontal_upper_only": {"wind_swing_lr": "on", "wind_swing_lr_under": "off", "wind_swing_ud": "off"},
+                        "horizontal_under_only": {"wind_swing_lr": "off", "wind_swing_lr_under": "on", "wind_swing_ud": "off"},
+                        "horizontal_upper_under": {"wind_swing_lr": "on", "wind_swing_lr_under": "on", "wind_swing_ud": "off"},
+                        "horizontal_upper_vertical": {"wind_swing_lr": "on", "wind_swing_lr_under": "off", "wind_swing_ud": "on"},
+                        "horizontal_under_vertical": {"wind_swing_lr": "off", "wind_swing_lr_under": "on", "wind_swing_ud": "on"},
+                        "vertical_only": {"wind_swing_lr": "off", "wind_swing_lr_under": "off", "wind_swing_ud": "on"},
                     },
                     "fan_modes": {
                         "silent": {"wind_speed": 20},

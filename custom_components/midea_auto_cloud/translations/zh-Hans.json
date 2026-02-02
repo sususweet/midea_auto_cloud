@@ -384,6 +384,16 @@
               "silent": "静音",
               "full": "强劲"
             }
+          },
+          "swing_mode": {
+            "state": {
+              "horizontal_upper_only": "上左右风",
+              "horizontal_under_only": "下左右风",
+              "horizontal_upper_under": "上+下左右风",
+              "horizontal_upper_vertical": "上左右风+上下摆风",
+              "horizontal_under_vertical": "下左右风+上下摆风",
+              "vertical_only": "上下摆风"
+            }
           }
         }
       },
