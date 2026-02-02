@@ -1077,6 +1077,7 @@
           "standard_wash": "标准洗",
           "eco_wash": "节能洗",
           "glass_wash": "玻璃洗",
+          "soft_wash": "轻柔洗",
           "hour_wash": "小时洗",
           "fast_wash": "快速洗",
           "soak_wash": "预冲洗",
@@ -2523,6 +2524,9 @@
       }
     },
     "number": {
+      "air_set_hour": {
+        "name": "烘干存储设置时间"
+      },
       "delay_light_off": {
         "name": "延时关灯"
       },

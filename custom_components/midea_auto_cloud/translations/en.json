@@ -890,6 +890,7 @@
           "standard_wash": "standard wash",
           "eco_wash": "eco wash",
           "glass_wash": "glass wash",
+          "soft_wash": "soft wash",
           "hour_wash": "hour wash",
           "fast_wash": "fast wash",
           "soak_wash": "soak wash",
@@ -2213,6 +2214,9 @@
       }
     },
     "number": {
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
+      },
       "delay_light_off": {
         "name": "Delay Light Off"
       },
