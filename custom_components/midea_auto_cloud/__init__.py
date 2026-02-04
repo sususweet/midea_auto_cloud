@@ -156,7 +156,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         from .const import CJSON_LUA
         cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(cjson, "wt") as fp:
+            with open(cjson, "wt", encoding="utf-8") as fp:
                 fp.write(cjson_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create cjson.lua at {cjson}: {e}")
@@ -164,7 +164,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             import tempfile
             temp_dir = tempfile.gettempdir()
             cjson = os.path.join(temp_dir, "cjson.lua")
-            with open(cjson, "wt") as fp:
+            with open(cjson, "wt", encoding="utf-8") as fp:
                 fp.write(cjson_lua)
             MideaLogger.warning(f"Using temporary file for cjson.lua: {cjson}")
 
