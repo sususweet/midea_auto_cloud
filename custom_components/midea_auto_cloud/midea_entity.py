@@ -63,7 +63,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         self._attr_has_entity_name = True
         # Prefer legacy unique_id scheme if device object is available (device_id based)
         if self._device is not None:
-            self._attr_unique_id = f"{DOMAIN}.{self._device_id}_{self._entity_key}"
+            self._attr_unique_id = f"{DOMAIN}.{self._device_id}_{self._entity_key}".lower()
             self.entity_id_base = f"midea_{self._device_id}"
             manu = "Midea" if manufacturer is None else manufacturer
             self.manufacturer = manu
