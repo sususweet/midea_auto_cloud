@@ -1128,7 +1128,7 @@ DEVICE_MAPPING = {
     },
     ("22012369", "22040023", "22270043"): {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{}, {"query_type": "prevent_straight_wind"}],
         "centralized": ["buzzer"],
         "calculate":{
             "get": [
@@ -1191,6 +1191,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
+                },
+                "prevent_straight_wind": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [1, 2]
                 },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
