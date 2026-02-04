@@ -1128,9 +1128,17 @@ DEVICE_MAPPING = {
     },
     ("22012369", "22040023", "22270043"): {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_temperature"}],
-        "centralized": ["power", "temperature", "mode", "eco", "comfort_power_save",
-                        "wind_swing_lr", "wind_swing_ud", "wind_speed", "ptc", "dry"],
+        "queries": [{}],
+        "centralized": ["buzzer"],
+        "calculate":{
+            "get": [
+                {
+                    "lvalue": "[screen_display]",
+                    "rvalue": "[screen_display_now]"
+                },
+            ],
+            "set": []
+        },
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
@@ -1176,6 +1184,14 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "buzzer": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "default_value": "on",
+                },
+                "screen_display": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "screen_close",
+                },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -1203,9 +1219,17 @@ DEVICE_MAPPING = {
     },
     "22251077": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "run_status"}, {"query_type": "indoor_temperature"}],
-        "centralized": ["power", "temperature", "mode", "eco", "comfort_power_save",
-                        "wind_swing_lr", "wind_swing_lr_under", "wind_swing_ud", "wind_speed", "ptc", "dry"],
+         "queries": [{}, {"query_type": "prevent_straight_wind"}],
+        "centralized": ["buzzer"],
+        "calculate":{
+            "get": [
+                {
+                    "lvalue": "[screen_display]",
+                    "rvalue": "[screen_display_now]"
+                },
+            ],
+            "set": []
+        },
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
@@ -1251,6 +1275,14 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SWITCH: {
+                "buzzer": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "default_value": "on",
+                },
+                "screen_display": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "screen_close",
+                },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },

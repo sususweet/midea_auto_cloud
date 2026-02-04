@@ -193,6 +193,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
         # 云端控制：构造 control 与 status（携带当前状态作为上下文）
+        # 计算逻辑使用所有属性（包括有默认值的变量）
         for c in self.device._calculate_set:
             lvalue = c.get("lvalue")
             rvalue = c.get("rvalue")
@@ -215,7 +216,18 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                             f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
                             self._device_id
                         )
-        await self.device.set_attributes(attributes)
+        
+        # 冻结有默认值的变量：从发送到云端的 attributes 中移除
+        attributes_to_send = {}
+        for attr, value in attributes.items():
+            # 如果该属性有默认值，则不发送到云端，只更新本地状态
+            if attr not in self.device._default_values:
+                attributes_to_send[attr] = value
+        
+        # 只发送没有默认值的属性到云端
+        if attributes_to_send:
+            await self.device.set_attributes(attributes_to_send)
+        # 更新所有属性到本地状态（包括有默认值的变量）
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()
         self.async_update_listeners()

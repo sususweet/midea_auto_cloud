@@ -80,6 +80,7 @@ class MiedaDevice(threading.Thread):
         self._centralized = []
         self._calculate_get = []
         self._calculate_set = []
+        self._default_values = {}
         self._lua_runtime = MideaCodec(lua_file, device_type=self._attributes.get("device_type"), sn=sn, subtype=subtype) if lua_file is not None else None
         self._cloud = cloud
 
@@ -141,6 +142,10 @@ class MiedaDevice(threading.Thread):
         values_set = calculate.get("set")
         self._calculate_get = values_get if values_get else []
         self._calculate_set = values_set if values_set else []
+
+    def set_default_values(self, default_values: dict):
+        """设置属性的默认值"""
+        self._default_values = default_values or {}
 
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
@@ -417,6 +422,13 @@ class MiedaDevice(threading.Thread):
     def _parse_cloud_message(self, status, update=True):
         # MideaLogger.debug(f"Received: {decrypted}")
         new_status = {}
+        # 对于有默认值的变量，在解析前先设置一次默认值
+        for attr, default_value in self._default_values.items():
+            # self._attributes[attr] = default_value
+            if attr not in self._attributes or self._attributes[attr] is None:
+                new_status[attr] = default_value
+
+        # 处理云端返回的状态，云端结果会覆盖默认值
         for single in status.keys():
             value = status.get(single)
             if single not in self._attributes or self._attributes[single] != value:
@@ -439,15 +451,22 @@ class MiedaDevice(threading.Thread):
                                 .replace("[", "[\"")
                         calculate_str2 = \
                             (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'self._attributes[').replace(']', "\"]")}") \
+                             f"{rvalue.replace('[', 'new_status[').replace(']', "\"]")}") \
                                 .replace("[", "[\"")
                         try:
                             exec(calculate_str1)
+                        except Exception as e:
+                            traceback.print_exc()
+                            MideaLogger.warning(
+                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                                self._device_id
+                            )
+                        try:
                             exec(calculate_str2)
                         except Exception as e:
                             traceback.print_exc()
                             MideaLogger.warning(
-                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}",
+                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
                                 self._device_id
                             )
             if update:

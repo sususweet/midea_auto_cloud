@@ -308,6 +308,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                             except Exception:
                                 pass
 
+                            # 提取并设置默认值
+                            try:
+                                default_values = {}
+                                entities_cfg = (mapping.get("entities") or {})
+                                for platform_cfg in entities_cfg.values():
+                                    if not isinstance(platform_cfg, dict):
+                                        continue
+                                    for entity_key, ecfg in platform_cfg.items():
+                                        if not isinstance(ecfg, dict):
+                                            continue
+                                        # 检查是否有 default_value 字段
+                                        if "default_value" in ecfg:
+                                            # 使用 entity_key 作为属性名，或者使用 attribute 字段
+                                            attr_name = ecfg.get("attribute", entity_key)
+                                            default_values[attr_name] = ecfg["default_value"]
+                                device.set_default_values(default_values)
+                            except Exception:
+                                traceback.print_exc()
+
                             # 预置 attributes：包含 centralized 里声明的所有键、entities 中使用到的所有属性键
                             try:
                                 preset_keys = set(mapping.get("centralized", []))
