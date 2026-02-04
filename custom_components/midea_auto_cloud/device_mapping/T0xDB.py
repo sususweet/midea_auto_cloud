@@ -384,21 +384,21 @@ DEVICE_MAPPING = {
                 },
                 "dehydration_speed": {
                     "options": {
-                        "免脱水": {"dehydration_speed": "0"},
-                        "400转": {"dehydration_speed": "400"},
-                        "600转": {"dehydration_speed": "600"},
-                        "800转": {"dehydration_speed": "800"},
-                        "1000转": {"dehydration_speed": "1000"},
-                        "1200转": {"dehydration_speed": "1200"},
-                        "1400转": {"dehydration_speed": "1400"}
+                        "免脱水": {"dehydration_speed": 0},
+                        "400转": {"dehydration_speed": 400},
+                        "600转": {"dehydration_speed": 600},
+                        "800转": {"dehydration_speed": 800},
+                        "1000转": {"dehydration_speed": 1000},
+                        "1200转": {"dehydration_speed": 1200},
+                        "1400转": {"dehydration_speed": 1400}
                     }
                 },
                 "soak_count": {
                     "options": {
-                        "1次": {"soak_count": "1"},
-                        "2次": {"soak_count": "2"},
-                        "3次": {"soak_count": "3"},
-                        "4次": {"soak_count": "4"}
+                        "1次": {"soak_count": 1},
+                        "2次": {"soak_count": 2},
+                        "3次": {"soak_count": 3},
+                        "4次": {"soak_count": 4}
                     }
                 },
                 "water_level": {
@@ -407,35 +407,145 @@ DEVICE_MAPPING = {
                         "L1": {"water_level": "low"},
                         "L2": {"water_level": "mid"},
                         "L3": {"water_level": "high"},
-                        "L4": {"water_level": "4"}
+                        "L4": {"water_level": 4}
                     }
                 },
                 "detergent": {
                     "options": {
-                        "智能": {"detergent": "4"},
-                        "关闭": {"detergent": "0"},
-                        "L1": {"detergent": "1"},
-                        "L2": {"detergent": "2"},
-                        "L3": {"detergent": "3"},
-                        "L4": {"detergent": "5"}
+                        "智能": {"detergent": 4},
+                        "关闭": {"detergent": 0},
+                        "L1": {"detergent": 1},
+                        "L2": {"detergent": 2},
+                        "L3": {"detergent": 3},
+                        "L4": {"detergent": 5}
                     }
                 },
                 "temperature": {
                     "options": {
-                        "冷水": {"temperature": "0"},
-                        "20℃": {"temperature": "20"},
-                        "30℃": {"temperature": "30"},
-                        "40℃": {"temperature": "40"},
-                        "60℃": {"temperature": "60"},
-                        "95℃": {"temperature": "95"}
+                        "冷水": {"temperature": 0},
+                        "20℃": {"temperature": 20},
+                        "30℃": {"temperature": 30},
+                        "40℃": {"temperature": 40},
+                        "60℃": {"temperature": 60},
+                        "95℃": {"temperature": 95}
                     }
                 },
                 "stains": {
                     "options": {
-                        "关闭": {"stains": "0"},
-                        "酱渍": {"stains": "83"},
-                        "果渍": {"stains": "85"},
-                        "妆渍": {"stains": "84"}
+                        "关闭": {"stains": 0},
+                        "酱渍": {"stains": 83},
+                        "果渍": {"stains": 85},
+                        "妆渍": {"stains": 84}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "remain_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "progress": {
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "wash_time_value": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "dehydration_time_value": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
+    "38124914": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[remaining_time]",
+                    "rvalue": "[remain_time]"
+                }
+            ],
+            "set": {}
+        },
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "door_opened": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
+                "detergent_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "control_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["pause", "start"],
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock",
+                }
+            },
+            Platform.SELECT: {
+                "mode": {
+                    "options": {
+                        "normal": {"mode": "normal"},
+                        "factory_test": {"mode": "factory_test"},
+                        "service": {"mode": "service"},
+                        "normal_continus": {"mode": "normal_continus"}
+                    }
+                },
+                "soak_count": {
+                    "options": {
+                        "1次": {"soak_count": 1},
+                        "2次": {"soak_count": 2},
+                        "3次": {"soak_count": 3},
+                        "4次": {"soak_count": 4}
+                    }
+                },
+                "temperature": {
+                    "options": {
+                        "冷水": {"temperature": 0},
+                        "20℃": {"temperature": 20},
+                        "30℃": {"temperature": 30},
+                        "40℃": {"temperature": 40},
+                        "60℃": {"temperature": 60}
+                    }
+                },
+                "program": {
+                    "options": {
+                        "baby_clothes": {"program": "baby_clothes"},
+                        "cotton": {"program": "cotton"},
+                        "enzyme": {"program": "enzyme"},
+                        "fast_wash": {"program": "fast_wash"},
+                        "fast_wash_30": {"program": "fast_wash_30"},
+                        "mixed_wash": {"program": "mixed_wash"},
+                        "remove_mite_wash": {"program": "remove_mite_wash"},
+                        "shirt": {"program": "shirt"},
+                        "single_dehytration": {"program": "single_dehytration"},
+                        "sport_clothes": {"program": "sport_clothes"},
+                        "ssp": {"program": "ssp"},
+                        "steep": {"program": "steep"},
+                        "underwear": {"program": "water_underwear"},
+                        "kids": {"program": "kids"},
+                        "cook_wash": {"program": "cook_wash"}
                     }
                 }
             },

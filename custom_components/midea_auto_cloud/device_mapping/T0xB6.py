@@ -239,5 +239,66 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "7300073N": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": ["lightness"],
+        "entities": {
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SENSOR: {
+                "total_working_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                },
+                "wind_pressure": {
+                    "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": UnitOfPressure.PA,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            },
+            Platform.NUMBER: {
+                "lightness": {
+                    "min": 10,
+                    "max": 100,
+                    "step": 5,
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light",
+                        "lightness": "{value}"
+                    }
+                }
+            },
+            Platform.SELECT: {
+                "gear": {
+                    "options": {
+                        "off": {"gear": 0},
+                        "low": {"gear": 1},
+                        "medium": {"gear": 2},
+                        "high": {"gear": 3},
+                        "extreme": {"gear": 4},
+                    }
+                },
+                "light": {
+                    "options": {
+                        "off": {"light": "off"},
+                        "on": {"light": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light"
+                    }
+                }
+            }
+        }
     }
 }

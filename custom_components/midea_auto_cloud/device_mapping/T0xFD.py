@@ -243,5 +243,54 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "202Z219V": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "bright_led": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["exit", "light"],
+                    "translation_key": "light_mode"
+
+                }
+            },
+            Platform.SELECT: {
+                "humidity": {
+                    "options": {
+                        "40%": {"humidity": 40},
+                        "45%": {"humidity": 45},
+                        "50%": {"humidity": 50},
+                        "55%": {"humidity": 55},
+                        "60%": {"humidity": 60}
+                    },
+                    "command": {
+                        "humidity_mode": "auto"
+                    }
+                },
+                "wind_speed": {
+                    "options": {
+                        "low": {"wind_speed": "low"},
+                        "middle": {"wind_speed": "middle"},
+                        "high": {"wind_speed": "high"}
+                    },
+                    "command": {
+                        "humidity_mode": "manual"
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "cur_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
     }
 }

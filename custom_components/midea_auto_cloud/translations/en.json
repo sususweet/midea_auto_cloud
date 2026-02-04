@@ -364,6 +364,16 @@
               "silent": "Silent",
               "full": "Full"
             }
+          },
+          "swing_mode": {
+            "state": {
+              "horizontal_upper_only": "Horizontal Swing Upper",
+              "horizontal_under_only": "Horizontal Swing Under",
+              "horizontal_upper_under": "Horizontal Swing Upper And Under",
+              "horizontal_upper_vertical": "Horizontal Swing Upper And Vertical",
+              "horizontal_under_vertical": "Horizontal Swing Under And Vertical",
+              "vertical_only": "Vertical Swing"
+            }
           }
         }
       },
@@ -880,6 +890,7 @@
           "standard_wash": "standard wash",
           "eco_wash": "eco wash",
           "glass_wash": "glass wash",
+          "soft_wash": "soft wash",
           "hour_wash": "hour wash",
           "fast_wash": "fast wash",
           "soak_wash": "soak wash",
@@ -2203,6 +2214,12 @@
       }
     },
     "number": {
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
+      },
+      "delay_light_off": {
+        "name": "Delay Light Off"
+      },
       "hosting_upper": {
         "name": "PM2.5 Upper(Auto Purification)"
       },

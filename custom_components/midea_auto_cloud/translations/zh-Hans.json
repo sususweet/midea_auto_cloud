@@ -384,6 +384,16 @@
               "silent": "静音",
               "full": "强劲"
             }
+          },
+          "swing_mode": {
+            "state": {
+              "horizontal_upper_only": "上左右风",
+              "horizontal_under_only": "下左右风",
+              "horizontal_upper_under": "上+下左右风",
+              "horizontal_upper_vertical": "上左右风+上下摆风",
+              "horizontal_under_vertical": "下左右风+上下摆风",
+              "vertical_only": "上下摆风"
+            }
           }
         }
       },
@@ -546,7 +556,11 @@
         "name": "降噪设置"
       },
       "humidity": {
-        "name": "设定湿度"
+        "name": "设定湿度",
+        "state": {
+          "off": "关闭",
+          "auto": "自动"
+        }
       },
       "b3_function_control": {
         "name": "消毒柜控制"
@@ -935,7 +949,7 @@
           "water_ssp": "水韵超净洗",
           "standard": "标准洗",
           "green_wool": "绿色羊毛",
-          "cook_wash": "厨师服洗",
+          "cook_wash": "高温洗",
           "fresh_remove_wrinkle": "清新除皱",
           "steam_sterilize_wash": "蒸汽消毒洗",
           "aromatherapy": "香薰洗",
@@ -1063,6 +1077,7 @@
           "standard_wash": "标准洗",
           "eco_wash": "节能洗",
           "glass_wash": "玻璃洗",
+          "soft_wash": "轻柔洗",
           "hour_wash": "小时洗",
           "fast_wash": "快速洗",
           "soak_wash": "预冲洗",
@@ -2493,10 +2508,28 @@
     },
     "light": {
       "light": {
-        "name": "电灯"
+        "name": "电灯",
+        "state_attributes": {
+          "effect": {
+            "state": {
+              "night": "夜灯",
+              "read": "阅读",
+              "mild": "柔和",
+              "life": "生活",
+              "film": "影院",
+              "manual": "自定义"
+            }
+          }
+        }
       }
     },
     "number": {
+      "air_set_hour": {
+        "name": "烘干存储设置时间"
+      },
+      "delay_light_off": {
+        "name": "延时关灯"
+      },
       "hosting_upper": {
         "name": "PM2.5上阈值(自动净化)"
       },
