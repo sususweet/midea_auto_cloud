@@ -1128,7 +1128,8 @@ DEVICE_MAPPING = {
     },
     ("22012369", "22040023", "22270043"): {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type": "prevent_straight_wind"}],
+        "queries": [{}, {"query_type": "prevent_straight_wind"}, {"query_type": "prevent_super_cool"},
+                    {"query_type": "wind_swing_ud_angle"}, {"query_type": "wind_swing_lr_angle"}], 
         "centralized": ["buzzer"],
         "calculate":{
             "get": [
@@ -1183,10 +1184,33 @@ DEVICE_MAPPING = {
                     "precision": PRECISION_HALVES,
                 }
             },
+            Platform.SELECT: {
+                "wind_swing_ud_angle": {
+                    "options": {
+                        "关闭": {"wind_swing_ud_angle": 0},
+                        "最上": {"wind_swing_ud_angle": 1},
+                        "偏上": {"wind_swing_ud_angle": 25},
+                        "中间": {"wind_swing_ud_angle": 50},
+                        "偏下": {"wind_swing_ud_angle": 75},
+                        "最下": {"wind_swing_ud_angle": 100}
+                    }
+                },
+                "wind_swing_lr_angle": {
+                    "options": {
+                        "关闭": {"wind_swing_lr_angle": 0},
+                        "最左": {"wind_swing_lr_angle": 1},
+                        "偏左": {"wind_swing_lr_angle": 25},
+                        "中间": {"wind_swing_lr_angle": 50},
+                        "偏右": {"wind_swing_lr_angle": 75},
+                        "最右": {"wind_swing_lr_angle": 100}
+                    }
+                }
+            },
             Platform.SWITCH: {
                 "buzzer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "default_value": "on",
+                    "translation_key": "voice"
                 },
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -1195,6 +1219,9 @@ DEVICE_MAPPING = {
                 "prevent_straight_wind": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [1, 2]
+                },
+                "prevent_super_cool": {
+                    "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -1223,7 +1250,8 @@ DEVICE_MAPPING = {
     },
     "22251077": {
         "rationale": ["off", "on"],
-         "queries": [{}, {"query_type": "prevent_straight_wind"}],
+        "queries": [{}, {"query_type": "no_wind_sense"}, {"query_type": "prevent_super_cool"},
+                    {"query_type": "wind_swing_ud_angle"}, {"query_type": "wind_swing_lr_angle"}], 
         "centralized": ["buzzer"],
         "calculate":{
             "get": [
@@ -1278,14 +1306,48 @@ DEVICE_MAPPING = {
                     "precision": PRECISION_HALVES,
                 }
             },
+            Platform.SELECT: {
+                "wind_swing_ud_angle": {
+                    "options": {
+                        "关闭": {"wind_swing_ud_angle": 0},
+                        "最上": {"wind_swing_ud_angle": 1},
+                        "偏上": {"wind_swing_ud_angle": 25},
+                        "中间": {"wind_swing_ud_angle": 50},
+                        "偏下": {"wind_swing_ud_angle": 75},
+                        "最下": {"wind_swing_ud_angle": 100}
+                    }
+                },
+                "wind_swing_lr_angle": {
+                    "options": {
+                        "关闭": {"wind_swing_lr_angle": 0},
+                        "最左": {"wind_swing_lr_angle": 1},
+                        "偏左": {"wind_swing_lr_angle": 25},
+                        "中间": {"wind_swing_lr_angle": 50},
+                        "偏右": {"wind_swing_lr_angle": 75},
+                        "最右": {"wind_swing_lr_angle": 100}
+                    }
+                },
+                "no_wind_sense": {
+                    "options": {
+                        "关闭": {"no_wind_sense": 0},
+                        "上+下无风感": {"no_wind_sense": 1},
+                        "上无风感": {"no_wind_sense": 2},
+                        "下无风感": {"no_wind_sense": 3},
+                    }
+                }
+            },
             Platform.SWITCH: {
                 "buzzer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "default_value": "on",
+                    "translation_key": "voice"
                 },
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
+                },
+                "prevent_super_cool": {
+                    "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
