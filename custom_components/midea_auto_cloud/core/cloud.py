@@ -492,7 +492,7 @@ class MeijuCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    async with aiofiles.open(fnm, "w") as fp:
+                    async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
 
@@ -744,7 +744,7 @@ class MSmartHomeCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    async with aiofiles.open(fnm, "w") as fp:
+                    async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
 
