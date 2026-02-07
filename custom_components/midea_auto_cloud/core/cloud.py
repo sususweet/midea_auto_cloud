@@ -748,6 +748,18 @@ class MSmartHomeCloud(MideaCloud):
                         await fp.write(stream)
         return fnm
 
+    async def download_plugin(
+        self, path: str,
+        appliance_code: str,
+        smart_product_id: str,
+        device_type: int,
+        sn: str,
+        sn8: str,
+        model_number: str | None,
+        manufacturer_code: str = "0000",
+    ):
+        return
+
     async def send_cloud(self, appliance_code: int, data: bytearray):
         appliance_code = str(appliance_code)
         params = {
