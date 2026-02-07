@@ -462,6 +462,15 @@
       }
     },
     "select": {
+      "no_wind_sense": {
+        "name": "无风感"
+      },
+      "wind_swing_ud_angle": {
+        "name": "上下摆动风向"
+      },
+      "wind_swing_lr_angle": {
+        "name": "左右摆动风向"
+      },
       "custom_temperature": {
         "name": "自定义烧水温度"
       },
@@ -2689,7 +2698,10 @@
         }
       }
     },
-    "switch": {
+  "switch": {
+	  "prevent_super_cool": {
+        "name": "智控温"
+      },
 	  "new_wind_machine": {
         "name": "新风开关"
       },
