@@ -19,17 +19,21 @@ DEVICE_MAPPING = {
         },
         "entities": {
             Platform.BINARY_SENSOR: {
-                "db_power": {
-                    "device_class": BinarySensorDeviceClass.RUNNING,
-                },
-                "door_opened": {
+                "db_door_opened": {
                     "device_class": BinarySensorDeviceClass.OPENING,
+                    "translation_key": "door_opened"
                 },
-                "bucket_water_overheating": {
+                "db_bucket_water_overheating": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "bucket_water_overheating"
                 },
-                "drying_tunnel_overheating": {
+                "db_drying_tunnel_overheating": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "drying_tunnel_overheating"
+                },
+                "db_detergent_needed": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "detergent_lack"
                 }
             },
             Platform.SWITCH: {
