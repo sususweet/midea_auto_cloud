@@ -172,7 +172,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         from .const import BIT_LUA
         bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(bit, "wt") as fp:
+            with open(bit, "wt", encoding="utf-8") as fp:
                 fp.write(bit_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create bit.lua at {bit}: {e}")
@@ -180,7 +180,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             import tempfile
             temp_dir = tempfile.gettempdir()
             bit = os.path.join(temp_dir, "bit.lua")
-            with open(bit, "wt") as fp:
+            with open(bit, "wt", encoding="utf-8") as fp:
                 fp.write(bit_lua)
             MideaLogger.warning(f"Using temporary file for bit.lua: {bit}")
 
