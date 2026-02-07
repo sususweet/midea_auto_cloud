@@ -442,6 +442,15 @@
       }
     },
     "select": {
+      "no_wind_sense": {
+        "name": "No Wind Sense"
+      },
+      "wind_swing_ud_angle": {
+        "name": "Vertical Wind Direction"
+      },
+      "wind_swing_lr_angle": {
+        "name": "Horizontal Wind Direction"
+      },
       "custom_temperature": {
         "name": "Custom Temperature"
       },
@@ -2358,7 +2367,10 @@
         "name": "Fan"
       }
     },
-    "switch": {
+  "switch": {
+	  "prevent_super_cool": {
+        "name": "Prevent Super Cool"
+      },
 		"new_wind_machine": {
 			"name": "Fresh air switch"
 		},
