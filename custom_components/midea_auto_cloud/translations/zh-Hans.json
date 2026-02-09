@@ -3728,6 +3728,21 @@
       "sedentary_remind": {
         "name": "久坐提醒"
       }
+    },
+  "vacuum": {
+    "vacuum": {
+        "name": "扫地机器人",
+        "state_attributes": {
+          "fan_speed": {
+            "state": {
+              "soft": "轻柔",
+              "normal": "标准",
+              "high": "强力",
+              "super": "超强"
+            }
+          }
+        }
+      }
     }
   }
 }
