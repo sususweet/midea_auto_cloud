@@ -61,7 +61,8 @@ PLATFORMS: list[Platform] = [
     Platform.LIGHT,
     Platform.HUMIDIFIER,
     Platform.NUMBER,
-    Platform.BUTTON
+    Platform.BUTTON,
+    Platform.VACUUM
 ]
 
 async def import_module_async(module_name):
@@ -381,6 +382,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                         str(Platform.SWITCH),
                                         str(Platform.FAN),
                                         str(Platform.SELECT),
+                                        str(Platform.VACUUM),
                                     ]:
                                         for entity_key in platform_cfg.keys():
                                             preset_keys.add(entity_key)
