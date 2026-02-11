@@ -3397,6 +3397,21 @@
       "sedentary_remind": {
         "name": "Sedentary Remind"
       }
+    },
+  "vacuum": {
+    "vacuum": {
+        "name": "Robotic Vacuum",
+        "state_attributes": {
+          "fan_speed": {
+            "state": {
+              "soft": "Soft",
+              "normal": "Normal",
+              "high": "High",
+              "super": "Super"
+            }
+          }
+        }
+      }
     }
   }
 }

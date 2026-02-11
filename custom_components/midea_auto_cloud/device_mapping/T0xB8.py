@@ -8,15 +8,19 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
-            Platform.SELECT: {
-                "fan_setting": {
-                    "options": {
+            Platform.VACUUM: {
+                "vacuum": {
+                    "battery_level": "battery_percent",
+                    "status": "work_status",
+                    "fan_speeds": {
                         "soft": {"level": "soft"},
                         "normal": {"level": "normal"},
                         "high": {"level": "high"},
                         "super": {"level": "super"}
                     }
-                },
+                }
+            },
+            Platform.SELECT: {
                 "work_mode": {
                     "options": {
                         "sweep_and_mop": {"work_mode": "sweep_and_mop"},
@@ -27,15 +31,6 @@ DEVICE_MAPPING = {
                 },
                 "work_status": {
                     "options": {
-                        "charge": {"work_status": "charge"},
-                        "charge_pause": {"work_status": "charge_pause"},
-                        "charge_continue": {"work_status": "charge_continue"},
-                        "auto_clean": {"work_status": "auto_clean"},
-                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
-                        "auto_clean_continue": {"work_status": "auto_clean_continue"},
-                        "pause": {"work_status": "pause"},
-                        "stop": {"work_status": "stop"},
-                        "work": {"work_status": "work"},
                         "video_cruise_start": {"work_status": "video_cruise_start"},
                         "video_cruise_pause": {"work_status": "video_cruise_pause"},
                         "mop_clean": {"mop_clean_setting": {"mode_type": "common", "clean_level": "normal"}},
@@ -125,27 +120,18 @@ DEVICE_MAPPING = {
         ],
         "centralized": ["work_status", "battery_percent", "sweep_mop_mode", "mop", "sub_work_status"],
         "entities": {
-            Platform.SELECT: {
-                "work_status": {
-                    "options": {
-                        "charge": {"work_status": "charge"},
-                        "charge_pause": {"work_status": "charge_pause"},
-                        "charge_continue": {"work_status": "charge_continue"},
-                        "auto_clean": {"work_status": "auto_clean"},
-                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
-                        "auto_clean_continue": {"work_status": "auto_clean_continue"},
-                        "pause": {"work_status": "pause"},
-                        "stop": {"work_status": "stop"},
-                        "work": {"work_status": "work"}
-                    }
-                },
-                "fan_level": {
-                    "options": {
+            Platform.VACUUM: {
+                "vacuum": {
+                    "battery_level": "battery_percent",
+                    "status": "work_status",
+                    "fan_speeds": {
                         "soft": {"fan_setting": {"level": "soft"}},
                         "normal": {"fan_setting": {"level": "normal"}},
                         "high": {"fan_setting": {"level": "high"}}
                     }
-                },
+                }
+            },
+            Platform.SELECT: {
                 "sweep_mop_mode": {
                     "options": {
                         "sweep_and_mop": {"work_mode_setting": {"work_mode": "sweep_and_mop"}},

@@ -84,13 +84,48 @@ class MiedaDevice(threading.Thread):
         self._lua_runtime = MideaCodec(lua_file, device_type=self._attributes.get("device_type"), sn=sn, subtype=subtype) if lua_file is not None else None
         self._cloud = cloud
 
-    def _determine_control_status_based_on_running(self, running_status):
+    def _handle_t0xd9_db_location_selection(self, status, value):
+        # 处理T0xD9复式洗衣机的db_location_selection更新
+        if value == "left":
+            status["db_location"] = 1
+            self._attributes["db_location"] = 1
+        elif value == "right":
+            status["db_location"] = 2
+            self._attributes["db_location"] = 2
+
+    def _adjust_t0xd9_db_location_based_on_position(self, status=None):
+        # 根据db_position调整T0xD9复式洗衣机的db_location
+        db_position = self._attributes.get("db_position", 1)
+        current_location = self._attributes.get("db_location", 1)
+        
+        if db_position == 1:
+            # db_position = 1，db_location 保持不变
+            calculated_location = current_location
+        elif db_position == 0:
+            # db_position = 0，db_location 切换为另一个选项
+            calculated_location = 2 if current_location == 1 else 1
+        
+        if status is not None:
+            status["db_location"] = calculated_location
+        
+        return calculated_location
+
+    def _sync_t0xd9_location_selection(self, location):
+        # 同步T0xD9复式洗衣机的db_location和db_location_selection
+        if location == 1:
+            self._attributes["db_location_selection"] = "left"
+        elif location == 2:
+            self._attributes["db_location_selection"] = "right"
+
+    def _adjust_t0xd9_control_status(self, running_status):
+        # 依据db_running_status调整T0xD9复式洗衣机的db_control_status
         # 根据运行状态确定控制状态, 只有当运行状态是"start"时，控制状态才为"start"
         if running_status == "start":
-            return "start"
+            control_status = "start"
         # 其他所有情况(包括standby、pause、off、error等)，控制状态应为pause
         else:
-            return "pause"
+            control_status = "pause"
+        self._attributes["db_control_status"] = control_status
 
     @property
     def device_name(self):
@@ -179,39 +214,14 @@ class MiedaDevice(threading.Thread):
                 new_status[attr] = self._attributes.get(attr)
             new_status[attribute] = value
             
-            # 针对T0xD9复式洗衣机，当切换筒选择时，立即刷新状态以显示新筒的状态
-            if self._device_type == 0xD9 and attribute == "db_location_selection":
-                # 更新属性
-                self._attributes[attribute] = value
-            
-                # 更新db_location（用于查询）
-                if value == "left":
-                    self._attributes["db_location"] = 1
-                elif value == "right":
-                    self._attributes["db_location"] = 2
-            
-                # 立即刷新状态以显示新筒的状态
-                await self.refresh_status()
-            
-                # 获取当前运行状态
-                running_status = self._attributes.get("db_running_status")
-                if running_status is not None:
-                    # 根据运行状态确定控制状态
-                    control_status = self._determine_control_status_based_on_running(running_status)
-                    # 更新本地属性
-                    self._attributes["db_control_status"] = control_status
-                    # 添加到要发送的状态中（如果需要发送到云端）
-                    new_status["db_control_status"] = control_status
-                # return  # 发送到云端，所以注释teturn
-            
-            # 针对T0xD9复式洗衣机，根据选择的筒添加db_location参数
-            if self._device_type == 0xD9 and attribute != "db_location_selection":
-                location_selection = self._attributes.get("db_location_selection", "left")
-                if location_selection == "left":
-                    new_status["db_location"] = 1
-                elif location_selection == "right":
-                    new_status["db_location"] = 2
-            
+            # 针对T0xD9复式洗衣机，当本地变更 db_location_selection 时，调整 db_location
+            if self._device_type == 0xD9:
+                if attribute == "db_location_selection":
+                    self._handle_t0xd9_db_location_selection(new_status, value)
+                # 非 db_location_selection 更新，根据 db_position 设置 db_location
+                else:
+                    self._adjust_t0xd9_db_location_based_on_position(new_status)
+
             # Convert dot-notation attributes to nested structure for transmission
             nested_status = self._convert_to_nested_structure(new_status)
 
@@ -239,31 +249,6 @@ class MiedaDevice(threading.Thread):
                     await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
 
     async def set_attributes(self, attributes):
-        # 针对T0xD9复式洗衣机，当切换筒选择时
-        if self._device_type == 0xD9 and "db_location_selection" in attributes:
-            location_selection = attributes["db_location_selection"]
-        
-            # 更新本地属性
-            self._attributes["db_location_selection"] = location_selection
-        
-            # 更新db_location（用于查询）
-            if location_selection == "left":
-                self._attributes["db_location"] = 1
-            elif location_selection == "right":
-                self._attributes["db_location"] = 2
-        
-            # 立即刷新状态以显示新筒的状态
-            await self.refresh_status()
-
-            # 获取当前运行状态
-            running_status = self._attributes.get("db_running_status")
-            if running_status is not None:
-                # 根据运行状态确定控制状态
-                control_status = self._determine_control_status_based_on_running(running_status)
-                # 更新本地属性
-                self._attributes["db_control_status"] = control_status
-            # return  # 发送到云端，所以注释teturn
-    
         new_status = {}
         for attr in self._centralized:
             new_status[attr] = self._attributes.get(attr)
@@ -273,25 +258,15 @@ class MiedaDevice(threading.Thread):
                 has_new = True
                 new_status[attribute] = value
     
-        # 针对T0xD9复式洗衣机，确保发送到云端的控制命令包含筒位置信息
+        # 针对T0xD9复式洗衣机，根据 db_location_selection 调整 db_location
         if self._device_type == 0xD9:
-            # 如果attributes中有db_location_selection，确保new_status也有
             if "db_location_selection" in attributes:
                 location_selection = attributes["db_location_selection"]
-                new_status["db_location_selection"] = location_selection
-                # 添加对应的db_location
-                if location_selection == "left":
-                    new_status["db_location"] = 1
-                elif location_selection == "right":
-                    new_status["db_location"] = 2
-            # 如果没有db_location_selection，但当前有选择，添加db_location
-            elif "db_location_selection" not in attributes and self._attributes.get("db_location_selection"):
-                location_selection = self._attributes.get("db_location_selection", "left")
-                if location_selection == "left":
-                    new_status["db_location"] = 1
-                elif location_selection == "right":
-                    new_status["db_location"] = 2
-    
+                self._handle_t0xd9_db_location_selection(new_status, location_selection)
+            else:
+                # 非 db_location_selection 更新，根据 db_position 设置 db_location
+                self._adjust_t0xd9_db_location_based_on_position(new_status)
+
         # Convert dot-notation attributes to nested structure for transmission
         nested_status = self._convert_to_nested_structure(new_status)
         
@@ -381,15 +356,15 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
-            # 针对T0xD9复式洗衣机，根据选择的筒动态添加db_location参数
+            # 针对T0xD9复式洗衣机，根据 db_position 动态调整 db_location
             actual_query = query.copy() if isinstance(query, dict) else query
             if self._device_type == 0xD9 and isinstance(actual_query, dict):
-                location_selection = self._attributes.get("db_location_selection", "left")
-                if location_selection == "left":
-                    actual_query["db_location"] = 1
-                elif location_selection == "right":
-                    actual_query["db_location"] = 2
-            
+                # 根据 db_position 调整 db_location
+                calculated_location = self._adjust_t0xd9_db_location_based_on_position(actual_query)
+
+                # 同步更新db_location_selection
+                self._sync_t0xd9_location_selection(calculated_location)
+
             cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
                 if isinstance(cloud, MSmartHomeCloud):
@@ -434,6 +409,12 @@ class MiedaDevice(threading.Thread):
             if single not in self._attributes or self._attributes[single] != value:
                 # self._attributes[single] = value
                 new_status[single] = value
+
+        # 对于T0xD9复式洗衣机，依据云端 db_running_status，调整本地 db_control_status
+        if self._device_type == 0xD9 and "db_running_status" in new_status:
+                running_status = new_status["db_running_status"]
+                self._adjust_t0xd9_control_status(running_status)
+
         if len(new_status) > 0:
             for c in self._calculate_get:
                 lvalue = c.get("lvalue")
@@ -623,5 +604,3 @@ class MiedaDevice(threading.Thread):
     #                                   f"{e.__traceback__.tb_lineno}, {repr(e)}")
     #                 self.disconnect()
     #                 break
-
-
