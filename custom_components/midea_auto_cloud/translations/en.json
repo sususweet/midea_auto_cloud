@@ -1805,6 +1805,9 @@
       "end_time_minute": {
         "name": "End Time Minute"
       },
+	  "end_time": {
+        "name": "Heat End Time"
+      },
       "flow": {
         "name": "Flow"
       },

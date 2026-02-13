@@ -2103,6 +2103,9 @@
       "end_time_minute": {
         "name": "结束时间分钟"
       },
+      "end_time": {
+        "name": "加热结束时间"
+      },
       "flow": {
         "name": "流量"
       },
@@ -2808,7 +2811,7 @@
         "name": "爸爸洗涤"
       },
       "eplus": {
-        "name": "E加"
+        "name": "大水量"
       },
       "fast_hot_power": {
         "name": "快速加热电源"
@@ -2865,7 +2868,7 @@
         "name": "人员洗涤"
       },
       "protect": {
-        "name": "保护"
+        "name": "出水断电"
       },
       "protect_show": {
         "name": "保护显示"
