@@ -462,6 +462,13 @@
       }
     },
     "select": {
+      "aidry": {
+        "name": "智感干洗",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
       "no_wind_sense": {
         "name": "无风感"
       },

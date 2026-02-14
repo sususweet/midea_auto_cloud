@@ -300,5 +300,128 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "7300078W": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": ["lightness"],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[total_energy_consumption]",
+                    "rvalue": "float([total_working_time] / 60 * 0.14)"
+                }
+            ],
+        },
+        "entities": {
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH
+                }
+            },
+            Platform.SENSOR: {
+                "total_working_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.TOTAL_INCREASING
+                },
+                "total_energy_consumption": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": "kWh",
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                    "translation_key": "total_elec_value"
+                },
+                "wind_pressure": {
+                    "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": UnitOfPressure.PA,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            },
+            Platform.NUMBER: {
+                "lightness": {
+                    "min": 10,
+                    "max": 100,
+                    "step": 5,
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light",
+                        "lightness": "{value}"
+                    }
+                }
+            },
+            Platform.SELECT: {
+                "gear": {
+                    "options": {
+                        "off": {"gear": 0},
+                        "low": {"gear": 1},
+                        "high": {"gear": 2},
+                        "extreme": {"gear": 3}
+                    }
+                },
+                "gesture": {
+                    "options": {
+                        "off": {"gesture": "off"},
+                        "on": {"gesture": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "gesture_value": {
+                    "options": {
+                        "开关机": {"gesture_value": 1},
+                        "调风速": {"gesture_value": 2},
+                        "开关灯": {"gesture_value": 3}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "gesture_sensitivity_value": {
+                    "options": {
+                        "low": {"gesture_sensitivity_value": 1},
+                        "medium": {"gesture_sensitivity_value": 2},
+                        "high": {"gesture_sensitivity_value": 3}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "light": {
+                    "options": {
+                        "off": {"light": "off"},
+                        "on": {"light": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light"
+                    }
+                },
+                "aidry": {
+                    "options": {
+                        "off": {"aidry": "off"},
+                        "on": {"aidry": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "control"
+                    }
+                }
+            }
+        }
     }
 }

@@ -442,6 +442,9 @@
       }
     },
     "select": {
+      "aidry": {
+        "name": "Aidry"
+      },
       "no_wind_sense": {
         "name": "No Wind Sense"
       },
