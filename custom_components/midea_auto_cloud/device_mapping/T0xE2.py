@@ -204,6 +204,76 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "510214HB": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[end_time]",
+                    "rvalue": "[end_time_hour] * 60 + [end_time_minute]"
+                }
+            ],
+            "set": {
+            }
+        },
+        "entities": {
+            Platform.CLIMATE: {
+                "water_heater": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on"},
+                    },
+                    "target_temperature": "temperature",
+                    "current_temperature": "cur_temperature",
+                    "min_temp": 30,
+                    "max_temp": 75,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_WHOLE
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "protect": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "smart_sterilize": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "eplus": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "frequency_hot": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SENSOR: {
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "temp_set"
+                },
+                "cur_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "end_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                }
+            }
+        }
     }
 }
 

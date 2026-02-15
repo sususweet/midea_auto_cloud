@@ -11,12 +11,18 @@ DEVICE_MAPPING = {
             Platform.VACUUM: {
                 "vacuum": {
                     "battery_level": "battery_percent",
-                    "status": "work_status",
+                    "control": "work_status",
                     "fan_speeds": {
                         "soft": {"level": "soft"},
                         "normal": {"level": "normal"},
                         "high": {"level": "high"},
                         "super": {"level": "super"}
+                    },
+                    "control_actions": {
+                        "start": "work",
+                        "stop": "stop",
+                        "pause": "pause",
+                        "return": "charge"
                     }
                 }
             },
@@ -123,11 +129,17 @@ DEVICE_MAPPING = {
             Platform.VACUUM: {
                 "vacuum": {
                     "battery_level": "battery_percent",
-                    "status": "work_status",
+                    "control": "work_status",
                     "fan_speeds": {
                         "soft": {"fan_setting": {"level": "soft"}},
                         "normal": {"fan_setting": {"level": "normal"}},
                         "high": {"fan_setting": {"level": "high"}}
+                    },
+                    "control_actions": {
+                        "start": "work",
+                        "stop": "stop",
+                        "pause": "pause",
+                        "return": "charge"
                     }
                 }
             },
