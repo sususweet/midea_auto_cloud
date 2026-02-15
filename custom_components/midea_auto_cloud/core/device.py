@@ -433,6 +433,10 @@ class MiedaDevice(threading.Thread):
             self._adjust_control_status(running_status)
 
         if len(new_status) > 0:
+            # 确保所有状态都更新后再进行计算
+            for key, value in new_status.items():
+                self._attributes[key] = value
+
             for c in self._calculate_get:
                 lvalue = c.get("lvalue")
                 rvalue = c.get("rvalue")
@@ -500,6 +504,10 @@ class MiedaDevice(threading.Thread):
                                 self._attributes[single] = value
                                 new_status[single] = value
                         if len(new_status) > 0:
+                            # 确保所有状态都更新后再进行计算
+                            for key, value in new_status.items():
+                                self._attributes[key] = value
+
                             for c in self._calculate_get:
                                 lvalue = c.get("lvalue")
                                 rvalue = c.get("rvalue")
