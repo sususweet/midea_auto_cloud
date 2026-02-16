@@ -45,10 +45,9 @@ from .const import (
     CONF_SN,
     CONF_MODEL_NUMBER,
     CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE,
-    CONF_SELECTED_HOMES, CONF_SMART_PRODUCT_ID, STORAGE_PLUGIN_PATH
+    CONF_SELECTED_HOMES, CONF_SMART_PRODUCT_ID, STORAGE_PLUGIN_PATH,
+    CONF_PASSWORD, CONF_SERVER
 )
-# 账号型：登录云端、获取设备列表，并为每台设备建立协调器（无本地控制）
-from .const import CONF_PASSWORD as CONF_PASSWORD_KEY, CONF_SERVER as CONF_SERVER_KEY
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -192,25 +191,89 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     MideaLogger.debug(f"async_setup_entry type={device_type} data={config_entry.data}")
     if device_type == CONF_ACCOUNT:
         account = config_entry.data.get(CONF_ACCOUNT)
-        password = config_entry.data.get(CONF_PASSWORD_KEY)
-        server = config_entry.data.get(CONF_SERVER_KEY)
-        cloud_name = CONF_SERVERS.get(server)
-        cloud = get_midea_cloud(
-            cloud_name=cloud_name,
-            session=async_get_clientsession(hass),
-            account=account,
-            password=password,
-        )
-        if not cloud or not await cloud.login():
-            MideaLogger.error("Midea cloud login failed")
-            return False
+        password = config_entry.data.get(CONF_PASSWORD)
+        server = config_entry.data.get(CONF_SERVER)
+
+        # 初始化数据存储结构
+        hass.data.setdefault(DOMAIN, {})
+        hass.data[DOMAIN].setdefault("cloud_sessions", {})
+        hass.data[DOMAIN].setdefault("accounts", {})
+        hass.data[DOMAIN].setdefault("cloud_login_locks", {})
+
+        # 使用账号和服务器作为会话唯一标识
+        session_key = f"{account}_{server}"
+
+        # 确保同一账号的登录操作串行执行，避免并发登录冲突
+        if session_key not in hass.data[DOMAIN]["cloud_login_locks"]:
+            hass.data[DOMAIN]["cloud_login_locks"][session_key] = asyncio.Lock()
+
+        async with hass.data[DOMAIN]["cloud_login_locks"][session_key]:
+            cloud = hass.data[DOMAIN]["cloud_sessions"].get(session_key)
+
+            if not cloud:
+                cloud = get_midea_cloud(
+                    cloud_name=CONF_SERVERS.get(server),
+                    session=async_get_clientsession(hass),
+                    account=account,
+                    password=password,
+                )
+                if not cloud or not await cloud.login():
+                    MideaLogger.error("Midea cloud login failed")
+                    return False
+                # 缓存云会话，供其他配置条目复用
+                hass.data[DOMAIN]["cloud_sessions"][session_key] = cloud
+            elif not cloud._access_token:
+                # 会话已存在但未登录，重新登录
+                if not await cloud.login():
+                    MideaLogger.error("Midea cloud login failed")
+                    return False
+
+        # 获取配置中选中的所有家庭（用于自动创建其他家庭的配置条目）
+        all_selected_homes = config_entry.data.get("all_selected_homes", [])
+        current_home_id = None
+        selected_homes = config_entry.data.get(CONF_SELECTED_HOMES, [])
+        if selected_homes:
+            current_home_id = selected_homes[0]
+
+        # 为其他选中的家庭自动创建配置条目
+        if all_selected_homes and current_home_id:
+            other_homes = [h for h in all_selected_homes if str(h) != str(current_home_id)]
+            home_names = config_entry.data.get("home_names", {})
+
+            for home_id in other_homes:
+                home_id_str = str(home_id)
+                home_name = home_names.get(home_id_str, f"家庭 {home_id}")
+                # 检查该家庭是否已有配置条目
+                existing_entries = hass.config_entries.async_entries(DOMAIN)
+                home_exists = False
+                for entry in existing_entries:
+                    entry_homes = entry.data.get(CONF_SELECTED_HOMES, [])
+                    if entry_homes and str(entry_homes[0]) == home_id_str:
+                        home_exists = True
+                        break
+
+                if not home_exists:
+                    # 异步创建该家庭的配置条目
+                    hass.async_create_task(
+                        hass.config_entries.flow.async_init(
+                            DOMAIN,
+                            context={"source": "home"},
+                            data={
+                                CONF_TYPE: CONF_ACCOUNT,
+                                CONF_ACCOUNT: account,
+                                CONF_PASSWORD: password,
+                                CONF_SERVER: server,
+                                CONF_SELECTED_HOMES: [home_id],
+                                "home_name": home_name,
+                                "home_id": home_id,
+                            },
+                        )
+                    )
 
         # 拉取家庭与设备列表
         try:
             homes = await cloud.list_home()
-            if homes and len(homes) > 0:
-                hass.data.setdefault(DOMAIN, {})
-                hass.data[DOMAIN].setdefault("accounts", {})
+            if homes:
                 bucket = {"device_list": {}, "coordinator_map": {}}
                 
                 # 获取用户选择的家庭ID列表
@@ -224,14 +287,30 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     # 只处理用户选择的家庭，确保类型匹配
                     home_ids = []
                     for selected_home in selected_homes:
-                        # 尝试匹配字符串和数字类型的home_id
-                        if selected_home in homes:
-                            home_ids.append(selected_home)
-                        elif str(selected_home) in homes:
-                            home_ids.append(str(selected_home))
-                        elif int(selected_home) in homes:
-                            home_ids.append(int(selected_home))
+                        for key in [selected_home, str(selected_home), int(selected_home) if str(selected_home).isdigit() else None]:
+                            if key is not None and key in homes and key not in home_ids:
+                                home_ids.append(key)
+                                break
                 MideaLogger.debug(f"Final home_ids to process: {home_ids}")
+
+                # 同步云端家庭名称到本地配置
+                if home_ids:
+                    home_id = home_ids[0]
+                    home_info = homes.get(home_id) or homes.get(str(home_id)) or homes.get(int(home_id))
+                    if home_info:
+                        new_home_name = home_info.get("name", f"家庭 {home_id}") if isinstance(home_info, dict) else str(home_info) if home_info else f"家庭 {home_id}"
+
+                        current_home_name = config_entry.data.get("home_name", "")
+                        if new_home_name != current_home_name:
+                            new_title = f"{account} | {new_home_name}"
+                            new_data = dict(config_entry.data)
+                            new_data["home_name"] = new_home_name
+                            hass.config_entries.async_update_entry(
+                                config_entry,
+                                title=new_title,
+                                data=new_data
+                            )
+                            MideaLogger.info(f"Updated home name from '{current_home_name}' to '{new_home_name}'")
 
                 for home_id in home_ids:
                     appliances = await cloud.list_appliances(home_id)

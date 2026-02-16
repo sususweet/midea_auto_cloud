@@ -47,6 +47,10 @@
         "data": {
           "selected_homes": "Select Homes"
         }
+      },
+      "confirm": {
+        "title": "Configuration Confirm",
+        "description": "Selected {homes_count} homes, found {devices_count} devices.\n\nAfter clicking Submit, the system will create a separate configuration entry for each home.\n\nNote: Due to multiple configuration entries loading simultaneously, the device [Area] and [Name] settings page will only show devices from the current home in the Midea SmartHome app. You can later configure the [Area] and [Name] for each home's devices in the [Integration Entries]."
       }
     }
   },
