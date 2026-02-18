@@ -325,13 +325,19 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
                         os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
                         path = hass.config.path(STORAGE_PATH)
-                        file = await cloud.download_lua(
-                            path=path,
-                            device_type=info.get(CONF_TYPE),
-                            sn=info.get(CONF_SN),
-                            model_number=info.get(CONF_MODEL_NUMBER),
-                            manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
-                        )
+                        file = None
+
+                        try:
+                            file = await cloud.download_lua(
+                                path=path,
+                                device_type=info.get(CONF_TYPE),
+                                sn=info.get(CONF_SN),
+                                model_number=info.get(CONF_MODEL_NUMBER),
+                                manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                            )
+                        except Exception as e:
+                            MideaLogger.warning(f"Failed to download lua for {info.get(CONF_NAME)}: {e}")
+
                         try:
                             os.makedirs(hass.config.path(STORAGE_PLUGIN_PATH), exist_ok=True)
                             plugin_path = hass.config.path(STORAGE_PLUGIN_PATH)
@@ -346,7 +352,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
                             )
                         except Exception as e:
-                            traceback.print_exc()
+                            MideaLogger.warning(f"Failed to download plugin for {info.get(CONF_NAME)}: {e}")
 
                         try:
                             device = MiedaDevice(

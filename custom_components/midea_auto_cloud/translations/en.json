@@ -48,9 +48,12 @@
           "selected_homes": "Select Homes"
         }
       },
+      "download": {
+        "title": "Download Resources"
+      },
       "confirm": {
         "title": "Configuration Confirm",
-        "description": "Selected {homes_count} homes, found {devices_count} devices.\n\nAfter clicking Submit, the system will create a separate configuration entry for each home.\n\nNote: Due to multiple configuration entries loading simultaneously, the device [Area] and [Name] settings page will only show devices from the current home in the Midea SmartHome app. You can later configure the [Area] and [Name] for each home's devices in the [Integration Entries]."
+        "description": "**Configuration Summary:**\n\n🏠 Selected {homes_count} homes\n📱 Found {devices_count} devices\n\n**Configuration Results:**\n\n{download_summary}\n\n**Tip:**\n\n💡 Click「Submit」to create a separate configuration entry for each home. Due to multiple configuration entries loading simultaneously, the device「Area」and「Name」settings page will only show devices from the current home. You can later configure each home's devices in the「Integration Entries」."
       }
     }
   },

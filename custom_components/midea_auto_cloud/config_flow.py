@@ -1,5 +1,6 @@
 import voluptuous as vol
 import logging
+import os
 from typing import Any
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant import config_entries
@@ -14,7 +15,14 @@ from .const import (
     CONF_PASSWORD,
     DOMAIN,
     CONF_SERVER, CONF_SERVERS,
-    CONF_SELECTED_HOMES
+    CONF_SELECTED_HOMES,
+    STORAGE_PATH,
+    STORAGE_PLUGIN_PATH,
+    CONF_SN,
+    CONF_MODEL_NUMBER,
+    CONF_MANUFACTURER_CODE,
+    CONF_SMART_PRODUCT_ID,
+    CONF_SN8,
 )
 from .core.cloud import get_midea_cloud
 
@@ -25,6 +33,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     _cloud = None
     _homes = None
     _home_names = None
+    _appliances_info = None
 
     @staticmethod
     @callback
@@ -111,10 +120,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     first_home_name = self._home_names.get(first_home_id, f"家庭 {first_home_id}")
 
                     total_devices = 0
+                    appliances_info = {}
                     for home_id in selected_home_ids:
                         appliances = await self._cloud.list_appliances(home_id)
                         if appliances:
                             total_devices += len(appliances)
+                            for appliance_code, info in appliances.items():
+                                appliances_info[appliance_code] = info
 
                     self._config_data = {
                         CONF_TYPE: CONF_ACCOUNT,
@@ -128,7 +140,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     }
                     self._total_devices = total_devices
                     self._total_homes = len(selected_home_ids)
-                    return await self.async_step_confirm()
+                    self._appliances_info = appliances_info
+                    return await self.async_step_download()
 
         # 构建家庭选择选项
         home_options = {}
@@ -151,6 +164,79 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
+    async def async_step_download(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """下载 Lua / Plugin 资源文件步骤 - 显示进度条"""
+        if self._appliances_info is None or len(self._appliances_info) == 0:
+            return await self.async_step_confirm()
+
+        if not hasattr(self, '_download_task') or self._download_task is None:
+            self._download_progress = 0
+            self._download_results = {"success": 0, "skipped": 0, "failed": 0}
+            self._lua_path = self.hass.config.path(STORAGE_PATH)
+            self._plugin_path = self.hass.config.path(STORAGE_PLUGIN_PATH)
+            os.makedirs(self._lua_path, exist_ok=True)
+            os.makedirs(self._plugin_path, exist_ok=True)
+            self._appliances_list = list(self._appliances_info.items())
+            self._download_task = self.hass.async_create_task(
+                self._do_download(),
+                eager_start=True,
+            )
+            return self.async_show_progress(
+                step_id="download",
+                progress_action="download",
+                progress_task=self._download_task,
+            )
+
+        if not self._download_task.done():
+            return self.async_show_progress(
+                step_id="download",
+                progress_action="download",
+                progress_task=self._download_task,
+            )
+
+        self._download_task = None
+        return self.async_show_progress_done(next_step_id="confirm")
+
+    async def _do_download(self):
+        """执行下载 Lua / Plugin 资源文件任务"""
+        for appliance_code, info in self._appliances_list:
+            device_name = info.get("name", f"设备 {appliance_code}")
+            device_type = info.get("type")
+
+            try:
+                lua_file = await self._cloud.download_lua(
+                    path=self._lua_path,
+                    device_type=device_type,
+                    sn=info.get(CONF_SN),
+                    model_number=info.get(CONF_MODEL_NUMBER),
+                    manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                )
+                if lua_file:
+                    self._download_results["success"] += 1
+                else:
+                    self._download_results["skipped"] += 1
+            except Exception as e:
+                _LOGGER.warning(f"Failed to download lua for {device_name}: {e}")
+                self._download_results["failed"] += 1
+
+            try:
+                await self._cloud.download_plugin(
+                    path=self._plugin_path,
+                    appliance_code=appliance_code,
+                    smart_product_id=info.get(CONF_SMART_PRODUCT_ID),
+                    device_type=device_type,
+                    sn=info.get(CONF_SN),
+                    sn8=info.get(CONF_SN8),
+                    model_number=info.get(CONF_MODEL_NUMBER),
+                    manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                )
+            except Exception as e:
+                _LOGGER.warning(f"Failed to download plugin for {device_name}: {e}")
+
+            self._download_progress += 1
+            if self._total_devices > 0:
+                self.async_update_progress(self._download_progress / self._total_devices)
+
     async def async_step_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             first_home_name = self._config_data.get("home_name", "")
@@ -162,11 +248,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data=self._config_data,
             )
 
+        download_results = getattr(self, "_download_results", None)
+        download_summary = ""
+        if download_results:
+            success = download_results['success']
+            skipped = download_results['skipped']
+            failed = download_results['failed']
+            if failed > 0:
+                download_summary = f"✅ 成功 {success} 个\n⏭️ 跳过 {skipped} 个\n❌ 失败 {failed} 个"
+            else:
+                download_summary = f"✅ 成功 {success} 个\n⏭️ 跳过 {skipped} 个"
+
         return self.async_show_form(
             step_id="confirm",
             description_placeholders={
                 "homes_count": str(self._total_homes),
                 "devices_count": str(self._total_devices),
+                "download_summary": download_summary,
             },
         )
 
