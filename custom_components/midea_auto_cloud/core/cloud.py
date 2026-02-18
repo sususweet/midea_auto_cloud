@@ -507,10 +507,17 @@ class MeijuCloud(MideaCloud):
             "modelNumber": model_number
         }
         fnm = None
+        # 先尝试获取文件名，检查文件是否存在
         if response := await self._api_request(
             endpoint="/v1/appliance/protocol/lua/luaGet",
             data=data
         ):
+            fnm = f"{path}/{response['fileName']}"
+            # 检查文件是否已经存在
+            if os.path.exists(fnm):
+                MideaLogger.debug(f"Lua file already exists: {fnm}, skipping download")
+                return fnm
+            # 文件不存在，下载
             res = await self._session.get(response["url"])
             if res.status == 200:
                 lua = await res.text()
@@ -518,7 +525,6 @@ class MeijuCloud(MideaCloud):
                     stream = ('local bit = require "bit"\n' +
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
-                    fnm = f"{path}/{response['fileName']}"
                     async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
@@ -589,6 +595,12 @@ class MeijuCloud(MideaCloud):
                 MideaLogger.warning(f"No download URL found for plugin: {zip_title}")
                 return None
             
+            # 检查文件是否已经存在
+            fnm = f"{path}/{zip_title}"
+            if os.path.exists(fnm):
+                MideaLogger.debug(f"Plugin file already exists: {fnm}, skipping download")
+                return fnm
+            
             try:
                 # 确保目录存在
                 os.makedirs(path, exist_ok=True)
@@ -597,7 +609,6 @@ class MeijuCloud(MideaCloud):
                 if res.status == 200:
                     zip_data = await res.read()
                     if zip_data:
-                        fnm = f"{path}/{zip_title}"
                         async with aiofiles.open(fnm, "wb") as fp:
                             await fp.write(zip_data)
                         MideaLogger.info(f"Downloaded plugin file: {fnm}")
