@@ -84,7 +84,6 @@ def remove_device_config(hass: HomeAssistant, sn8):
     except FileNotFoundError:
         pass
 
-
 async def load_device_config(hass: HomeAssistant, device_type, sn8):
     def _ensure_dir_and_load(path_dir: str, path_file: str):
         os.makedirs(path_dir, exist_ok=True)
@@ -141,7 +140,6 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
                 device.set_ip_address(ip_address)
             if refresh_interval is not None:
                 device.set_refresh_interval(refresh_interval)
-
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
@@ -253,6 +251,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                         break
 
                 if not home_exists:
+                    # 获取该家庭的设备数量
+                    appliances = await cloud.list_appliances(home_id)
+                    device_count = len(appliances or [])
                     # 异步创建该家庭的配置条目
                     hass.async_create_task(
                         hass.config_entries.flow.async_init(
@@ -266,6 +267,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 CONF_SELECTED_HOMES: [home_id],
                                 "home_name": home_name,
                                 "home_id": home_id,
+                                "nickname": cloud.nickname,
+                                "device_count": device_count,
                             },
                         )
                     )
@@ -299,10 +302,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     home_info = homes.get(home_id) or homes.get(str(home_id)) or homes.get(int(home_id))
                     if home_info:
                         new_home_name = home_info.get("name", f"家庭 {home_id}") if isinstance(home_info, dict) else str(home_info) if home_info else f"家庭 {home_id}"
-
                         current_home_name = config_entry.data.get("home_name", "")
                         if new_home_name != current_home_name:
-                            new_title = f"{account} | {new_home_name}"
+                            new_title = f"{cloud.nickname} | {new_home_name}"
                             new_data = dict(config_entry.data)
                             new_data["home_name"] = new_home_name
                             hass.config_entries.async_update_entry(
@@ -489,7 +491,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             MideaLogger.error(f"Fetch appliances failed: {e}")
         await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
         return True
-
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     device_id = config_entry.data.get(CONF_DEVICE_ID)

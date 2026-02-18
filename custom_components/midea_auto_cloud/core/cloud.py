@@ -41,7 +41,6 @@ default_keys = {
     }
 }
 
-
 class MideaCloud:
     def __init__(
             self,
@@ -211,7 +210,6 @@ class MideaCloud:
         """Send control to switch device. Subclasses should implement if supported."""
         raise NotImplementedError()
 
-
 class MeijuCloud(MideaCloud):
     APP_ID = "900"
     APP_VERSION = "8.20.0.2"
@@ -272,7 +270,11 @@ class MeijuCloud(MideaCloud):
                         response["key"]
                     ), None
                 )
-
+                # 获取用户昵称
+                if "userInfo" in response and "nickName" in response["userInfo"]:
+                    self._nickname = response["userInfo"]["nickName"]
+                else:
+                    self._nickname = self._account
                 return True
         return False
 
@@ -415,7 +417,6 @@ class MeijuCloud(MideaCloud):
             else:
                 MideaLogger.warning(f"[{appliance_code}] Gateway command failed: {response}")
 
-
     async def get_central_ac_status(self, appliance_codes: list) -> dict | None:
         """Get status of central AC devices using the aggregator API."""
 
@@ -464,6 +465,32 @@ class MeijuCloud(MideaCloud):
             MideaLogger.warning(f"[{device_id}] Switch control failed: {response}")
             return False
 
+    async def get_user_info(self):
+        """获取用户信息"""
+        data = {}
+        if response := await self._api_request(
+            endpoint="/v1/user/info/get",
+            data=data
+        ):
+            MideaLogger.debug(f"Get user info response keys: {list(response.keys())}")
+            # 检查响应结构
+            if "data" in response:
+                MideaLogger.debug(f"Get user info data keys: {list(response['data'].keys())}")
+                if "userInfo" in response['data']:
+                    MideaLogger.debug(f"Get user info userInfo keys: {list(response['data']['userInfo'].keys())}")
+                    return response['data']['userInfo']
+            # 直接返回响应
+            return response
+        return None
+
+    @property
+    def nickname(self):
+        """获取用户昵称"""
+        # 确保_nickname属性存在
+        if not hasattr(self, "_nickname"):
+            self._nickname = self._account
+        return self._nickname
+
     async def download_lua(
             self, path: str,
             device_type: int,
@@ -495,7 +522,6 @@ class MeijuCloud(MideaCloud):
                     async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
-
 
     async def download_plugin(
             self, path: str,
@@ -684,6 +710,11 @@ class MSmartHomeCloud(MideaCloud):
                 self._uid = response["uid"]
                 self._access_token = response["mdata"]["accessToken"]
                 self._security.set_aes_keys(response["accessToken"], response["randomData"])
+                # 获取用户昵称
+                if "userInfo" in response and "nickName" in response["userInfo"]:
+                    self._nickname = response["userInfo"]["nickName"]
+                else:
+                    self._nickname = self._account
                 return True
         return False
 
@@ -786,6 +817,17 @@ class MSmartHomeCloud(MideaCloud):
 
         return None
 
+    async def get_user_info(self):
+        """获取用户信息"""
+        data = self._make_general_data()
+        if response := await self._api_request(
+            endpoint="/v1/user/info/get",
+            data=data
+        ):
+            MideaLogger.debug(f"Get user info response: {response}")
+            return response
+        return None
+
     async def get_device_status(
         self,
         appliance_code: int,
@@ -854,7 +896,6 @@ class MSmartHomeCloud(MideaCloud):
             data=data
         )
         return response is not None
-
 
 def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str, proxy: str | None = None) -> MideaCloud | None:
     cloud = None

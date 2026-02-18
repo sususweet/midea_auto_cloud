@@ -50,9 +50,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 if await cloud.login():
 
-                    # 保存云实例和用户输入，用于后续步骤
+                    # 缓存云实例和用户输入，用于后续步骤；这个注释用旧的；
                     self._cloud = cloud
                     self._user_input = user_input
+                    # 保存用户昵称
+                    self._nickname = cloud.nickname
 
                     # 缓存云会话，供后续配置条目复用，避免重复登录
                     self.hass.data.setdefault(DOMAIN, {})
@@ -152,8 +154,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             first_home_name = self._config_data.get("home_name", "")
-            account = self._config_data.get(CONF_ACCOUNT, "")
-            title = f"{account} | {first_home_name}"
+            nickname = getattr(self, "_nickname", self._config_data.get(CONF_ACCOUNT, ""))
+            title = f"{nickname} | {first_home_name}"
 
             return self.async_create_entry(
                 title=title,
@@ -173,8 +175,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             home_id = user_input.get("home_id")
             home_name = user_input.get("home_name", f"家庭 {home_id}")
-            account = user_input.get(CONF_ACCOUNT)
-            title = f"{account} | {home_name}"
+            nickname = user_input.get("nickname", user_input.get(CONF_ACCOUNT, ""))
+            account = user_input.get(CONF_ACCOUNT, "")
+            title = f"{nickname} | {home_name}"
 
             # 使用账号+家庭ID作为唯一标识，避免重复创建
             await self.async_set_unique_id(f"{account}_{home_id}")
@@ -193,7 +196,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         return self.async_abort(reason="no_data")
-
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
