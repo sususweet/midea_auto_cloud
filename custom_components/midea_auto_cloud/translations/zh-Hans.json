@@ -2717,6 +2717,9 @@
       }
     },
   "switch": {
+    "efficient": {
+        "name": "低耗保温"
+      },
 	  "prevent_super_cool": {
         "name": "智控温"
       },
@@ -2913,7 +2916,7 @@
         "name": "声音爸爸"
       },
       "sterilization": {
-        "name": "杀菌"
+        "name": "智能杀菌"
       },
       "sterilize_high_temp": {
         "name": "高温杀菌"
