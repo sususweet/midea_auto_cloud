@@ -117,15 +117,27 @@ class MiedaDevice(threading.Thread):
         elif location == 2:
             self._attributes["db_location_selection"] = "right"
 
-    def _adjust_t0xd9_control_status(self, running_status):
-        # 依据db_running_status调整T0xD9复式洗衣机的db_control_status
+    def _adjust_control_status(self, running_status):
+        # 依据运行状态调整设备的控制状态
         # 根据运行状态确定控制状态, 只有当运行状态是"start"时，控制状态才为"start"
         if running_status == "start":
             control_status = "start"
         # 其他所有情况(包括standby、pause、off、error等)，控制状态应为pause
         else:
             control_status = "pause"
-        self._attributes["db_control_status"] = control_status
+        
+        # 根据设备类型确定控制状态属性名
+        if self._device_type == 0xD9:
+            # T0xD9复式洗衣机使用db_control_status
+            control_status_key = "db_control_status"
+        elif self._device_type in [0xDA, 0xDB, 0xDC]:
+            # T0xDA、T0xDB、T0xDC设备使用control_status
+            control_status_key = "control_status"
+        else:
+            # 默认使用control_status
+            control_status_key = "control_status"
+        
+        self._attributes[control_status_key] = control_status
 
     @property
     def device_name(self):
@@ -412,10 +424,19 @@ class MiedaDevice(threading.Thread):
 
         # 对于T0xD9复式洗衣机，依据云端 db_running_status，调整本地 db_control_status
         if self._device_type == 0xD9 and "db_running_status" in new_status:
-                running_status = new_status["db_running_status"]
-                self._adjust_t0xd9_control_status(running_status)
+            running_status = new_status["db_running_status"]
+            self._adjust_control_status(running_status)
+
+        # 对于T0xDA、T0xDB、T0xDC设备，依据云端 running_status，调整本地 control_status
+        if self._device_type in [0xDA, 0xDB, 0xDC] and "running_status" in new_status:
+            running_status = new_status["running_status"]
+            self._adjust_control_status(running_status)
 
         if len(new_status) > 0:
+            # 确保所有状态都更新后再进行计算
+            for key, value in new_status.items():
+                self._attributes[key] = value
+
             for c in self._calculate_get:
                 lvalue = c.get("lvalue")
                 rvalue = c.get("rvalue")
@@ -483,6 +504,10 @@ class MiedaDevice(threading.Thread):
                                 self._attributes[single] = value
                                 new_status[single] = value
                         if len(new_status) > 0:
+                            # 确保所有状态都更新后再进行计算
+                            for key, value in new_status.items():
+                                self._attributes[key] = value
+
                             for c in self._calculate_get:
                                 lvalue = c.get("lvalue")
                                 rvalue = c.get("rvalue")

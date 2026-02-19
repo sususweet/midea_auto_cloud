@@ -11,7 +11,8 @@
       "download_lua_failed": "下载设备协议脚本失败",
       "discover_failed": "无法在本地搜索到该设备",
       "no_new_devices": "没有可用的设备",
-      "connect_error": "无法连接到指定设备"
+      "connect_error": "无法连接到指定设备",
+      "home_already_configured": "所选家庭存在本地集成条目，请先手动移除或选择其他家庭后重试"
     },
     "step": {
       "user": {
@@ -47,6 +48,13 @@
         "data": {
           "selected_homes": "选择家庭"
         }
+      },
+      "download": {
+        "title": "下载资源文件"
+      },
+      "confirm": {
+        "title": "配置确认",
+        "description": "**配置摘要：**\n\n🏠 已选择 {homes_count} 个家庭\n📱 共发现 {devices_count} 台设备\n\n**配置结果：**\n\n{download_summary}\n\n**提示：**\n\n💡 点击「提交」后，系统将为每个家庭创建独立的配置条目。由于多个配置条目同时加载，设备「区域」与「名称」设置界面只显示当前家庭的设备。您可以稍后在「集成条目」中分别设置每个家庭设备的「区域」和「名称」。"
       }
     }
   },
@@ -462,6 +470,13 @@
       }
     },
     "select": {
+      "aidry": {
+        "name": "智感干洗",
+        "state": {
+          "off": "关闭",
+          "on": "开启"
+        }
+      },
       "no_wind_sense": {
         "name": "无风感"
       },
@@ -2103,6 +2118,9 @@
       "end_time_minute": {
         "name": "结束时间分钟"
       },
+      "end_time": {
+        "name": "加热结束时间"
+      },
       "flow": {
         "name": "流量"
       },
@@ -2808,7 +2826,7 @@
         "name": "爸爸洗涤"
       },
       "eplus": {
-        "name": "E加"
+        "name": "大水量"
       },
       "fast_hot_power": {
         "name": "快速加热电源"
@@ -2865,7 +2883,7 @@
         "name": "人员洗涤"
       },
       "protect": {
-        "name": "保护"
+        "name": "出水断电"
       },
       "protect_show": {
         "name": "保护显示"

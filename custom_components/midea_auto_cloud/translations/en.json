@@ -11,7 +11,8 @@
       "download_lua_failed": "Failed to download lua script of appliance",
       "discover_failed": "The appliance can't be found on the local network",
       "no_new_devices": "No any new available can be found in your home",
-      "connect_error": "Can't connect to the appliance"
+      "connect_error": "Can't connect to the appliance",
+      "home_already_configured": "Selected home has an existing local integration entry, please manually remove it or choose another home and try again"
     },
     "step": {
       "user": {
@@ -47,6 +48,13 @@
         "data": {
           "selected_homes": "Select Homes"
         }
+      },
+      "download": {
+        "title": "Download Resources"
+      },
+      "confirm": {
+        "title": "Configuration Confirm",
+        "description": "**Configuration Summary:**\n\n🏠 Selected {homes_count} homes\n📱 Found {devices_count} devices\n\n**Configuration Results:**\n\n{download_summary}\n\n**Tip:**\n\n💡 Click「Submit」to create a separate configuration entry for each home. Due to multiple configuration entries loading simultaneously, the device「Area」and「Name」settings page will only show devices from the current home. You can later configure each home's devices in the「Integration Entries」."
       }
     }
   },
@@ -442,6 +450,9 @@
       }
     },
     "select": {
+      "aidry": {
+        "name": "Aidry"
+      },
       "no_wind_sense": {
         "name": "No Wind Sense"
       },
@@ -1804,6 +1815,9 @@
       },
       "end_time_minute": {
         "name": "End Time Minute"
+      },
+	  "end_time": {
+        "name": "Heat End Time"
       },
       "flow": {
         "name": "Flow"
