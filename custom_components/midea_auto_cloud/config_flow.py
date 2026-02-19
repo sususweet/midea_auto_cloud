@@ -116,6 +116,33 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not selected_home_ids:
                     errors["base"] = "no_homes_selected"
                 else:
+                    existing_entries = self.hass.config_entries.async_entries(DOMAIN)
+                    configured_homes = set()
+                    for entry in existing_entries:
+                        entry_homes = entry.data.get(CONF_SELECTED_HOMES, [])
+                        for home_id in entry_homes:
+                            configured_homes.add(str(home_id))
+                    
+                    for home_id in selected_home_ids:
+                        if str(home_id) in configured_homes:
+                            errors["base"] = "home_already_configured"
+                            break
+                    
+                    if errors.get("base"):
+                        home_options = {}
+                        for home_id, home_info in self._homes.items():
+                            home_options[str(home_id)] = self._get_home_name(home_info, home_id)
+                        default_selected = list(home_options.keys())
+                        return self.async_show_form(
+                            step_id="select_homes",
+                            data_schema=vol.Schema({
+                                vol.Required(CONF_SELECTED_HOMES, default=default_selected): vol.All(
+                                    cv.multi_select(home_options)
+                                )
+                            }),
+                            errors=errors,
+                        )
+                    
                     first_home_id = selected_home_ids[0]
                     first_home_name = self._home_names.get(first_home_id, f"家庭 {first_home_id}")
 

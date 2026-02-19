@@ -11,7 +11,8 @@
       "download_lua_failed": "下载设备协议脚本失败",
       "discover_failed": "无法在本地搜索到该设备",
       "no_new_devices": "没有可用的设备",
-      "connect_error": "无法连接到指定设备"
+      "connect_error": "无法连接到指定设备",
+      "home_already_configured": "所选家庭存在本地集成条目，请先手动移除或选择其他家庭后重试"
     },
     "step": {
       "user": {
