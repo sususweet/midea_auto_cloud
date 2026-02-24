@@ -455,7 +455,17 @@
     },
     "humidifier": {
       "humidifier": {
-        "name": "加湿器"
+        "name": "加湿器",
+        "state_attributes": {
+          "mode": {
+              "state": {
+                  "auto": "AI湿随温变",
+                  "manual": "手动",
+                  "moist_skin": "润肤",
+                  "sleep": "睡眠"
+              }
+          }
+        }
       },
       "dehumidifier": {
         "name": "除湿器"
@@ -605,7 +615,12 @@
         "name": "加漂洗"
       },
       "bright_led": {
-        "name": "亮度LED"
+        "name": "亮度LED",
+        "state": {
+            "light": "亮",
+            "dark": "暗",
+            "exit": "熄灭"
+          }
       },
       "capacity": {
         "name": "容量"
@@ -834,7 +849,11 @@
         "name": "强度"
       },
       "light_color": {
-        "name": "灯光颜色"
+        "name": "灯光颜色",
+        "state": {
+          "warm": "暖光",
+          "off": "关闭"
+        }
       },
       "material": {
         "name": "材质"
@@ -2951,6 +2970,9 @@
       "airdry_on_off": {
         "name": "湿帘风干"
       },
+      "airDry_on_off": {
+        "name": "湿帘风干"
+      },
       "airswitch": {
         "name": "烘干存储开关"
       },
@@ -3237,6 +3259,9 @@
         "name": "中层预热"
       },
       "netions_on_off": {
+        "name": "负离子开关"
+      },
+      "netIons_on_off": {
         "name": "负离子开关"
       },
       "nightly": {
@@ -3727,21 +3752,6 @@
       },
       "sedentary_remind": {
         "name": "久坐提醒"
-      }
-    },
-  "vacuum": {
-    "vacuum": {
-        "name": "扫地机器人",
-        "state_attributes": {
-          "fan_speed": {
-            "state": {
-              "soft": "轻柔",
-              "normal": "标准",
-              "high": "强力",
-              "super": "超强"
-            }
-          }
-        }
       }
     }
   }
