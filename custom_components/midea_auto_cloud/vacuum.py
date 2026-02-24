@@ -61,8 +61,9 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
             config=config,
         )
         self._key_battery_level = self._config.get("battery_level")
-        self._key_status = self._config.get("status")
+        self._key_control = self._config.get("control")
         self._key_fan_speeds = self._config.get("fan_speeds")
+        self._control_actions = self._config.get("control_actions", {})
         #self._key_locate = self._config.get("locate")
         #self._key_clean_spot = self._config.get("clean_spot")
         #self._key_map = self._config.get("map")
@@ -96,7 +97,7 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
     @property
     def status(self):
         """Return the status of the vacuum cleaner."""
-        status = self._get_nested_value(self._key_status)
+        status = self._get_nested_value(self._key_control)
         if status is not None:
             return status
         return None
@@ -146,33 +147,38 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
         """Return the list of available fan speeds."""
         return list(self._key_fan_speeds.keys())
 
+    async def _async_set_control(self, action: str, default_value: str):
+        """Set control with action mapping and fallback."""
+        control_value = self._control_actions.get(action, default_value)
+        await self.async_set_attribute(self._key_control, control_value)
+
     async def async_start(self):
         """Start or resume the cleaning task."""
         # 设置为工作状态
-        if self._key_status:
-            await self.async_set_attribute(self._key_status, "work")
+        if self._key_control:
+            await self._async_set_control("start", "work")
         else:
             await self._async_set_status_on_off(self._key_power, True)
 
     async def async_stop(self):
         """Stop the vacuum cleaner."""
         # 设置为停止状态
-        if self._key_status:
-            await self.async_set_attribute(self._key_status, "stop")
+        if self._key_control:
+            await self._async_set_control("stop", "stop")
         else:
             await self._async_set_status_on_off(self._key_power, False)
 
     async def async_pause(self):
         """Pause the cleaning task."""
         # 设置为暂停状态
-        if self._key_status:
-            await self.async_set_attribute(self._key_status, "pause")
+        if self._key_control:
+            await self._async_set_control("pause", "pause")
 
     async def async_return_to_base(self):
         """Return the vacuum cleaner to its base."""
         # 设置为回基站状态
-        if self._key_status:
-            await self.async_set_attribute(self._key_status, "charge")
+        if self._key_control:
+            await self._async_set_control("return", "charge")
 
     async def async_set_fan_speed(self, fan_speed: str):
         """Set the fan speed."""
