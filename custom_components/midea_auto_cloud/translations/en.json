@@ -122,7 +122,27 @@
     }
   },
   "entity": {
+    "button": {
+      "light_off": {
+        "name": "Light off"
+      },
+      "light_on": {
+        "name": "Light on"
+      },
+      "left_stove_off": {
+        "name": "Left stove off"
+      },
+      "right_stove_off": {
+        "name": "Right stove off"
+      },
+      "middle_stove_off": {
+        "name": "Middle stove off"
+      }
+    },
     "binary_sensor": {
+      "probo_on": {
+        "name": "Probo on"
+      },
       "heating_work": {
         "name": "Heating Work Status"
       },
@@ -143,6 +163,9 @@
       },
       "bucket_water_overheating": {
         "name": "Bucket Water Overheating"
+      },
+      "drying_tunnel_overheating": {
+        "name": "Drying Tunnel Overheating"
       },
       "air_status": {
         "name": "Air Running"
@@ -302,6 +325,15 @@
       },
       "standby_status": {
         "name": "Standby Status"
+      },
+	  "out_water": {
+        "name": "Out Water"
+      },
+      "out_hot_water": {
+        "name": "Out Hot Water"
+      },
+      "on_seat": {
+        "name": "On Seat"
       }
     },
     "climate": {
@@ -331,6 +363,16 @@
             "state": {
               "silent": "Silent",
               "full": "Full"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "horizontal_upper_only": "Horizontal Swing Upper",
+              "horizontal_under_only": "Horizontal Swing Under",
+              "horizontal_upper_under": "Horizontal Swing Upper And Under",
+              "horizontal_upper_vertical": "Horizontal Swing Upper And Vertical",
+              "horizontal_under_vertical": "Horizontal Swing Under And Vertical",
+              "vertical_only": "Vertical Swing"
             }
           }
         }
@@ -376,7 +418,19 @@
         "name": "Water Heater"
       },
       "electric_heater": {
-        "name": "Electric Heater"
+        "name": "Electric Heater",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "Left Warm",
+              "right_warm": "Right Warm",
+              "full_on": "Full On"
+            }
+          }
+        }
+      },
+      "heating": {
+        "name": "Heating"
       }
     },
     "humidifier": {
@@ -388,6 +442,90 @@
       }
     },
     "select": {
+      "no_wind_sense": {
+        "name": "No Wind Sense"
+      },
+      "wind_swing_ud_angle": {
+        "name": "Vertical Wind Direction"
+      },
+      "wind_swing_lr_angle": {
+        "name": "Horizontal Wind Direction"
+      },
+      "custom_temperature": {
+        "name": "Custom Temperature"
+      },
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
+		"fresh_air_mode_select": {
+		    "name": "Mode",
+		    "state": {
+		        "normal": "Normal",
+		        "smart": "Smart",
+		        "manual_recirculation": "Manual Recirculation",
+		        "auto_recirculation": "Auto Recirculation",
+		        "supply_air_gentle": "Gentle Supply Air",
+		        "supply_air_fast": "Fast Supply Air",
+		        "exhaust_air_gentle": "Gentle Exhaust Air",
+		        "exhaust_air_fast": "Fast Exhaust Air"
+		    }
+		},
+      "dehydration_speed": {
+        "name": "Dehydration Speed"
+      },
+      "soak_count": {
+        "name": "Rinse Count"
+      },
+      "detergent": {
+        "name": "Detergent"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "water_status": {
+        "name": "Water Status",
+        "state": {
+          "normal": "Normal",
+          "lack_box": "Lack Box",
+          "lack_water": "Lack Water",
+          "change_water": "Change Water"
+        }
+      },
+      "heat_start": {
+        "name": "Boil Water",
+        "state": {
+          "start": "Start",
+          "stop": "Stop"
+        }
+      },
+      "new_wind_model_intake_enable": {
+        "name": "Intake Wind",
+        "state": {
+          "off": "Off",
+          "low": "Low Speed",
+          "medium": "Medium Speed",
+          "high": "High Speed",
+          "full": "Turbo"
+        }
+      },
+      "new_wind_model_exhaust_enable": {
+        "name": "Exhaust Wind",
+        "state": {
+          "off": "Off",
+          "silent": "Silent",
+          "high": "High Speed",
+          "full": "Turbo"
+        }
+      },
+      "updown": {
+        "name": "Running Status"
+      },
+      "ud_swing_angle": {
+        "name": "UD Swing Angle"
+      },
+      "lr_swing_angle": {
+        "name": "LR Swing Angle"
+      },
       "follow_body_sense": {
         "name": "Follow Body Sense"
       },
@@ -445,8 +583,12 @@
       "db_detergent": {
         "name": "DB Detergent"
       },
-      "db_location": {
-        "name": "DB Location"
+      "db_location_selection": {
+        "name": "Bucket Selection",
+        "state": {
+          "left": "Left Bucket",
+          "right": "Right Bucket"
+        }
       },
       "db_position": {
         "name": "DB Position"
@@ -462,6 +604,9 @@
       },
       "db_temperature": {
         "name": "DB Temperature"
+      },
+      "db_dry": {
+        "name": "DB Dry"
       },
       "water_level": {
         "name": "Water Level",
@@ -508,9 +653,25 @@
       "gesture_function_type": {
         "name": "Gesture Function Type"
       },
+      "gesture": {
+        "name": "Gesture"
+      },
+      "gesture_value": {
+        "name": "Gesture Value"
+      },
+      "gesture_sensitivity_value": {
+        "name": "Gesture Sensitivity Value"
+      },
+      "inverter": {
+        "name": "Inverter"
+      },
+      "light": {
+        "name": "Light"
+      },
       "humidity_mode": {
         "name": "Humidity Mode",
         "state": {
+          "auto": "auto",
           "manual": "manual",
           "moist_skin": "moist skin",
           "sleep": "sleep"
@@ -537,9 +698,14 @@
       "mode": {
         "name": "Mode",
         "state": {
+          "air_dry": "Air Dry Mode",
+          "auto": "Auto Mode",
+          "manual": "Manual Mode",
           "normal": "normal",
           "factory_test": "factory test",
+          "fast": "Fast Mode",
           "service": "service",
+          "sleep": "Sleep Mode",
           "normal_continus": "normal continus"
         }
       },
@@ -564,6 +730,7 @@
           "mixed_wash": "mixed wash",
           "wool": "wool",
           "ssp": "self-cleaning mode",
+          "deep_ssp": "deep self-cleaning",
           "sport_clothes": "sport clothes",
           "single_dehytration": "single dehytration",
           "rinsing_dehydration": "rinsing and dehydration",
@@ -714,6 +881,7 @@
         "state": {
           "low": "low",
           "medium": "medium",
+          "middle": "middle",
           "high": "high",
           "auto": "auto",
           "invalid": "invalid"
@@ -731,6 +899,7 @@
           "standard_wash": "standard wash",
           "eco_wash": "eco wash",
           "glass_wash": "glass wash",
+          "soft_wash": "soft wash",
           "hour_wash": "hour wash",
           "fast_wash": "fast wash",
           "soak_wash": "soak wash",
@@ -795,7 +964,12 @@
         "name": "Sleep Sensor"
       },
       "gear": {
-        "name": "Gear"
+        "name": "Gear",
+        "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
       },
       "ptc": {
         "name": "PTC"
@@ -844,14 +1018,171 @@
       },
       "wind_pressure": {
         "name": "Wind Pressure"
+      },
+      "hot_style": {
+        "name": "Heating Style"
+      },
+      "bash_mode": {
+        "name": "Bath Mode"
+      },
+      "heating_mode": {
+        "name": "Heating Mode"
+      },
+      "three_way_mode": {
+        "name": "Three Way Valve Mode"
+      },
+      "heating_unit_type": {
+        "name": "Heating Unit Type"
+      },
+      "clean_mode": {
+        "name": "Clean Mode",
+        "state": {
+          "invalid": "None",
+          "normal": "Bidet Wash",
+          "woman": "Feminine Wash",
+          "maintain": "Nozzle Cleaning"
+        }
+      },
+      "dry_gear": {
+        "name": "Dry Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium",
+          "3": "High"
+        }
+      },
+      "water_gear": {
+        "name": "Water Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "seat_gear": {
+        "name": "Seat Gear",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+      "rinse_volume": {
+        "name": "Rinse Volume",
+        "state": {
+          "full": "Full Flush",
+          "half": "Half Flush",
+          "invalid": "None"
+        }
+      },
+      "injector_position_normal": {
+        "name": "Bidet Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "injector_position_woman": {
+        "name": "Feminine Nozzle Position",
+        "state": {
+          "0": "Off",
+          "1": "Rear",
+          "2": "Mid Rear",
+          "3": "Middle",
+          "4": "Mid Front",
+          "5": "Front"
+        }
+      },
+      "water_pressure_normal": {
+        "name": "Bidet Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
+      },
+	  "clean_interval": {
+        "name": "Clean Interval",
+        "state": {
+          "0": "OFF",
+          "7": "7Day",
+          "15": "15Day",
+          "30": "30Day"
+        }
+      },
+      "water_pressure_woman": {
+        "name": "Feminine Water Pressure",
+        "state": {
+          "0": "Off",
+          "1": "Low",
+          "2": "Medium Low",
+          "3": "Medium",
+          "4": "Medium High",
+          "5": "High"
+        }
       }
     },
     "sensor": {
+      "ice_gall_status": {
+        "name": "Ice Gall Status",
+        "state": {
+          "0": "Stop",
+          "1": "Running"
+        }
+      },
+      "total_working_time": {
+        "name": "Total Working Time"
+      },
+      "wind_pressure": {
+        "name": "Wind Pressure"
+      },
+		  "new_wind_humidity": {
+        "name": "Fresh air humidity"
+      },
+      "new_wind_outdoor_temperature": {
+        "name": "Fresh air outdoor temperature"
+      },
+      "fresh_filter_time": {
+        "name": "Filter remaining life"
+      },
+     "tips_code": {
+        "name": "Tips Code"
+      },
+      "version": {
+        "name": "Version"
+      },
+      "deep_filter_percent": {
+        "name": "Filter Life Remaining"
+      },
       "fresh_air_temp": {
         "name": "Fresh Air Temp"
       },
       "running_status": {
-        "name": "Running Status"
+        "name": "Running Status",
+        "state": {
+          "end": "End",
+          "standby": "Standby",
+          "start": "Start",
+          "pause": "Pause",
+          "idle": "Idle",
+          "fault": "Fault",
+          "delay": "Delay",
+          "delay_pause": "Delay Pause"
+        }
       },
       "tank_status": {
         "name": "Tank Status"
@@ -899,13 +1230,25 @@
         "name": "Disinfection Cabinet Status"
       },
       "b7_left_status": {
-        "name": "Left Stove Status"
+        "name": "Left Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_left_gear": {
         "name": "Left Stove Gear"
       },
       "b7_right_status": {
-        "name": "Right Stove Status"
+        "name": "Right Stove Status",
+          "state": {
+          "initial": "Initial",
+          "power_off": "Power Off",
+          "working": "Working",
+          "power_off_delay": "Power Off Delay"
+        }
       },
       "b7_right_gear": {
         "name": "Left Stove Gear"
@@ -1471,6 +1814,63 @@
       "in_temperature": {
         "name": "In Temperature"
       },
+      "out_temperature": {
+        "name": "Out Temperature"
+      },
+      "bash_temperature": {
+        "name": "Bath Temperature"
+      },
+      "bash_target_temperature": {
+        "name": "Bath Target Temperature"
+      },
+      "heating_temperature": {
+        "name": "Heating Temperature"
+      },
+      "heating_target_temperature": {
+        "name": "Heating Target Temperature"
+      },
+      "heating_gap_temperature": {
+        "name": "Heating Gap Temperature"
+      },
+      "user_mode_target_temperature": {
+        "name": "User Mode Target Temperature"
+      },
+      "activity_mode_target_temperature": {
+        "name": "Activity Mode Target Temperature"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "Sleep Mode Target Temperature"
+      },
+      "rated_power": {
+        "name": "Rated Power"
+      },
+      "current_power": {
+        "name": "Current Power"
+      },
+      "flow_volume": {
+        "name": "Flow Volume"
+      },
+      "bash_mode": {
+        "name": "Bath Mode"
+      },
+      "heating_mode": {
+        "name": "Heating Mode"
+      },
+      "hot_style": {
+        "name": "Heating Style"
+      },
+      "bash_function": {
+        "name": "Bath Function"
+      },
+      "three_way_mode": {
+        "name": "Three Way Valve Mode"
+      },
+      "heating_unit_type": {
+        "name": "Heating Unit Type"
+      },
+      "light_gear": {
+        "name": "Screen Brightness"
+      },
       "mg_remain": {
         "name": "Mg Remain"
       },
@@ -1612,6 +2012,9 @@
       "ud_swing_angle": {
         "name": "UD Swing Angle"
       },
+      "lr_swing_angle": {
+        "name": "LR Swing Angle"
+      },
       "lr_diy_down_percent": {
         "name": "LR DIY Down Percent"
       },
@@ -1662,6 +2065,9 @@
       },
       "life_2": {
         "name": "MPC Filter Cartridge Lifespan"
+      },
+	  "life_2_pcb": {
+        "name": "Life2_PCB"
       },
       "water_consumption": {
         "name": "Water Consumption"
@@ -1794,6 +2200,21 @@
       },
       "tw1_out_water_temp": {
         "name": "Outlet Water Temperature"
+      },
+      "tw_out_water_temp": {
+        "name": "Outlet Water Temperature"
+      },
+      "total_elec_value": {
+        "name": "Total Electricity"
+      },
+	  "clean_water_consumption_next_remaining": {
+        "name": "Clean Water Consumption Next Remaining"
+      },
+      "clean_interval_next_days_remaining": {
+        "name": "Clean Interval Next Days Remaining"
+      },
+      "filter_use_per": {
+        "name": "Filter Use Percentage"
       }
     },
     "light": {
@@ -1802,6 +2223,81 @@
       }
     },
     "number": {
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
+      },
+      "delay_light_off": {
+        "name": "Delay Light Off"
+      },
+      "hosting_upper": {
+        "name": "PM2.5 Upper(Auto Purification)"
+      },
+      "hosting_lower": {
+        "name": "PM2.5 Lower(Stop Purification)"
+      },
+		  "fresh_air_fan_speed": {
+        "name": "Fresh air fan speed"
+      },
+      "steam_quantity": {
+        "name": "Steam Quantity"
+      },
+      "work_hour": {
+        "name": "Work Hour"
+      },
+      "work_minute": {
+        "name": "Work Minute"
+      },
+      "work_second": {
+        "name": "Work Second"
+      },
+      "lightness": {
+        "name": "Lightness"
+      },
+      "custom_timing": {
+        "name": "Light Off Timer" 
+      },
+      "radar_induction_closing_time": {
+        "name": "Night Light Timer" 
+      },
+      "keep_warm_time": {
+        "name": "Keep Warm Time"
+      },
+      "target_temperature": {
+        "name": "Target Temperature"
+      },
+      "light_brightness": {
+        "name": "Light Brightness"
+      },
+      "bash_target_temperature": {
+        "name": "Bath Target Temperature"
+      },
+      "bash_gap_temperature": {
+        "name": "Bath Gap Temperature"
+      },
+      "heating_target_temperature": {
+        "name": "Heating Target Temperature"
+      },
+      "heating_gap_temperature": {
+        "name": "Heating Gap Temperature"
+      },
+      "last_time": {
+        "name": "Continuous Heating Time"
+      },
+      "user_mode_target_temperature": {
+        "name": "User Mode Target Temperature"
+      },
+      "activity_mode_target_temperature": {
+        "name": "Activity Mode Target Temperature"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "Sleep Mode Target Temperature"
+      },
+      "light_gear": {
+        "name": "Screen Brightness"
+      },
+      "laundry_height": {
+        "name": "Laundry Height"
+      },
       "water_quality": {
         "name": "Water Quality"
       },
@@ -1819,6 +2315,9 @@
       },
       "softener": {
         "name": "Softener"
+      },
+      "steam_set": {
+        "name": "Steam Set"
       },
       "temperature": {
         "name": "Temperature"
@@ -1847,6 +2346,18 @@
       "rinse_level": {
         "name": "Rinse Level"
       },
+	  "clean_water_consumption": {
+        "name": "Clean Water Consumption"
+      },
+      "quantify_21": {
+        "name": "Quantify 1"
+      },
+      "quantify_22": {
+        "name": "Quantify 2"
+      },
+      "quantify_23": {
+        "name": "Quantify 3"
+      },
       "wash_strength": {
         "name": "Water Strength"
       }
@@ -1856,7 +2367,37 @@
         "name": "Fan"
       }
     },
-    "switch": {
+  "switch": {
+	  "prevent_super_cool": {
+        "name": "Prevent Super Cool"
+      },
+		"new_wind_machine": {
+			"name": "Fresh air switch"
+		},
+		"anion_status": {
+			"name": "Sterilization"
+		},
+      "radar_induction_enable": {
+        "name": "Radar Induction"
+      },
+      "auto_power_off": {
+        "name": "Auto Power Off"
+      },
+      "power_on_timer": {
+        "name": "Power On Timer"
+      },
+      "power_off_timer": {
+        "name": "Power Off Timer"
+      },
+      "voice": {
+        "name": "Sound"
+      },
+      "laundry": {
+        "name": "One Key Laundry"
+      },
+      "offline_voice_function": {
+        "name": "Offline Voice"
+      },
       "winter_mode": {
         "name": "Winter Mode"
       },
@@ -1876,7 +2417,7 @@
         "name": "Wind Change with Temperature"
       },
       "screen_close": {
-        "name": "Screen Close"
+        "name": "Screen Display"
       },
       "anion": {
         "name": "Anion"
@@ -1961,6 +2502,9 @@
       },
       "hot_power": {
         "name": "Hot Power"
+      },
+	  "heat_function": {
+        "name": "Heat Function"
       },
       "midea_manager": {
         "name": "Midea Manager"
@@ -2102,6 +2646,18 @@
       },
       "buzzer": {
         "name": "Buzzer"
+      },
+      "pump": {
+        "name": "Pump"
+      },
+      "wait_power": {
+        "name": "Standby"
+      },
+      "cold_power": {
+        "name": "Antifreeze"
+      },
+      "sleep_power": {
+        "name": "Sleep"
       },
       "change_litre_switch": {
         "name": "Change Litre Switch"
@@ -2547,6 +3103,9 @@
       "function_zone_power": {
         "name": "Function Zone Power"
       },
+      "humidify": {
+        "name": "Cool Wind"
+      },
       "humidify_power": {
         "name": "Humidify Power"
       },
@@ -2754,11 +3313,17 @@
       "endpoint_8_onoff": {
         "name": "Button 8"
       },
+      "wisdom_wind": {
+        "name": "Wisdom Wind"
+      },
       "work_switch": {
         "name": "Work Switch"
       },
       "water_model_power_save": {
         "name": "Power Save Mode"
+      },
+      "water_model_power": {
+        "name": "Water Model Power"
       },
       "water_model_go_out": {
         "name": "Away Mode"
@@ -2768,6 +3333,84 @@
       },
       "forcetbh_state": {
         "name": "Force Standby"
+      },
+	  "manul_humi": {
+        "name": "humidification"
+      },
+      "manul_humi_value": {
+        "name": "Set humidity"
+      },
+      "down_wind_left_switch": {
+        "name": "Down Wind Left Switch"
+      },
+      "down_wind_right_switch": {
+        "name": "Down Wind Right Switch"
+      },
+      "disinfect": {
+        "name": "Disinfect"
+      },
+      "remove_arofene": {
+        "name": "Remove Arofene"
+      },
+      "remove_peculiar_smell": {
+        "name": "Remove Peculiar Smell"
+      },
+      "auto_fresh_off_co2": {
+        "name": "Auto Fresh Off Co2"
+      },
+      "comfort_fresh_air": {
+        "name": "Comfort Fresh Air"
+      },
+      "elec_dust_remove": {
+        "name": "Elec Dust Remove"
+      },
+      "air_exhaust": {
+        "name": "Air Exhaust"
+      },
+      "auto_rinse": {
+        "name": "Auto Rinse"
+      },
+      "auto_deodorization": {
+        "name": "Auto Deodorization"
+      },
+      "light_sensor": {
+        "name": "Light Sensor"
+      },
+      "auto_eco": {
+        "name": "Auto Eco"
+      },
+	  "open_close_switch": {
+        "name": "Open Close Switch"
+      },
+      "start_clean": {
+        "name": "Start Clean"
+      },
+      "filter_element_flushing": {
+        "name": "Filter Element Flushing"
+      },
+      "no_obsolete_water": {
+        "name": "No Obsolete Water"
+      },
+      "save_mode": {
+        "name": "Save Mode"
+      },
+      "sedentary_remind": {
+        "name": "Sedentary Remind"
+      }
+    },
+  "vacuum": {
+    "vacuum": {
+        "name": "Robotic Vacuum",
+        "state_attributes": {
+          "fan_speed": {
+            "state": {
+              "soft": "Soft",
+              "normal": "Normal",
+              "high": "High",
+              "super": "Super"
+            }
+          }
+        }
       }
     }
   }

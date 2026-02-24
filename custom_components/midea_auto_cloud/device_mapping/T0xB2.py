@@ -179,5 +179,134 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "0TPN36R5": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "temperature", "steam_set", "work_hour", "work_minute", "work_second"
+        ],
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "furnace_light": {
+                    "device_class": BinarySensorDeviceClass.LIGHT,
+                },
+                "door_open": {
+                    "device_class": BinarySensorDeviceClass.DOOR,
+                },
+                "probo_on": {
+                    "device_class": BinarySensorDeviceClass.PLUG,
+                },
+                "pre_heat": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "high_temperature_work": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "work_mode": {
+                    "options": {
+                        "stop": {"work_status": "standby"},
+                        "pause": {"work_status": "pause"},
+                        "pure_steam": {"work_status": "start", "work_mode": "pure_steam"},
+                        "zymosis": {"work_status": "start", "work_mode": "zymosis"},
+                        "dry": {"work_status": "start", "work_mode": "dry"},
+                        "clean": {"work_status": "start", "work_mode": "scale_clean"},
+                        "auto_menu": {"work_status": "start", "work_mode": "auto_menu"},
+                        "custom": {"work_status": "start", "work_mode": "ff"},
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "temperature": {
+                    "min": 0,
+                    "max": 100,
+                    "step": 5,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "steam_set": {
+                    "min": 0,
+                    "max": 100,
+                    "step": 5,
+                    "unit_of_measurement": "%",
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "steam_quantity",
+                },
+                "work_hour": {
+                    "min": 0,
+                    "max": 23,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "device_class": SensorDeviceClass.DURATION,
+                },
+                "work_minute": {
+                    "min": 0,
+                    "max": 59,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "device_class": SensorDeviceClass.DURATION,
+                },
+                "work_second": {
+                    "min": 0,
+                    "max": 59,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.SECONDS,
+                    "device_class": SensorDeviceClass.DURATION,
+                }
+            },
+            Platform.SENSOR: {
+                "work_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "work_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "work_minute": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "work_second": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.SECONDS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "weight": {
+                    "device_class": SensorDeviceClass.WEIGHT,
+                    "unit_of_measurement": "g",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "totalstep": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "stepnum": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "cloudmenuid": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "tips_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "name": "Tips Code"
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
     }
 }

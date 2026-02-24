@@ -492,7 +492,7 @@ class MeijuCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    async with aiofiles.open(fnm, "w") as fp:
+                    async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
 
@@ -744,9 +744,21 @@ class MSmartHomeCloud(MideaCloud):
                               self._security.aes_decrypt_with_fixed_key(lua))
                     stream = stream.replace("\r\n", "\n")
                     fnm = f"{path}/{response['fileName']}"
-                    async with aiofiles.open(fnm, "w") as fp:
+                    async with aiofiles.open(fnm, "w", encoding="utf-8") as fp:
                         await fp.write(stream)
         return fnm
+
+    async def download_plugin(
+        self, path: str,
+        appliance_code: str,
+        smart_product_id: str,
+        device_type: int,
+        sn: str,
+        sn8: str,
+        model_number: str | None,
+        manufacturer_code: str = "0000",
+    ):
+        return
 
     async def send_cloud(self, appliance_code: int, data: bytearray):
         appliance_code = str(appliance_code)

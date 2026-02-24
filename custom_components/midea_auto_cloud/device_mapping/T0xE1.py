@@ -128,5 +128,69 @@ DEVICE_MAPPING = {
                 },
             }
         }
+    },
+   "7600V1E7": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "airswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock"
+                }
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {
+                    "min": 1,
+                    "max": 72,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS
+                }
+            },
+            Platform.SELECT: {
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off" },
+                        "power_on": {"work_status": "power_on" },
+                        "cancel": {"work_status": "cancel" },
+                        "pause": {"operator":"pause"},
+                        "resume": {"operator":"start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status":"work","mode":"eco_wash","additional":0,"wash_region":3},
+                        "soft_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
     }
 }

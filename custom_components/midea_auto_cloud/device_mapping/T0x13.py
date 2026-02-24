@@ -1,5 +1,5 @@
 from homeassistant.components.fan import DIRECTION_FORWARD, DIRECTION_REVERSE
-from homeassistant.const import Platform, UnitOfTemperature, PRECISION_WHOLE
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PRECISION_WHOLE
 
 DEVICE_MAPPING = {
     "default": {
@@ -11,7 +11,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [3000, 5700]},  # 添加色温配置
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [3000, 5700],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "night": {"scene_light": "night"},
                         "read": {"scene_light": "read"},
@@ -33,7 +38,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "led_power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [2700, 6500]},
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [2700, 6500],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "work": {"led_scene_light": "work"},
                         "eating": {"led_scene_light": "eating"},
@@ -82,7 +92,12 @@ DEVICE_MAPPING = {
                 "light": {
                     "power": "led_power",
                     "brightness": {"brightness": [1, 100]},
-                    "color_temp": {"color_temperature": [2700, 6500]},
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [2700, 6500],
+                            "device_range": [0, 100]
+                        }
+                    },
                     "preset_modes": {
                         "work": {"led_scene_light": "work"},
                         "eating": {"led_scene_light": "eating"},
@@ -123,6 +138,41 @@ DEVICE_MAPPING = {
                     "max_temp": 35,
                     "temperature_unit": UnitOfTemperature.CELSIUS,
                     "precision": PRECISION_WHOLE,
+                }
+            }
+        }
+    },
+    "22222222": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.LIGHT: {
+                "light": {
+                    "power": "power",
+                    "brightness": {"brightness": [0, 255]},
+                    "color_temp": {
+                        "color_temperature": {
+                            "kelvin_range": [2700, 6500],
+                            "device_range": [0, 255]
+                        }
+                    },
+                    "preset_modes": {
+                        "night": {"scene_light": "night"},
+                        "read": {"scene_light": "read"},
+                        "mild": {"scene_light": "mild"},
+                        "life": {"scene_light": "life"},
+                        "film": {"scene_light": "film"},
+                        "manual": {"scene_light": "manual"},
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "delay_light_off": {
+                    "min": 0,
+                    "max": 60,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES
                 }
             }
         }

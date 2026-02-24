@@ -20,7 +20,9 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 
 - T0x13 Electric Light
 - T0x15 Water Heater
+- T0x17 Laundry Machine
 - T0x21 Central Air Conditioning Gateway
+- T0x24 Electric Oven
 - T0x26 Bath Heater
 - T0x3D Water Heater
 - T0x9B Steam oven
@@ -32,7 +34,10 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xB6 Range Hood
 - T0xB7 Gas Stove
 - T0xB8 Smart Robot Vacuum
+- T0xBC Air Sensor
 - T0xBF Microwave Steam Oven
+- T0xC1 Wall hanging furnace
+- T0xC2 Intelligent Toilet
 - T0xC3 Heat Pump
 - T0xCA French Door Refrigerator
 - T0xCC Central Air Conditioning (Ducted) Wi-Fi Controller
@@ -47,6 +52,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0xE2 Electric Water Heater
 - T0xE3 Constant Temperature Gas Water Heater
 - T0xE6 Wall hanging furnace
+- T0xE7 Electric Oven
 - T0xEA Rice Cooker
 - T0xED Water Softener
 - T0xFA Electric Fan

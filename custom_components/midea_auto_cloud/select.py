@@ -79,7 +79,15 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
     async def async_select_option(self, option: str):
         new_status = self._key_options.get(option)
         if new_status:
-            await self.async_set_attributes(new_status)
+            # 优先使用command字段
+            command = self._config.get("command")
+            if command and isinstance(command, dict):
+                # 合并选项值到命令
+                merged_command = {**command, **new_status}
+                await self.async_set_attributes(merged_command)
+            else:
+                # 原有逻辑（向后兼容）
+                await self.async_set_attributes(new_status)
 
     def update_state(self, status):
         try:

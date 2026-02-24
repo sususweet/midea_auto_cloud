@@ -61,7 +61,8 @@ PLATFORMS: list[Platform] = [
     Platform.LIGHT,
     Platform.HUMIDIFIER,
     Platform.NUMBER,
-    Platform.BUTTON
+    Platform.BUTTON,
+    Platform.VACUUM
 ]
 
 async def import_module_async(module_name):
@@ -156,7 +157,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         from .const import CJSON_LUA
         cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(cjson, "wt") as fp:
+            with open(cjson, "wt", encoding="utf-8") as fp:
                 fp.write(cjson_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create cjson.lua at {cjson}: {e}")
@@ -164,7 +165,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             import tempfile
             temp_dir = tempfile.gettempdir()
             cjson = os.path.join(temp_dir, "cjson.lua")
-            with open(cjson, "wt") as fp:
+            with open(cjson, "wt", encoding="utf-8") as fp:
                 fp.write(cjson_lua)
             MideaLogger.warning(f"Using temporary file for cjson.lua: {cjson}")
 
@@ -172,7 +173,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         from .const import BIT_LUA
         bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(bit, "wt") as fp:
+            with open(bit, "wt", encoding="utf-8") as fp:
                 fp.write(bit_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create bit.lua at {bit}: {e}")
@@ -180,7 +181,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             import tempfile
             temp_dir = tempfile.gettempdir()
             bit = os.path.join(temp_dir, "bit.lua")
-            with open(bit, "wt") as fp:
+            with open(bit, "wt", encoding="utf-8") as fp:
                 fp.write(bit_lua)
             MideaLogger.warning(f"Using temporary file for bit.lua: {bit}")
 
@@ -308,6 +309,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                             except Exception:
                                 pass
 
+                            # 提取并设置默认值
+                            try:
+                                default_values = {}
+                                entities_cfg = (mapping.get("entities") or {})
+                                for platform_cfg in entities_cfg.values():
+                                    if not isinstance(platform_cfg, dict):
+                                        continue
+                                    for entity_key, ecfg in platform_cfg.items():
+                                        if not isinstance(ecfg, dict):
+                                            continue
+                                        # 检查是否有 default_value 字段
+                                        if "default_value" in ecfg:
+                                            # 使用 entity_key 作为属性名，或者使用 attribute 字段
+                                            attr_name = ecfg.get("attribute", entity_key)
+                                            default_values[attr_name] = ecfg["default_value"]
+                                device.set_default_values(default_values)
+                            except Exception:
+                                traceback.print_exc()
+
                             # 预置 attributes：包含 centralized 里声明的所有键、entities 中使用到的所有属性键
                             try:
                                 preset_keys = set(mapping.get("centralized", []))
@@ -362,6 +382,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                         str(Platform.SWITCH),
                                         str(Platform.FAN),
                                         str(Platform.SELECT),
+                                        str(Platform.VACUUM),
                                     ]:
                                         for entity_key in platform_cfg.keys():
                                             preset_keys.add(entity_key)
@@ -369,6 +390,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 for k in preset_keys:
                                     if k not in device.attributes:
                                         device.attributes[k] = None
+                                # 针对T0xD9复式洗衣机，设置默认的筒选择为左筒
+                                if device.device_type == 0xD9:
+                                    device.attributes["db_location_selection"] = "left"
                             except Exception:
                                 pass
 

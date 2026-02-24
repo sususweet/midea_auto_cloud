@@ -80,8 +80,52 @@ class MiedaDevice(threading.Thread):
         self._centralized = []
         self._calculate_get = []
         self._calculate_set = []
+        self._default_values = {}
         self._lua_runtime = MideaCodec(lua_file, device_type=self._attributes.get("device_type"), sn=sn, subtype=subtype) if lua_file is not None else None
         self._cloud = cloud
+
+    def _handle_t0xd9_db_location_selection(self, status, value):
+        # 处理T0xD9复式洗衣机的db_location_selection更新
+        if value == "left":
+            status["db_location"] = 1
+            self._attributes["db_location"] = 1
+        elif value == "right":
+            status["db_location"] = 2
+            self._attributes["db_location"] = 2
+
+    def _adjust_t0xd9_db_location_based_on_position(self, status=None):
+        # 根据db_position调整T0xD9复式洗衣机的db_location
+        db_position = self._attributes.get("db_position", 1)
+        current_location = self._attributes.get("db_location", 1)
+        
+        if db_position == 1:
+            # db_position = 1，db_location 保持不变
+            calculated_location = current_location
+        elif db_position == 0:
+            # db_position = 0，db_location 切换为另一个选项
+            calculated_location = 2 if current_location == 1 else 1
+        
+        if status is not None:
+            status["db_location"] = calculated_location
+        
+        return calculated_location
+
+    def _sync_t0xd9_location_selection(self, location):
+        # 同步T0xD9复式洗衣机的db_location和db_location_selection
+        if location == 1:
+            self._attributes["db_location_selection"] = "left"
+        elif location == 2:
+            self._attributes["db_location_selection"] = "right"
+
+    def _adjust_t0xd9_control_status(self, running_status):
+        # 依据db_running_status调整T0xD9复式洗衣机的db_control_status
+        # 根据运行状态确定控制状态, 只有当运行状态是"start"时，控制状态才为"start"
+        if running_status == "start":
+            control_status = "start"
+        # 其他所有情况(包括standby、pause、off、error等)，控制状态应为pause
+        else:
+            control_status = "pause"
+        self._attributes["db_control_status"] = control_status
 
     @property
     def device_name(self):
@@ -134,6 +178,10 @@ class MiedaDevice(threading.Thread):
         self._calculate_get = values_get if values_get else []
         self._calculate_set = values_set if values_set else []
 
+    def set_default_values(self, default_values: dict):
+        """设置属性的默认值"""
+        self._default_values = default_values or {}
+
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
 
@@ -166,6 +214,14 @@ class MiedaDevice(threading.Thread):
                 new_status[attr] = self._attributes.get(attr)
             new_status[attribute] = value
             
+            # 针对T0xD9复式洗衣机，当本地变更 db_location_selection 时，调整 db_location
+            if self._device_type == 0xD9:
+                if attribute == "db_location_selection":
+                    self._handle_t0xd9_db_location_selection(new_status, value)
+                # 非 db_location_selection 更新，根据 db_position 设置 db_location
+                else:
+                    self._adjust_t0xd9_db_location_based_on_position(new_status)
+
             # Convert dot-notation attributes to nested structure for transmission
             nested_status = self._convert_to_nested_structure(new_status)
 
@@ -201,7 +257,16 @@ class MiedaDevice(threading.Thread):
             if attribute in self._attributes.keys():
                 has_new = True
                 new_status[attribute] = value
-        
+    
+        # 针对T0xD9复式洗衣机，根据 db_location_selection 调整 db_location
+        if self._device_type == 0xD9:
+            if "db_location_selection" in attributes:
+                location_selection = attributes["db_location_selection"]
+                self._handle_t0xd9_db_location_selection(new_status, location_selection)
+            else:
+                # 非 db_location_selection 更新，根据 db_position 设置 db_location
+                self._adjust_t0xd9_db_location_based_on_position(new_status)
+
         # Convert dot-notation attributes to nested structure for transmission
         nested_status = self._convert_to_nested_structure(new_status)
         
@@ -212,8 +277,8 @@ class MiedaDevice(threading.Thread):
                         await self._build_send(set_cmd)
                         return
                 except Exception as e:
-                        MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
-                        traceback.print_exc()
+                    MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
+                    traceback.print_exc()
 
             cloud = self._cloud
             if cloud and hasattr(cloud, "send_device_control"):
@@ -291,6 +356,15 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
+            # 针对T0xD9复式洗衣机，根据 db_position 动态调整 db_location
+            actual_query = query.copy() if isinstance(query, dict) else query
+            if self._device_type == 0xD9 and isinstance(actual_query, dict):
+                # 根据 db_position 调整 db_location
+                calculated_location = self._adjust_t0xd9_db_location_based_on_position(actual_query)
+
+                # 同步更新db_location_selection
+                self._sync_t0xd9_location_selection(calculated_location)
+
             cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
                 if isinstance(cloud, MSmartHomeCloud):
@@ -300,34 +374,47 @@ class MiedaDevice(threading.Thread):
                         sn=self.sn,
                         model_number=self.subtype,
                         manufacturer_code=self._manufacturer_code,
-                        query=query
+                        query=actual_query
                     ):
                         self._parse_cloud_message(status)
                     else:
                         if self._lua_runtime is not None:
-                            if query_cmd := self._lua_runtime.build_query(query):
+                            if query_cmd := self._lua_runtime.build_query(actual_query):
                                 await self._build_send(query_cmd)
 
                 elif isinstance(cloud, MeijuCloud):
                     if status := await cloud.get_device_status(
                         appliance_code=self._device_id,
-                        query=query
+                        query=actual_query
                     ):
                         self._parse_cloud_message(status)
                     else:
                         if self._lua_runtime is not None:
-                            if query_cmd := self._lua_runtime.build_query(query):
+                            if query_cmd := self._lua_runtime.build_query(actual_query):
                                 await self._build_send(query_cmd)
 
 
-    def _parse_cloud_message(self, status):
+    def _parse_cloud_message(self, status, update=True):
         # MideaLogger.debug(f"Received: {decrypted}")
         new_status = {}
+        # 对于有默认值的变量，在解析前先设置一次默认值
+        for attr, default_value in self._default_values.items():
+            # self._attributes[attr] = default_value
+            if attr not in self._attributes or self._attributes[attr] is None:
+                new_status[attr] = default_value
+
+        # 处理云端返回的状态，云端结果会覆盖默认值
         for single in status.keys():
             value = status.get(single)
             if single not in self._attributes or self._attributes[single] != value:
-                self._attributes[single] = value
+                # self._attributes[single] = value
                 new_status[single] = value
+
+        # 对于T0xD9复式洗衣机，依据云端 db_running_status，调整本地 db_control_status
+        if self._device_type == 0xD9 and "db_running_status" in new_status:
+                running_status = new_status["db_running_status"]
+                self._adjust_t0xd9_control_status(running_status)
+
         if len(new_status) > 0:
             for c in self._calculate_get:
                 lvalue = c.get("lvalue")
@@ -345,21 +432,29 @@ class MiedaDevice(threading.Thread):
                                 .replace("[", "[\"")
                         calculate_str2 = \
                             (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'self._attributes[').replace(']', "\"]")}") \
+                             f"{rvalue.replace('[', 'new_status[').replace(']', "\"]")}") \
                                 .replace("[", "[\"")
                         try:
                             exec(calculate_str1)
+                        except Exception as e:
+                            traceback.print_exc()
+                            MideaLogger.warning(
+                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                                self._device_id
+                            )
+                        try:
                             exec(calculate_str2)
                         except Exception as e:
                             traceback.print_exc()
                             MideaLogger.warning(
-                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}, calculate_str2: {calculate_str2}",
+                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
                                 self._device_id
                             )
-            self._update_all(new_status)
+            if update:
+                self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
-    def _parse_message(self, msg):
+    def _parse_message(self, msg, update=True):
         if self._protocol == 3:
             messages, self._buffer = self._security.decode_8370(self._buffer + msg)
         else:
@@ -413,14 +508,15 @@ class MiedaDevice(threading.Thread):
                                             MideaLogger.warning(
                                                 f"Calculation Error: {lvalue} = {rvalue}", self._device_id
                                             )
-                            self._update_all(new_status)
+                            if update:
+                                self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
     async def _send_message(self, data):
         if reply := await self._cloud.send_cloud(self._device_id, data):
             if reply_dec := self._lua_runtime.decode_status(dec_string_to_bytes(reply).hex()):
                 MideaLogger.debug(f"Decoded: {reply_dec}")
-                result = self._parse_cloud_message(reply_dec)
+                result = self._parse_cloud_message(reply_dec, update=False)
                 if result == ParseMessageResult.ERROR:
                     MideaLogger.debug(f"Message 'ERROR' received")
                 elif result == ParseMessageResult.SUCCESS:
@@ -508,5 +604,3 @@ class MiedaDevice(threading.Thread):
     #                                   f"{e.__traceback__.tb_lineno}, {repr(e)}")
     #                 self.disconnect()
     #                 break
-
-

@@ -337,7 +337,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             new_status = self._key_preset_modes.get(preset_mode)
             await self.async_set_attributes(new_status)
 
-    async def async_set_hvac_mode(self, hvac_mode: str):
+    async def async_set_hvac_mode(self, hvac_mode: HVACMode):
         if self._is_central_ac:
             run_mode = self._key_hvac_modes.get(hvac_mode)
             await self.coordinator.async_send_central_ac_control(run_mode)
