@@ -86,7 +86,7 @@ def remove_device_config(hass: HomeAssistant, sn8):
         pass
 
 
-async def load_device_config(hass: HomeAssistant, device_type, sn8):
+async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None):
     def _ensure_dir_and_load(path_dir: str, path_file: str):
         os.makedirs(path_dir, exist_ok=True)
         return load_json(path_file, default={})
@@ -95,30 +95,27 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8):
     config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
     raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
     json_data = {}
-    # if isinstance(raw, dict) and len(raw) > 0:
-    #     # 兼容两种文件结构：
-    #     # 1) { "<sn8>": { ...mapping... } }
-    #     # 2) { ...mapping... }（直接就是映射体）
-    #     if sn8 in raw:
-    #         json_data = raw.get(sn8) or {}
-    #     else:
-    #         # 如果像映射体（包含 entities/centralized 等关键字段），直接使用
-    #         if any(k in raw for k in ["entities", "centralized", "queries", "manufacturer"]):
-    #             json_data = raw
-    # if not json_data:
+
     device_path = f".device_mapping.{'T0x%02X' % device_type}"
     try:
         mapping_module = await import_module_async(device_path)
         for key, config in mapping_module.DEVICE_MAPPING.items():
-            # support tuple & regular expression pattern to support multiple sn8 sharing one mapping
-            if (key == sn8) or (isinstance(key, tuple) and sn8 in key) or (isinstance(key, str) and re.match(key, sn8)):
+            # 支持基于 subtype 的配置：(\"subtype\", \"1234\") 或 (\"subtype\", 1234)
+            if isinstance(key, tuple) and len(key) == 2 and key[0] == "subtype":
+                # 将 subtype 转换为字符串进行比较
+                subtype_str = str(subtype) if subtype is not None else None
+                if subtype_str is not None and str(key[1]) == subtype_str:
+                    json_data = config
+                    break
+            # 支持基于 sn8 的配置
+            elif (key == sn8) or (isinstance(key, tuple) and sn8 in key) or (isinstance(key, str) and re.match(key, sn8)):
                 json_data = config
                 break
         if not json_data:
             if "default" in mapping_module.DEVICE_MAPPING:
                 json_data = mapping_module.DEVICE_MAPPING["default"]
             else:
-                MideaLogger.warning(f"No mapping found for sn8 {sn8} in type {'T0x%02X' % device_type}")
+                MideaLogger.warning(f"No mapping found for sn8 {sn8} subtype {subtype} in type {'T0x%02X' % device_type}")
     except ModuleNotFoundError:
         MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
 
@@ -292,6 +289,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                     hass,
                                     info.get(CONF_TYPE) or info.get("type"),
                                     info.get(CONF_SN8) or info.get("sn8"),
+                                    device.subtype,
                                 ) or {}
                             except Exception:
                                 mapping = {}
