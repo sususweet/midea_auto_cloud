@@ -309,4 +309,87 @@ DEVICE_MAPPING = {
             }
         }
     }
+
+    "1TPN26PS": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "temperature", "work_hour", "work_minute", "work_second"
+        ],
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "furnace_light": {
+                    "device_class": BinarySensorDeviceClass.LIGHT,
+                },
+                "door_open": {
+                    "device_class": BinarySensorDeviceClass.DOOR,
+                },
+                "pre_heat": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "work_mode": {
+                    "options": {
+                        "stop": {"work_status": "standby"},
+                        "pause": {"work_status": "pause"},
+                        "steam_rice": {
+                            "work_status": "work", 
+                            "work_mode": "steam_rice",
+                            "temperature": 100
+                        },
+                        "steam_vegetables": {
+                            "work_status": "work", 
+                            "work_mode": "steam_vegetables",
+                            "temperature": 100
+                        },
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "temperature": {
+                    "min": 30,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                },
+                "work_hour": {
+                    "min": 0,
+                    "max": 23,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "device_class": SensorDeviceClass.DURATION,
+                },
+                "work_minute": {
+                    "min": 0,
+                    "max": 59,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "device_class": SensorDeviceClass.DURATION,
+                },
+                "work_second": {
+                    "min": 0,
+                    "max": 59,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.SECONDS,
+                    "device_class": SensorDeviceClass.DURATION,
+                }
+            },
+            Platform.SENSOR: {
+                "work_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
 }
