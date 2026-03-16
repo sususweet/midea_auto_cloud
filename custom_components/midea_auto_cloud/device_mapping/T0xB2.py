@@ -308,8 +308,7 @@ DEVICE_MAPPING = {
                 }
             }
         }
-    }
-
+    },
     "1TPN26PS": {
         "rationale": ["off", "on"],
         "queries": [{}],
