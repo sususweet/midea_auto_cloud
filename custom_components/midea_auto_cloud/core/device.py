@@ -43,6 +43,7 @@ class MiedaDevice(threading.Thread):
                  model: str | None,
                  subtype: int | None,
                  manufacturer_code: str | None,
+                 category: str | None,
                  connected: bool,
                  sn: str | None,
                  sn8: str | None,
@@ -67,11 +68,13 @@ class MiedaDevice(threading.Thread):
         self._sn = sn
         self._sn8 = sn8
         self._manufacturer_code = manufacturer_code
+        self._category = category
         self._attributes = {
             "device_type": "T0x%02X" % device_type,
             "sn": sn,
             "sn8": sn8,
-            "subtype": subtype
+            "subtype": subtype,
+            "category": category,
         }
         self._refresh_interval = 30
         self._heartbeat_interval = 10

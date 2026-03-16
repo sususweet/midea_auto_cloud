@@ -3,9 +3,8 @@ from homeassistant.const import Platform, PERCENTAGE, UnitOfPressure, UnitOfTime
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
-    "default": {
+    "default_range_hood": {
         "rationale": ["off", "on"],
-        "queries": [{}],
         "centralized": ["lightness"],
         "calculate": {
             "get": [
@@ -13,6 +12,10 @@ DEVICE_MAPPING = {
                     "lvalue": "[b7_vbattery]",
                     "rvalue": "float([b7_vbatt] / 1000.0)"
                 },
+                {
+                    "lvalue": "[total_energy_consumption]",
+                    "rvalue": "float([total_working_time] / 60 * 0.14)"
+                }
             ],
         },
         "entities": {
@@ -34,11 +37,27 @@ DEVICE_MAPPING = {
                 "b7_right_status": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
-                "b7_vbattery":{
+                "b7_vbattery": {
                     "device_class": SensorDeviceClass.VOLTAGE,
                     "unit_of_measurement": UnitOfElectricPotential.VOLT,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "battery_voltage",
+                },
+                "total_working_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                },
+                "total_energy_consumption": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": "kWh",
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                    "translation_key": "total_elec_value"
+                },
+                "wind_pressure": {
+                    "device_class": SensorDeviceClass.PRESSURE,
+                    "unit_of_measurement": UnitOfPressure.PA,
+                    "state_class": SensorStateClass.MEASUREMENT
                 }
             },
             Platform.BUTTON: {
@@ -53,6 +72,20 @@ DEVICE_MAPPING = {
                 "middle_stove_off": {
                     "command": {"electronic_control_version": 2, "type": "b7", "b7_work_burner_control": 3,
                                 "b7_function_control": 1},
+                }
+            },
+            Platform.NUMBER: {
+                "lightness": {
+                    "min": 10,
+                    "max": 100,
+                    "step": 5,
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "light",
+                        "lightness": "{value}"
+                    }
                 }
             },
             Platform.SELECT: {
@@ -74,6 +107,56 @@ DEVICE_MAPPING = {
                         "extreme": {"gear": 4},
                     }
                 },
+                "gesture": {
+                    "options": {
+                        "off": {"gesture": "off"},
+                        "on": {"gesture": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "gesture_value": {
+                    "options": {
+                        "power_toggle": {"gesture_value": 1},
+                        "adjust_speed": {"gesture_value": 2},
+                        "light_toggle": {"gesture_value": 3},
+                        "power_and_speed": {"gesture_value": 4}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "gesture_sensitivity_value": {
+                    "options": {
+                        "low": {"gesture_sensitivity_value": 1},
+                        "medium": {"gesture_sensitivity_value": 2},
+                        "high": {"gesture_sensitivity_value": 3}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "setting",
+                        "setting": "gesture"
+                    }
+                },
+                "inverter": {
+                    "options": {
+                        "off": {"inverter": "off"},
+                        "on": {"inverter": "on"}
+                    },
+                    "command": {
+                        "electronic_control_version": 2,
+                        "type": "b6",
+                        "b6_action": "control"
+                    }
+                },
                 "light": {
                     "options": {
                         "off": {"light": "off"},
@@ -86,7 +169,7 @@ DEVICE_MAPPING = {
                         "setting": "light"
                     }
                 }
-            },
+            }
         }
     },
     ("730007GC", "730007H8"): {

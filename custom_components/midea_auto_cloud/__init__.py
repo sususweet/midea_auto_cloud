@@ -46,7 +46,8 @@ from .const import (
     CONF_MODEL_NUMBER,
     CONF_SERVERS, STORAGE_PATH, CONF_MANUFACTURER_CODE,
     CONF_SELECTED_HOMES, CONF_SMART_PRODUCT_ID, STORAGE_PLUGIN_PATH,
-    CONF_PASSWORD, CONF_SERVER
+    CONF_PASSWORD, CONF_SERVER,
+    CONF_CATEGORY,
 )
 
 PLATFORMS: list[Platform] = [
@@ -85,7 +86,68 @@ def remove_device_config(hass: HomeAssistant, sn8):
         pass
 
 
-async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None):
+def get_device_mapping(
+    device_mappings: dict,
+    device_type: int,
+    sn8: str = "",
+    subtype: int | None = None,
+    category: str | None = None,
+) -> dict:
+    """按 subtype -> sn8 -> default_category -> default 的优先级选择映射。"""
+    # 没有任何映射直接返回空
+    if not device_mappings:
+        return {}
+
+    result = None
+    MideaLogger.info(f"device_mappings={device_mappings} subtype={subtype} sn8={sn8} category={category}")
+    # 1. 优先按 subtype 精确匹配：("subtype", "1234") 或 ("subtype", 1234)
+    if subtype is not None:
+        subtype_str = str(subtype)
+        for key, config in device_mappings.items():
+            if (
+                isinstance(key, tuple)
+                and len(key) == 2
+                and key[0] == "subtype"
+                and str(key[1]) == subtype_str
+            ):
+                result = config
+                break
+
+    # 2. 如果还没匹配到，再按 sn8 规则匹配
+    if result is None and sn8:
+        for key, config in device_mappings.items():
+            # 直接等于 / tuple 包含 / 正则匹配
+            if (
+                key == sn8
+                or (isinstance(key, tuple) and sn8 in key)
+                or (isinstance(key, str) and re.match(key, sn8))
+            ):
+                result = config
+                break
+
+    # 3. 如果依然没有，且有 category，则尝试 default_{category}
+    if result is None and category:
+        category_key = f"default_{category.replace('-', '_')}"
+        if category_key in device_mappings:
+            result = device_mappings[category_key]
+
+    # 4. 再尝试通用 default
+    if result is None and "default" in device_mappings:
+        result = device_mappings["default"]
+
+    # 5. 最后兜底：返回整个字典，避免 None
+    if result is None:
+        result = device_mappings
+
+    if not result:
+        MideaLogger.warning(
+            f"No mapping found for sn8 {sn8} subtype {subtype} category {category} in type {'T0x%02X' % device_type}"
+        )
+
+    return result
+
+
+async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category: str | None = None):
     def _ensure_dir_and_load(path_dir: str, path_file: str):
         os.makedirs(path_dir, exist_ok=True)
         return load_json(path_file, default={})
@@ -93,28 +155,20 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
     config_dir = hass.config.path(CONFIG_PATH)
     config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
     raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
+
     json_data = {}
 
     device_path = f".device_mapping.{'T0x%02X' % device_type}"
     try:
         mapping_module = await import_module_async(device_path)
-        for key, config in mapping_module.DEVICE_MAPPING.items():
-            # 支持基于 subtype 的配置：(\"subtype\", \"1234\") 或 (\"subtype\", 1234)
-            if isinstance(key, tuple) and len(key) == 2 and key[0] == "subtype":
-                # 将 subtype 转换为字符串进行比较
-                subtype_str = str(subtype) if subtype is not None else None
-                if subtype_str is not None and str(key[1]) == subtype_str:
-                    json_data = config
-                    break
-            # 支持基于 sn8 的配置
-            elif (key == sn8) or (isinstance(key, tuple) and sn8 in key) or (isinstance(key, str) and re.match(key, sn8)):
-                json_data = config
-                break
-        if not json_data:
-            if "default" in mapping_module.DEVICE_MAPPING:
-                json_data = mapping_module.DEVICE_MAPPING["default"]
-            else:
-                MideaLogger.warning(f"No mapping found for sn8 {sn8} subtype {subtype} in type {'T0x%02X' % device_type}")
+        device_mappings = getattr(mapping_module, "DEVICE_MAPPING", {}) or {}
+        json_data = get_device_mapping(
+            device_mappings=device_mappings,
+            device_type=device_type,
+            sn8=sn8,
+            subtype=subtype,
+            category=category,
+        )
     except ModuleNotFoundError:
         MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
 
@@ -366,6 +420,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 model=info.get(CONF_MODEL),
                                 subtype=info.get(CONF_MODEL_NUMBER),
                                 manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                                category=info.get(CONF_CATEGORY),
                                 sn=info.get(CONF_SN),
                                 sn8=info.get(CONF_SN8),
                                 lua_file=file,
@@ -378,6 +433,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                     info.get(CONF_TYPE) or info.get("type"),
                                     info.get(CONF_SN8) or info.get("sn8"),
                                     device.subtype,
+                                    category=info.get(CONF_CATEGORY) or info.get("category"),
                                 ) or {}
                             except Exception:
                                 mapping = {}

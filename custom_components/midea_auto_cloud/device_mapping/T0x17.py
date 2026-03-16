@@ -1,15 +1,11 @@
 from homeassistant.components.switch import SwitchDeviceClass
-from homeassistant.const import Platform, PERCENTAGE, UnitOfTime, UnitOfArea, UnitOfTemperature
-from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.const import Platform, PERCENTAGE, UnitOfTime
 
 DEVICE_MAPPING = {
-    "default": {
+    "default_laundry_rack": {
         "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [],
         "entities": {
-            Platform.SELECT:{
+            Platform.SELECT: {
                 "updown": {
                     "options": {
                         "up": {"updown": "up"},
@@ -23,7 +19,8 @@ DEVICE_MAPPING = {
                     "min": 20,
                     "max": 100,
                     "step": 1,
-                    "unit_of_measurement": PERCENTAGE
+                    "unit_of_measurement": PERCENTAGE,
+                    "translation_key": "lightness"
                 },
                 "custom_height": {
                     "min": 0,
@@ -48,7 +45,7 @@ DEVICE_MAPPING = {
                 "offline_voice_function": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 }
-            },
+            }
         }
     }
 }

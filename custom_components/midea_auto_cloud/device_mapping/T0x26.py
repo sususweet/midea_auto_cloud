@@ -142,6 +142,128 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "default_bath_heater": {
+        "rationale": ["off", "on"],
+        "entities": {
+            Platform.NUMBER: {
+                "bath_temperature": {
+                    "min": 30,
+                    "max": 42,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS
+                },
+                "heating_temperature": {
+                    "min": 30,
+                    "max": 42,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS
+                },
+                "main_light_brightness": {
+                    "min": 10,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": PERCENTAGE
+                },
+                "radar_induction_closing_time": {
+                    "min": 1,
+                    "max": 5,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES
+                }
+            },
+            Platform.SWITCH: {
+                "radar_induction_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "wifi_led_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SELECT: {
+                "heating_direction": {
+                    "options": {
+                        "60": {"heating_direction": "60"},
+                        "70": {"heating_direction": "70"},
+                        "80": {"heating_direction": "80"},
+                        "90": {"heating_direction": "90"},
+                        "100": {"heating_direction": "100"},
+                        "110": {"heating_direction": "110"},
+                        "120": {"heating_direction": "120"},
+                        "swing": {"heating_direction": "253"}
+                    }
+                },
+                "bath_direction": {
+                    "options": {
+                        "60": {"bath_direction": "60"},
+                        "70": {"bath_direction": "70"},
+                        "80": {"bath_direction": "80"},
+                        "90": {"bath_direction": "90"},
+                        "100": {"bath_direction": "100"},
+                        "110": {"bath_direction": "110"},
+                        "120": {"bath_direction": "120"},
+                        "swing": {"bath_direction": "253"}
+                    }
+                },
+                "blowing_direction": {
+                    "options": {
+                        "60": {"blowing_direction": "60"},
+                        "70": {"blowing_direction": "70"},
+                        "80": {"blowing_direction": "80"},
+                        "90": {"blowing_direction": "90"},
+                        "100": {"blowing_direction": "100"},
+                        "110": {"blowing_direction": "110"},
+                        "120": {"blowing_direction": "120"},
+                        "swing": {"blowing_direction": "253"}
+                    }
+                },
+                "drying_direction": {
+                    "options": {
+                        "60": {"drying_direction": "60"},
+                        "70": {"drying_direction": "70"},
+                        "80": {"drying_direction": "80"},
+                        "90": {"drying_direction": "90"},
+                        "100": {"drying_direction": "100"},
+                        "110": {"drying_direction": "110"},
+                        "120": {"drying_direction": "120"},
+                        "swing": {"drying_direction": "253"}
+                    }
+                },
+                "light_mode": {
+                    "options": {
+                        "close_all": {"light_mode": "close_all"},
+                        "night_light": {"light_mode": "night_light"},
+                        "main_light": {"light_mode": "main_light"}
+                    }
+                },
+                "mode": {
+                    "options": {
+                        "close_all": {"mode": "close_all"},
+                        "heating": {"mode": "heating"},
+                        "bath": {"mode": "bath"},
+                        "blowing": {"mode": "blowing"},
+                        "ventilation": {"mode": "ventilation"},
+                        "drying": {"mode": "drying"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "night_light_brightness": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "main_light_brightness": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "current_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                }
+            }
+        }
+    },
     "M0100040": {
         "rationale": ["off", "on"],
         "queries": [{}],

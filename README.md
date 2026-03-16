@@ -29,6 +29,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0x9C Integrated Gas Stove
 - T0xA1 Dehumidifier
 - T0xAC Air Conditioner
+- T0xB0 Microwave Oven
 - T0xB2 Electric Steamer
 - T0xB3 Disinfection Cabinet
 - T0xB6 Range Hood
