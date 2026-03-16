@@ -29,12 +29,13 @@ async def async_setup_entry(
     for device_id, info in device_list.items():
         device_type = info.get("type")
         sn8 = info.get("sn8")
-        config = await load_device_config(hass, device_type, sn8) or {}
+        coordinator = coordinator_map.get(device_id)
+        device = coordinator.device if coordinator else None
+        subtype = device.subtype if device else None
+        config = await load_device_config(hass, device_type, sn8, subtype) or {}
         entities_cfg = (config.get("entities") or {}).get(Platform.BINARY_SENSOR, {})
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")
-        coordinator = coordinator_map.get(device_id)
-        device = coordinator.device if coordinator else None
         # 连接状态实体
         if coordinator and device:
             devs.append(MideaDeviceStatusSensorEntity(coordinator, device, manufacturer, rationale, "Status", {}))

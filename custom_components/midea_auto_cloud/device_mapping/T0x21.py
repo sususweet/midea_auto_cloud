@@ -3,7 +3,35 @@ from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
-    "00000000": {
+    # 按钮面板(4个按钮) - subtype: 78
+    ("subtype", "78"): {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.BUTTON: {
+                "endpoint_1_OnOff": {
+                    "name_attribute": "endpoint_1_name",
+                    "command": {"endpoint": 1, "run_mode": "1"},
+                },
+                "endpoint_2_OnOff": {
+                    "name_attribute": "endpoint_2_name",
+                    "command": {"endpoint": 2, "run_mode": "1"},
+                },
+                "endpoint_3_OnOff": {
+                    "name_attribute": "endpoint_3_name",
+                    "command": {"endpoint": 3, "run_mode": "1"},
+                },
+                "endpoint_4_OnOff": {
+                    "name_attribute": "endpoint_4_name",
+                    "command": {"endpoint": 4, "run_mode": "1"},
+                },
+            }
+        }
+    },
+
+    # 开关面板(1个开关) - subtype: 68
+    ("subtype", "68"): {
         "rationale": ["0", "1"],
         "queries": [{}],
         "centralized": [],
@@ -11,15 +39,110 @@ DEVICE_MAPPING = {
             Platform.SWITCH: {
                 "endpoint_1_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ['0', '1']
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_1_name",
+                    "attribute": "endpoint_1_OnOff",
+                },
+            }
+        }
+    },
+
+    # 开关面板(2个开关) - subtype: 71
+    ("subtype", "71"): {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "endpoint_1_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_1_name",
+                    "attribute": "endpoint_1_OnOff",
                 },
                 "endpoint_2_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ['0', '1']
-                }
-            },
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_2_name",
+                    "attribute": "endpoint_2_OnOff",
+                },
+            }
         }
     },
+
+    # 开关面板(3个开关) - subtype: 74
+    ("subtype", "74"): {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "endpoint_1_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_1_name",
+                    "attribute": "endpoint_1_OnOff",
+                },
+                "endpoint_2_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_2_name",
+                    "attribute": "endpoint_2_OnOff",
+                },
+                "endpoint_3_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_3_name",
+                    "attribute": "endpoint_3_OnOff",
+                },
+            }
+        }
+    },
+
+    # 开关面板(4个开关) - subtype: 76
+    ("subtype", "76"): {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "endpoint_1_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_1_name",
+                    "attribute": "endpoint_1_OnOff",
+                },
+                "endpoint_2_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_2_name",
+                    "attribute": "endpoint_2_OnOff",
+                },
+                "endpoint_3_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_3_name",
+                    "attribute": "endpoint_3_OnOff",
+                },
+                "endpoint_4_OnOff": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                    "name_attribute": "endpoint_4_name",
+                    "attribute": "endpoint_4_OnOff",
+                },
+            }
+        }
+    },
+
+    # SN8 为 00000000 的默认配置（当 subtype 不匹配时使用）
+    "00000000": {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {}
+    },
+
+    # 中央空调默认配置
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],

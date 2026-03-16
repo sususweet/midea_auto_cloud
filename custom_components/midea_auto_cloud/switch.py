@@ -27,12 +27,14 @@ async def async_setup_entry(
     for device_id, info in device_list.items():
         device_type = info.get("type")
         sn8 = info.get("sn8")
-        config = await load_device_config(hass, device_type, sn8) or {}
+        coordinator = coordinator_map.get(device_id)
+        device = coordinator.device if coordinator else None
+        subtype = device.subtype if device else None
+        config = await load_device_config(hass, device_type, sn8, subtype) or {}
         entities_cfg = (config.get("entities") or {}).get(Platform.SWITCH, {})
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")
-        coordinator = coordinator_map.get(device_id)
-        device = coordinator.device if coordinator else None
+
         for entity_key, ecfg in entities_cfg.items():
             devs.append(MideaSwitchEntity(
                 coordinator, device, manufacturer, rationale, entity_key, ecfg
