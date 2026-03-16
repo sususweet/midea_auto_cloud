@@ -362,15 +362,25 @@
         "state_attributes": {
           "preset_modes": {
             "state": {
+              "none": "none",
               "auto": "auto",
               "link": "link",
-              "manual": "manual"
+              "manual": "manual",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
             }
           },
           "fan_mode": {
             "state": {
               "silent": "Silent",
-              "full": "Full"
+              "full": "Full",
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
             }
           },
           "swing_mode": {
@@ -381,6 +391,131 @@
               "horizontal_upper_vertical": "Horizontal Swing Upper And Vertical",
               "horizontal_under_vertical": "Horizontal Swing Under And Vertical",
               "vertical_only": "Vertical Swing"
+            }
+          }
+        }
+        ,
+        "state": {
+          "off": "off",
+          "auto": "auto"
+        }
+      },
+      "thermostat_1": {
+        "name": "Thermostat 1",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "auto": "auto",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
+            }
+          }
+        }
+      },
+      "thermostat_2": {
+        "name": "Thermostat 2",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "auto": "auto",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
+            }
+          }
+        }
+      },
+      "thermostat_3": {
+        "name": "Thermostat 3",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "auto": "auto",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
+            }
+          }
+        }
+      },
+      "thermostat_4": {
+        "name": "Thermostat 4",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "auto": "auto",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
+            }
+          }
+        }
+      },
+      "thermostat_5": {
+        "name": "Thermostat 5",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "none",
+              "auto": "auto",
+              "heat": "heat",
+              "cool": "cool",
+              "fan_only": "fan only",
+              "ground": "ground",
+              "heat_ground": "heat + ground"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "auto",
+              "low": "low",
+              "medium": "medium",
+              "high": "high"
             }
           }
         }
@@ -3413,6 +3548,36 @@
       },
       "sedentary_remind": {
         "name": "Sedentary Remind"
+      },
+      "energysaving_state1": {
+        "name": "Energy Saving 1"
+      },
+      "sleep_state1": {
+        "name": "Sleep 1"
+      },
+      "energysaving_state2": {
+        "name": "Energy Saving 2"
+      },
+      "sleep_state2": {
+        "name": "Sleep 2"
+      },
+      "energysaving_state3": {
+        "name": "Energy Saving 3"
+      },
+      "sleep_state3": {
+        "name": "Sleep 3"
+      },
+      "energysaving_state4": {
+        "name": "Energy Saving 4"
+      },
+      "sleep_state4": {
+        "name": "Sleep 4"
+      },
+      "energysaving_state5": {
+        "name": "Energy Saving 5"
+      },
+      "sleep_state5": {
+        "name": "Sleep 5"
       }
     },
   "vacuum": {

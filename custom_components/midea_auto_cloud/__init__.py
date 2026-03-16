@@ -99,7 +99,7 @@ def get_device_mapping(
         return {}
 
     result = None
-    MideaLogger.info(f"device_mappings={device_mappings} subtype={subtype} sn8={sn8} category={category}")
+
     # 1. 优先按 subtype 精确匹配：("subtype", "1234") 或 ("subtype", 1234)
     if subtype is not None:
         subtype_str = str(subtype)

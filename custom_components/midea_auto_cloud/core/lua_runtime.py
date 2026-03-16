@@ -98,6 +98,9 @@ class MideaCodec(LuaRuntime):
                 prefix = "total"
 
             query_dict["control"]["type"] = prefix
+        elif self._device_type == "T0xCF":
+            query_dict["control"]["control_type"] = "0x11"
+
         json_str = json.dumps(query_dict)
         MideaLogger.debug(f"LuaRuntime json_str {json_str}")
         try:
