@@ -1344,6 +1344,15 @@
       "tank_status": {
         "name": "Tank Status"
       },
+      "water_status": {
+        "name": "Water Status",
+        "state": {
+          "normal": "Normal",
+          "lack_box": "Lack Box",
+          "lack_water": "Lack Water",
+          "change_water": "Change Water"
+        }
+      },
       "fan_level": {
         "name": "Fan Level"
       },
@@ -2395,7 +2404,7 @@
       "hosting_lower": {
         "name": "PM2.5 Lower(Stop Purification)"
       },
-		  "fresh_air_fan_speed": {
+      "fresh_air_fan_speed": {
         "name": "Fresh air fan speed"
       },
       "steam_quantity": {

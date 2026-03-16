@@ -1318,7 +1318,7 @@
           "auto_clean_pause": "清扫暂停",
           "auto_clean_continue": "继续清扫",
           "stop": "停止",
-          "work": "清扫",
+          "work": "工作",
           "save_power": "节能模式",
           "standby": "待机",
           "open": "开门",
@@ -1605,6 +1605,15 @@
       "tank_status": {
         "name": "水箱状态"
       },
+      "water_status": {
+        "name": "水位状态",
+        "state": {
+          "normal": "正常",
+          "lack_box": "缺盒",
+          "lack_water": "缺水",
+          "change_water": "换水"
+        }
+      },
       "fan_level": {
         "name": "风扇档位"
       },
@@ -1636,7 +1645,7 @@
           "clean_pause": "清扫暂停",
           "clean_continue": "继续清扫",
           "stop": "停止",
-          "work": "清扫",
+          "work": "工作",
           "error": "错误",
           "sleep": "休眠",
           "relocate": "重定位",
