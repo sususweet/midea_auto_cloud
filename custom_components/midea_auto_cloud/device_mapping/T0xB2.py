@@ -8,7 +8,7 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
-            "work_status", "work_mode", "lock", "furnace_light", 
+            "work_status", "work_mode", "lock", "furnace_light",
             "dissipate_heat", "pre_heat", "door_open", "lack_water"
         ],
         "entities": {
@@ -330,17 +330,72 @@ DEVICE_MAPPING = {
             Platform.SELECT: {
                 "work_mode": {
                     "options": {
-                        "stop": {"work_status": "standby"},
-                        "pause": {"work_status": "pause"},
-                        "steam_rice": {
-                            "work_status": "work", 
-                            "work_mode": "steam_rice",
-                            "temperature": 100
+                        "开始":{"work_status": "work"},
+                        "停止": {"work_status": "standby"},
+                        "暂停": {"work_status": "pause"},
+                        "蒸鱼": {
+                            "work_status": "work",
+                            "work_mode": "steam_fish",
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 25,
+                            "work_second": 0
                         },
-                        "steam_vegetables": {
-                            "work_status": "work", 
+                        "蒸排骨": {
+                            "work_status": "work",
+                            "work_mode": "steam_ribs",
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 25,
+                            "work_second": 0
+                        },
+                        "蒸蔬菜": {
+                            "work_status": "work",
                             "work_mode": "steam_vegetables",
-                            "temperature": 100
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 10,
+                            "work_second": 0
+                        },
+                        "蒸米饭": {
+                            "work_status": "work",
+                            "work_mode": "steam_rice",
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 35,
+                            "work_second": 0
+                        },
+                        "保温": {
+                            "work_status": "work",
+                            "work_mode": "steam_clean",
+                            "temperature": 50,
+                            "work_hour": 0,
+                            "work_minute": 30,
+                            "work_second": 0
+                        },
+                        "解冻": {
+                            "work_status": "work",
+                            "work_mode": "unfreeze",
+                            "temperature": 60,
+                            "work_hour": 0,
+                            "work_minute": 30,
+                            "work_second": 0
+                        },
+                        "普通蒸汽": {
+                            "work_status": "work",
+                            "work_mode": "pure_steam",
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 30,
+                            "work_second": 0
+                        },
+                        "蒸汽清洁": {
+                            "work_status": "work",
+                            "work_mode": "steam_clean",
+                            "temperature": 100,
+                            "work_hour": 0,
+                            "work_minute": 30,
+                            "work_second": 0
                         },
                     }
                 }
@@ -355,7 +410,7 @@ DEVICE_MAPPING = {
                 },
                 "work_hour": {
                     "min": 0,
-                    "max": 23,
+                    "max": 2,
                     "step": 1,
                     "unit_of_measurement": UnitOfTime.HOURS,
                     "device_class": SensorDeviceClass.DURATION,
