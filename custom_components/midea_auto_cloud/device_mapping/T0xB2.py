@@ -431,6 +431,9 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "water_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
                 "work_status": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
