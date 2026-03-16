@@ -330,10 +330,10 @@ DEVICE_MAPPING = {
             Platform.SELECT: {
                 "work_mode": {
                     "options": {
-                        "开始":{"work_status": "work"},
-                        "停止": {"work_status": "standby"},
-                        "暂停": {"work_status": "pause"},
-                        "蒸鱼": {
+                        "start": {"work_status": "work"},
+                        "stop": {"work_status": "standby"},
+                        "pause": {"work_status": "pause"},
+                        "steam_fish": {
                             "work_status": "work",
                             "work_mode": "steam_fish",
                             "temperature": 100,
@@ -341,7 +341,7 @@ DEVICE_MAPPING = {
                             "work_minute": 25,
                             "work_second": 0
                         },
-                        "蒸排骨": {
+                        "steam_ribs": {
                             "work_status": "work",
                             "work_mode": "steam_ribs",
                             "temperature": 100,
@@ -349,7 +349,7 @@ DEVICE_MAPPING = {
                             "work_minute": 25,
                             "work_second": 0
                         },
-                        "蒸蔬菜": {
+                        "steam_vegetables": {
                             "work_status": "work",
                             "work_mode": "steam_vegetables",
                             "temperature": 100,
@@ -357,7 +357,7 @@ DEVICE_MAPPING = {
                             "work_minute": 10,
                             "work_second": 0
                         },
-                        "蒸米饭": {
+                        "steam_rice": {
                             "work_status": "work",
                             "work_mode": "steam_rice",
                             "temperature": 100,
@@ -365,7 +365,7 @@ DEVICE_MAPPING = {
                             "work_minute": 35,
                             "work_second": 0
                         },
-                        "保温": {
+                        "keep_warm": {
                             "work_status": "work",
                             "work_mode": "steam_clean",
                             "temperature": 50,
@@ -373,7 +373,7 @@ DEVICE_MAPPING = {
                             "work_minute": 30,
                             "work_second": 0
                         },
-                        "解冻": {
+                        "unfreeze": {
                             "work_status": "work",
                             "work_mode": "unfreeze",
                             "temperature": 60,
@@ -381,7 +381,7 @@ DEVICE_MAPPING = {
                             "work_minute": 30,
                             "work_second": 0
                         },
-                        "普通蒸汽": {
+                        "pure_steam": {
                             "work_status": "work",
                             "work_mode": "pure_steam",
                             "temperature": 100,
@@ -389,7 +389,7 @@ DEVICE_MAPPING = {
                             "work_minute": 30,
                             "work_second": 0
                         },
-                        "蒸汽清洁": {
+                        "steam_clean": {
                             "work_status": "work",
                             "work_mode": "steam_clean",
                             "temperature": 100,

@@ -1215,6 +1215,15 @@
       "work_mode": {
         "name": "工作模式",
         "state": {
+          "start": "开始",
+          "stop": "停止",
+          "pause": "暂停",
+          "steam_fish": "蒸鱼",
+          "steam_ribs": "蒸排骨",
+          "steam_vegetables": "蒸蔬菜",
+          "steam_rice": "蒸米饭",
+          "keep_warm": "保温",
+          "steam_clean": "蒸汽清洁",
           "microwave": "微波",
           "brittle": "脆烤",
           "pure_steam": "纯蒸",

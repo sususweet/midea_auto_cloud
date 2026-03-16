@@ -1034,7 +1034,18 @@
         }
       },
       "work_mode": {
-        "name": "Work Mode"
+        "name": "Work Mode",
+        "state": {
+          "start": "Start",
+          "stop": "Stop",
+          "pause": "Pause",
+          "steam_fish": "Steam Fish",
+          "steam_ribs": "Steam Ribs",
+          "steam_vegetables": "Steam Vegetables",
+          "steam_rice": "Steam Rice",
+          "keep_warm": "Keep Warm",
+          "steam_clean": "Steam Clean"
+        }
       },
       "wash_mode": {
         "name": "wash mode",
