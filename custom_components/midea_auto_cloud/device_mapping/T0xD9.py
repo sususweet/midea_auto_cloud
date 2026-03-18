@@ -151,7 +151,7 @@ DEVICE_MAPPING = {
     },
     "default_compound_washer": {
         "rationale": ["off", "on"],
-        "initial_query": [
+        "queries": [
             {"db"}
         ],
         "entities": {

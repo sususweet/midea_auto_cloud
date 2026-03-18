@@ -349,6 +349,83 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "632009F5": {
+        "rationale": ["off", "on"],
+        "entities": {
+            Platform.SWITCH: {
+                "wash": {
+                    "device_class": SwitchDeviceClass.SWITCH
+                },
+                "antifreeze": {
+                    "device_class": SwitchDeviceClass.SWITCH
+                },
+                "heat": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SELECT: {
+                "no_obsolete_water": {
+                    "options": {
+                        "water_saving": {"no_obsolete_water": "off", "save_mode": "on"},
+                        "water_quality": {"no_obsolete_water": "on", "save_mode": "off"}
+                    }
+                },
+                "hydration_setting": {
+                    "options": {
+                        "empty": {"hydration_setting": 1},
+                        "half": {"hydration_setting": 2},
+                        "full": {"hydration_setting": 3}
+                    }
+                }
+            },
+            Platform.NUMBER: {
+                "quantify_21": {
+                    "min": 300,
+                    "max": 500,
+                    "step": 100,
+                    "unit_of_measurement": "mL"
+                },
+                "quantify_22": {
+                    "min": 500,
+                    "max": 1000,
+                    "step": 100,
+                    "unit_of_measurement": "mL"
+                },
+                "quantify_23": {
+                    "min": 1000,
+                    "max": 1500,
+                    "step": 100,
+                    "unit_of_measurement": "mL"
+                }
+            },
+            Platform.SENSOR: {
+                "in_tds": {
+                    "unit_of_measurement": "mg/L",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "out_tds": {
+                    "unit_of_measurement": "mg/L",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "life_1": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "life_ro"
+                },
+                "life_2": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "life_pcb"
+                },
+                "hot_pot_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                }
+            }
+        }
+    },
     "default_pipeline_machine": {
         "rationale": ["off", "on"],
         "entities": {
