@@ -139,11 +139,11 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"no_wind_sense"},
-            {"prevent_straight_wind"},
-            {"prevent_super_cool"},
-            {"wind_swing_lr_angle"},
-            {"wind_swing_ud_angle"}
+            {"query_type": "no_wind_sense"},
+            {"query_type": "prevent_straight_wind"},
+            {"query_type": "prevent_super_cool"},
+            {"query_type": "wind_swing_lr_angle"},
+            {"query_type": "wind_swing_ud_angle"}
         ],
         "centralized": ["buzzer"],
         "calculate": {
@@ -293,10 +293,10 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"prevent_straight_wind"},
-            {"prevent_super_cool"},
-            {"wind_swing_lr_angle"},
-            {"wind_swing_ud_angle"}
+            {"queries": "prevent_straight_wind"},
+            {"queries": "prevent_super_cool"},
+            {"queries": "wind_swing_lr_angle"},
+            {"queries": "wind_swing_ud_angle"}
         ],
         "centralized": ["buzzer"],
         "calculate":{
@@ -420,9 +420,9 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"indoor_temperature"},
-            {"prevent_super_cool"},
-            {"run_status"}
+            {"queries": "indoor_temperature"},
+            {"queries": "prevent_super_cool"},
+            {"queries": "run_status"}
         ],
         "calculate": {
             "get": [
@@ -517,10 +517,10 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"indoor_temperature"},
-            {"indoor_humidity"},
-            {"prevent_super_cool"},
-            {"run_status"}
+            {"queries": "indoor_temperature"},
+            {"queries": "indoor_humidity"},
+            {"queries": "prevent_super_cool"},
+            {"queries": "run_status"}
         ],
         "entities": {
             Platform.CLIMATE: {
@@ -605,7 +605,7 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"indoor_temperature"}
+            {"queries": "indoor_temperature"}
         ],
         "entities": {
             Platform.CLIMATE: {
@@ -663,12 +663,12 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"fresh_air_mode"},
-            {"fresh_filter_time"},
-            {"indoor_temperature"},
-            {"new_wind_humidity"},
-            {"run_status"},
-            {"wind_strength"}
+            {"queries": "fresh_air_mode"},
+            {"queries": "fresh_filter_time"},
+            {"queries": "indoor_temperature"},
+            {"queries": "new_wind_humidity"},
+            {"queries": "run_status"},
+            {"queries": "wind_strength"}
         ],
         "centralized": ["buzzer"],
         "entities": {

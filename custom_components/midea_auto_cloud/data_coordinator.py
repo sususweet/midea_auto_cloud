@@ -107,6 +107,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             self.async_set_updated_data(updated)
             return updated
         except Exception as e:
+            traceback.print_exc()
             _LOGGER.error(f"Error polling device state: {e}")
             return MideaDeviceData(
                 attributes=self.device.attributes,
