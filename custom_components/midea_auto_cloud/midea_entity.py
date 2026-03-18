@@ -84,20 +84,10 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             # Prefer translated name; allow explicit override via config.name
             self._attr_translation_key = self._config.get("translation_key") or self._entity_key
 
-            # 保存 name_attribute，用于动态获取名称
-            self._name_attribute = self._config.get("name_attribute")
             # 保存固定名称配置
             self._name_cfg = self._config.get("name")
-            if self._name_cfg is not None:
-                self._attr_name = f"{self._name_cfg}"
-            # 如果配置了 name_attribute，从设备属性动态获取
-            else:
-                if self._name_attribute and self._device:
-                    dynamic_name = self._device._attributes.get(self._name_attribute)
-                    if dynamic_name:
-                        self._attr_name = dynamic_name
-                    self._attr_name = self._name_attribute.replace("_", " ").title()
-
+            # 保存 name_attribute，用于动态获取名称
+            self._name_attribute = self._config.get("name_attribute")
             self.entity_id = self._attr_unique_id
             # Register device updates for HA state refresh
             try:
@@ -135,6 +125,24 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     def entity_id_suffix(self) -> str:
         """Return the suffix for entity ID."""
         return "base"
+
+    @property
+    def name(self) -> str | None:
+        """Return the name of the entity.
+
+        动态从设备属性获取名称，支持云端名称更新后自动同步。
+        优先使用自定义配置的名称，如果没有则回退到基类逻辑。
+        """
+        # 如果配置了固定的 name，直接使用
+        if self._name_cfg is not None:
+            return f"{self._name_cfg}"
+        # 如果配置了 name_attribute，从设备属性动态获取
+        if self._name_attribute and self._device:
+            dynamic_name = self._device._attributes.get(self._name_attribute)
+            if dynamic_name:
+                return dynamic_name
+        # 如果没有自定义名称，调用基类的 name 属性
+        return super().name
 
     @property
     def device_attributes(self) -> dict:
