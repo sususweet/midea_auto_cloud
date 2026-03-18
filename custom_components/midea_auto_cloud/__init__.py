@@ -333,8 +333,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 
                 # 获取用户选择的家庭ID列表
                 selected_homes = config_entry.data.get(CONF_SELECTED_HOMES, [])
-                MideaLogger.debug(f"Selected homes from config: {selected_homes}")
-                MideaLogger.debug(f"Available homes keys: {list(homes.keys())}")
+                MideaLogger.debug(f"Selected homes from config: {selected_homes}, Available homes keys: {list(homes.keys())}")
                 if not selected_homes:
                     # 如果没有选择，默认使用所有家庭
                     home_ids = list(homes.keys())

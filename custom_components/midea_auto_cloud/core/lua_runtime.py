@@ -7,8 +7,21 @@ from .logger import MideaLogger
 
 
 class LuaRuntime:
-    def __init__(self, file):
+    def __init__(self, file, *, suppress_output: bool = True):
         self._runtimes = lupa.lua51.LuaRuntime()
+        self._suppress_output = suppress_output
+
+        if self._suppress_output:
+            # Silence common Lua output channels (print / io.write).
+            # This is done before requiring libs / dofile to prevent noisy scripts.
+            self._runtimes.execute(
+                r"""
+                print = function(...) end
+                if io ~= nil then
+                  io.write = function(...) end
+                end
+                """
+            )
 
         # 设置Lua路径，包含cjson.lua和bit.lua的目录
         lua_dir = os.path.dirname(os.path.abspath(file))
@@ -102,7 +115,7 @@ class MideaCodec(LuaRuntime):
             query_dict["control"]["control_type"] = "0x11"
 
         json_str = json.dumps(query_dict)
-        MideaLogger.debug(f"LuaRuntime json_str {json_str}")
+        MideaLogger.info(f"LuaRuntime json_str {json_str}")
         try:
             result = self.json_to_data(json_str)
             MideaLogger.debug(f"LuaRuntime Result {result}")

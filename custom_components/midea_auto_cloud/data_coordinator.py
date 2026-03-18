@@ -41,7 +41,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             config_entry=config_entry,
             name=f"{device.device_name} ({device.device_id})",
             update_method=self.poll_device_state,
-            update_interval=timedelta(milliseconds=device._refresh_interval),
+            update_interval=timedelta(seconds=device._refresh_interval),
             always_update=False,
         )
         self.device = device
@@ -183,7 +183,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
 
                                 break
         except Exception as e:
-            MideaLogger.debug(f"Error polling central AC state: {e}")
+            MideaLogger.warning(f"Error polling central AC state: {e}")
 
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""
@@ -275,13 +275,13 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     self.async_update_listeners()
                     return True
                 else:
-                    MideaLogger.debug(f"Failed to send control to {self.device.device_name}")
+                    MideaLogger.warning(f"Failed to send control to {self.device.device_name}")
                     return False
             else:
-                MideaLogger.debug("Cloud service not available for central AC control")
+                MideaLogger.warning("Cloud service not available for central AC control")
                 return False
         except Exception as e:
-            MideaLogger.debug(f"Error sending control to {self.device.device_name}: {e}")
+            MideaLogger.warning(f"Error sending control to {self.device.device_name}: {e}")
             return False
 
     async def async_send_switch_control(self, control: dict) -> bool:
@@ -324,13 +324,13 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     self.async_update_listeners()
                     return True
                 else:
-                    MideaLogger.debug(f"Failed to send switch control to {self.device.device_name}")
+                    MideaLogger.warning(f"Failed to send switch control to {self.device.device_name}")
                     return False
             else:
-                MideaLogger.debug("Cloud service not available for switch control")
+                MideaLogger.warning("Cloud service not available for switch control")
                 return False
         except Exception as e:
-            MideaLogger.debug(f"Error sending switch control to {self.device.device_name}: {e}")
+            MideaLogger.warning(f"Error sending switch control to {self.device.device_name}: {e}")
             return False
 
     async def _update_switch_status_from_control(self, control: dict) -> None:
@@ -351,10 +351,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             # 同时更新兼容性属性
             self.device._attributes["OnOff"] = onoff_value
             
-            MideaLogger.debug(f"Updated switch status for endpoint {endpoint_id}: OnOff={onoff_value}")
+            # MideaLogger.debug(f"Updated switch status for endpoint {endpoint_id}: OnOff={onoff_value}")
             
         except Exception as e:
-            MideaLogger.debug(f"Error updating switch status from control: {e}")
+            MideaLogger.warning(f"Error updating switch status from control: {e}")
 
     def _build_full_central_ac_control(self, new_control: dict) -> dict:
         """构建完整控制命令"""

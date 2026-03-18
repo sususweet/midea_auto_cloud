@@ -13,8 +13,6 @@ from .logger import MideaLogger
 from .security import CloudSecurity, MeijuCloudSecurity, MSmartCloudSecurity
 from .util import bytes_to_dec_string, dec_string_to_bytes
 
-_LOGGER = logging.getLogger(__name__)
-
 clouds = {
     "美的美居": {
         "class_name": "MeijuCloud",
@@ -89,6 +87,7 @@ class MideaCloud:
         header=None,
         method="POST",
         _retried_after_login: bool = False,
+        print_log: bool = False,
     ) -> dict | None:
         header = header or {}
         if not data.get("reqId"):
@@ -124,7 +123,7 @@ class MideaCloud:
                 proxy=self._proxy
             )
             raw = await r.read()
-            _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}, response: {raw}")
+            MideaLogger.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}, response: {raw}")
             response = json.loads(raw)
         except Exception as e:
             traceback.print_exc()
@@ -140,12 +139,7 @@ class MideaCloud:
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
-            _LOGGER.warning(
-                "Midea cloud token失效，准备重新登录后重试请求。endpoint=%s, code=%s, msg=%s",
-                endpoint,
-                response.get("code"),
-                response.get("msg") or response.get("message"),
-            )
+            MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, code={response.get("code")}, msg={response.get("msg") or response.get("message")}")
             self._access_token = None
             try:
                 if await self.login():
@@ -155,87 +149,10 @@ class MideaCloud:
                         header=header,
                         method=method,
                         _retried_after_login=True,
+                        print_log=print_log,
                     )
             except Exception:
                 traceback.print_exc()
-        return None
-
-    def _api_request_sync(
-        self,
-        endpoint: str,
-        data: dict,
-        header=None,
-        _retried_after_login: bool = False,
-    ) -> dict | None:
-        header = header or {}
-        if not data.get("reqId"):
-            data.update({
-                "reqId": token_hex(16)
-            })
-        if not data.get("stamp"):
-            data.update({
-                "stamp":  datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-            })
-        random = str(int(time.time()))
-        url = self._api_url + endpoint
-        dump_data = json.dumps(data)
-        sign = self._security.sign(dump_data, random)
-        header.update({
-            "content-type": "application/json; charset=utf-8",
-            "secretVersion": "1",
-            "sign": sign,
-            "random": random,
-        })
-        if self._access_token is not None:
-            header.update({
-                "accesstoken": self._access_token
-            })
-        response:dict = {"code": -1}
-        _LOGGER.debug(f"Midea cloud API header: {header}")
-        _LOGGER.debug(f"Midea cloud API dump_data: {dump_data}")
-        try:
-            r = requests.post(url, headers=header, data=dump_data, timeout=5)
-            raw = r.content
-            _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
-            response = json.loads(raw)
-        except Exception as e:
-            traceback.print_exc()
-
-        if int(response["code"]) == 0 and "data" in response:
-            return response["data"]
-
-        if (
-            not _retried_after_login
-            and isinstance(response, dict)
-            and self._is_token_invalid_response(response)
-        ):
-            _LOGGER.warning(
-                "Midea cloud token失效(同步请求)。将清空token并尝试触发一次登录后重试。endpoint=%s, code=%s, msg=%s",
-                endpoint,
-                response.get("code"),
-                response.get("msg") or response.get("message"),
-            )
-            self._access_token = None
-            # 同步接口在此仓库中未被调用；避免在事件循环运行中阻塞。
-            try:
-                import asyncio
-
-                try:
-                    loop = asyncio.get_running_loop()
-                    # 事件循环正在运行：只能异步登录，无法在同步函数里等待结果。
-                    loop.create_task(self.login())
-                except RuntimeError:
-                    # 没有正在运行的loop：可以阻塞执行一次登录。
-                    asyncio.run(self.login())
-            except Exception:
-                traceback.print_exc()
-
-            return self._api_request_sync(
-                endpoint=endpoint,
-                data=data,
-                header=header,
-                _retried_after_login=True,
-            )
         return None
 
     async def _get_login_id(self) -> str | None:
@@ -419,14 +336,14 @@ class MeijuCloud(MideaCloud):
 
         if response := await self._api_request(
             endpoint='/v1/appliance/transparent/send',
-            data=params,
+            data=params
         ):
             if response and response.get('reply'):
                 reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
-                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, dec_string_to_bytes(reply_data).hex())
+                MideaLogger.debug(f"[{appliance_code}] Cloud command response: {dec_string_to_bytes(reply_data).hex()}")
                 return reply_data
             else:
-                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
+                MideaLogger.warning(f"[{appliance_code}] Cloud command failed: {response}")
 
         return None
 
@@ -750,7 +667,14 @@ class MSmartHomeCloud(MideaCloud):
             "appId": self.APP_ID,
         }
 
-    async def _api_request(self, endpoint: str, data: dict, header=None) -> dict | None:
+    async def _api_request(self,
+        endpoint: str,
+        data: dict,
+        header=None,
+        method="POST",
+        _retried_after_login: bool = False,
+        print_log: bool = False
+    ) -> dict | None:
         header = header or {}
         header.update({
             "x-recipe-app": self.APP_ID,
@@ -760,7 +684,7 @@ class MSmartHomeCloud(MideaCloud):
             header.update({
                 "uid": self._uid
             })
-        return await super()._api_request(endpoint, data, header)
+        return await super()._api_request(endpoint, data, header, print_log=True)
 
     async def _re_route(self):
         data = self._make_general_data()
@@ -903,13 +827,14 @@ class MSmartHomeCloud(MideaCloud):
         if response := await self._api_request(
             endpoint='/v1/appliance/transparent/send',
             data=params,
+            print_log=True,
         ):
             if response and response.get('reply'):
-                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
+                MideaLogger.debug(f"[{appliance_code}] Cloud command response: {response}")
                 reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
                 return reply_data
             else:
-                _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
+                MideaLogger.warning(f"[{appliance_code}] Cloud command failed: {response}")
 
         return None
 
