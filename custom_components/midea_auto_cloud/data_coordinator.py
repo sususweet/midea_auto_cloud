@@ -41,7 +41,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             config_entry=config_entry,
             name=f"{device.device_name} ({device.device_id})",
             update_method=self.poll_device_state,
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(milliseconds=device._refresh_interval),
             always_update=False,
         )
         self.device = device
