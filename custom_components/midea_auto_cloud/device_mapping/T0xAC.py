@@ -670,7 +670,7 @@ DEVICE_MAPPING = {
             {"queries": "run_status"},
             {"queries": "wind_strength"}
         ],
-        "centralized": ["buzzer"],
+        "centralized": [],
         "entities": {
             Platform.FAN: {
                 "fan": {
@@ -678,10 +678,8 @@ DEVICE_MAPPING = {
                     "power": "new_wind_machine",
                     "speeds": list({"fresh_air_fan_speed": value + 1} for value in range(0, 100)),
                     "preset_modes": {
-                        "heat_exchange": {
+                        "normal": {
                             "fresh_air_mode": 1,
-                            "exhaust_strength": 0,
-                            "wind_strength": 0
                         },
                         "smooth_in": {
                             "fresh_air_mode": 2,
@@ -704,14 +702,13 @@ DEVICE_MAPPING = {
                             "wind_strength": 0
                         },
                         "auto": {
-                            "fresh_air_mode": 4,
-                            "exhaust_strength": 0,
-                            "wind_strength": 0
+                            "fresh_air_mode": 4
                         },
                         "innercycle": {
                             "fresh_air_mode": 5,
-                            "exhaust_strength": 0,
-                            "wind_strength": 0
+                        },
+                        "innercycle-auto": {
+                            "fresh_air_mode": 6,
                         },
                     }
                 }
