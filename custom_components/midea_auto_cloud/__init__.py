@@ -147,7 +147,7 @@ def get_device_mapping(
     return result
 
 
-async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category: str | None = None):
+async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
     def _ensure_dir_and_load(path_dir: str, path_file: str):
         os.makedirs(path_dir, exist_ok=True)
         return load_json(path_file, default={})
@@ -433,7 +433,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                     info.get(CONF_TYPE) or info.get("type"),
                                     info.get(CONF_SN8) or info.get("sn8"),
                                     device.subtype,
-                                    category=info.get(CONF_CATEGORY) or info.get("category"),
+                                    device.category,
                                 ) or {}
                             except Exception:
                                 mapping = {}

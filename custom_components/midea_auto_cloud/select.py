@@ -4,9 +4,8 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
 from .midea_entity import MideaEntity
-from . import load_device_config
+from .platform_setup import async_setup_platform_entities
 
 
 async def async_setup_entry(
@@ -14,27 +13,15 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    account_bucket = hass.data.get(DOMAIN, {}).get("accounts", {}).get(config_entry.entry_id)
-    if not account_bucket:
-        async_add_entities([])
-        return
-    device_list = account_bucket.get("device_list", {})
-    coordinator_map = account_bucket.get("coordinator_map", {})
-
-    devs = []
-    for device_id, info in device_list.items():
-        device_type = info.get("type")
-        sn8 = info.get("sn8")
-        coordinator = coordinator_map.get(device_id)
-        device = coordinator.device if coordinator else None
-        subtype = device.subtype if device else None
-        config = await load_device_config(hass, device_type, sn8, subtype) or {}
-        entities_cfg = (config.get("entities") or {}).get(Platform.SELECT, {})
-        manufacturer = config.get("manufacturer")
-        rationale = config.get("rationale")
-        for entity_key, ecfg in entities_cfg.items():
-            devs.append(MideaSelectEntity(coordinator, device, manufacturer, rationale, entity_key, ecfg))
-    async_add_entities(devs)
+    await async_setup_platform_entities(
+        hass,
+        config_entry,
+        async_add_entities,
+        Platform.SELECT,
+        lambda coordinator, device, manufacturer, rationale, entity_key, ecfg: MideaSelectEntity(
+            coordinator, device, manufacturer, rationale, entity_key, ecfg
+        ),
+    )
 
 
 class MideaSelectEntity(MideaEntity, SelectEntity):

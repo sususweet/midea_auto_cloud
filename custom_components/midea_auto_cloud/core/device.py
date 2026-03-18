@@ -171,6 +171,10 @@ class MiedaDevice(threading.Thread):
         return self._subtype
 
     @property
+    def category(self):
+        return self._category
+
+    @property
     def attributes(self):
         return self._attributes
 
