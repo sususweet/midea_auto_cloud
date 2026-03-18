@@ -603,6 +603,58 @@
       "keep_warm_time": {
         "name": "Keep Warm Time"
       },
+      "cur_quantify": {
+        "name": "Quantify Mode",
+        "state": {
+          "off_quantify": "Off",
+          "small_amount": "Small",
+          "normal_amount": "Normal",
+          "large_amount": "Large"
+        }
+      },
+      "quantify_1": {
+        "name": "Quantify 1",
+        "state": {
+          "50": "50",
+          "100": "100",
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300"
+        }
+      },
+      "quantify_2": {
+        "name": "Quantify 2",
+        "state": {
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300",
+          "400": "400",
+          "500": "500"
+        }
+      },
+      "quantify_3": {
+        "name": "Quantify 3",
+        "state": {
+          "300": "300",
+          "400": "400",
+          "500": "500",
+          "600": "600",
+          "700": "700"
+        }
+      },
+      "screenout_time": {
+        "name": "Screen Timeout",
+        "state": {
+          "10": "10s",
+          "30": "30s",
+          "60": "60s",
+          "120": "120s",
+          "180": "180s",
+          "300": "300s"
+        }
+      },
 		"fresh_air_mode_select": {
 		    "name": "Mode",
 		    "state": {
@@ -2328,6 +2380,12 @@
       "current_temperature": {
         "name": "Current Temperature"
       },
+      "germicidal_left_time": {
+        "name": "Germicidal Time Remaining"
+      },
+      "germicidal_countdown": {
+        "name": "Germicidal Countdown"
+      },
       "bath_temperature": {
         "name": "Bath Temperature"
       },
@@ -2529,6 +2587,9 @@
       },
       "wash_strength": {
         "name": "Water Strength"
+      },
+      "custom_temperature_1": {
+        "name": "Custom Temperature 1"
       }
     },
     "fan": {
@@ -3340,6 +3401,15 @@
       },
       "drainage": {
         "name": "Drainage"
+      },
+      "cool": {
+        "name": "Cooling"
+      },
+      "human_sensing_switch": {
+        "name": "Human Sensing"
+      },
+      "set_germicidal_countdown": {
+        "name": "Set Germicidal Countdown"
       },
       "wash_enable": {
         "name": "Wash Enable"

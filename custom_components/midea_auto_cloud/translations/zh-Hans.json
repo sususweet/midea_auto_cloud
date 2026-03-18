@@ -637,6 +637,58 @@
       "keep_warm_time": {
         "name": "保温时间"
       },
+      "cur_quantify": {
+        "name": "定量模式",
+        "state": {
+          "off_quantify": "关闭定量",
+          "small_amount": "少量",
+          "normal_amount": "常量",
+          "large_amount": "大量"
+        }
+      },
+      "quantify_1": {
+        "name": "定量1",
+        "state": {
+          "50": "50",
+          "100": "100",
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300"
+        }
+      },
+      "quantify_2": {
+        "name": "定量2",
+        "state": {
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300",
+          "400": "400",
+          "500": "500"
+        }
+      },
+      "quantify_3": {
+        "name": "定量3",
+        "state": {
+          "300": "300",
+          "400": "400",
+          "500": "500",
+          "600": "600",
+          "700": "700"
+        }
+      },
+      "screenout_time": {
+        "name": "息屏时间",
+        "state": {
+          "10": "10秒",
+          "30": "30秒",
+          "60": "60秒",
+          "120": "120秒",
+          "180": "180秒",
+          "300": "300秒"
+        }
+      },
 		"fresh_air_mode_select": {
         "name": "模式",
         "state": {
@@ -2647,6 +2699,12 @@
       "current_temperature": {
         "name": "当前温度"
       },
+      "germicidal_left_time": {
+        "name": "杀菌剩余时间"
+      },
+      "germicidal_countdown": {
+        "name": "杀菌倒计时"
+      },
       "bath_temperature": {
         "name": "浴室温度"
       },
@@ -2869,6 +2927,9 @@
       },
       "wash_strength": {
         "name": "水流强度"
+      },
+      "custom_temperature_1": {
+        "name": "自定义温度1"
       }
     },
     "fan": {
@@ -3698,6 +3759,15 @@
       },
       "drainage": {
         "name": "排水"
+      },
+      "cool": {
+        "name": "制冷"
+      },
+      "human_sensing_switch": {
+        "name": "人体感应"
+      },
+      "set_germicidal_countdown": {
+        "name": "设置杀菌倒计时"
       },
       "wash_enable": {
         "name": "洗涤启用"
