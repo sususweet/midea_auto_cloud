@@ -11,7 +11,7 @@ from aiohttp import ClientSession
 from secrets import token_hex
 from .logger import MideaLogger
 from .security import CloudSecurity, MeijuCloudSecurity, MSmartCloudSecurity
-from .util import bytes_to_dec_string
+from .util import bytes_to_dec_string, dec_string_to_bytes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -66,7 +66,30 @@ class MideaCloud:
     def _make_general_data(self):
         return {}
 
-    async def _api_request(self, endpoint: str, data: dict, header=None, method="POST") -> dict | None:
+    @staticmethod
+    def _is_token_invalid_response(response: dict) -> bool:
+        try:
+            code = int(response.get("code", -1))
+        except Exception:
+            code = -1
+        if code == 40002:
+            return True
+        msg = str(response.get("msg") or response.get("message") or "")
+        msg_lower = msg.lower()
+        return (
+            "user token not exist" in msg_lower
+            or ("token" in msg_lower and "not exist" in msg_lower)
+            or "token校验不通过" in msg
+        )
+
+    async def _api_request(
+        self,
+        endpoint: str,
+        data: dict,
+        header=None,
+        method="POST",
+        _retried_after_login: bool = False,
+    ) -> dict | None:
         header = header or {}
         if not data.get("reqId"):
             data.update({
@@ -91,7 +114,6 @@ class MideaCloud:
                 "accesstoken": self._access_token
             })
         response:dict = {"code": -1}
-        _LOGGER.debug(f"Midea cloud API url: {url}, header: {header}, data: {data}")
         try:
             r = await self._session.request(
                 method, 
@@ -113,9 +135,38 @@ class MideaCloud:
             else:
                 return {"message": "ok"}
 
+        if (
+            not _retried_after_login
+            and isinstance(response, dict)
+            and self._is_token_invalid_response(response)
+        ):
+            _LOGGER.warning(
+                "Midea cloud token失效，准备重新登录后重试请求。endpoint=%s, code=%s, msg=%s",
+                endpoint,
+                response.get("code"),
+                response.get("msg") or response.get("message"),
+            )
+            self._access_token = None
+            try:
+                if await self.login():
+                    return await self._api_request(
+                        endpoint=endpoint,
+                        data=data,
+                        header=header,
+                        method=method,
+                        _retried_after_login=True,
+                    )
+            except Exception:
+                traceback.print_exc()
         return None
 
-    def _api_request_sync(self, endpoint: str, data: dict, header=None) -> dict | None:
+    def _api_request_sync(
+        self,
+        endpoint: str,
+        data: dict,
+        header=None,
+        _retried_after_login: bool = False,
+    ) -> dict | None:
         header = header or {}
         if not data.get("reqId"):
             data.update({
@@ -153,6 +204,38 @@ class MideaCloud:
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
 
+        if (
+            not _retried_after_login
+            and isinstance(response, dict)
+            and self._is_token_invalid_response(response)
+        ):
+            _LOGGER.warning(
+                "Midea cloud token失效(同步请求)。将清空token并尝试触发一次登录后重试。endpoint=%s, code=%s, msg=%s",
+                endpoint,
+                response.get("code"),
+                response.get("msg") or response.get("message"),
+            )
+            self._access_token = None
+            # 同步接口在此仓库中未被调用；避免在事件循环运行中阻塞。
+            try:
+                import asyncio
+
+                try:
+                    loop = asyncio.get_running_loop()
+                    # 事件循环正在运行：只能异步登录，无法在同步函数里等待结果。
+                    loop.create_task(self.login())
+                except RuntimeError:
+                    # 没有正在运行的loop：可以阻塞执行一次登录。
+                    asyncio.run(self.login())
+            except Exception:
+                traceback.print_exc()
+
+            return self._api_request_sync(
+                endpoint=endpoint,
+                data=data,
+                header=header,
+                _retried_after_login=True,
+            )
         return None
 
     async def _get_login_id(self) -> str | None:
@@ -339,8 +422,8 @@ class MeijuCloud(MideaCloud):
             data=params,
         ):
             if response and response.get('reply'):
-                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, response)
                 reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
+                _LOGGER.debug("[%s] Cloud command response: %s", appliance_code, dec_string_to_bytes(reply_data).hex())
                 return reply_data
             else:
                 _LOGGER.warning("[%s] Cloud command failed: %s", appliance_code, response)
