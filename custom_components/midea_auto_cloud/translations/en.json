@@ -588,6 +588,15 @@
       "aidry": {
         "name": "Aidry"
       },
+      "dry_time_interval": {
+        "name": "Dry Time Interval",
+        "state": {
+          "15min": "15 min",
+          "30min": "30 min",
+          "45min": "45 min",
+          "60min": "60 min"
+        }
+      },
       "no_wind_sense": {
         "name": "No Wind Sense"
       },
@@ -1346,6 +1355,9 @@
       }
     },
     "sensor": {
+      "dry_remain_time": {
+        "name": "Dry Remaining Time"
+      },
       "ice_gall_status": {
         "name": "Ice Gall Status",
         "state": {
@@ -2450,6 +2462,12 @@
       }
     },
     "number": {
+      "auto_temperature_lower_limit": {
+        "name": "Auto Temperature Lower Limit"
+      },
+      "auto_temperature_upper_limit": {
+        "name": "Auto Temperature Upper Limit"
+      },
       "air_set_hour": {
         "name": "Drying Storage Set Time"
       },
@@ -3416,6 +3434,21 @@
       },
       "eco": {
         "name": "Eco Mode"
+      },
+      "ptc": {
+        "name": "Aux Heat"
+      },
+      "digital_display": {
+        "name": "Digital Display"
+      },
+      "voice_control": {
+        "name": "Voice Control"
+      },
+      "voice_control_speaking": {
+        "name": "Voice Broadcasting"
+      },
+      "mute_voice": {
+        "name": "Mute"
       },
       "strong": {
         "name": "Strong Mode"

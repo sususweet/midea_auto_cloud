@@ -88,8 +88,6 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         """
         if isinstance(self._key_temperature_unit, str):
             raw = self._get_nested_value(self._key_temperature_unit)
-            MideaLogger.warning(f"temperature_unit11:{self._key_temperature_unit}")
-            MideaLogger.warning(f"temperature_unit:{raw}")
             try:
                 value = int(raw)
             except (TypeError, ValueError):

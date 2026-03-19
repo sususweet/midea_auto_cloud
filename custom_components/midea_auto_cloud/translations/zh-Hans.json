@@ -622,6 +622,15 @@
           "on": "开启"
         }
       },
+      "dry_time_interval": {
+        "name": "除湿时间间隔",
+        "state": {
+          "15min": "15分钟",
+          "30min": "30分钟",
+          "45min": "45分钟",
+          "60min": "60分钟"
+        }
+      },
       "no_wind_sense": {
         "name": "无风感"
       },
@@ -1607,6 +1616,9 @@
       }
     },
     "sensor": {
+      "dry_remain_time": {
+        "name": "除湿剩余时间"
+      },
       "ice_gall_status": {
         "name": "制冷功能状态",
         "state": {
@@ -2781,6 +2793,12 @@
       }
     },
     "number": {
+      "auto_temperature_lower_limit": {
+        "name": "自动模式温度下限"
+      },
+      "auto_temperature_upper_limit": {
+        "name": "自动模式温度上限"
+      },
       "air_set_hour": {
         "name": "烘干存储设置时间"
       },
@@ -3774,6 +3792,21 @@
       },
       "eco": {
         "name": "节能模式"
+      },
+      "ptc": {
+        "name": "电辅热"
+      },
+      "digital_display": {
+        "name": "数显"
+      },
+      "voice_control": {
+        "name": "语音控制"
+      },
+      "voice_control_speaking": {
+        "name": "语音播报"
+      },
+      "mute_voice": {
+        "name": "静音"
       },
       "strong": {
         "name": "强劲模式"
