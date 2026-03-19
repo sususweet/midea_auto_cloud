@@ -25,6 +25,7 @@ Get devices from MSmartHome/Midea Meiju homes through the network and control th
 - T0x24 Electric Oven
 - T0x26 Bath Heater
 - T0x3D Water Heater
+- T0x44 Smart Thermostat
 - T0x9B Steam oven
 - T0x9C Integrated Gas Stove
 - T0xA1 Dehumidifier
