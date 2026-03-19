@@ -103,6 +103,12 @@ DEVICE_MAPPING = {
                 },
             },
         },
+    },
+    "115PD077": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {}
     }
 }
 

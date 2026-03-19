@@ -187,28 +187,32 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     @property
     def min_temp(self):
         if isinstance(self._key_min_temp, str):
-            return float(self.device_attributes.get(self._key_min_temp, 16))
+            min_temp = self.device_attributes.get(self._key_min_temp, 16)
+            return float(min_temp) if min_temp is not None else 16.0
         else:
             return float(self._key_min_temp)
 
     @property
     def max_temp(self):
         if isinstance(self._key_max_temp, str):
-            return float(self.device_attributes.get(self._key_max_temp, 30))
+            max_temp = self.device_attributes.get(self._key_max_temp, 30)
+            return float(max_temp) if max_temp is not None else 30.0
         else:
             return float(self._key_max_temp)
 
     @property
     def min_humidity(self):
         if isinstance(self._key_min_humidity, str):
-            return float(self.device_attributes.get(self._key_min_humidity, 45))
+            min_humidity = self.device_attributes.get(self._key_min_humidity, 45)
+            return float(min_humidity) if min_humidity is not None else 45.0
         else:
             return float(self._key_min_humidity)
 
     @property
     def max_humidity(self):
         if isinstance(self._key_max_humidity, str):
-            return float(self.device_attributes.get(self._key_max_humidity, 65))
+            max_humidity = self.device_attributes.get(self._key_max_humidity, 65)
+            return float(max_humidity) if max_humidity is not None else 65.0
         else:
             return float(self._key_max_humidity)
 
