@@ -757,6 +757,7 @@ class MSmartHomeCloud(MideaCloud):
                     "manufacturer_code":appliance.get("enterpriseCode", "0000"),
                     "model": "",
                     "online": appliance.get("onlineStatus") == "1",
+                    "smart_product_id": appliance.get("smartProductId"),
                 }
                 device_info["sn8"] = device_info.get("sn")[9:17] if len(device_info["sn"]) > 17 else ""
                 device_info["model"] = device_info.get("sn8")
