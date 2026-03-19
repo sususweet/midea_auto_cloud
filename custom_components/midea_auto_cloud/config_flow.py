@@ -1,6 +1,7 @@
 import voluptuous as vol
 import logging
 import os
+import asyncio
 from typing import Any
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant import config_entries
@@ -50,26 +51,52 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if self._session is None:
             self._session = async_create_clientsession(self.hass)
         if user_input is not None:
-            cloud = get_midea_cloud(
-                session=self._session,
-                cloud_name=CONF_SERVERS[user_input[CONF_SERVER]],
-                account=user_input[CONF_ACCOUNT],
-                password=user_input[CONF_PASSWORD]
-            )
+            # 统一 server 类型，避免同一 server 因类型差异产生不同 session_key
             try:
-                if await cloud.login():
+                server_key = int(user_input[CONF_SERVER])
+            except Exception:
+                server_key = user_input[CONF_SERVER]
 
-                    # 缓存云实例和用户输入，用于后续步骤；这个注释用旧的；
+            self.hass.data.setdefault(DOMAIN, {})
+            self.hass.data[DOMAIN].setdefault("cloud_sessions", {})
+            self.hass.data[DOMAIN].setdefault("cloud_login_locks", {})
+
+            session_key = f"{user_input[CONF_ACCOUNT]}_{server_key}"
+            if session_key not in self.hass.data[DOMAIN]["cloud_login_locks"]:
+                self.hass.data[DOMAIN]["cloud_login_locks"][session_key] = asyncio.Lock()
+
+            login_ok = False
+            cloud = None
+            try:
+                async with self.hass.data[DOMAIN]["cloud_login_locks"][session_key]:
+                    cloud = self.hass.data[DOMAIN]["cloud_sessions"].get(session_key)
+                    if not cloud:
+                        cloud = get_midea_cloud(
+                            session=self._session,
+                            cloud_name=CONF_SERVERS.get(server_key),
+                            account=user_input[CONF_ACCOUNT],
+                            password=user_input[CONF_PASSWORD]
+                        )
+
+                    if cloud and getattr(cloud, "_access_token", None):
+                        # 已经登录过
+                        login_ok = True
+                    elif cloud:
+                        # 没登录或 token 为空，尝试登录
+                        login_ok = await cloud.login()
+                    else:
+                        login_ok = False
+
+                    if cloud and login_ok:
+                        # 缓存云实例，供后续配置条目复用，避免重复登录
+                        self.hass.data[DOMAIN]["cloud_sessions"][session_key] = cloud
+
+                if login_ok:
+                    # 缓存云实例和用户输入，用于后续步骤
                     self._cloud = cloud
                     self._user_input = user_input
                     # 保存用户昵称
                     self._nickname = cloud.nickname
-
-                    # 缓存云会话，供后续配置条目复用，避免重复登录
-                    self.hass.data.setdefault(DOMAIN, {})
-                    self.hass.data[DOMAIN].setdefault("cloud_sessions", {})
-                    session_key = f"{user_input[CONF_ACCOUNT]}_{user_input[CONF_SERVER]}"
-                    self.hass.data[DOMAIN]["cloud_sessions"][session_key] = cloud
 
                     # 获取家庭列表
                     homes = await cloud.list_home()

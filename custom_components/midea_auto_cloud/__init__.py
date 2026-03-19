@@ -244,6 +244,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         password = config_entry.data.get(CONF_PASSWORD)
         server = config_entry.data.get(CONF_SERVER)
 
+        # 统一 server 类型，避免同一 server 因类型差异产生不同 session_key
+        try:
+            server = int(server)
+        except Exception:
+            pass
+
         # 初始化数据存储结构
         hass.data.setdefault(DOMAIN, {})
         hass.data[DOMAIN].setdefault("cloud_sessions", {})
