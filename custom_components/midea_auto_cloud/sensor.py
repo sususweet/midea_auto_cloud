@@ -44,9 +44,6 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
             config=config,
         )
         self._key_dynamic_unit = self._config.get("dynamic_unit")
-        if isinstance(self._key_dynamic_unit, str):
-            # Default until first update; actual unit resolved in native_unit_of_measurement
-            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     @property
     def native_unit_of_measurement(self):
