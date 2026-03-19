@@ -87,6 +87,12 @@ Mapping files are located under `device_mapping`, with one mapping file for each
 
 The example configuration `22012227` demonstrates how to map device attributes to various Home Assistant entities above.
 
+## Donation
+
+If you find the project interesting or helpful, you are welcome to make a donation to support it. Donations will be used for the daily maintenance of the plugin, making it easier to provide better services for everyone!
+
+[!["Buy Me A Coffee"](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/sususweet)
+
 ## Acknowledgments
 
 Thanks to the [midea-meiju-codec](https://github.com/MattedBroadSky/midea-meiju-codec) project for providing prior knowledge.
