@@ -293,10 +293,10 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"queries": "prevent_straight_wind"},
-            {"queries": "prevent_super_cool"},
-            {"queries": "wind_swing_lr_angle"},
-            {"queries": "wind_swing_ud_angle"}
+            {"query_type": "prevent_straight_wind"},
+            {"query_type": "prevent_super_cool"},
+            {"query_type": "wind_swing_lr_angle"},
+            {"query_type": "wind_swing_ud_angle"}
         ],
         "centralized": ["buzzer"],
         "calculate":{
@@ -420,9 +420,10 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"queries": "indoor_temperature"},
-            {"queries": "prevent_super_cool"},
-            {"queries": "run_status"}
+            {"query_type": "indoor_temperature"},
+            {"query_type": "indoor_humidity"},
+            {"query_type": "prevent_super_cool"},
+            {"query_type": "run_status"}
         ],
         "calculate": {
             "get": [
@@ -505,6 +506,11 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "cur_temperature"
                 },
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
                 "total_elec_value": {
                     "device_class": SensorDeviceClass.ENERGY,
                     "unit_of_measurement": "kWh",
@@ -517,10 +523,10 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"queries": "indoor_temperature"},
-            {"queries": "indoor_humidity"},
-            {"queries": "prevent_super_cool"},
-            {"queries": "run_status"}
+            {"query_type": "indoor_temperature"},
+            {"query_type": "indoor_humidity"},
+            {"query_type": "prevent_super_cool"},
+            {"query_type": "run_status"}
         ],
         "entities": {
             Platform.CLIMATE: {
@@ -605,7 +611,7 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"queries": "indoor_temperature"}
+            {"query_type": "indoor_temperature"}
         ],
         "entities": {
             Platform.CLIMATE: {
@@ -663,12 +669,12 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [
             {},
-            {"queries": "fresh_air_mode"},
-            {"queries": "fresh_filter_time"},
-            {"queries": "indoor_temperature"},
-            {"queries": "new_wind_humidity"},
-            {"queries": "run_status"},
-            {"queries": "wind_strength"}
+            {"query_type": "fresh_air_mode"},
+            {"query_type": "fresh_filter_time"},
+            {"query_type": "indoor_temperature"},
+            {"query_type": "new_wind_humidity"},
+            {"query_type": "run_status"},
+            {"query_type": "wind_strength"}
         ],
         "centralized": [],
         "entities": {
