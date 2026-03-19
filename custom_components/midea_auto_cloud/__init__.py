@@ -385,6 +385,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 sn=info.get(CONF_SN),
                                 model_number=info.get(CONF_MODEL_NUMBER),
                                 manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                                smart_product_id=info.get(CONF_SMART_PRODUCT_ID),
                             )
                         except Exception as e:
                             MideaLogger.warning(f"Failed to download lua for {info.get(CONF_NAME)}: {e}")

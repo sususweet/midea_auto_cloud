@@ -191,6 +191,7 @@ class MideaCloud:
             sn: str,
             model_number: str | None,
             manufacturer_code: str = "0000",
+            smart_product_id: str = None,
     ):
         raise NotImplementedError()
 
@@ -498,6 +499,7 @@ class MeijuCloud(MideaCloud):
             sn: str,
             model_number: str | None,
             manufacturer_code: str = "0000",
+            smart_product_id: str = None
     ):
         data = {
             "applianceSn": sn,
@@ -768,6 +770,7 @@ class MSmartHomeCloud(MideaCloud):
         sn: str,
         model_number: str | None,
         manufacturer_code: str = "0000",
+        smart_product_id: str = None
     ):
         data = {
             "clientType": "1",
@@ -780,8 +783,10 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType ": "2"
+            "encryptedType ": "2",
         }
+        if smart_product_id:
+            data.update({"smartProductId": smart_product_id})
         fnm = None
         if response := await self._api_request(
             endpoint="/v2/luaEncryption/luaGet",

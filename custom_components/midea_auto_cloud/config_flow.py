@@ -237,6 +237,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     sn=info.get(CONF_SN),
                     model_number=info.get(CONF_MODEL_NUMBER),
                     manufacturer_code=info.get(CONF_MANUFACTURER_CODE),
+                    smart_product_id=info.get(CONF_SMART_PRODUCT_ID),
                 )
                 if lua_file:
                     self._download_results["success"] += 1
