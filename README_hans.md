@@ -87,6 +87,14 @@
 
 示例配置`22012227`演示了如何将设备属性映射成以上各种HomeAssistant中的实体。
 
+## 捐赠
+
+如果认为项目有趣或对你有帮助，欢迎捐赠支持。捐赠金额将用于日常插件维护，方便为大家提供更好的服务！
+
+![](./img/pay_alipay.jpg)
+
+![](./img/pay_wxpay.jpg)
+
 ## 致谢
 
 感谢[midea-meiju-codec](https://github.com/MattedBroadSky/midea-meiju-codec)项目提供的先验知识。
