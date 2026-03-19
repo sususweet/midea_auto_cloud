@@ -7,11 +7,13 @@ from homeassistant.components.climate import (
 from homeassistant.const import (
     Platform,
     ATTR_TEMPERATURE,
+    UnitOfTemperature,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
@@ -67,9 +69,33 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_max_humidity = self._config.get("max_humidity")
         self._key_current_humidity = self._config.get("current_humidity")
         self._key_target_humidity = self._config.get("target_humidity")
-        self._attr_temperature_unit = self._config.get("temperature_unit")
+        self._key_temperature_unit = self._config.get("temperature_unit")
+        self._attr_temperature_unit = (
+            self._key_temperature_unit
+            if not isinstance(self._key_temperature_unit, str)
+            else UnitOfTemperature.CELSIUS
+        )
         self._attr_precision = self._config.get("precision")
         self._attr_target_temperature_step = self._config.get("precision")
+
+    @property
+    def temperature_unit(self):
+        """Return the temperature unit (static or device attribute driven).
+
+        If mapping provides a string key (e.g. "temperature_unit"), it is read from device attributes:
+        - 1 => Fahrenheit
+        - 0/others => Celsius
+        """
+        if isinstance(self._key_temperature_unit, str):
+            raw = self._get_nested_value(self._key_temperature_unit)
+            MideaLogger.warning(f"temperature_unit11:{self._key_temperature_unit}")
+            MideaLogger.warning(f"temperature_unit:{raw}")
+            try:
+                value = int(raw)
+            except (TypeError, ValueError):
+                value = 0
+            return UnitOfTemperature.FAHRENHEIT if value == 1 else UnitOfTemperature.CELSIUS
+        return self._attr_temperature_unit
 
     @property
     def supported_features(self):

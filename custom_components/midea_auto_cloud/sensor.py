@@ -1,5 +1,5 @@
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import Platform
+from homeassistant.const import Platform, UnitOfTemperature
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -43,6 +43,27 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
             rationale=rationale,
             config=config,
         )
+        self._key_dynamic_unit = self._config.get("dynamic_unit")
+        if isinstance(self._key_dynamic_unit, str):
+            # Default until first update; actual unit resolved in native_unit_of_measurement
+            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+
+    @property
+    def native_unit_of_measurement(self):
+        """Return the native unit (static or device attribute driven).
+
+        If mapping provides dynamic_unit key (e.g. "temperature_unit"), it is read from device attributes:
+        - 1 => Fahrenheit
+        - 0/others => Celsius
+        """
+        if isinstance(self._key_dynamic_unit, str):
+            raw = self._get_nested_value(self._key_dynamic_unit)
+            try:
+                value = int(raw)
+            except (TypeError, ValueError):
+                value = 0
+            return UnitOfTemperature.FAHRENHEIT if value == 1 else UnitOfTemperature.CELSIUS
+        return super().native_unit_of_measurement
 
     @property
     def native_value(self):

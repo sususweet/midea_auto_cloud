@@ -74,12 +74,18 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
     @property
     def native_min_value(self) -> float:
         """Return the minimum value."""
-        return float(self._min_value)
+        if isinstance(self._min_value, str):
+            return float(self.device_attributes.get(self._min_value, 30))
+        else:
+            return float(self._min_value)
 
     @property
     def native_max_value(self) -> float:
         """Return the maximum value."""
-        return float(self._max_value)
+        if isinstance(self._max_value, str):
+            return float(self.device_attributes.get(self._max_value, 16))
+        else:
+            return float(self._max_value)
 
     @property
     def native_step(self) -> float:
