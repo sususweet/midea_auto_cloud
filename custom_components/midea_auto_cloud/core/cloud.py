@@ -64,6 +64,14 @@ class MideaCloud:
     def _make_general_data(self):
         return {}
 
+    @property
+    def nickname(self):
+        """获取用户昵称"""
+        # 确保_nickname属性存在
+        if not hasattr(self, "_nickname"):
+            self._nickname = self._account
+        return self._nickname
+
     @staticmethod
     def _is_token_invalid_response(response: dict) -> bool:
         try:
@@ -483,14 +491,6 @@ class MeijuCloud(MideaCloud):
             # 直接返回响应
             return response
         return None
-
-    @property
-    def nickname(self):
-        """获取用户昵称"""
-        # 确保_nickname属性存在
-        if not hasattr(self, "_nickname"):
-            self._nickname = self._account
-        return self._nickname
 
     async def download_lua(
             self, path: str,
