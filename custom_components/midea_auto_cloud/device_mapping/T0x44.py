@@ -1,6 +1,6 @@
 from homeassistant.const import (
     Platform,
-    PERCENTAGE, PRECISION_WHOLE, UnitOfTime,
+    PERCENTAGE, PRECISION_WHOLE, UnitOfTime, UnitOfTemperature,
 )
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -92,6 +92,7 @@ DEVICE_MAPPING = {
                 "screen_temperature_sensor_value": {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "dynamic_unit": "temperature_unit",
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "indoor_temperature",
                 },
