@@ -13,7 +13,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.CLIMATE: {
                 "thermostat": {
-                    "name": "Thermostat",
                     "power": "power",
                     "hvac_modes": {
                         "off": {"power": "off"},
@@ -64,14 +63,12 @@ DEVICE_MAPPING = {
             },
             Platform.NUMBER: {
                 "auto_temperature_lower_limit": {
-                    "name": "Auto Temperature Lower Limit",
                     "attribute": "control_function_set_temperature_lower_limit",
                     "min": "set_temperature_lower_limit",
                     "max": "set_temperature_upper_limit",
                     "step": 1,
                 },
                 "auto_temperature_upper_limit": {
-                    "name": "Auto Temperature Upper Limit",
                     "attribute": "control_function_set_temperature_upper_limit",
                     "min": "set_temperature_lower_limit",
                     "max": "set_temperature_upper_limit",
