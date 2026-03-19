@@ -196,7 +196,7 @@
         }
       },
       "air_status": {
-        "name": "空气运行"
+        "name": "烘干存储运行状态"
       },
       "bar_door_state": {
         "name": "吧台门状态"

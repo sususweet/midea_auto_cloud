@@ -7,7 +7,7 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": [0, 1],
         "queries": [{}],
-        "centralized": [],
+        "centralized": ["air_set_hour"],
         "entities": {
             Platform.SWITCH: {
                 "airswitch": {
@@ -24,6 +24,14 @@ DEVICE_MAPPING = {
                 },
                 "dry_step_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {
+                    "min": 1,
+                    "max": 72,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS
                 }
             },
             Platform.BINARY_SENSOR: {
@@ -59,16 +67,6 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
-                "air_set_hour": {
-                     "options": {
-                        "12": {"air_set_hour": "12" },
-                        "24": {"air_set_hour": "24" },
-                        "36": {"air_set_hour": "36" },
-                        "48": {"air_set_hour": "48" },
-                        "60": {"air_set_hour": "60" },
-                        "72": {"air_set_hour": "72" },
-                    }
-                },
                 "work_status": {
                     "options": {
                         "power_off": {"work_status": "power_off" },
@@ -132,7 +130,7 @@ DEVICE_MAPPING = {
    "7600V1E7": {
         "rationale": [0, 1],
         "queries": [{}],
-        "centralized": [],
+        "centralized": ["air_set_hour"],
         "entities": {
             Platform.SWITCH: {
                 "airswitch": {
