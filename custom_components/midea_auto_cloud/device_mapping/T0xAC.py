@@ -734,7 +734,11 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.TEMPERATURE,
                     "native_unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "cur_temperature"
+                },
+                "new_wind_outdoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "native_unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
                 },
                 "new_wind_humidity": {
                     "device_class": SensorDeviceClass.HUMIDITY,
@@ -1724,7 +1728,6 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%"
                 },
                 "new_wind_humidity": {
-                    "translation_key": "new_wind_humidity",
                     "device_class": "humidity",
                     "unit_of_measurement": "%"
                 },
