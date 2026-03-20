@@ -125,7 +125,7 @@ DEVICE_MAPPING = {
             }
         }
     },
-    "default_fan": {
+    "default_fan": { # 56011CBE
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
@@ -134,8 +134,6 @@ DEVICE_MAPPING = {
             # 摇头控制：保证切换摇头模式或角度时，control 中不会缺少关键字段
             "lr_shake_switch",
             "ud_shake_switch",
-            "lr_angle",
-            "ud_angle",
             "lr_diy_angle_down",
             "lr_diy_angle_up",
             "ud_diy_angle_down",
@@ -162,83 +160,16 @@ DEVICE_MAPPING = {
             Platform.FAN: {
                 "fan": {
                     "power": "power",
-                    "speeds": list({"gear": value + 1} for value in range(0, 100)),
+                    "speeds": list({"gear": value + 1} for value in range(0, 12)),
                     "preset_modes": {
-                        "double_area": {"mode": "double_area"},
+                        "double_area": {"mode": "double_area", "area1_time": 3, "area2_time": 3, "area1_gear": 1, "area2_gear": 1, "lr_shake_switch": "diy"},
                         "self_selection": {"mode": "self_selection"},
                         "sleeping_wind": {"mode": "sleeping_wind"},
-                        "purified_wind": {"mode": "purified_wind"}
+                        "purified_wind": {"mode": "ecology"}
                     }
                 }
             },
             Platform.SELECT: {
-                "swing_angle": {
-                    "options": {
-                        # 对应 lua：
-                        # - normal 模式需要 lr_angle/ud_angle
-                        "unknown": {
-                            "lr_shake_switch": "off",
-                            "ud_shake_switch": "off"
-                        },
-                        "30": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "30",
-                            "ud_angle": "30"
-                        },
-                        "60": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "60",
-                            "ud_angle": "60"
-                        },
-                        "90": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "90",
-                            "ud_angle": "90"
-                        },
-                        "120": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "120",
-                            "ud_angle": "120"
-                        },
-                        "150": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "150",
-                            "ud_angle": "150"
-                        },
-                        "180": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal",
-                            "lr_angle": "180",
-                            "ud_angle": "180"
-                        }
-                    }
-                },
-                "swing_direction": {
-                    "options": {
-                        # 对应 lua：通过设置 lr_shake_switch / ud_shake_switch 控制方向
-                        "unknown": {
-                            "lr_shake_switch": "off",
-                            "ud_shake_switch": "off"
-                        },
-                        "horizontal": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "off"
-                        },
-                        "vertical": {
-                            "lr_shake_switch": "off",
-                            "ud_shake_switch": "normal"
-                        },
-                        "both": {
-                            "lr_shake_switch": "normal",
-                            "ud_shake_switch": "normal"
-                        }
-                    }
-                },
                 "voice": {
                     "options": {
                         "open_buzzer": {"voice": "open_buzzer"},
@@ -250,8 +181,6 @@ DEVICE_MAPPING = {
                     "options": {
                         "off": {"lr_shake_switch": "off"},
                         "default": {"lr_shake_switch": "default"},
-                        # lua normal 需要 lr_angle
-                        "normal": {"lr_shake_switch": "normal"},
                         "diy": {"lr_shake_switch": "diy"},
                     }
                 },
@@ -259,8 +188,6 @@ DEVICE_MAPPING = {
                     "options": {
                         "off": {"ud_shake_switch": "off"},
                         "default": {"ud_shake_switch": "default"},
-                        "normal": {"ud_shake_switch": "normal"},
-                        # lua diy 需要 ud_diy_angle_down/up
                         "diy": {"ud_shake_switch": "diy"},
                     }
                 },
@@ -283,76 +210,84 @@ DEVICE_MAPPING = {
                 "current_angle": {
                     "device_class": SensorDeviceClass.WIND_DIRECTION,
                     "unit_of_measurement": DEGREE,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "lr_current_angle"
                 },
-                "target_angle": {
+                "ud_current_angle": {
                     "device_class": SensorDeviceClass.WIND_DIRECTION,
                     "unit_of_measurement": DEGREE,
                     "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature_feedback": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "indoor_temperature"
                 }
             },
             Platform.NUMBER: {
                 # normal 模式角度
-                "lr_angle": {
+                "target_angle": {
                     "min": 0,
-                    "max": 180,
+                    "max": 120,
                     "step": 1,
                     "unit_of_measurement": DEGREE,
-                    "default_value": 90
+                    "default_value": 60,
+                    "translation_key": "lr_target_angle"
                 },
-                "ud_angle": {
+                "ud_target_angle": {
                     "min": 0,
-                    "max": 180,
+                    "max": 135,
                     "step": 1,
                     "unit_of_measurement": DEGREE,
-                    "default_value": 90
+                    "default_value": 60
                 },
                 # diy 模式起始/结束角度
                 "lr_diy_angle_down": {
                     "min": 0,
-                    "max": 180,
+                    "max": 120,
                     "step": 1,
                     "unit_of_measurement": DEGREE
                 },
                 "lr_diy_angle_up": {
                     "min": 0,
-                    "max": 180,
+                    "max": 120,
                     "step": 1,
                     "unit_of_measurement": DEGREE
                 },
                 "ud_diy_angle_down": {
                     "min": 0,
-                    "max": 180,
+                    "max": 120,
                     "step": 1,
                     "unit_of_measurement": DEGREE
                 },
                 "ud_diy_angle_up": {
                     "min": 0,
-                    "max": 180,
+                    "max": 120,
                     "step": 1,
                     "unit_of_measurement": DEGREE
                 },
                 # 双区送风（area1/area2）
                 "area1_time": {
-                    "min": 0,
-                    "max": 255,
+                    "min": 3,
+                    "max": 10,
                     "step": 1,
                     "unit_of_measurement": UnitOfTime.SECONDS
                 },
                 "area2_time": {
-                    "min": 0,
-                    "max": 255,
+                    "min": 3,
+                    "max": 10,
                     "step": 1,
                     "unit_of_measurement": UnitOfTime.SECONDS
                 },
                 "area1_gear": {
-                    "min": 0,
-                    "max": 26,
+                    "min": 1,
+                    "max": 12,
                     "step": 1
                 },
                 "area2_gear": {
-                    "min": 0,
-                    "max": 26,
+                    "min": 1,
+                    "max": 12,
                     "step": 1
                 },
             }

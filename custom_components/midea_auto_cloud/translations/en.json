@@ -1376,6 +1376,12 @@
       }
     },
     "sensor": {
+      "lr_current_angle": {
+        "name": "Current LR Swing Angle"
+      },
+      "ud_current_angle": {
+        "name": "Current UD Swing Angle"
+      },
       "dry_remain_time": {
         "name": "Dry Remaining Time"
       },
@@ -2666,10 +2672,10 @@
       "custom_temperature_1": {
         "name": "Custom Temperature 1"
       },
-      "lr_angle": {
+      "lr_target_angle": {
         "name": "LR Swing Angle"
       },
-      "ud_angle": {
+      "ud_target_angle": {
         "name": "UD Swing Angle"
       },
       "lr_diy_angle_down": {

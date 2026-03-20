@@ -767,10 +767,10 @@
         }
       },
       "ud_swing_angle": {
-        "name": "上下摆风角度"
+        "name": "普通模式上下摆风角度"
       },
       "lr_swing_angle": {
-        "name": "左右摆风角度"
+        "name": "普通模式左右摆风角度"
       },
       "follow_body_sense": {
         "name": "随身感",
@@ -1637,6 +1637,12 @@
       }
     },
     "sensor": {
+      "lr_current_angle": {
+        "name": "左右当前摆风角度"
+      },
+      "ud_current_angle": {
+        "name": "上下当前摆风角度"
+      },
       "dry_remain_time": {
         "name": "除湿剩余时间"
       },
@@ -3006,10 +3012,10 @@
       "custom_temperature_1": {
         "name": "自定义温度1"
       },
-      "lr_angle": {
+      "lr_target_angle": {
         "name": "左右摆风角度"
       },
-      "ud_angle": {
+      "ud_target_angle": {
         "name": "上下摆风角度"
       },
       "lr_diy_angle_down": {
