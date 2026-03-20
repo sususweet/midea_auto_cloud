@@ -271,7 +271,8 @@ class MeijuCloud(MideaCloud):
             }
             if response := await self._api_request(
                 endpoint="/mj/user/login",
-                data=data
+                data=data,
+                _retried_after_login=True,
             ):
                 self._access_token = response["mdata"]["accessToken"]
                 self._security.set_aes_keys(
@@ -726,7 +727,8 @@ class MSmartHomeCloud(MideaCloud):
             }
             if response := await self._api_request(
                 endpoint="/mj/user/login",
-                data=data
+                data=data,
+                _retried_after_login=True,
             ):
                 self._uid = response["uid"]
                 self._access_token = response["mdata"]["accessToken"]
