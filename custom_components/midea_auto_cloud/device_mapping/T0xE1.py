@@ -10,7 +10,7 @@ DEVICE_MAPPING = {
         # 注意：lua 协议中烘干存储（dryswitch）的时长字段是 dry_set_min
         # air_set_hour 在此设备上更偏向“烘干/风量相关”的另一路时间字段。
         # 因此 centralized 要携带 dry_set_min，避免 HA 开启/关闭烘干存储时下发 dry_set_min=0xff 导致异常/清零。
-        "centralized": ["dry_set_min"],
+        "centralized": ["air_set_hour"],
         "entities": {
             Platform.SWITCH: {
                 "airswitch": {
@@ -27,9 +27,6 @@ DEVICE_MAPPING = {
                 },
                 "dry_step_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    # lua 解析时：bit=1 -> dry_step_switch=0，bit=0 -> dry_step_switch=1（反逻辑）
-                    # 所以这里反置 rationale，保证 HA 展示与真实开关一致，且控制方向也正确。
-                    "rationale": [1, 0],
                 }
             },
             Platform.NUMBER: {
@@ -37,10 +34,7 @@ DEVICE_MAPPING = {
                     "min": 1,
                     "max": 72,
                     "step": 1,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    # 兼容原有 HA 实体 key 与翻译：界面上仍显示“烘干存储设置时间”
-                    # 实际控制/读取 dry_set_min（lua 使用字段名）
-                    "attribute": "dry_set_min",
+                    "unit_of_measurement": UnitOfTime.HOURS
                 }
             },
             Platform.BINARY_SENSOR: {
@@ -136,7 +130,7 @@ DEVICE_MAPPING = {
             }
         }
     },
-   "7600V1E7": {
+    "7600V1E7": {
         "rationale": [0, 1],
         "queries": [{}],
         "centralized": ["air_set_hour"],
