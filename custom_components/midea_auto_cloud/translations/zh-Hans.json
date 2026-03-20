@@ -1419,6 +1419,24 @@
       "swing_direction": {
         "name": "摆风方向"
       },
+      "lr_shake_switch": {
+        "name": "左右摇头",
+        "state": {
+          "off": "关闭",
+          "default": "默认",
+          "normal": "正常",
+          "diy": "自定义"
+        }
+      },
+      "ud_shake_switch": {
+        "name": "上下摇头",
+        "state": {
+          "off": "关闭",
+          "default": "默认",
+          "normal": "正常",
+          "diy": "自定义"
+        }
+      },
       "scene": {
         "name": "场景"
       },
@@ -2987,6 +3005,36 @@
       },
       "custom_temperature_1": {
         "name": "自定义温度1"
+      },
+      "lr_angle": {
+        "name": "左右摆风角度"
+      },
+      "ud_angle": {
+        "name": "上下摆风角度"
+      },
+      "lr_diy_angle_down": {
+        "name": "左右DIY起始角度(左侧)"
+      },
+      "lr_diy_angle_up": {
+        "name": "左右DIY结束角度(右侧)"
+      },
+      "ud_diy_angle_down": {
+        "name": "上下DIY起始角度(下侧)"
+      },
+      "ud_diy_angle_up": {
+        "name": "上下DIY结束角度(上侧)"
+      },
+      "area1_time": {
+        "name": "双区区域1持续时间"
+      },
+      "area2_time": {
+        "name": "双区区域2持续时间"
+      },
+      "area1_gear": {
+        "name": "双区区域1档位"
+      },
+      "area2_gear": {
+        "name": "双区区域2档位"
       }
     },
     "fan": {
@@ -3000,7 +3048,8 @@
               "sleep": "睡眠风",
               "self_selection": "自选风",
               "sleeping_wind": "睡眠风",
-              "purified_wind": "净化风"
+              "purified_wind": "净化风",
+              "double_area": "双区送风"
             }
           }
         }

@@ -1178,6 +1178,24 @@
       "swing_direction": {
         "name": "Swing Direction"
       },
+      "lr_shake_switch": {
+        "name": "LR Swing",
+        "state": {
+          "off": "Off",
+          "default": "Default",
+          "normal": "Normal",
+          "diy": "DIY"
+        }
+      },
+      "ud_shake_switch": {
+        "name": "UD Swing",
+        "state": {
+          "off": "Off",
+          "default": "Default",
+          "normal": "Normal",
+          "diy": "DIY"
+        }
+      },
       "scene": {
         "name": "Scene"
       },
@@ -2647,11 +2665,54 @@
       },
       "custom_temperature_1": {
         "name": "Custom Temperature 1"
+      },
+      "lr_angle": {
+        "name": "LR Swing Angle"
+      },
+      "ud_angle": {
+        "name": "UD Swing Angle"
+      },
+      "lr_diy_angle_down": {
+        "name": "LR DIY Start Angle (Left)"
+      },
+      "lr_diy_angle_up": {
+        "name": "LR DIY End Angle (Right)"
+      },
+      "ud_diy_angle_down": {
+        "name": "UD DIY Start Angle (Down)"
+      },
+      "ud_diy_angle_up": {
+        "name": "UD DIY End Angle (Up)"
+      },
+      "area1_time": {
+        "name": "Double Area Area 1 Duration"
+      },
+      "area2_time": {
+        "name": "Double Area Area 2 Duration"
+      },
+      "area1_gear": {
+        "name": "Double Area Area 1 Gear"
+      },
+      "area2_gear": {
+        "name": "Double Area Area 2 Gear"
       }
     },
     "fan": {
       "fan": {
-        "name": "Fan"
+        "name": "Fan",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "baby": "Baby Wind",
+              "normal": "Normal Wind",
+              "sleep": "Sleep Wind",
+              "self_selection": "Self Selection",
+              "sleeping_wind": "Sleep Wind",
+              "purified_wind": "Purified Wind",
+              "double_area": "Double Area Wind"
+            }
+          }
+        }
       }
     },
   "switch": {
