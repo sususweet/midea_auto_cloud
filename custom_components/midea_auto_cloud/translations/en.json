@@ -1108,6 +1108,9 @@
           "steam_clean": "Steam Clean"
         }
       },
+      "speed": {
+        "name": "Speed"
+      },
       "wash_mode": {
         "name": "wash mode",
         "state": {
@@ -1371,7 +1374,7 @@
       "wind_pressure": {
         "name": "Wind Pressure"
       },
-		  "new_wind_humidity": {
+      "new_wind_humidity": {
         "name": "Fresh air humidity"
       },
       "new_wind_outdoor_temperature": {
@@ -1662,6 +1665,42 @@
       },
       "error_code": {
         "name": "Error Code"
+      },
+      "current_temp": {
+        "name": "Current Temperature"
+      },
+      "current_time": {
+        "name": "Current Duration"
+      },
+      "step_status": {
+        "name": "Step Status"
+      },
+      "cup_status": {
+        "name": "Cup Status"
+      },
+      "lid_status": {
+        "name": "Lid Status"
+      },
+      "response_type": {
+        "name": "Response Type"
+      },
+      "power_on_flag": {
+        "name": "Power On Flag"
+      },
+      "appoint_time": {
+        "name": "Appointment Duration"
+      },
+      "set_work_time": {
+        "name": "Set Work Time"
+      },
+      "set_keep_warm_time": {
+        "name": "Set Keep Warm Time"
+      },
+      "set_work_temp": {
+        "name": "Set Work Temperature"
+      },
+      "set_keep_warm_temp": {
+        "name": "Set Keep Warm Temperature"
       },
       "error_desc": {
         "name": "Error Description"

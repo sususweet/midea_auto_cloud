@@ -1316,6 +1316,9 @@
           "custom": "自定义"
         }
       },
+      "speed": {
+        "name": "速度"
+      },
       "wash_mode": {
         "name": "洗涤模式",
         "state": {
@@ -1632,8 +1635,8 @@
       "wind_pressure": {
         "name": "风压"
       },
-	    "new_wind_humidity": {
-        "name": "湿度"
+      "new_wind_humidity": {
+        "name": "新风湿度"
       },
       "new_wind_outdoor_temperature": {
         "name": "室外温度"
@@ -1972,6 +1975,42 @@
       },
       "error_code": {
         "name": "错误代码"
+      },
+      "current_temp": {
+        "name": "当前温度"
+      },
+      "current_time": {
+        "name": "当前时长"
+      },
+      "step_status": {
+        "name": "步骤状态"
+      },
+      "cup_status": {
+        "name": "杯盖状态"
+      },
+      "lid_status": {
+        "name": "上盖状态"
+      },
+      "response_type": {
+        "name": "响应类型"
+      },
+      "power_on_flag": {
+        "name": "电源标志"
+      },
+      "appoint_time": {
+        "name": "预约时长"
+      },
+      "set_work_time": {
+        "name": "设置工作时长"
+      },
+      "set_keep_warm_time": {
+        "name": "设置保温时长"
+      },
+      "set_work_temp": {
+        "name": "设置工作温度"
+      },
+      "set_keep_warm_temp": {
+        "name": "设置保温温度"
       },
       "error_desc": {
         "name": "错误描述"
