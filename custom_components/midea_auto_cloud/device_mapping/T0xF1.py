@@ -6,7 +6,7 @@ DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
         "queries": [{}],
-        "centralized": ["power", "work_mode", "speed", "code_id"],
+        "centralized": ["power", "work_mode", "speed"],
         "calculate": {
             # Device reports power state via `power_on_flag` (0/1), but lua control expects `power` ("off"/"on").
             # So we derive `power` from `power_on_flag` for the SWITCH entity to read.
