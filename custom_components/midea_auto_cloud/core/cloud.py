@@ -60,6 +60,8 @@ class MideaCloud:
         self._proxy = proxy
         self._access_token = None
         self._login_id = None
+        # 发生 token 失效时，避免每次请求都触发重复登录
+        self._token_invalid_retry_count = 0
 
     def _make_general_data(self):
         return {}
@@ -137,6 +139,10 @@ class MideaCloud:
             traceback.print_exc()
 
         if int(response["code"]) == 0:
+            # 只在“重试后的业务请求”成功时才清零计数
+            # 否则 login() 过程中也会返回 code==0，从而把计数过早重置导致永远无法累计到上限。
+            if _retried_after_login:
+                self._token_invalid_retry_count = 0
             if "data" in response:
                 return response["data"]
             else:
@@ -147,7 +153,14 @@ class MideaCloud:
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
-            MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, code={response.get("code")}, msg={response.get("msg") or response.get("message")}")
+            if self._token_invalid_retry_count >= 3:
+                MideaLogger.warning(
+                    "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
+                    f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
+                )
+                return None
+            self._token_invalid_retry_count += 1
+            MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, retry_count={self._token_invalid_retry_count}, code={response.get("code")}, msg={response.get("msg") or response.get("message")}")
             self._access_token = None
             try:
                 if await self.login():
@@ -272,7 +285,6 @@ class MeijuCloud(MideaCloud):
             if response := await self._api_request(
                 endpoint="/mj/user/login",
                 data=data,
-                _retried_after_login=True,
             ):
                 self._access_token = response["mdata"]["accessToken"]
                 self._security.set_aes_keys(
@@ -728,7 +740,6 @@ class MSmartHomeCloud(MideaCloud):
             if response := await self._api_request(
                 endpoint="/mj/user/login",
                 data=data,
-                _retried_after_login=True,
             ):
                 self._uid = response["uid"]
                 self._access_token = response["mdata"]["accessToken"]
