@@ -35,8 +35,7 @@ body:
       label: Entity attributes / 实体属性
       render: yaml
       description: |
-        > [🔨 Developer tools > ℹ️ State](https://my.home-assistant.io/redirect/developer_states) > 🔍 Filter (`binary_sensor.xxxx_status
-`)
+        > [🔨 Developer tools > ℹ️ State](https://my.home-assistant.io/redirect/developer_states) > 🔍 Filter (`binary_sensor.xxxx_status`)
         > [🔨 开发者工具 > ℹ️ 状态](https://my.home-assistant.io/redirect/developer_states) > 🔍 筛选该设备下的status实体
         > 如果没有实体，请填写`无实体`
 
