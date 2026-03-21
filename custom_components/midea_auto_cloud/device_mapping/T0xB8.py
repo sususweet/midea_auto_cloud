@@ -27,6 +27,14 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
+                "fan_setting": {
+                    "options": {
+                        "soft": {"level": "soft"},
+                        "normal": {"level": "normal"},
+                        "high": {"level": "high"},
+                        "super": {"level": "super"}
+                    }
+                },
                 "sweep_mop_mode": {
                     "options": {
                         "sweep_and_mop": {"sweep_mop_mode": "sweep_and_mop"},
@@ -46,6 +54,15 @@ DEVICE_MAPPING = {
                 },
                 "work_status": {
                     "options": {
+                        "charge": {"work_status": "charge"},
+                        "charge_pause": {"work_status": "charge_pause"},
+                        "charge_continue": {"work_status": "charge_continue"},
+                        "auto_clean": {"work_status": "auto_clean"},
+                        "auto_clean_pause": {"work_status": "auto_clean_pause"},
+                        "auto_clean_continue": {"work_status": "auto_clean_continue"},
+                        "pause": {"work_status": "pause"},
+                        "stop": {"work_status": "stop"},
+                        "work": {"work_status": "work"},
                         "video_cruise_start": {"work_status": "video_cruise_start"},
                         "video_cruise_pause": {"work_status": "video_cruise_pause"},
                         "mop_clean": {"mop_clean_setting": {"mode_type": "common", "clean_level": "normal"}},
