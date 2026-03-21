@@ -137,6 +137,7 @@ DEVICE_MAPPING = {
             Platform.SWITCH: {
                 "airswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 2]
                 },
                 "waterswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -146,9 +147,11 @@ DEVICE_MAPPING = {
                 },
                 "dryswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 2]
                 },
                 "dry_step_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [1, 0]
                 }
             },
             Platform.BINARY_SENSOR: {
