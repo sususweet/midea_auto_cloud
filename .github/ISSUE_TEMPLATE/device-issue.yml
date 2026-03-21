@@ -1,0 +1,67 @@
+name: Device issue
+description: Device or entity unavailable / Missing entity / 设备或实体不可用 / 缺少实体
+body:
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Device model (eg. T0xAC) / 设备型号（例如：T0xAC）
+      placeholder: brand.device.model
+      description: |
+        > [⚙️ Settings > Devices & Services > Integrations](https://my.home-assistant.io/redirect/integrations) > Midea Auto Cloud
+        > [⚙️ 设置 > 设备与服务 > 集成](https://my.home-assistant.io/redirect/integrations) > Midea Auto Cloud
+
+  - type: input
+    attributes:
+      label: Component version / 插件版本
+      placeholder: 1.0.x
+
+  - type: input
+    attributes:
+      label: HA core version / HA版本
+      placeholder: 2024.x.x
+      description: |
+        > [⚙️ Settings > ℹ️️ About](https://my.home-assistant.io/redirect/info)
+        > [⚙️ 设置 > ℹ️️ 关于](https://my.home-assistant.io/redirect/info)
+
+  - type: textarea
+    attributes:
+      label: The problem / 问题详情
+
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Entity attributes / 实体属性
+      render: yaml
+      description: |
+        > [🔨 Developer tools > ℹ️ State](https://my.home-assistant.io/redirect/developer_states) > 🔍 Filter (`binary_sensor.xxxx_status
+`)
+        > [🔨 开发者工具 > ℹ️ 状态](https://my.home-assistant.io/redirect/developer_states) > 🔍 筛选该设备下的status实体
+        > 如果没有实体，请填写`无实体`
+
+  - type: textarea
+    attributes:
+      label: Home Assistant Logs / 系统日志
+      description: |
+        > [⚙️ Settings > System > ✍️ Logs](https://my.home-assistant.io/redirect/logs) > 🔍 Filter `Midea Auto Cloud`
+        > [⚙️ 配置 > 系统 > ✍️ 日志](https://my.home-assistant.io/redirect/logs) > 🔍 筛选 `Midea Auto Cloud`
+
+  - type: textarea
+    attributes:
+      label: Device LUA file / 设备对应LUA文件
+      description: |
+        > Go to the Home Assistant installation directory, find the device's corresponding T_0000_Device typeSubtype***.lua file in the .storage/midea_auto_cloud/lua/ directory.
+        > 进入Homeassistant的安装目录， 在.storage/midea_auto_cloud/lua/目录下找到设备对应的T_0000_Device typeSubtype***.lua文件.
+      
+  - type: textarea
+    attributes:
+      label: Device Plugin file / 设备对应Plugin文件
+      description: |
+        > Go to the Home Assistant installation directory, find the device's corresponding zip file in the .storage/midea_auto_cloud/plugin/ directory.
+        > 进入Homeassistant的安装目录， 找到.storage/midea_auto_cloud/plugin/目录下的zip文件。
+
+  - type: textarea
+    attributes:
+      label: Official APP Screenshot of Device / 设备在官方APP的控制截图
+
