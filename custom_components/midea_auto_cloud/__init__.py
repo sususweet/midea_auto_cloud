@@ -137,10 +137,6 @@ def get_device_mapping(
     if result is None and "default" in device_mappings:
         result = device_mappings["default"]
 
-    # 5. 最后兜底：返回整个字典，避免 None
-    if result is None:
-        result = device_mappings
-
     if not result:
         MideaLogger.warning(
             f"No mapping found for sn8 {sn8} subtype {subtype} category {category} in type {'T0x%02X' % device_type}"
@@ -150,13 +146,13 @@ def get_device_mapping(
 
 
 async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
-    def _ensure_dir_and_load(path_dir: str, path_file: str):
-        os.makedirs(path_dir, exist_ok=True)
-        return load_json(path_file, default={})
+    # def _ensure_dir_and_load(path_dir: str, path_file: str):
+    #     os.makedirs(path_dir, exist_ok=True)
+    #     return load_json(path_file, default={})
 
-    config_dir = hass.config.path(CONFIG_PATH)
-    config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
-    raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
+    # config_dir = hass.config.path(CONFIG_PATH)
+    # config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
+    # raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
 
     json_data = {}
 
@@ -174,9 +170,9 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
     except ModuleNotFoundError:
         MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
 
-    save_data = {sn8: json_data}
+    # save_data = {sn8: json_data}
     # offload save_json as well
-    await hass.async_add_executor_job(save_json, config_file, save_data)
+    # await hass.async_add_executor_job(save_json, config_file, save_data)
     return json_data
 
 
