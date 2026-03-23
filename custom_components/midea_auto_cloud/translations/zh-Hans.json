@@ -158,7 +158,7 @@
         "name": "生活热水工作状态"
       },
       "doorswitch": {
-        "name": "门锁开关"
+        "name": "门解锁状态"
       },
       "softener_lack": {
         "name": "柔顺剂存量",
@@ -620,6 +620,30 @@
         "state": {
           "off": "关闭",
           "on": "开启"
+        }
+      },
+      "airswitch": {
+        "name": "烘干存储开关",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待机",
+          "running": "运行"
+        }
+      },
+      "dry_step_switch": {
+        "name": "烘干分步开关",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待机",
+          "running": "运行"
+        }
+      },
+      "dryswitch": {
+        "name": "晶焰烘干开关",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待机",
+          "running": "运行"
         }
       },
       "dry_time_interval": {
@@ -3320,9 +3344,6 @@
       "airDry_on_off": {
         "name": "湿帘风干"
       },
-      "airswitch": {
-        "name": "烘干存储开关"
-      },
       "appointment": {
         "name": "预约"
       },
@@ -3467,17 +3488,11 @@
       "dry": {
         "name": "干燥"
       },
-      "dry_step_switch": {
-        "name": "烘干分步开关"
-      },
       "dry_weighing_already": {
         "name": "已称重"
       },
       "drying_tunnel_overheating": {
         "name": "烘干通道过热"
-      },
-      "dryswitch": {
-        "name": "晶焰烘干开关"
       },
       "easy_ironing": {
         "name": "易熨烫"

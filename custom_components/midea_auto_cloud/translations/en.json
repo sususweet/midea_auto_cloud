@@ -158,7 +158,7 @@
         "name": "Bathing Work Status"
       },
       "doorswitch": {
-        "name": "Door Switch"
+        "name": "Door Unlock Switch"
       },
       "softener_lack": {
         "name": "Softener Lack"
@@ -587,6 +587,30 @@
     "select": {
       "aidry": {
         "name": "Aidry"
+      },
+      "airswitch": {
+        "name": "Drying Storage Switch",
+        "state": {
+          "cancel": "Cancel",
+          "waiting": "Standby",
+          "running": "Running"
+        }
+      },
+      "dry_step_switch": {
+        "name": "Dry Step Switch",
+        "state": {
+           "cancel": "Cancel",
+          "waiting": "Standby",
+          "running": "Running"
+        }
+      },
+      "dryswitch": {
+        "name": "Dry Switch",
+        "state": {
+          "cancel": "Cancel",
+          "waiting": "Standby",
+          "running": "Running"
+        }
       },
       "dry_time_interval": {
         "name": "Dry Time Interval",
@@ -2977,9 +3001,6 @@
       "airdry_on_off": {
         "name": "Air Dry On Off"
       },
-      "airswitch": {
-        "name": "Drying Storage Switch"
-      },
       "appointment": {
         "name": "Appointment"
       },
@@ -3124,17 +3145,11 @@
       "dry": {
         "name": "Dry"
       },
-      "dry_step_switch": {
-        "name": "Dry Step Switch"
-      },
       "dry_weighing_already": {
         "name": "Dry Weighing Already"
       },
       "drying_tunnel_overheating": {
         "name": "Drying Tunnel Overheating"
-      },
-      "dryswitch": {
-        "name": "Dry Switch"
       },
       "easy_ironing": {
         "name": "Easy Ironing"

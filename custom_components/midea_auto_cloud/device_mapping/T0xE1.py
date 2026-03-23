@@ -10,21 +10,12 @@ DEVICE_MAPPING = {
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
-                "airswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "waterswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "uvswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "dryswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "dry_step_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                }
             },
             Platform.BINARY_SENSOR: {
                 "doorswitch": {
@@ -59,6 +50,27 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "dry_step_switch": {
+                    "options": {
+                        "cancel": {"dry_step_switch": 0},
+                        "waiting": {"dry_step_switch": 1},
+                        "running": {"dry_step_switch": 2},
+                    }
+                },
                 "air_set_hour": {
                     "options": {
                         "12": {"air_set_hour": "12"},
@@ -132,27 +144,15 @@ DEVICE_MAPPING = {
     "76006481": {
         "rationale": [0, 1],
         "queries": [{}],
-        "centralized": ["air_set_hour"],
+        "centralized": [],
         "entities": {
             Platform.SWITCH: {
-                "airswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 2]
-                },
                 "waterswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "uvswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "dryswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 2]
-                },
-                "dry_step_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [1, 0]
-                }
             },
             Platform.BINARY_SENSOR: {
                 "doorswitch": {
@@ -195,6 +195,20 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
                 "work_status": {
                     "options": {
                         "power_off": {"work_status": "power_off"},
@@ -261,21 +275,12 @@ DEVICE_MAPPING = {
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
-                "airswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "waterswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "uvswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "dryswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "dry_step_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                }
             },
             Platform.BINARY_SENSOR: {
                 "doorswitch": {
@@ -310,6 +315,27 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "dry_step_switch": {
+                    "options": {
+                        "cancel": {"dry_step_switch": 0},
+                        "waiting": {"dry_step_switch": 1},
+                        "running": {"dry_step_switch": 2},
+                    }
+                },
                 "air_set_hour": {
                      "options": {
                         "12": {"air_set_hour": "12" },
@@ -386,9 +412,6 @@ DEVICE_MAPPING = {
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
-                "airswitch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "child_lock"
@@ -403,6 +426,13 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
                 "work_status": {
                     "options": {
                         "power_off": {"work_status": "power_off" },
