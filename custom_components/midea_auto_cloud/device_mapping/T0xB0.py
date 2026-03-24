@@ -5,6 +5,7 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 DEVICE_MAPPING = {
     "default_microwave_oven": {
         "rationale": ["off", "on"],
+        "queries": [{}],
         "centralized": [
             "work_mode",
             "fire_power",

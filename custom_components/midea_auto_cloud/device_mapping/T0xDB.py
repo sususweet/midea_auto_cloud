@@ -296,6 +296,8 @@ DEVICE_MAPPING = {
         }
     },
     "default_front_load_washer": {
+        "queries": [{}],
+        "centralized": [],
         "rationale": ["off", "on"],
         "entities": {
             Platform.BINARY_SENSOR: {

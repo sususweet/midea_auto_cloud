@@ -153,9 +153,7 @@ DEVICE_MAPPING = {
     },
     "750004AT": {
         "rationale": ["off", "on"],
-        "queries": [
-            {"query_type": "work"}
-        ],
+        "queries": [{"query_type": "work"}],
         "centralized": ["work_status", "battery_percent", "sweep_mop_mode", "mop", "sub_work_status"],
         "entities": {
             Platform.VACUUM: {

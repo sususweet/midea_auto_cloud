@@ -144,6 +144,8 @@ DEVICE_MAPPING = {
     },
     "default_bath_heater": {
         "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
         "entities": {
             Platform.NUMBER: {
                 "bath_temperature": {

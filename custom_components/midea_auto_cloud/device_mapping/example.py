@@ -112,7 +112,7 @@ DEVICE_MAPPING = {
     "22012227": {
         "manufacturer": "TOSHIBA",
         "rationale": ["off", "on"],
-        "queries": [],
+        "queries": [{}],
         "centralized": ["power", "temperature", "small_temperature", "mode", "eco", "comfort_power_save",
                         "comfort_sleep", "strong_wind", "wind_swing_lr", "wind_swing_ud", "wind_speed",
                         "ptc", "dry"],
