@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type":"run_status"}],
+        "queries": [{}],
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -212,6 +212,182 @@ DEVICE_MAPPING = {
                         "5": {"swing.louver_vertical.level": "5"}
                     },
                     "attribute": "swing.louver_vertical.level"
+                }
+            }
+        }
+    },
+    "171PNL01": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode_current": "heat"},
+                        "cool": {"power": "on", "mode_current": "cool"},
+                        "dry": {"power": "on", "mode_current": "dry"},
+                        "fan_only": {"power": "on", "mode_current": "fan"}
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "eco_status": "off",
+                            "sterilize_status": "off",
+                            "selfclean_status": "off",
+                            "humidification_enable": "false"
+                        },
+                        "eco": {"eco_status": "on"},
+                        "sterilize": {"sterilize_status": "on"},
+                        "selfclean": {"selfclean_status": "on"},
+                        "humidify": {"humidification_enable": "true"}
+                    },
+                    "swing_modes": {
+                        "off": {"swing_multiple": "false", "swing_louver_horizontal_enable": "false", "swing_louver_vertical_enable": "false"},
+                        "both": {"swing_multiple": "true"},
+                        "horizontal": {"swing_louver_horizontal_enable": "true"},
+                        "vertical": {"swing_louver_vertical_enable": "true"}
+                    },
+                    "fan_modes": {
+                        "1": {"wind_speed_level": "1"},
+                        "2": {"wind_speed_level": "2"},
+                        "3": {"wind_speed_level": "3"},
+                        "4": {"wind_speed_level": "4"},
+                        "5": {"wind_speed_level": "5"},
+                        "6": {"wind_speed_level": "6"},
+                        "7": {"wind_speed_level": "7"},
+                        "auto": {"wind_speed_level": "auto"}
+                    },
+                    "target_temperature": "temperature_current",
+                    "current_temperature": "temperature_room",
+                    "pre_mode": "mode_current",
+                    "min_temp": 17,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "sterilize_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "sterilize"
+                },
+                "eco_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "eco"
+                },
+                "selfclean_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "selfclean"
+                },
+                "idu_silent_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "idu_silent"
+                },
+                "idu_light": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "idu_light"
+                },
+                "idu_sleep_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "idu_sleep"
+                }
+            },
+            Platform.SENSOR: {
+                "mode_current": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "mode",
+                },
+                "temperature_room": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "room_temperature"
+                },
+                "temperature_outside": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "outside_temperature"
+                },
+                "co2_value": {
+                    "device_class": SensorDeviceClass.CO2,
+                    "unit_of_measurement": CONCENTRATION_PARTS_PER_MILLION,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "co2_value"
+                },
+                "wind_speed_level": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "wind_speed_level"
+                },
+                "selfclean_time_left": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": "min",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "selfclean_time_left"
+                },
+                "back_up_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "back_up_status"
+                },
+                "cur_fault_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "cur_fault_code"
+                }
+            },
+            Platform.SELECT: {
+                "mode_current": {
+                    "options": {
+                        "cool": {"mode_current": "cool"},
+                        "dry": {"mode_current": "dry"},
+                        "fan": {"mode_current": "fan"},
+                        "heat": {"mode_current": "heat"}
+                    },
+                    "translation_key": "mode"
+                },
+                "ptc_status": {
+                    "options": {
+                        "auto": {"ptc_status": "auto"},
+                        "on": {"ptc_status": "on"},
+                        "off": {"ptc_status": "off"},
+                        "separate": {"ptc_status": "separate"}
+                    },
+                    "translation_key": "ptc"
+                },
+                "wind_feeling_current": {
+                    "options": {
+                        "close": {"wind_feeling_current": "close"},
+                        "soft": {"wind_feeling_current": "soft"},
+                        "follow": {"wind_feeling_current": "follow"},
+                        "avoid": {"wind_feeling_current": "avoid"},
+                        "strong": {"wind_feeling_current": "strong"}
+                    },
+                    "translation_key": "wind_feeling_mode"
+                },
+                "swing_louver_horizontal_level": {
+                    "options": {
+                        "1": {"swing_louver_horizontal_level": "1"},
+                        "2": {"swing_louver_horizontal_level": "2"},
+                        "3": {"swing_louver_horizontal_level": "3"},
+                        "4": {"swing_louver_horizontal_level": "4"},
+                        "5": {"swing_louver_horizontal_level": "5"},
+                        "close": {"swing_louver_horizontal_level": "close"},
+                        "auto": {"swing_louver_horizontal_level": "auto"}
+                    },
+                    "translation_key": "swing_horizontal"
+                },
+                "swing_louver_vertical_level": {
+                    "options": {
+                        "1": {"swing_louver_vertical_level": "1"},
+                        "2": {"swing_louver_vertical_level": "2"},
+                        "3": {"swing_louver_vertical_level": "3"},
+                        "4": {"swing_louver_vertical_level": "4"},
+                        "5": {"swing_louver_vertical_level": "5"},
+                        "close": {"swing_louver_vertical_level": "close"},
+                        "auto": {"swing_louver_vertical_level": "auto"}
+                    },
+                    "translation_key": "swing_vertical"
                 }
             }
         }
