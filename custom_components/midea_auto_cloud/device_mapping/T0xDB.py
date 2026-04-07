@@ -324,7 +324,11 @@ DEVICE_MAPPING = {
                 },
                 "nightly": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                }
+                },
+                "wind_dispel": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                },
             },
             Platform.SELECT: {
                 "mode": {
