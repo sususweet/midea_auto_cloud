@@ -301,6 +301,9 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "entities": {
             Platform.BINARY_SENSOR: {
+                "door_status": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
                 "door_opened": {
                     "device_class": BinarySensorDeviceClass.OPENING,
                 },
