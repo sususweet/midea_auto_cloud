@@ -642,6 +642,16 @@
           "5": "Level 5"
         }
       },
+      "additional": {
+        "name": "Additional Function",
+        "state": {
+          "none": "None",
+          "extra_rinse_1": "Extra Rinse 1",
+          "extra_rinse_2": "Extra Rinse 2",
+          "few_dishes_extra_rinse_1": "Few Dishes Extra Rinse 1",
+          "few_dishes_extra_rinse_2": "Few Dishes Extra Rinse 2"
+        }
+      },
       "no_wind_sense": {
         "name": "No Wind Sense"
       },

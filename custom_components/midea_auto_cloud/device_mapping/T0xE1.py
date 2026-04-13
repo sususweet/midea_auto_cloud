@@ -477,7 +477,7 @@ DEVICE_MAPPING = {
     "760Y0026": {
         "rationale": [0, 1],
         "queries": [{}],
-        "centralized": [],
+        "centralized": ["additional"],
         "entities": {
             Platform.SWITCH: {
                 "lock": {
@@ -554,6 +554,15 @@ DEVICE_MAPPING = {
                         "3": {"bright": 3},
                         "4": {"bright": 4},
                         "5": {"bright": 5}
+                    }
+                },
+                "additional": {
+                    "options": {
+                        "none": {"additional": 0},
+                        "extra_rinse_1": {"additional": 9},
+                        "extra_rinse_2": {"additional": 10},
+                        "few_dishes_extra_rinse_1": {"additional": 13},
+                        "few_dishes_extra_rinse_2": {"additional": 14}
                     }
                 }
             },

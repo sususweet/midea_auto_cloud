@@ -676,6 +676,16 @@
           "5": "5档"
         }
       },
+      "additional": {
+        "name": "附加功能",
+        "state": {
+          "none": "无",
+          "extra_rinse_1": "+漂洗1次",
+          "extra_rinse_2": "+漂洗2次",
+          "few_dishes_extra_rinse_1": "少量餐具+漂洗1次",
+          "few_dishes_extra_rinse_2": "少量餐具+漂洗2次"
+        }
+      },
       "no_wind_sense": {
         "name": "无风感"
       },
