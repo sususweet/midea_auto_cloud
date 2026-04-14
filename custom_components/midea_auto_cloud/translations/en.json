@@ -588,6 +588,17 @@
       "aidry": {
         "name": "Aidry"
       },
+      "softwater": {
+        "name": "Soft Water Level",
+        "state": {
+          "1": "Level 1",
+          "2": "Level 2",
+          "3": "Level 3",
+          "4": "Level 4",
+          "5": "Level 5",
+          "6": "Level 6"
+        }
+      },
       "airswitch": {
         "name": "Drying Storage Switch",
         "state": {
@@ -619,6 +630,26 @@
           "30min": "30 min",
           "45min": "45 min",
           "60min": "60 min"
+        }
+      },
+      "rinse_aid": {
+        "name": "Rinse Aid Level",
+        "state": {
+          "1": "Level 1",
+          "2": "Level 2",
+          "3": "Level 3",
+          "4": "Level 4",
+          "5": "Level 5"
+        }
+      },
+      "additional": {
+        "name": "Additional Function",
+        "state": {
+          "none": "None",
+          "extra_rinse_1": "Extra Rinse 1",
+          "extra_rinse_2": "Extra Rinse 2",
+          "few_dishes_extra_rinse_1": "Few Dishes Extra Rinse 1",
+          "few_dishes_extra_rinse_2": "Few Dishes Extra Rinse 2"
         }
       },
       "no_wind_sense": {
@@ -1400,6 +1431,17 @@
       }
     },
     "sensor": {
+      "wash_stage": {
+        "name": "Washing Stage",
+        "state": {
+          "0": "Idle",
+          "1": "Pre-wash",
+          "2": "Main Wash",
+          "3": "Rinse",
+          "4": "Dry",
+          "5": "Wash Complete"
+        }
+      },
       "lr_current_angle": {
         "name": "Current LR Swing Angle"
       },
@@ -2805,6 +2847,9 @@
       },
       "child_lock": {
         "name": "Child Lock"
+      },
+      "airswitch": {
+        "name": "Drying Storage Switch"
       },
       "wind_swing_ud": {
         "name": "Wind Swing UD"
