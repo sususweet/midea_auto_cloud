@@ -656,10 +656,26 @@
         "name": "No Wind Sense"
       },
       "wind_swing_ud_angle": {
-        "name": "Vertical Wind Direction"
+        "name": "Vertical Wind Direction",
+        "state": {
+          "off": "Off",
+          "top": "Top",
+          "upper": "Upper",
+          "middle": "Middle",
+          "lower": "Lower",
+          "bottom": "Bottom"
+        }
       },
       "wind_swing_lr_angle": {
-        "name": "Horizontal Wind Direction"
+        "name": "Horizontal Wind Direction",
+        "state": {
+          "off": "Off",
+          "leftmost": "Leftmost",
+          "left": "Left",
+          "middle": "Middle",
+          "right": "Right",
+          "rightmost": "Rightmost"
+        }
       },
       "custom_temperature": {
         "name": "Custom Temperature"
@@ -787,6 +803,13 @@
       },
       "lr_swing_angle": {
         "name": "LR Swing Angle"
+      },
+      "ptc_default_rule": {
+        "name": "PTC Default Rule",
+        "state": {
+          "auto_mode_one": "Auto Mode One (Auto on/off based on outdoor temp)",
+          "auto_mode_two": "Auto Mode Two (User control in heat mode)"
+        }
       },
       "follow_body_sense": {
         "name": "Follow Body Sense"
@@ -2575,7 +2598,7 @@
       "total_elec_value": {
         "name": "Total Electricity"
       },
-	  "clean_water_consumption_next_remaining": {
+	    "clean_water_consumption_next_remaining": {
         "name": "Clean Water Consumption Next Remaining"
       },
       "clean_interval_next_days_remaining": {
@@ -2583,6 +2606,9 @@
       },
       "filter_use_per": {
         "name": "Filter Use Percentage"
+      },
+      "indoor_humidity": {
+        "name": "Indoor Humidity"
       }
     },
     "light": {
@@ -2735,6 +2761,9 @@
       "wash_strength": {
         "name": "Water Strength"
       },
+      "pmv": {
+        "name": "PMV"
+      },
       "custom_temperature_1": {
         "name": "Custom Temperature 1"
       },
@@ -2787,19 +2816,31 @@
         }
       }
     },
-  "switch": {
-    "efficient": {
+    "switch": {
+      "efficient": {
         "name": "Low Power Insulation"
       },
-	  "prevent_super_cool": {
+      "prevent_super_cool": {
         "name": "Prevent Super Cool"
       },
-		"new_wind_machine": {
-			"name": "Fresh air switch"
-		},
-		"anion_status": {
-			"name": "Sterilization"
-		},
+      "cool_power_saving": {
+        "name": "Cool Power Saving"
+      },
+      "light_sensitive": {
+        "name": "Light Sensitive"
+      },
+      "buzzer_all": {
+        "name": "Sound"
+      },
+      "buzzer_off_status": {
+        "name": "Silent Control"
+      },
+      "new_wind_machine": {
+        "name": "Fresh air switch"
+      },
+      "anion_status": {
+        "name": "Sterilization"
+      },
       "radar_induction_enable": {
         "name": "Radar Induction"
       },
@@ -3867,6 +3908,30 @@
       },
       "sleep_state5": {
         "name": "Sleep 5"
+      },
+      "natural_wind": {
+        "name": "Natural Wind"
+      },
+      "inner_purifier": {
+        "name": "Inner Purifier"
+      },
+      "purifier": {
+        "name": "Purifier"
+      },
+      "screen_display": {
+        "name": "Screen Display"
+      },
+      "wind_swing_lr_left": {
+        "name": "Wind Swing LR Left"
+      },
+      "wind_swing_lr_right": {
+        "name": "Wind Swing LR Right"
+      },
+      "wind_swing_ud_left": {
+        "name": "Wind Swing UD Left"
+      },
+      "wind_swing_ud_right": {
+        "name": "Wind Swing UD Right"
       }
     },
   "vacuum": {

@@ -690,10 +690,26 @@
         "name": "无风感"
       },
       "wind_swing_ud_angle": {
-        "name": "上下摆动风向"
+        "name": "上下摆动风向",
+        "state": {
+          "off": "关闭",
+          "top": "上",
+          "upper": "斜上",
+          "middle": "中",
+          "lower": "斜下",
+          "bottom": "下"
+        }
       },
       "wind_swing_lr_angle": {
-        "name": "左右摆动风向"
+        "name": "左右摆动风向",
+        "state": {
+          "off": "关闭",
+          "leftmost": "左",
+          "left": "偏左",
+          "middle": "中",
+          "right": "偏右",
+          "rightmost": "右"
+        }
       },
       "custom_temperature": {
         "name": "自定义烧水温度"
@@ -756,16 +772,16 @@
 		"fresh_air_mode_select": {
         "name": "模式",
         "state": {
-			  "normal": "普通",
-		  	"smart": "智能",
-			  "manual_recirculation": "手动内循环",
-			  "auto_recirculation": "自动内循环",
-			  "supply_air_gentle": "舒缓进风",
-			  "supply_air_fast": "快速进风",
-			  "exhaust_air_gentle": "舒缓排风",
-			  "exhaust_air_fast": "快速排风"
+          "normal": "普通",
+          "smart": "智能",
+          "manual_recirculation": "手动内循环",
+          "auto_recirculation": "自动内循环",
+          "supply_air_gentle": "舒缓进风",
+          "supply_air_fast": "快速进风",
+          "exhaust_air_gentle": "舒缓排风",
+          "exhaust_air_fast": "快速排风"
         }
-    },
+      },
       "dehydration_speed": {
         "name": "转速"
       },
@@ -826,6 +842,13 @@
       },
       "lr_swing_angle": {
         "name": "普通模式左右摆风角度"
+      },
+      "ptc_default_rule": {
+        "name": "电辅热模式",
+        "state": {
+          "auto_mode_one": "自动模式一(根据室外温度自动开关)",
+          "auto_mode_two": "自动模式二(制热模式下用户随时开启)"
+        }
       },
       "follow_body_sense": {
         "name": "随身感",
@@ -3128,16 +3151,28 @@
       }
     },
     "switch": {
-    "efficient": {
+      "efficient": {
         "name": "低耗保温"
       },
-	  "prevent_super_cool": {
+      "prevent_super_cool": {
         "name": "智控温"
       },
-	  "new_wind_machine": {
+      "cool_power_saving": {
+        "name": "酷省电"
+      },
+      "light_sensitive": {
+        "name": "智能光感"
+      },
+      "buzzer_all": {
+        "name": "声音"
+      },
+      "buzzer_off_status": {
+        "name": "静音控制"
+      },
+      "new_wind_machine": {
         "name": "新风开关"
       },
-	  "anion_status": {
+      "anion_status": {
         "name": "除菌"
       },
       "radar_induction_enable": {
@@ -3531,7 +3566,7 @@
         "name": "下层预热"
       },
       "dry": {
-        "name": "干燥"
+        "name": "干燥防霉"
       },
       "dry_weighing_already": {
         "name": "已称重"
@@ -4213,6 +4248,30 @@
       },
       "sleep_state5": {
         "name": "睡眠5"
+      },
+      "natural_wind": {
+        "name": "自然风"
+      },
+      "inner_purifier": {
+        "name": "内循环净化"
+      },
+      "purifier": {
+        "name": "净化器"
+      },
+      "screen_display": {
+        "name": "屏幕显示"
+      },
+      "wind_swing_lr_left": {
+        "name": "左右摆风(左)"
+      },
+      "wind_swing_lr_right": {
+        "name": "左右摆风(右)"
+      },
+      "wind_swing_ud_left": {
+        "name": "上下摆风(左)"
+      },
+      "wind_swing_ud_right": {
+        "name": "上下摆风(右)"
       }
     },
     "vacuum": {

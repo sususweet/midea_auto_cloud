@@ -34,6 +34,7 @@ from .core.logger import MideaLogger
 from .core.device import MiedaDevice
 from .data_coordinator import MideaDataUpdateCoordinator
 from .core.cloud import get_midea_cloud
+from .core import session_store
 from .const import (
     DOMAIN,
     DEVICES,
@@ -48,6 +49,10 @@ from .const import (
     CONF_SELECTED_HOMES, CONF_SMART_PRODUCT_ID, STORAGE_PLUGIN_PATH,
     CONF_PASSWORD, CONF_SERVER,
     CONF_CATEGORY,
+    SESSION_CACHE_PATH,
+    SESSION_SOFT_TTL_SECONDS,
+    SESSION_HARD_TTL_SECONDS,
+    ENABLE_SECURE_SESSION_CACHE,
 )
 
 PLATFORMS: list[Platform] = [
@@ -66,9 +71,57 @@ PLATFORMS: list[Platform] = [
 ]
 
 
-async def import_module_async(module_name):
-    # 在线程池中执行导入操作
-    return await asyncio.to_thread(import_module, module_name, __package__)
+async def import_module_async(name: str):
+    return await asyncio.to_thread(import_module, name, __package__)
+
+
+def _build_session_cache_path(hass: HomeAssistant) -> str:
+    return hass.config.path(SESSION_CACHE_PATH)
+
+
+def _build_session_key(account, server) -> str:
+    return f"{account}_{server}"
+
+
+async def _persist_cloud_session(hass: HomeAssistant, cloud, account, password, server):
+    if not ENABLE_SECURE_SESSION_CACHE:
+        return
+    try:
+        payload = cloud.export_session_payload()
+        payload["account"] = account
+        payload["server"] = server
+        await session_store.async_set_session(
+            path=_build_session_cache_path(hass),
+            session_key=_build_session_key(account, server),
+            payload=payload,
+            password=password,
+            account=account,
+            server=server,
+            soft_ttl_seconds=SESSION_SOFT_TTL_SECONDS,
+            hard_ttl_seconds=SESSION_HARD_TTL_SECONDS,
+        )
+    except Exception:
+        traceback.print_exc()
+
+
+async def _restore_cloud_session(hass: HomeAssistant, cloud, account, password, server) -> bool:
+    if not ENABLE_SECURE_SESSION_CACHE:
+        return False
+    try:
+        payload = await session_store.async_get_session(
+            path=_build_session_cache_path(hass),
+            session_key=_build_session_key(account, server),
+            password=password,
+            account=account,
+            server=server,
+        )
+        if not payload:
+            return False
+        cloud.import_session_payload(payload)
+        return bool(getattr(cloud, "_access_token", None))
+    except Exception:
+        traceback.print_exc()
+        return False
 
 
 def get_sn8_used(hass: HomeAssistant, sn8):
@@ -168,7 +221,11 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
             category=category,
         )
     except ModuleNotFoundError:
-        MideaLogger.warning(f"Can't load mapping file for type {'T0x%02X' % device_type}")
+        # 输出详细的设备信息以便调试
+        MideaLogger.warning(
+            f"Can't load mapping file for type {'T0x%02X' % device_type}. "
+            f"sn8: {sn8}, subtype: {subtype}, category: {category}. "
+        )
 
     # save_data = {sn8: json_data}
     # offload save_json as well
@@ -274,14 +331,29 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     account=account,
                     password=password,
                 )
-                if not cloud or not await cloud.login():
+                if cloud:
+                    cloud.set_login_success_callback(
+                        lambda c, _h=hass, _a=account, _p=password, _s=server: _persist_cloud_session(_h, c, _a, _p, _s)
+                    )
+                    if await _restore_cloud_session(hass, cloud, account, password, server):
+                        # 启动恢复成功，直接复用登录态
+                        pass
+                    elif not await cloud.login():
+                        MideaLogger.error("Midea cloud login failed")
+                        return False
+                else:
                     MideaLogger.error("Midea cloud login failed")
                     return False
                 # 缓存云会话，供其他配置条目复用
                 hass.data[DOMAIN]["cloud_sessions"][session_key] = cloud
             elif not cloud._access_token:
                 # 会话已存在但未登录，重新登录
-                if not await cloud.login():
+                cloud.set_login_success_callback(
+                    lambda c, _h=hass, _a=account, _p=password, _s=server: _persist_cloud_session(_h, c, _a, _p, _s)
+                )
+                if _restore_cloud_session(hass, cloud, account, password, server):
+                    pass
+                elif not await cloud.login():
                     MideaLogger.error("Midea cloud login failed")
                     return False
 
