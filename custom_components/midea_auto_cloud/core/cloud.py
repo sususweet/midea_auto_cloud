@@ -1,4 +1,5 @@
 import logging
+import asyncio
 import time
 import datetime
 import json
@@ -62,6 +63,8 @@ class MideaCloud:
         self._login_id = None
         # 发生 token 失效时，避免每次请求都触发重复登录
         self._token_invalid_retry_count = 0
+        self._relogin_lock = asyncio.Lock()
+        self._on_login_success = None
 
     def _make_general_data(self):
         return {}
@@ -160,18 +163,21 @@ class MideaCloud:
                 )
                 return None
             self._token_invalid_retry_count += 1
-            MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, retry_count={self._token_invalid_retry_count}, code={response.get("code")}, msg={response.get("msg") or response.get("message")}")
+            MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, retry_count={self._token_invalid_retry_count}, code={response.get('code')}, msg={response.get('msg') or response.get('message')}")
             self._access_token = None
             try:
-                if await self.login():
-                    return await self._api_request(
-                        endpoint=endpoint,
-                        data=data,
-                        header=header,
-                        method=method,
-                        _retried_after_login=True,
-                        print_log=print_log,
-                    )
+                async with self._relogin_lock:
+                    if self._access_token is None:
+                        if not await self.login():
+                            return None
+                return await self._api_request(
+                    endpoint=endpoint,
+                    data=data,
+                    header=header,
+                    method=method,
+                    _retried_after_login=True,
+                    print_log=print_log,
+                )
             except Exception:
                 traceback.print_exc()
         return None
@@ -188,6 +194,43 @@ class MideaCloud:
         ):
             return response.get("loginId")
         return None
+
+
+    def set_login_success_callback(self, callback):
+        self._on_login_success = callback
+
+    async def _notify_login_success(self):
+        callback = self._on_login_success
+        if callback is None:
+            return
+        try:
+            result = callback(self)
+            if asyncio.iscoroutine(result):
+                await result
+        except Exception:
+            traceback.print_exc()
+
+    def export_session_payload(self) -> dict:
+        payload = {
+            "schema": "midea_cloud_session_v1",
+            "cloud_type": self.__class__.__name__,
+            "account": self._account,
+            "server": None,
+            "access_token": self._access_token,
+            "uid": "",
+            "aes_key": self._security._aes_key.decode("ascii") if getattr(self._security, "_aes_key", None) else None,
+            "aes_iv": self._security._aes_iv.decode("ascii") if getattr(self._security, "_aes_iv", None) else None,
+            "device_id": self._device_id,
+            "updated_at": int(time.time()),
+        }
+        return payload
+    def import_session_payload(self, payload: dict):
+        self._access_token = payload.get("access_token")
+        aes_key = payload.get("aes_key")
+        aes_iv = payload.get("aes_iv")
+        if aes_key:
+            self._security.set_aes_keys(aes_key, aes_iv)
+
 
     async def login(self) -> bool:
         raise NotImplementedError()
@@ -297,6 +340,7 @@ class MeijuCloud(MideaCloud):
                     self._nickname = response["userInfo"]["nickName"]
                 else:
                     self._nickname = self._account
+                await self._notify_login_success()
                 return True
         return False
 
@@ -682,6 +726,17 @@ class MSmartHomeCloud(MideaCloud):
             "appId": self.APP_ID,
         }
 
+    def export_session_payload(self) -> dict:
+        payload = super().export_session_payload()
+        payload.update({
+            "uid": self._uid,
+        })
+        return payload
+
+    def import_session_payload(self, payload: dict):
+        super().import_session_payload(payload)
+        self._uid = payload.get("uid") or ""
+
     async def _api_request(self,
         endpoint: str,
         data: dict,
@@ -749,6 +804,7 @@ class MSmartHomeCloud(MideaCloud):
                     self._nickname = response["userInfo"]["nickName"]
                 else:
                     self._nickname = self._account
+                await self._notify_login_success()
                 return True
         return False
 
@@ -767,7 +823,7 @@ class MSmartHomeCloud(MideaCloud):
                     "sn8": "",
                     "category": appliance.get("category"),
                     "model_number": appliance.get("modelNumber", "0"),
-                    "manufacturer_code":appliance.get("enterpriseCode", "0000"),
+                    "manufacturer_code": appliance.get("enterpriseCode", "0000"),
                     "model": "",
                     "online": appliance.get("onlineStatus") == "1",
                     "smart_product_id": appliance.get("smartProductId"),
@@ -898,7 +954,6 @@ class MSmartHomeCloud(MideaCloud):
             endpoint="/v1/device/status/lua/get",
             data=data
         ):
-            # 预期返回形如 { ... 状态键 ... }
             return response
         return None
 
