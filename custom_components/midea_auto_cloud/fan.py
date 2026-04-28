@@ -160,7 +160,7 @@ class MideaFanOnlyFanEntity(MideaEntity, FanEntity):
 
     @property
     def preset_modes(self):
-        return ["auto", "manual"]
+        return ["auto"]
 
     @property
     def preset_mode(self):
@@ -168,7 +168,7 @@ class MideaFanOnlyFanEntity(MideaEntity, FanEntity):
             return None
         if self._current_fan_mode() == "auto":
             return "auto"
-        return "manual"
+        return None
 
     @property
     def percentage(self):
@@ -212,8 +212,6 @@ class MideaFanOnlyFanEntity(MideaEntity, FanEntity):
         if preset_mode == "auto":
             await self._async_set_fan_only_mode("auto")
             return
-        if preset_mode == "manual":
-            await self._async_set_fan_only_mode(_default_manual_fan_mode(self._manual_fan_modes))
 
     def _current_hvac_mode(self):
         return self._dict_get_selected(self._key_hvac_modes)
