@@ -334,7 +334,7 @@
       "standby_status": {
         "name": "Standby Status"
       },
-	  "out_water": {
+      "out_water": {
         "name": "Out Water"
       },
       "out_hot_water": {
@@ -393,8 +393,7 @@
               "vertical_only": "Vertical Swing"
             }
           }
-        }
-        ,
+        },
         "state": {
           "off": "off",
           "auto": "auto"
@@ -610,7 +609,7 @@
       "dry_step_switch": {
         "name": "Dry Step Switch",
         "state": {
-           "cancel": "Cancel",
+          "cancel": "Cancel",
           "waiting": "Standby",
           "running": "Running"
         }
@@ -719,19 +718,19 @@
           "300": "300s"
         }
       },
-		"fresh_air_mode_select": {
-		    "name": "Mode",
-		    "state": {
-		        "normal": "Normal",
-		        "smart": "Smart",
-		        "manual_recirculation": "Manual Recirculation",
-		        "auto_recirculation": "Auto Recirculation",
-		        "supply_air_gentle": "Gentle Supply Air",
-		        "supply_air_fast": "Fast Supply Air",
-		        "exhaust_air_gentle": "Gentle Exhaust Air",
-		        "exhaust_air_fast": "Fast Exhaust Air"
-		    }
-		},
+      "fresh_air_mode_select": {
+        "name": "Mode",
+        "state": {
+          "normal": "Normal",
+          "smart": "Smart",
+          "manual_recirculation": "Manual Recirculation",
+          "auto_recirculation": "Auto Recirculation",
+          "supply_air_gentle": "Gentle Supply Air",
+          "supply_air_fast": "Fast Supply Air",
+          "exhaust_air_gentle": "Gentle Exhaust Air",
+          "exhaust_air_fast": "Fast Exhaust Air"
+        }
+      },
       "dehydration_speed": {
         "name": "Dehydration Speed"
       },
@@ -1409,7 +1408,7 @@
           "5": "High"
         }
       },
-	  "clean_interval": {
+      "clean_interval": {
         "name": "Clean Interval",
         "state": {
           "0": "OFF",
@@ -1473,7 +1472,7 @@
       "fresh_filter_time": {
         "name": "Filter remaining life"
       },
-     "tips_code": {
+      "tips_code": {
         "name": "Tips Code"
       },
       "version": {
@@ -1554,7 +1553,7 @@
       },
       "b7_left_status": {
         "name": "Left Stove Status",
-          "state": {
+        "state": {
           "initial": "Initial",
           "power_off": "Power Off",
           "working": "Working",
@@ -1566,7 +1565,7 @@
       },
       "b7_right_status": {
         "name": "Right Stove Status",
-          "state": {
+        "state": {
           "initial": "Initial",
           "power_off": "Power Off",
           "working": "Working",
@@ -2164,7 +2163,7 @@
       "end_time_minute": {
         "name": "End Time Minute"
       },
-	  "end_time": {
+      "end_time": {
         "name": "Heat End Time"
       },
       "flow": {
@@ -2428,7 +2427,7 @@
       "life_2": {
         "name": "MPC Filter Cartridge Lifespan"
       },
-	  "life_2_pcb": {
+      "life_2_pcb": {
         "name": "Life2_PCB"
       },
       "water_consumption": {
@@ -2575,7 +2574,7 @@
       "total_elec_value": {
         "name": "Total Electricity"
       },
-	  "clean_water_consumption_next_remaining": {
+      "clean_water_consumption_next_remaining": {
         "name": "Clean Water Consumption Next Remaining"
       },
       "clean_interval_next_days_remaining": {
@@ -2628,10 +2627,10 @@
         "name": "Lightness"
       },
       "custom_timing": {
-        "name": "Light Off Timer" 
+        "name": "Light Off Timer"
       },
       "radar_induction_closing_time": {
-        "name": "Night Light Timer" 
+        "name": "Night Light Timer"
       },
       "keep_warm_time": {
         "name": "Keep Warm Time"
@@ -2720,7 +2719,7 @@
       "rinse_level": {
         "name": "Rinse Level"
       },
-	  "clean_water_consumption": {
+      "clean_water_consumption": {
         "name": "Clean Water Consumption"
       },
       "quantify_21": {
@@ -2785,21 +2784,32 @@
             }
           }
         }
+      },
+      "fan_only_fan": {
+        "name": "Fan only",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "auto": "Auto",
+              "manual": "Manual"
+            }
+          }
+        }
       }
     },
-  "switch": {
-    "efficient": {
+    "switch": {
+      "efficient": {
         "name": "Low Power Insulation"
       },
-	  "prevent_super_cool": {
+      "prevent_super_cool": {
         "name": "Prevent Super Cool"
       },
-		"new_wind_machine": {
-			"name": "Fresh air switch"
-		},
-		"anion_status": {
-			"name": "Sterilization"
-		},
+      "new_wind_machine": {
+        "name": "Fresh air switch"
+      },
+      "anion_status": {
+        "name": "Sterilization"
+      },
       "radar_induction_enable": {
         "name": "Radar Induction"
       },
@@ -2929,7 +2939,7 @@
       "hot_power": {
         "name": "Hot Power"
       },
-	  "heat_function": {
+      "heat_function": {
         "name": "Heat Function"
       },
       "midea_manager": {
@@ -3775,7 +3785,7 @@
       "forcetbh_state": {
         "name": "Force Standby"
       },
-	  "manul_humi": {
+      "manul_humi": {
         "name": "humidification"
       },
       "manul_humi_value": {
@@ -3820,7 +3830,7 @@
       "auto_eco": {
         "name": "Auto Eco"
       },
-	  "open_close_switch": {
+      "open_close_switch": {
         "name": "Open Close Switch"
       },
       "start_clean": {
@@ -3869,8 +3879,8 @@
         "name": "Sleep 5"
       }
     },
-  "vacuum": {
     "vacuum": {
+      "vacuum": {
         "name": "Robotic Vacuum",
         "state_attributes": {
           "fan_speed": {
