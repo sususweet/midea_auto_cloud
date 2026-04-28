@@ -18,6 +18,44 @@ from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
 
+_NUMERIC_FAN_MODE_TO_SEMANTIC = {
+    "102": "auto",
+    "20": "low",
+    "40": "medium_low",
+    "60": "medium",
+    "80": "high",
+    "100": "max",
+}
+_SEMANTIC_FAN_MODE_TO_NUMERIC = {
+    semantic: numeric for numeric, semantic in _NUMERIC_FAN_MODE_TO_SEMANTIC.items()
+}
+_NUMERIC_FAN_MODE_DISPLAY_ORDER = ["auto", "low", "medium_low", "medium", "high", "max"]
+
+
+def _is_numeric_six_key_fan_mode_mapping(fan_modes) -> bool:
+    if fan_modes is None or not hasattr(fan_modes, "keys"):
+        return False
+    return {str(key) for key in fan_modes.keys()} == set(_NUMERIC_FAN_MODE_TO_SEMANTIC)
+
+
+def _fan_mode_lookup_mapping(fan_modes) -> dict:
+    if not _is_numeric_six_key_fan_mode_mapping(fan_modes):
+        return fan_modes or {}
+    return {
+        _NUMERIC_FAN_MODE_TO_SEMANTIC[str(key)]: value
+        for key, value in fan_modes.items()
+    }
+
+
+def _normalize_fan_mode_input(fan_modes, fan_mode: str) -> str:
+    if not _is_numeric_six_key_fan_mode_mapping(fan_modes):
+        return fan_mode
+    return _NUMERIC_FAN_MODE_TO_SEMANTIC.get(
+        str(fan_mode),
+        fan_mode,
+    )
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -242,10 +280,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def fan_modes(self):
+        if _is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
+            return _NUMERIC_FAN_MODE_DISPLAY_ORDER
         return list(self._key_fan_modes.keys())
 
     @property
     def fan_mode(self):
+        if _is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
+            selected = self._dict_get_selected(_fan_mode_lookup_mapping(self._key_fan_modes))
+            return selected
         return self._dict_get_selected(self._key_fan_modes)
 
     @property
@@ -334,11 +377,13 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         await self.async_set_attributes(new_status)
 
     async def async_set_fan_mode(self, fan_mode: str):
+        fan_mode = _normalize_fan_mode_input(self._key_fan_modes, fan_mode)
+        fan_modes = _fan_mode_lookup_mapping(self._key_fan_modes)
         if self._is_central_ac:
-            fan_speed = self._key_fan_modes.get(fan_mode)
+            fan_speed = fan_modes.get(fan_mode)
             await self.coordinator.async_send_central_ac_control(fan_speed)
         else:
-            new_status = self._key_fan_modes.get(fan_mode)
+            new_status = fan_modes.get(fan_mode)
             await self.async_set_attributes(new_status)
 
     async def async_set_preset_mode(self, preset_mode: str):

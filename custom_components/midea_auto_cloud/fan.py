@@ -8,6 +8,90 @@ from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
 
+_NUMERIC_FAN_MODE_TO_SEMANTIC = {
+    "102": "auto",
+    "20": "low",
+    "40": "medium_low",
+    "60": "medium",
+    "80": "high",
+    "100": "max",
+}
+_SEMANTIC_FAN_MODE_TO_NUMERIC = {
+    "auto": "102",
+    "low": "20",
+    "medium_low": "40",
+    "medium": "60",
+    "high": "80",
+    "max": "100",
+}
+_MANUAL_FAN_MODE_ORDER = ["low", "medium_low", "medium", "high", "max"]
+_SEMANTIC_FAN_MODE_ALIASES = {
+    "silent": "low",
+    "full": "max",
+}
+_FAN_ONLY_ENTITY_KEY = "fan_only_fan"
+
+
+def _fan_mode_key_to_semantic(key) -> str | None:
+    key = str(key)
+    if key in _NUMERIC_FAN_MODE_TO_SEMANTIC:
+        return _NUMERIC_FAN_MODE_TO_SEMANTIC[key]
+    if key in _SEMANTIC_FAN_MODE_TO_NUMERIC:
+        return key
+    return _SEMANTIC_FAN_MODE_ALIASES.get(key)
+
+
+def _build_fan_only_fan_mode_configs(fan_modes) -> dict[str, dict]:
+    if fan_modes is None or not hasattr(fan_modes, "items"):
+        return {}
+
+    mode_configs = {}
+    for key, value in fan_modes.items():
+        semantic_mode = _fan_mode_key_to_semantic(key)
+        if semantic_mode is not None:
+            mode_configs[semantic_mode] = value
+    return mode_configs
+
+
+def _default_manual_fan_mode(manual_fan_modes: list[str]) -> str:
+    if "medium_low" in manual_fan_modes:
+        return "medium_low"
+    if "medium" in manual_fan_modes:
+        return "medium"
+    return manual_fan_modes[0]
+
+
+def _supports_fan_only_derived_fan(config: dict) -> bool:
+    climate_entities = (config.get("entities") or {}).get(Platform.CLIMATE, {}) or {}
+    for climate_config in climate_entities.values():
+        hvac_modes = climate_config.get("hvac_modes") or {}
+        if "fan_only" not in hvac_modes or "off" not in hvac_modes:
+            continue
+        fan_mode_configs = _build_fan_only_fan_mode_configs(climate_config.get("fan_modes"))
+        if "auto" in fan_mode_configs and any(
+            mode in fan_mode_configs for mode in _MANUAL_FAN_MODE_ORDER
+        ):
+            return True
+    return False
+
+
+def _add_fan_only_derived_fan(entities, coordinator, device, manufacturer, rationale, config):
+    if coordinator is None or device is None:
+        return
+    if not _supports_fan_only_derived_fan(config):
+        return
+    entities.append(
+        MideaFanOnlyFanEntity(
+            coordinator,
+            device,
+            manufacturer,
+            rationale,
+            _FAN_ONLY_ENTITY_KEY,
+            config,
+        )
+    )
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -21,7 +105,128 @@ async def async_setup_entry(
         lambda coordinator, device, manufacturer, rationale, entity_key, ecfg: MideaFanEntity(
             coordinator, device, manufacturer, rationale, entity_key, ecfg
         ),
+        per_device_hook=_add_fan_only_derived_fan,
     )
+
+
+class MideaFanOnlyFanEntity(MideaEntity, FanEntity):
+    def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        climate_entities = (config.get("entities") or {}).get(Platform.CLIMATE, {}) or {}
+        climate_config = next(
+            ecfg for ecfg in climate_entities.values()
+            if _build_fan_only_fan_mode_configs(ecfg.get("fan_modes")).get("auto") is not None
+            and any(
+                mode in _build_fan_only_fan_mode_configs(ecfg.get("fan_modes"))
+                for mode in _MANUAL_FAN_MODE_ORDER
+            )
+            and "fan_only" in (ecfg.get("hvac_modes") or {})
+            and "off" in (ecfg.get("hvac_modes") or {})
+        )
+        super().__init__(
+            coordinator,
+            device.device_id,
+            device.device_name,
+            f"T0x{device.device_type:02X}",
+            device.sn,
+            device.sn8,
+            device.model,
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config={
+                "translation_key": "fan_only_fan",
+            },
+        )
+        self._key_hvac_modes = climate_config.get("hvac_modes")
+        self._fan_mode_configs = _build_fan_only_fan_mode_configs(climate_config.get("fan_modes"))
+        self._manual_fan_modes = [
+            mode for mode in _MANUAL_FAN_MODE_ORDER if mode in self._fan_mode_configs
+        ]
+        self._attr_speed_count = len(self._manual_fan_modes)
+
+    @property
+    def supported_features(self):
+        return (
+            FanEntityFeature.TURN_ON
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.SET_SPEED
+            | FanEntityFeature.PRESET_MODE
+        )
+
+    @property
+    def is_on(self) -> bool:
+        return self._current_hvac_mode() == "fan_only"
+
+    @property
+    def preset_modes(self):
+        return ["auto", "manual"]
+
+    @property
+    def preset_mode(self):
+        if not self.is_on:
+            return None
+        if self._current_fan_mode() == "auto":
+            return "auto"
+        return "manual"
+
+    @property
+    def percentage(self):
+        if not self.is_on:
+            return 0
+        current_fan_mode = self._current_fan_mode()
+        if current_fan_mode not in self._manual_fan_modes:
+            return 0
+        return round(
+            (self._manual_fan_modes.index(current_fan_mode) + 1)
+            * 100
+            / len(self._manual_fan_modes)
+        )
+
+    async def async_turn_on(
+            self,
+            percentage: int | None = None,
+            preset_mode: str | None = None,
+            **kwargs,
+    ):
+        if preset_mode is not None:
+            await self.async_set_preset_mode(preset_mode)
+            return
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+            return
+        await self._async_set_fan_only_mode(_default_manual_fan_mode(self._manual_fan_modes))
+
+    async def async_turn_off(self):
+        await self.async_set_attributes(self._key_hvac_modes["off"])
+
+    async def async_set_percentage(self, percentage: int):
+        if percentage <= 0:
+            await self.async_turn_off()
+            return
+        selected_index = round(percentage * len(self._manual_fan_modes) / 100) - 1
+        selected_index = max(0, min(selected_index, len(self._manual_fan_modes) - 1))
+        await self._async_set_fan_only_mode(self._manual_fan_modes[selected_index])
+
+    async def async_set_preset_mode(self, preset_mode: str):
+        if preset_mode == "auto":
+            await self._async_set_fan_only_mode("auto")
+            return
+        if preset_mode == "manual":
+            await self._async_set_fan_only_mode(_default_manual_fan_mode(self._manual_fan_modes))
+
+    def _current_hvac_mode(self):
+        return self._dict_get_selected(self._key_hvac_modes)
+
+    def _current_fan_mode(self):
+        selected = self._dict_get_selected(self._fan_mode_configs)
+        return selected
+
+    async def _async_set_fan_only_mode(self, fan_mode: str):
+        new_status = {}
+        new_status.update(self._key_hvac_modes["fan_only"])
+        new_status.update(self._fan_mode_configs[fan_mode])
+        await self.async_set_attributes(new_status)
 
 
 class MideaFanEntity(MideaEntity, FanEntity):
@@ -141,7 +346,9 @@ class MideaFanEntity(MideaEntity, FanEntity):
         new_status = {}
         if preset_mode is not None and self._key_preset_modes is not None:
             mode_config = self._key_preset_modes.get(preset_mode, {})
-            new_status.update = mode_config
+            new_status.update(
+                {key: value for key, value in mode_config.items() if key != "speeds"}
+            )
         
             # 切换到该模式的档位配置
             if "speeds" in mode_config:
@@ -229,7 +436,7 @@ class MideaFanEntity(MideaEntity, FanEntity):
             self._current_preset_mode = preset_mode
         
             # 设置模式
-            new_status = mode_config
+            new_status = {key: value for key, value in mode_config.items() if key != "speeds"}
         
             # 如果只有一个档位，自动设置
             if "speeds" in mode_config and len(mode_config["speeds"]) == 1:
