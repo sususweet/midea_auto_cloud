@@ -141,7 +141,9 @@ class MideaFanEntity(MideaEntity, FanEntity):
         new_status = {}
         if preset_mode is not None and self._key_preset_modes is not None:
             mode_config = self._key_preset_modes.get(preset_mode, {})
-            new_status.update = mode_config
+            new_status.update(
+                {key: value for key, value in mode_config.items() if key != "speeds"}
+            )
         
             # 切换到该模式的档位配置
             if "speeds" in mode_config:
