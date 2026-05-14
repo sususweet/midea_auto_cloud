@@ -10,7 +10,27 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
+            Platform.NUMBER: {
+                "hosting_upper": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
+                },
+                "hosting_lower": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
+                },
+                "wind_speed": {
+                    "min": 1,
+                    "max": 12,
+                    "step": 1
+                },
+            },
             Platform.SWITCH: {
+                "hosting": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -96,7 +116,12 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.PM10,
                     "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                     "state_class": SensorStateClass.MEASUREMENT
-                }
+                },
+                "tvoc":{
+                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "tvoc_value"
+                },
             }
         }
     },
