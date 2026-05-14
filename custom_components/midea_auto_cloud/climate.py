@@ -4,6 +4,7 @@ from homeassistant.components.climate import (
     HVACMode,
     ATTR_HVAC_MODE,
 )
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.const import (
     Platform,
     ATTR_TEMPERATURE,
@@ -13,6 +14,17 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .const import (
+    FAN_ONLY_ENTITY_KEY,
+    MANUAL_FAN_MODE_ORDER,
+    NUMERIC_FAN_MODE_DISPLAY_ORDER,
+    build_fan_only_fan_mode_configs,
+    default_manual_fan_mode,
+    fan_mode_lookup_mapping,
+    is_numeric_six_key_fan_mode_mapping,
+    normalize_fan_mode_input,
+    supports_fan_only_derived_fan,
+)
 from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
@@ -242,10 +254,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def fan_modes(self):
+        if is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
+            return NUMERIC_FAN_MODE_DISPLAY_ORDER
         return list(self._key_fan_modes.keys())
 
     @property
     def fan_mode(self):
+        if is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
+            selected = self._dict_get_selected(fan_mode_lookup_mapping(self._key_fan_modes))
+            return selected
         return self._dict_get_selected(self._key_fan_modes)
 
     @property
@@ -334,11 +351,13 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         await self.async_set_attributes(new_status)
 
     async def async_set_fan_mode(self, fan_mode: str):
+        fan_mode = normalize_fan_mode_input(self._key_fan_modes, fan_mode)
+        fan_modes = fan_mode_lookup_mapping(self._key_fan_modes)
         if self._is_central_ac:
-            fan_speed = self._key_fan_modes.get(fan_mode)
+            fan_speed = fan_modes.get(fan_mode)
             await self.coordinator.async_send_central_ac_control(fan_speed)
         else:
-            new_status = self._key_fan_modes.get(fan_mode)
+            new_status = fan_modes.get(fan_mode)
             await self.async_set_attributes(new_status)
 
     async def async_set_preset_mode(self, preset_mode: str):
@@ -403,4 +422,136 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         new_status[attribute_key] = self._rationale[int(turn_on)]
         if turn_on:
             new_status[self._key_pre_mode] = self._get_nested_value(self._key_pre_mode)
+        await self.async_set_attributes(new_status)
+
+
+def _add_fan_only_derived_fan(entities, coordinator, device, manufacturer, rationale, config):
+    """Add a fan-only derived fan entity if the device supports it."""
+    if coordinator is None or device is None:
+        return
+    if not supports_fan_only_derived_fan(config):
+        return
+    entities.append(
+        MideaFanOnlyFanEntity(
+            coordinator, device, manufacturer, rationale,
+            FAN_ONLY_ENTITY_KEY, config,
+        )
+    )
+
+
+class MideaFanOnlyFanEntity(MideaEntity, FanEntity):
+    """Fan-only derived entity for ACs that support hvac_mode=fan_only."""
+
+    def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        climate_entities = (config.get("entities") or {}).get(Platform.CLIMATE, {}) or {}
+        climate_config = next(
+            ecfg for ecfg in climate_entities.values()
+            if build_fan_only_fan_mode_configs(ecfg.get("fan_modes")).get("auto") is not None
+            and any(
+                mode in build_fan_only_fan_mode_configs(ecfg.get("fan_modes"))
+                for mode in MANUAL_FAN_MODE_ORDER
+            )
+            and "fan_only" in (ecfg.get("hvac_modes") or {})
+            and "off" in (ecfg.get("hvac_modes") or {})
+        )
+        super().__init__(
+            coordinator,
+            device.device_id,
+            device.device_name,
+            f"T0x{device.device_type:02X}",
+            device.sn,
+            device.sn8,
+            device.model,
+            entity_key,
+            device=device,
+            manufacturer=manufacturer,
+            rationale=rationale,
+            config={
+                "translation_key": "fan_only_fan",
+            },
+        )
+        self._key_hvac_modes = climate_config.get("hvac_modes")
+        self._fan_mode_configs = build_fan_only_fan_mode_configs(climate_config.get("fan_modes"))
+        self._manual_fan_modes = [
+            mode for mode in MANUAL_FAN_MODE_ORDER if mode in self._fan_mode_configs
+        ]
+        self._attr_speed_count = len(self._manual_fan_modes)
+
+    @property
+    def supported_features(self):
+        return (
+            FanEntityFeature.TURN_ON
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.SET_SPEED
+            | FanEntityFeature.PRESET_MODE
+        )
+
+    @property
+    def is_on(self) -> bool:
+        return self._current_hvac_mode() == "fan_only"
+
+    @property
+    def preset_modes(self):
+        return ["auto"]
+
+    @property
+    def preset_mode(self):
+        if not self.is_on:
+            return None
+        if self._current_fan_mode() == "auto":
+            return "auto"
+        return None
+
+    @property
+    def percentage(self):
+        if not self.is_on:
+            return 0
+        current_fan_mode = self._current_fan_mode()
+        if current_fan_mode not in self._manual_fan_modes:
+            return 0
+        return round(
+            (self._manual_fan_modes.index(current_fan_mode) + 1)
+            * 100
+            / len(self._manual_fan_modes)
+        )
+
+    async def async_turn_on(
+            self,
+            percentage: int | None = None,
+            preset_mode: str | None = None,
+            **kwargs,
+    ):
+        if preset_mode is not None:
+            await self.async_set_preset_mode(preset_mode)
+            return
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+            return
+        await self._async_set_fan_only_mode(default_manual_fan_mode(self._manual_fan_modes))
+
+    async def async_turn_off(self):
+        await self.async_set_attributes(self._key_hvac_modes["off"])
+
+    async def async_set_percentage(self, percentage: int):
+        if percentage <= 0:
+            await self.async_turn_off()
+            return
+        selected_index = round(percentage * len(self._manual_fan_modes) / 100) - 1
+        selected_index = max(0, min(selected_index, len(self._manual_fan_modes) - 1))
+        await self._async_set_fan_only_mode(self._manual_fan_modes[selected_index])
+
+    async def async_set_preset_mode(self, preset_mode: str):
+        if preset_mode == "auto":
+            await self._async_set_fan_only_mode("auto")
+
+    def _current_hvac_mode(self):
+        return self._dict_get_selected(self._key_hvac_modes)
+
+    def _current_fan_mode(self):
+        return self._dict_get_selected(self._fan_mode_configs)
+
+    async def _async_set_fan_only_mode(self, fan_mode: str):
+        new_status = {}
+        new_status.update(self._key_hvac_modes["fan_only"])
+        new_status.update(self._fan_mode_configs[fan_mode])
         await self.async_set_attributes(new_status)
