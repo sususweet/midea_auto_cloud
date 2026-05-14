@@ -400,7 +400,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           },
           "swing_mode": {
@@ -413,8 +415,7 @@
               "vertical_only": "上下摆风"
             }
           }
-        }
-        ,
+        },
         "state": {
           "off": "关闭",
           "auto": "自动"
@@ -439,7 +440,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           }
         }
@@ -463,7 +466,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           }
         }
@@ -487,7 +492,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           }
         }
@@ -511,7 +518,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           }
         }
@@ -535,7 +544,9 @@
               "auto": "自动",
               "low": "低速",
               "medium": "中速",
-              "high": "高速"
+              "high": "高速",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           }
         }
@@ -556,7 +567,9 @@
               "medium": "中速",
               "high": "高速",
               "full": "强劲",
-              "auto": "自动风"
+              "auto": "自动风",
+              "medium_low": "中低速",
+              "max": "最高速"
             }
           },
           "preset_modes": {
@@ -601,12 +614,12 @@
         "name": "加湿器",
         "state_attributes": {
           "mode": {
-              "state": {
-                  "auto": "AI湿随温变",
-                  "manual": "手动",
-                  "moist_skin": "润肤",
-                  "sleep": "睡眠"
-              }
+            "state": {
+              "auto": "AI湿随温变",
+              "manual": "手动",
+              "moist_skin": "润肤",
+              "sleep": "睡眠"
+            }
           }
         }
       },
@@ -769,7 +782,7 @@
           "300": "300秒"
         }
       },
-		"fresh_air_mode_select": {
+      "fresh_air_mode_select": {
         "name": "模式",
         "state": {
           "normal": "普通",
@@ -906,10 +919,10 @@
       "bright_led": {
         "name": "亮度LED",
         "state": {
-            "light": "亮",
-            "dark": "暗",
-            "exit": "熄灭"
-          }
+          "light": "亮",
+          "dark": "暗",
+          "exit": "熄灭"
+        }
       },
       "capacity": {
         "name": "容量"
@@ -1102,7 +1115,7 @@
       },
       "gesture_sensitivity_value": {
         "name": "手势灵敏度",
-          "state": {
+        "state": {
           "low": "低",
           "medium": "中",
           "high": "高"
@@ -1455,7 +1468,7 @@
           "resume": "继续",
           "charge": "开始回充",
           "charge_pause": "回充暂停",
-          "charge_continue":  "继续回充",
+          "charge_continue": "继续回充",
           "auto_clean": "自动清扫",
           "auto_clean_pause": "清扫暂停",
           "auto_clean_continue": "继续清扫",
@@ -1524,7 +1537,7 @@
       "gear": {
         "name": "档位",
         "state": {
-          "off":"关闭",
+          "off": "关闭",
           "low": "低",
           "medium": "中",
           "high": "高",
@@ -2963,7 +2976,7 @@
       "hosting_lower": {
         "name": "PM2.5下阈值(停止净化)"
       },
-	    "fresh_air_fan_speed": {
+      "fresh_air_fan_speed": {
         "name": "风量"
       },
       "steam_quantity": {
@@ -2982,10 +2995,10 @@
         "name": "照明亮度"
       },
       "custom_timing": {
-        "name": "延时关灯" 
+        "name": "延时关灯"
       },
       "radar_induction_closing_time": {
-        "name": "夜灯延时关闭" 
+        "name": "夜灯延时关闭"
       },
       "keep_warm_time": {
         "name": "保温时间"
@@ -3145,6 +3158,17 @@
               "sleeping_wind": "睡眠风",
               "purified_wind": "净化风",
               "double_area": "双区送风"
+            }
+          }
+        }
+      },
+      "fan_only_fan": {
+        "name": "送风",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "auto": "自动",
+              "manual": "手动"
             }
           }
         }
@@ -4156,7 +4180,7 @@
       "forcetbh_state": {
         "name": "强制待机"
       },
-	  "manul_humi": {
+      "manul_humi": {
         "name": "加湿"
       },
       "manul_humi_value": {

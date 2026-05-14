@@ -4,6 +4,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .climate import _add_fan_only_derived_fan
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
@@ -21,6 +22,7 @@ async def async_setup_entry(
         lambda coordinator, device, manufacturer, rationale, entity_key, ecfg: MideaFanEntity(
             coordinator, device, manufacturer, rationale, entity_key, ecfg
         ),
+        per_device_hook=_add_fan_only_derived_fan,
     )
 
 
@@ -141,7 +143,9 @@ class MideaFanEntity(MideaEntity, FanEntity):
         new_status = {}
         if preset_mode is not None and self._key_preset_modes is not None:
             mode_config = self._key_preset_modes.get(preset_mode, {})
-            new_status.update = mode_config
+            new_status.update(
+                {key: value for key, value in mode_config.items() if key != "speeds"}
+            )
         
             # 切换到该模式的档位配置
             if "speeds" in mode_config:
@@ -229,7 +233,7 @@ class MideaFanEntity(MideaEntity, FanEntity):
             self._current_preset_mode = preset_mode
         
             # 设置模式
-            new_status = mode_config
+            new_status = {key: value for key, value in mode_config.items() if key != "speeds"}
         
             # 如果只有一个档位，自动设置
             if "speeds" in mode_config and len(mode_config["speeds"]) == 1:

@@ -29,3 +29,106 @@ CONF_SERVERS = {
 }
 CONF_HOMES = "homes"
 CONF_SELECTED_HOMES = "selected_homes"
+
+# ── Fan mode constants ──────────────────────────────────────────
+# Shared between climate.py and fan.py to avoid duplication.
+
+from homeassistant.const import Platform  # noqa: E402
+
+NUMERIC_FAN_MODE_TO_SEMANTIC = {
+    "102": "auto",
+    "20": "low",
+    "40": "medium_low",
+    "60": "medium",
+    "80": "high",
+    "100": "max",
+}
+SEMANTIC_FAN_MODE_TO_NUMERIC = {
+    "auto": "102",
+    "low": "20",
+    "medium_low": "40",
+    "medium": "60",
+    "high": "80",
+    "max": "100",
+}
+NUMERIC_FAN_MODE_DISPLAY_ORDER = [
+    "auto", "low", "medium_low", "medium", "high", "max",
+]
+MANUAL_FAN_MODE_ORDER = ["low", "medium_low", "medium", "high", "max"]
+SEMANTIC_FAN_MODE_ALIASES = {
+    "silent": "low",
+    "full": "max",
+}
+FAN_ONLY_ENTITY_KEY = "fan_only_fan"
+
+
+def fan_mode_key_to_semantic(key) -> str | None:
+    """Convert a numeric or semantic fan mode key to its semantic name."""
+    key = str(key)
+    if key in NUMERIC_FAN_MODE_TO_SEMANTIC:
+        return NUMERIC_FAN_MODE_TO_SEMANTIC[key]
+    if key in SEMANTIC_FAN_MODE_TO_NUMERIC:
+        return key
+    return SEMANTIC_FAN_MODE_ALIASES.get(key)
+
+
+def is_numeric_six_key_fan_mode_mapping(fan_modes) -> bool:
+    """Return True if fan_modes uses the six-key numeric pattern {20,40,…,102}."""
+    if fan_modes is None or not hasattr(fan_modes, "keys"):
+        return False
+    return {str(key) for key in fan_modes.keys()} == set(NUMERIC_FAN_MODE_TO_SEMANTIC)
+
+
+def build_fan_only_fan_mode_configs(fan_modes) -> dict[str, dict]:
+    """Build a semantic-keyed dict from a raw device fan_modes mapping."""
+    if fan_modes is None or not hasattr(fan_modes, "items"):
+        return {}
+    mode_configs = {}
+    for key, value in fan_modes.items():
+        semantic_mode = fan_mode_key_to_semantic(key)
+        if semantic_mode is not None:
+            mode_configs[semantic_mode] = value
+    return mode_configs
+
+
+def fan_mode_lookup_mapping(fan_modes) -> dict:
+    """Return a fan_modes dict with numeric keys replaced by semantic names."""
+    if not is_numeric_six_key_fan_mode_mapping(fan_modes):
+        return fan_modes or {}
+    return {
+        NUMERIC_FAN_MODE_TO_SEMANTIC[str(key)]: value
+        for key, value in fan_modes.items()
+    }
+
+
+def normalize_fan_mode_input(fan_modes, fan_mode: str) -> str:
+    """Normalise a legacy numeric fan-mode argument to its semantic name."""
+    if not is_numeric_six_key_fan_mode_mapping(fan_modes):
+        return fan_mode
+    return NUMERIC_FAN_MODE_TO_SEMANTIC.get(str(fan_mode), fan_mode)
+
+
+def default_manual_fan_mode(manual_fan_modes: list[str]) -> str:
+    """Return the default manual fan mode from a list of available modes."""
+    if "medium_low" in manual_fan_modes:
+        return "medium_low"
+    if "medium" in manual_fan_modes:
+        return "medium"
+    return manual_fan_modes[0]
+
+
+def supports_fan_only_derived_fan(config: dict) -> bool:
+    """Check whether a device config should produce a fan-only derived fan."""
+    climate_entities = (config.get("entities") or {}).get(Platform.CLIMATE, {}) or {}
+    for climate_config in climate_entities.values():
+        hvac_modes = climate_config.get("hvac_modes") or {}
+        if "fan_only" not in hvac_modes or "off" not in hvac_modes:
+            continue
+        fan_mode_configs = build_fan_only_fan_mode_configs(
+            climate_config.get("fan_modes")
+        )
+        if "auto" in fan_mode_configs and any(
+            mode in fan_mode_configs for mode in MANUAL_FAN_MODE_ORDER
+        ):
+            return True
+    return False
