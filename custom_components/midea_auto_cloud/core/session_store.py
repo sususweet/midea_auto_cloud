@@ -2,12 +2,30 @@ import asyncio
 import json
 import os
 import time
+import traceback
+
+from homeassistant.core import HomeAssistant
+
+from ..const import (
+    ENABLE_SECURE_SESSION_CACHE,
+    SESSION_CACHE_PATH,
+    SESSION_HARD_TTL_SECONDS,
+    SESSION_SOFT_TTL_SECONDS,
+)
 
 SESSION_RECORD_VERSION = 1
 
 
 def _now_ts() -> int:
     return int(time.time())
+
+
+def build_session_cache_path(hass: HomeAssistant) -> str:
+    return hass.config.path(SESSION_CACHE_PATH)
+
+
+def build_session_key(account, server) -> str:
+    return f"{account}_{server}"
 
 
 def load_all(path: str) -> dict:
@@ -176,3 +194,56 @@ async def async_set_session(
 
 async def async_delete_session(path: str, session_key: str):
     await asyncio.to_thread(delete_session, path, session_key)
+
+
+async def async_persist_cloud_session(
+    hass: HomeAssistant,
+    cloud,
+    account,
+    password,
+    server,
+):
+    if not ENABLE_SECURE_SESSION_CACHE:
+        return
+    try:
+        payload = cloud.export_session_payload()
+        payload["account"] = account
+        payload["server"] = server
+        await async_set_session(
+            path=build_session_cache_path(hass),
+            session_key=build_session_key(account, server),
+            payload=payload,
+            password=password,
+            account=account,
+            server=server,
+            soft_ttl_seconds=SESSION_SOFT_TTL_SECONDS,
+            hard_ttl_seconds=SESSION_HARD_TTL_SECONDS,
+        )
+    except Exception:
+        traceback.print_exc()
+
+
+async def async_restore_cloud_session(
+    hass: HomeAssistant,
+    cloud,
+    account,
+    password,
+    server,
+) -> bool:
+    if not ENABLE_SECURE_SESSION_CACHE:
+        return False
+    try:
+        payload = await async_get_session(
+            path=build_session_cache_path(hass),
+            session_key=build_session_key(account, server),
+            password=password,
+            account=account,
+            server=server,
+        )
+        if not payload:
+            return False
+        cloud.import_session_payload(payload)
+        return bool(getattr(cloud, "_access_token", None))
+    except Exception:
+        traceback.print_exc()
+        return False
