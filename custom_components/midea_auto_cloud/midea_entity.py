@@ -88,7 +88,6 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             self._name_cfg = self._config.get("name")
             # 保存 name_attribute，用于动态获取名称
             self._name_attribute = self._config.get("name_attribute")
-            self.entity_id = self._attr_unique_id
             # Register device updates for HA state refresh
             try:
                 self._device.register_update(self.update_state)  # type: ignore[attr-defined]

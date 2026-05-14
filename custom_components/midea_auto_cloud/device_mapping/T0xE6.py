@@ -8,6 +8,18 @@ DEVICE_MAPPING = {
         "rationale": ["off", "on"],
         "queries": [{}],
         "entities": {
+            Platform.NUMBER: {
+                "current_heat_set_temperature": {
+                    "min": 25,
+                    "max": 80,
+                    "step": 1,
+                },
+                "current_bath_set_temperature": {
+                    "min": 25,
+                    "max": 80,
+                    "step": 1,
+                },
+            },
             Platform.SWITCH: {
                 "winter_mode": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -31,16 +43,6 @@ DEVICE_MAPPING = {
                 },
                 "fan_output": {
                     "device_class": SensorDeviceClass.ENUM,
-                },
-                "current_heat_set_temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "current_bath_set_temperature": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
                 },
                 "heat_out_water_temperature": {
                     "device_class": SensorDeviceClass.TEMPERATURE,

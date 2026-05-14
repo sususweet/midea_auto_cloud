@@ -24,10 +24,19 @@ from .const import (
     CONF_MANUFACTURER_CODE,
     CONF_SMART_PRODUCT_ID,
     CONF_SN8,
+    SESSION_CACHE_PATH,
 )
 from .core.cloud import get_midea_cloud
+from .core import session_store
+
+
+
+def _build_session_key(account, server):
+    return f"{account}_{server}"
+
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     _session = None
@@ -384,10 +393,35 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             )
             try:
                 if await cloud.login():
+                    old_account = self._config_entry.data.get(CONF_ACCOUNT)
+                    old_server = self._config_entry.data.get(CONF_SERVER)
+                    try:
+                        old_server = int(old_server)
+                    except Exception:
+                        pass
+                    new_server = user_input[CONF_SERVER]
+                    try:
+                        new_server = int(new_server)
+                    except Exception:
+                        pass
+
+                    old_session_key = _build_session_key(old_account, old_server)
+                    new_session_key = _build_session_key(user_input[CONF_ACCOUNT], new_server)
+
                     current_data = dict(self._config_entry.data)
                     current_data[CONF_ACCOUNT] = user_input[CONF_ACCOUNT]
                     current_data[CONF_PASSWORD] = user_input[CONF_PASSWORD]
                     current_data[CONF_SERVER] = user_input[CONF_SERVER]
+
+                    # 清理旧会话，避免账号切换后误复用旧 token
+                    domain_data = self.hass.data.get(DOMAIN, {})
+                    cloud_sessions = domain_data.get("cloud_sessions", {})
+                    if old_session_key != new_session_key:
+                        cloud_sessions.pop(old_session_key, None)
+                        await session_store.async_delete_session(
+                            path=self.hass.config.path(SESSION_CACHE_PATH),
+                            session_key=old_session_key,
+                        )
 
                     home_name = current_data.get("home_name", "")
                     account = user_input[CONF_ACCOUNT]
