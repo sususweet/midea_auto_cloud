@@ -10,7 +10,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.VACUUM: {
                 "vacuum": {
-                    "battery_level": "battery_percent",
                     "control": "work_status",
                     "fan_speeds": {
                         "soft": {"fan_level": "soft"},
@@ -158,7 +157,6 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.VACUUM: {
                 "vacuum": {
-                    "battery_level": "battery_percent",
                     "control": "work_status",
                     "fan_speeds": {
                         "soft": {"fan_setting": {"level": "soft"}},
