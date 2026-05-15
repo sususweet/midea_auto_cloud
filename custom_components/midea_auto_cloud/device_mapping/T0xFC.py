@@ -21,16 +21,8 @@ DEVICE_MAPPING = {
                     "max": 75,
                     "step": 1
                 },
-                "wind_speed": {
-                    "min": 1,
-                    "max": 12,
-                    "step": 1
-                },
             },
             Platform.SWITCH: {
-                "hosting": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -117,11 +109,75 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "tvoc":{
-                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-                    "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "tvoc_value"
+            }
+        }
+    },
+    "571Z306N": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.NUMBER: {
+                "hosting_upper": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
                 },
+                "hosting_lower": {
+                    "min": 10,
+                    "max": 75,
+                    "step": 1
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "buzzer": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "waterions": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SELECT: {
+                "mode": {
+                    "options": {
+                        "manual": {"mode": "manual", "hosting": "off"},
+                        "sleep": {"mode": "sleep", "hosting": "off"},
+                        "fast": {"mode": "fast", "hosting": "off"},
+                        "auto": {"mode": "auto", "hosting": "on"}
+                    }
+                },
+                "bright": {
+                    "options": {
+                        "全亮": {"bright": 0},
+                        "半亮": {"bright": 6},
+                        "熄灭": {"bright": 7}
+                    }
+                },
+                "gear": {
+                    "options": {
+                        "low": {"wind_speed": 2},
+                        "medium": {"wind_speed": 6},
+                        "high": {"wind_speed": 10}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "pm25": {
+                    "device_class": SensorDeviceClass.PM25,
+                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "tvoc": {
+                    "device_class": SensorDeviceClass.VOLATILE_ORGANIC_COMPOUNDS,
+                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
             }
         }
     },
