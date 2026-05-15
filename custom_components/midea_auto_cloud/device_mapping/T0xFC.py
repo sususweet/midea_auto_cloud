@@ -176,7 +176,8 @@ DEVICE_MAPPING = {
                 "tvoc": {
                     "device_class": SensorDeviceClass.VOLATILE_ORGANIC_COMPOUNDS,
                     "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "tvoc_value"
                 }
             }
         }
