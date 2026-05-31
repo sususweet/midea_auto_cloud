@@ -268,20 +268,35 @@
       "communication_error": {
         "name": "Communication Error"
       },
+      "communication_exception": {
+        "name": "Communication Exception"
+      },
       "door_status": {
         "name": "Door Status"
       },
       "ele_exception": {
         "name": "Ele Exception"
       },
+      "mains_power_exception": {
+        "name": "Mains Power Exception"
+      },
       "elec_warning": {
         "name": "Elec Warning"
+      },
+      "electrical_warning": {
+        "name": "Electrical Warning"
       },
       "limit_error": {
         "name": "Limit Error"
       },
+      "limit_exception": {
+        "name": "Limit Exception"
+      },
       "sensor_error": {
         "name": "Sensor Error"
+      },
+      "sensor_exception": {
+        "name": "Sensor Exception"
       },
       "lock": {
         "name": "Lock"
@@ -584,6 +599,13 @@
       }
     },
     "select": {
+      "heating_capacity": {
+        "name": "Heating Tank",
+        "state": {
+          "half": "Half Tank Heat",
+          "whole": "Whole Tank Heat"
+        }
+      },
       "aidry": {
         "name": "Aidry"
       },
@@ -1453,6 +1475,24 @@
       }
     },
     "sensor": {
+      "current_water_temperature": {
+        "name": "Current Water Temperature"
+      },
+      "target_water_temperature": {
+        "name": "Target Water Temperature"
+      },
+      "hot_water_amount": {
+        "name": "Hot Water Amount"
+      },
+      "heating_remaining_time": {
+        "name": "Heating Remaining Time"
+      },
+      "water_quality_score": {
+        "name": "Water Quality Score"
+      },
+      "fault_code": {
+        "name": "Fault Code"
+      },
       "wash_stage": {
         "name": "Washing Stage",
         "state": {
@@ -2830,6 +2870,9 @@
       "efficient": {
         "name": "Low Power Insulation"
       },
+      "low_energy_save": {
+        "name": "Low Energy Save"
+      },
       "prevent_super_cool": {
         "name": "Prevent Super Cool"
       },
@@ -2956,6 +2999,9 @@
       "eplus": {
         "name": "Eplus"
       },
+      "e_capacity": {
+        "name": "E+ Capacity"
+      },
       "fast_hot_power": {
         "name": "Fast Hot Power"
       },
@@ -3000,6 +3046,9 @@
       },
       "night": {
         "name": "Night"
+      },
+      "night_electricity_cloud": {
+        "name": "Off-Peak Night Heating"
       },
       "now_wash": {
         "name": "Now Wash"
