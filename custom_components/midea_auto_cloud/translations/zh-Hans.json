@@ -3193,6 +3193,7 @@
             "state": {
               "baby": "宝宝风",
               "normal": "正常风",
+              "storm": "循环风",
               "sleep": "睡眠风",
               "self_selection": "自选风",
               "sleeping_wind": "睡眠风",
@@ -3270,7 +3271,7 @@
         "name": "夏季模式"
       },
       "waterions": {
-        "name": "消杀"
+        "name": "净离子"
       },
       "mute": {
         "name": "静音"

@@ -125,7 +125,93 @@ DEVICE_MAPPING = {
             }
         }
     },
-    "default_fan": { # 56011CBE
+    "default_fan": {  # 56011C99、56011C8T
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "power",
+            "gear"
+        ],
+        "entities": {
+            Platform.SWITCH: {
+                "display_on_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"]
+                },
+                "waterions": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": list({"gear": value + 1} for value in range(0, 9)),
+                    "preset_modes": {
+                        "normal": {"mode": "normal"},
+                        "storm": {"mode": "storm"},
+                        "self_selection": {"mode": "self_selection"}
+                    }
+                }
+            },
+            Platform.SELECT: {
+                "ud_swing": {
+                    "options": {
+                        "off": {"ud_swing": "off"},
+                        "on": {"ud_swing": "on"},
+                        "30°": {"ud_swing": 30},
+                        "60°": {"ud_swing": 60},
+                        "135°": {"ud_swing": 135},
+                    },
+                    "translation_key": "ud_swing_angle"
+                },
+                "lr_swing": {
+                    "options": {
+                        "off": {"lr_swing": "off"},
+                        "on": {"lr_swing": "on"},
+                        "30°": {"lr_swing": 30},
+                        "60°": {"lr_swing": 60},
+                        "120°": {"lr_swing": 120},
+                    },
+                    "translation_key": "lr_swing_angle"
+                },
+                "voice": {
+                    "options": {
+                        "open_buzzer": {"voice": "open_buzzer"},
+                        "close_buzzer": {"voice": "close_buzzer"},
+                        "mute": {"voice": "mute"}
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "real_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "dust_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "filter_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "current_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "lr_current_angle"
+                },
+                "ud_swing_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            },
+        }
+    },
+    "56011CBE": { # 56011CBE
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
