@@ -1,4 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PRECISION_WHOLE
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, PRECISION_WHOLE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
@@ -201,6 +201,129 @@ DEVICE_MAPPING = {
                 },
                 "elec_warning": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                }
+            }
+        }
+    },
+    "510214FN": {
+        "manufacturer": "美的",
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[end_time]",
+                    "rvalue": "[end_time_hour] * 60 + [end_time_minute]"
+                }
+            ],
+            "set": {
+            }
+        },
+        "entities": {
+            Platform.CLIMATE: {
+                "water_heater": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on"},
+                    },
+                    "target_temperature": "temperature",
+                    "current_temperature": "cur_temperature",
+                    "min_temp": 30,
+                    "max_temp": 75,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_WHOLE
+                }
+            },
+            Platform.SELECT: {
+                "heat": {
+                    "options": {
+                        "half": {"half_heat": "on", "whole_heat": "off"},
+                        "whole": {"half_heat": "off", "whole_heat": "on"}
+                    },
+                    "translation_key": "heating_capacity"
+                }
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "eplus": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "e_capacity"
+                },
+                "efficient": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "low_energy_save"
+                },
+                "night": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "night_electricity_cloud"
+                },
+                "sterilization": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "sterilize_high_temp"
+                }
+            },
+            Platform.SENSOR: {
+                "cur_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "current_water_temperature"
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "target_water_temperature"
+                },
+                "heat_water_level": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "hot_water_amount"
+                },
+                "end_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "heating_remaining_time"
+                },
+                "water_quality": {
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "water_quality_score"
+                },
+                "in_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "fault_code"
+                }
+            },
+            Platform.BINARY_SENSOR: {
+                "communication_error": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "communication_exception"
+                },
+                "sensor_error": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "sensor_exception"
+                },
+                "limit_error": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "limit_exception"
+                },
+                "ele_exception": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "mains_power_exception"
+                },
+                "elec_warning": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "electrical_warning"
                 }
             }
         }

@@ -288,20 +288,35 @@
       "communication_error": {
         "name": "通信错误"
       },
+      "communication_exception": {
+        "name": "通信异常"
+      },
       "door_status": {
         "name": "门状态"
       },
       "ele_exception": {
         "name": "电气异常"
       },
+      "mains_power_exception": {
+        "name": "市电异常"
+      },
       "elec_warning": {
+        "name": "电气警告"
+      },
+      "electrical_warning": {
         "name": "电气警告"
       },
       "limit_error": {
         "name": "限制错误"
       },
+      "limit_exception": {
+        "name": "限位异常"
+      },
       "sensor_error": {
         "name": "传感器错误"
+      },
+      "sensor_exception": {
+        "name": "传感器异常"
       },
       "lock": {
         "name": "锁定"
@@ -628,6 +643,13 @@
       }
     },
     "select": {
+      "heating_capacity": {
+        "name": "加热胆量",
+        "state": {
+          "half": "半胆加热",
+          "whole": "全胆加热"
+        }
+      },
       "aidry": {
         "name": "智感干洗",
         "state": {
@@ -1728,6 +1750,24 @@
       }
     },
     "sensor": {
+      "current_water_temperature": {
+        "name": "当前水温"
+      },
+      "target_water_temperature": {
+        "name": "设定水温"
+      },
+      "hot_water_amount": {
+        "name": "热水量"
+      },
+      "heating_remaining_time": {
+        "name": "加热剩余时间"
+      },
+      "water_quality_score": {
+        "name": "水质得分"
+      },
+      "fault_code": {
+        "name": "故障代码"
+      },
       "wash_stage": {
         "name": "洗涤阶段",
         "state": {
@@ -3178,6 +3218,9 @@
       "efficient": {
         "name": "低耗保温"
       },
+      "low_energy_save": {
+        "name": "低耗节能"
+      },
       "prevent_super_cool": {
         "name": "智控温"
       },
@@ -3304,6 +3347,9 @@
       "eplus": {
         "name": "大水量"
       },
+      "e_capacity": {
+        "name": "E+增容"
+      },
       "fast_hot_power": {
         "name": "快速加热电源"
       },
@@ -3348,6 +3394,9 @@
       },
       "night": {
         "name": "夜间"
+      },
+      "night_electricity_cloud": {
+        "name": "峰谷夜电"
       },
       "now_wash": {
         "name": "立即洗涤"
