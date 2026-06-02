@@ -66,6 +66,15 @@ DEVICE_MAPPING = {
                         "30": {"intensity": "4"},
                         "40": {"intensity": "5"}
                     }
+                },
+                "forget_no_worry_time": {
+                    "options": {
+                        "off": {"forget_no_worry_time": "off"},
+                        "2": {"forget_no_worry_time": 2},
+                        "4": {"forget_no_worry_time": 4},
+                        "6": {"forget_no_worry_time": 6},
+                        "8": {"forget_no_worry_time": 8}
+                    }
                 }
             },
             Platform.SENSOR: {

@@ -1172,6 +1172,9 @@
       "intensity": {
         "name": "强度"
       },
+      "forget_no_worry_time": {
+        "name": "延时取衣"
+      },
       "light_color": {
         "name": "灯光颜色",
         "state": {

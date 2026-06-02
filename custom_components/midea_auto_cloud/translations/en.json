@@ -989,6 +989,9 @@
       "intensity": {
         "name": "Intensity"
       },
+      "forget_no_worry_time": {
+        "name": "Forget No Worry Time"
+      },
       "light_color": {
         "name": "Light Color"
       },
