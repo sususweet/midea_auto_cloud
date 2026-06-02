@@ -3294,6 +3294,9 @@
       "airswitch": {
         "name": "烘干存储开关"
       },
+      "swing": {
+        "name": "摇头"
+      },
       "wind_swing_ud": {
         "name": "上下摆风"
       },

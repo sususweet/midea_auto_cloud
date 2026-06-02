@@ -2945,6 +2945,9 @@
       "airswitch": {
         "name": "Drying Storage Switch"
       },
+      "swing": {
+        "name": "Swing"
+      },
       "wind_swing_ud": {
         "name": "Wind Swing UD"
       },

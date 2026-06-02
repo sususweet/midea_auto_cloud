@@ -125,7 +125,7 @@ DEVICE_MAPPING = {
             }
         }
     },
-    "default_fan": {  # 56011C99、56011C8T
+    "default_fan": {  # 56011C99, 56011C8T
         "rationale": ["off", "on"],
         "queries": [{}],
         "centralized": [
@@ -207,6 +207,79 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.WIND_DIRECTION,
                     "unit_of_measurement": DEGREE,
                     "state_class": SensorStateClass.MEASUREMENT
+                },
+            },
+        }
+    },
+    "BGF10000": {  # BGF10000
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[timer_off]",
+                    "rvalue": "[timer_off_hour] * 60 + [timer_off_minute]"
+                },
+                {
+                    "lvalue": "[timer_on]",
+                    "rvalue": "[timer_on_hour] * 60 + [timer_on_minute]"
+                }
+            ],
+            "set": []
+        },
+        "centralized": [
+            "power",
+            "gear"
+        ],
+        "entities": {
+            Platform.SWITCH: {
+                "display_on_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"]
+                },
+                "temp_wind_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lock": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "swing": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": list({"gear": value + 1} for value in range(0, 12)),
+                    "preset_modes": {
+                        "normal": {"mode": "normal"},
+                        "comfort": {"mode": "comfort"},
+                        "sleep": {"mode": "sleep"},
+                        "strong": {"mode": "strong"}
+                    }
+                }
+            },
+            Platform.SELECT: {
+                "voice": {
+                    "options": {
+                        "open_buzzer": {"voice": "open_buzzer"},
+                        "close_buzzer": {"voice": "close_buzzer"},
+                        "mute": {"voice": "mute"}
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "timer_off": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "timer_off_minute"
+                },
+                "timer_on": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "timer_on_minute"
                 },
             },
         }
