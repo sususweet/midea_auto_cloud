@@ -357,6 +357,15 @@
       },
       "on_seat": {
         "name": "On Seat"
+      },
+      "filter_value": {
+        "name": "Filter Status"
+      },
+      "water_pump": {
+        "name": "Water Pump"
+      },
+      "water_pump_enable": {
+        "name": "Water Pump Enabled"
       }
     },
     "climate": {
@@ -595,7 +604,17 @@
         "name": "Humidifier"
       },
       "dehumidifier": {
-        "name": "Dehumidifier"
+        "name": "Dehumidifier",
+        "state_attributes": {
+          "mode": {
+            "state": {
+              "set": "Set",
+              "continuity": "Continuous",
+              "eco": "Eco",
+              "dry_clothes": "Dry Clothes"
+            }
+          }
+        }
       }
     },
     "select": {
@@ -1188,12 +1207,14 @@
       "wind_speed": {
         "name": "Wind Speed",
         "state": {
-          "low": "low",
           "medium": "medium",
           "middle": "middle",
-          "high": "high",
+          "high": "High",
           "auto": "auto",
-          "invalid": "invalid"
+          "invalid": "invalid",
+          "silent": "Silent",
+          "comfortable": "Comfortable",
+          "turbo": "Turbo"
         }
       },
       "work_mode": {
@@ -2640,7 +2661,7 @@
       "total_elec_value": {
         "name": "Total Electricity"
       },
-	    "clean_water_consumption_next_remaining": {
+      "clean_water_consumption_next_remaining": {
         "name": "Clean Water Consumption Next Remaining"
       },
       "clean_interval_next_days_remaining": {
@@ -3997,6 +4018,9 @@
       },
       "wind_swing_ud_right": {
         "name": "Wind Swing UD Right"
+      },
+      "sound": {
+        "name": "Buzzer"
       }
     },
     "vacuum": {

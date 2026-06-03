@@ -377,6 +377,15 @@
       },
       "on_seat": {
         "name": "坐圈状态"
+      },
+      "filter_value": {
+        "name": "滤网状态"
+      },
+      "water_pump": {
+        "name": "水泵"
+      },
+      "water_pump_enable": {
+        "name": "水泵启用"
       }
     },
     "climate": {
@@ -639,7 +648,17 @@
         }
       },
       "dehumidifier": {
-        "name": "除湿器"
+        "name": "除湿器",
+        "state_attributes": {
+          "mode": {
+            "state": {
+              "set": "设定",
+              "continuity": "连续除湿",
+              "eco": "节能",
+              "dry_clothes": "干衣"
+            }
+          }
+        }
       }
     },
     "select": {
@@ -1381,12 +1400,14 @@
       "wind_speed": {
         "name": "风速",
         "state": {
-          "low": "低速",
           "medium": "中速",
           "middle": "中速",
           "high": "高速",
           "auto": "自动",
-          "invalid": "无效"
+          "invalid": "无效",
+          "silent": "静音",
+          "comfortable": "舒适",
+          "turbo": "强劲"
         }
       },
       "work_mode": {
@@ -4352,6 +4373,9 @@
       },
       "wind_swing_ud_right": {
         "name": "上下摆风(右)"
+      },
+      "sound": {
+        "name": "蜂鸣器"
       }
     },
     "vacuum": {
