@@ -1,8 +1,8 @@
 from homeassistant.components.humidifier import HumidifierDeviceClass
-from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from homeassistant.components.switch import SwitchDeviceClass
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.const import Platform, UnitOfTime
+from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.components.switch import SwitchDeviceClass
 
 DEVICE_MAPPING = {
     "default": {
