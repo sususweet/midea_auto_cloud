@@ -3,6 +3,8 @@ from homeassistant.components.climate import (
     ClimateEntityFeature,
     HVACMode,
     ATTR_HVAC_MODE,
+    ATTR_TARGET_TEMP_LOW,
+    ATTR_TARGET_TEMP_HIGH,
 )
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.const import (
@@ -77,6 +79,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_max_temp = self._config.get("max_temp")
         self._key_current_temperature = self._config.get("current_temperature")
         self._key_target_temperature = self._config.get("target_temperature")
+        # Optional dual-setpoint range (e.g. T0x44 in auto mode). When the current
+        # hvac mode is listed in range_hvac_modes, the entity exposes a low/high
+        # range and writes these attributes instead of the single setpoint.
+        self._key_target_temperature_low = self._config.get("target_temperature_low")
+        self._key_target_temperature_high = self._config.get("target_temperature_high")
+        self._range_hvac_modes = self._config.get("range_hvac_modes") or []
         self._key_min_humidity = self._config.get("min_humidity")
         self._key_max_humidity = self._config.get("max_humidity")
         self._key_current_humidity = self._config.get("current_humidity")
@@ -107,12 +115,22 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return UnitOfTemperature.FAHRENHEIT if value == 1 else UnitOfTemperature.CELSIUS
         return self._attr_temperature_unit
 
+    def _uses_temperature_range(self) -> bool:
+        """The current hvac mode controls a low/high range, not a single setpoint."""
+        return (
+            self._key_target_temperature_low is not None
+            and self._key_target_temperature_high is not None
+            and self.hvac_mode in self._range_hvac_modes
+        )
+
     @property
     def supported_features(self):
         features = ClimateEntityFeature(0)
         features |= ClimateEntityFeature.TURN_ON
         features |= ClimateEntityFeature.TURN_OFF
-        if self._key_target_temperature is not None:
+        if self._uses_temperature_range():
+            features |= ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+        elif self._key_target_temperature is not None:
             features |= ClimateEntityFeature.TARGET_TEMPERATURE
         if self._key_target_humidity is not None:
             features |= ClimateEntityFeature.TARGET_HUMIDITY
@@ -148,6 +166,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def target_temperature(self):
+        if self._uses_temperature_range():
+            return None
         if self._is_central_ac:
             run_mode = self._get_nested_value(self._key_power) or "0"
             if run_mode == "2":  # 制冷模式
@@ -230,10 +250,26 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def target_temperature_low(self):
+        if self._uses_temperature_range():
+            value = self._get_nested_value(self._key_target_temperature_low)
+            if value is not None:
+                try:
+                    return float(value)
+                except (ValueError, TypeError):
+                    return None
+            return None
         return self.min_temp
 
     @property
     def target_temperature_high(self):
+        if self._uses_temperature_range():
+            value = self._get_nested_value(self._key_target_temperature_high)
+            if value is not None:
+                try:
+                    return float(value)
+                except (ValueError, TypeError):
+                    return None
+            return None
         return self.max_temp
 
     @property
@@ -312,36 +348,58 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             await self.async_turn_on()
 
     async def async_set_temperature(self, **kwargs):
-        if ATTR_TEMPERATURE not in kwargs:
-            return
-        temperature = kwargs.get(ATTR_TEMPERATURE)
-        
         if self._is_central_ac:
+            if ATTR_TEMPERATURE not in kwargs:
+                return
+            temperature = kwargs.get(ATTR_TEMPERATURE)
             run_mode = self._get_nested_value(self._key_power) or "0"
             control = {}
-            
+
             if run_mode == "2":  # 制冷模式
                 control["cooling_temp"] = str(temperature)
             elif run_mode == "3":  # 制热模式
                 control["cooling_temp"] = str(temperature)
                 control["heating_temp"] = str(temperature)
-            
+
             if control:
                 await self.coordinator.async_send_central_ac_control(control)
-        else:
-            temp_int, temp_dec = divmod(temperature, 1)
-            temp_int = int(temp_int)
-            hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-            if hvac_mode is not None:
-                new_status = self._key_hvac_modes.get(hvac_mode)
-            else:
-                new_status = {}
-            if isinstance(self._key_target_temperature, list):
-                new_status[self._key_target_temperature[0]] = temp_int
-                new_status[self._key_target_temperature[1]] = temp_dec
-            else:
-                new_status[self._key_target_temperature] = temperature
+            return
+
+        # Dual-setpoint range (e.g. T0x44 in auto mode): write the low/high limit
+        # attributes instead of the single setpoint. Sent as str(int(...)) to match
+        # how the corresponding number entities write these same attributes.
+        target_low = kwargs.get(ATTR_TARGET_TEMP_LOW)
+        target_high = kwargs.get(ATTR_TARGET_TEMP_HIGH)
+        if (
+            (target_low is not None or target_high is not None)
+            and self._key_target_temperature_low is not None
+            and self._key_target_temperature_high is not None
+        ):
+            new_status = {}
+            if target_low is not None:
+                new_status[self._key_target_temperature_low] = str(int(target_low))
+            if target_high is not None:
+                new_status[self._key_target_temperature_high] = str(int(target_high))
             await self.async_set_attributes(new_status)
+            return
+
+        # Single setpoint.
+        if ATTR_TEMPERATURE not in kwargs:
+            return
+        temperature = kwargs.get(ATTR_TEMPERATURE)
+        temp_int, temp_dec = divmod(temperature, 1)
+        temp_int = int(temp_int)
+        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+        if hvac_mode is not None:
+            new_status = self._key_hvac_modes.get(hvac_mode)
+        else:
+            new_status = {}
+        if isinstance(self._key_target_temperature, list):
+            new_status[self._key_target_temperature[0]] = temp_int
+            new_status[self._key_target_temperature[1]] = temp_dec
+        else:
+            new_status[self._key_target_temperature] = temperature
+        await self.async_set_attributes(new_status)
 
     async def async_set_humidity(self, humidity: int):
         if self._key_target_humidity is None:
