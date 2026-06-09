@@ -145,6 +145,9 @@
       },
       "middle_stove_off": {
         "name": "中灶关火"
+      },
+      "find": {
+        "name": "寻找机器人"
       }
     },
     "binary_sensor": {
@@ -207,9 +210,6 @@
       "bright_lack": {
         "name": "亮光剂不足"
       },
-      "carpet_switch": {
-        "name": "地毯开关"
-      },
       "chlorine_sterilization_error": {
         "name": "氯气杀菌错误"
       },
@@ -224,6 +224,9 @@
       },
       "diy_times": {
         "name": "自定义次数"
+      },
+      "disturb": {
+        "name": "勿扰模式"
       },
       "flank_hot": {
         "name": "侧壁加热"
@@ -690,6 +693,13 @@
           "cancel": "取消",
           "waiting": "待机",
           "running": "运行"
+        }
+      },
+      "disturb": {
+        "name": "勿扰模式",
+        "state": {
+          "on": "开启",
+          "off": "关闭"
         }
       },
       "dry_time_interval": {
@@ -1366,7 +1376,7 @@
         "name": "变温模式"
       },
       "water_tank_setting": {
-        "name": "水位"
+        "name": "水箱设置"
       },
       "wind_gear": {
         "name": "风档",
@@ -1429,7 +1439,24 @@
           "clean": "清洁",
           "warm": "保温",
           "auto_menu": "自动菜单",
-          "custom": "自定义"
+          "custom": "自定义",
+          "sweep_and_mop": "扫拖一体",
+          "sweep": "仅扫地",
+          "mop": "仅拖地",
+          "sweep_then_mop": "先扫后拖",
+          "error": "错误",
+          "random": "随机",
+          "arc": "弓型",
+          "edge": "沿边",
+          "emphases": "重点",
+          "screw": "螺旋",
+          "bed": "床底清扫",
+          "wide_screw": "宽阔地方螺旋",
+          "auto": "自动清扫",
+          "area": "区域清扫",
+          "zone_index": "分区清扫",
+          "zone_rect": "划区清扫",
+          "path": "轨迹清扫"
         }
       },
       "speed": {
@@ -2499,9 +2526,6 @@
       "velocity": {
         "name": "流速"
       },
-      "voice_level": {
-        "name": "语音音量"
-      },
       "voltage": {
         "name": "电压"
       },
@@ -3001,6 +3025,9 @@
       }
     },
     "number": {
+      "voice_level": {
+        "name": "语音音量"
+      },
       "auto_temperature_lower_limit": {
         "name": "自动模式温度下限"
       },
@@ -3296,6 +3323,12 @@
       },
       "airswitch": {
         "name": "烘干存储开关"
+      },
+      "carpet_switch": {
+        "name": "地毯模式开关"
+      },
+      "disturb": {
+        "name": "勿扰模式"
       },
       "swing": {
         "name": "摇头"

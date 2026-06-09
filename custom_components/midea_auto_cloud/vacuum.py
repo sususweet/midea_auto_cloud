@@ -44,9 +44,14 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
             rationale=rationale,
             config=config,
         )
-        self._key_battery_level = self._config.get("battery_level")
         self._key_control = self._config.get("control")
-        self._key_fan_speeds = self._config.get("fan_speeds")
+        fan_speeds_config = self._config.get("fan_speeds", {})
+        if isinstance(fan_speeds_config, dict) and "options" in fan_speeds_config:
+            self._fan_speed_command = fan_speeds_config.get("command")
+            self._key_fan_speeds = fan_speeds_config.get("options", {})
+        else:
+            self._fan_speed_command = None
+            self._key_fan_speeds = fan_speeds_config
         self._control_actions = self._config.get("control_actions", {})
         #self._key_locate = self._config.get("locate")
         #self._key_clean_spot = self._config.get("clean_spot")
@@ -61,22 +66,10 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
         features |= VacuumEntityFeature.RETURN_HOME
         features |= VacuumEntityFeature.FAN_SPEED
         features |= VacuumEntityFeature.STATUS
-        features |= VacuumEntityFeature.BATTERY
         #features |= VacuumEntityFeature.LOCATE
         #features |= VacuumEntityFeature.CLEAN_SPOT
         #features |= VacuumEntityFeature.MAP
         return features
-
-    @property
-    def battery_level(self):
-        """Return the battery level of the vacuum cleaner."""
-        battery = self._get_nested_value(self._key_battery_level)
-        if battery is not None:
-            try:
-                return int(battery)
-            except (ValueError, TypeError):
-                return None
-        return None
 
     @property
     def status(self):
@@ -168,7 +161,12 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
         """Set the fan speed."""
         new_status = self._key_fan_speeds.get(fan_speed)
         if new_status is not None:
-            await self.async_set_attributes(new_status)
+            command = self._fan_speed_command
+            if command and isinstance(command, dict):
+                merged_command = {**command, **new_status}
+                await self.async_set_attributes(merged_command)
+            else:
+                await self.async_set_attributes(new_status)
 
     #async def async_locate(self):
         #"""Locate the vacuum cleaner."""

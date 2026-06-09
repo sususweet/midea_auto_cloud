@@ -1,3 +1,4 @@
+from homeassistant.components.switch import SwitchDeviceClass
 from homeassistant.const import Platform, UnitOfTime, UnitOfArea
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -5,17 +6,25 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{}, {"query_type": "disturb"}, {"query_type": "parts"}],
         "centralized": [],
         "entities": {
+            Platform.BUTTON: {
+                "find": {
+                    "command": {"query_type": "find"},
+                }
+            },
             Platform.VACUUM: {
                 "vacuum": {
                     "control": "work_status",
                     "fan_speeds": {
-                        "soft": {"fan_level": "soft"},
-                        "normal": {"fan_level": "normal"},
-                        "high": {"fan_level": "high"},
-                        "super": {"fan_level": "super"}
+                        "command": {"work_status": "switch"},
+                        "options": {
+                            "soft": {"fan_level": "soft"},
+                            "normal": {"fan_level": "normal"},
+                            "high": {"fan_level": "high"},
+                            "super": {"fan_level": "super"}
+                        }
                     },
                     "control_actions": {
                         "start": "work",
@@ -25,13 +34,64 @@ DEVICE_MAPPING = {
                     }
                 }
             },
+            Platform.NUMBER: {
+                "voice_level": {
+                    "min": 1,
+                    "max": 100,
+                    "step": 1,
+                    "command": {
+                        "work_status": "voice",
+                        "voice_level": "{value}"
+                    }
+                },
+            },
+            Platform.SWITCH: {
+                "carpet_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["no", "yes"],
+                    "command": {"work_status": "switch"}
+                },
+            },
             Platform.SELECT: {
-                "fan_setting": {
+                "set_status": {
+                    "command": {"work_status": "disturb"},
                     "options": {
-                        "soft": {"level": "soft"},
-                        "normal": {"level": "normal"},
-                        "high": {"level": "high"},
-                        "super": {"level": "super"}
+                        "on": {
+                            "disturb_switch": "on",
+                            "disturb_start_time": "00:00",
+                            "disturb_end_time": "00:00"
+                        },
+                        "off": {
+                            "disturb_switch": "off",
+                        },
+                    },
+                    "translation_key": "disturb"
+                },
+                "speed": {
+                    "command": {"work_status": "switch"},
+                    "options": {
+                        "low": {"speed": "low"},  # High-efficiency
+                        "high": {"speed": "high"},  # Exhaustive
+                    }
+                },
+                "fan_setting": {
+                    "command": {"work_status": "switch"},
+                    "options": {
+                        "off": {"fan_level": "off"},
+                        "soft": {"fan_level": "soft"},
+                        "low": {"fan_level": "low"},
+                        "normal": {"fan_level": "normal"},
+                        "high": {"fan_level": "high"},
+                        "super": {"fan_level": "super"}
+                    }
+                },
+                "water_level": {
+                    "command": {"work_status": "switch"},
+                    "options": {
+                        "dry": {"water_level": "dry"},
+                        "low": {"water_level": "low"},
+                        "normal": {"water_level": "normal"},
+                        "high": {"water_level": "high"}
                     }
                 },
                 "sweep_mop_mode": {
@@ -43,12 +103,25 @@ DEVICE_MAPPING = {
                     }
                 },
                 "work_mode": {
+                    "command": {"work_status": "work"},
                     "options": {
                         "sweep_and_mop": {"work_mode": "sweep_and_mop"},
                         "sweep": {"work_mode": "sweep"},
                         "mop": {"work_mode": "mop"},
                         "sweep_then_mop": {"work_mode": "sweep_then_mop"},
                         "error": {"work_mode": "error"},
+                        "random": {"work_mode": "random"},
+                        "arc": {"work_mode": "arc"},
+                        "edge": {"work_mode": "edge"},
+                        "emphases": {"work_mode": "emphases"},
+                        "screw": {"work_mode": "screw"},
+                        "bed": {"work_mode": "bed"},
+                        "wide_screw": {"work_mode": "wide_screw"},
+                        "auto": {"work_mode": "auto"},
+                        "area": {"work_mode": "area"},
+                        "zone_index": {"work_mode": "zone_index"},
+                        "zone_rect": {"work_mode": "zone_rect"},
+                        "path": {"work_mode": "path"},
                     }
                 },
                 "work_status": {
@@ -78,17 +151,15 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.BINARY_SENSOR: {
-                "carpet_switch": {
+                "set_status": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
+                    "translation_key": "disturb"
                 },
                 "have_reserve_task": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
                 }
             },
             Platform.SENSOR: {
-                "fan_level": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
                 "mop": {
                     "device_class": SensorDeviceClass.ENUM
                 },
@@ -104,11 +175,6 @@ DEVICE_MAPPING = {
                 "area": {
                     "device_class": SensorDeviceClass.AREA,
                     "unit_of_measurement": UnitOfArea.SQUARE_METERS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "voice_level": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "switch_status": {
@@ -136,9 +202,6 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "error_desc": {
-                    "device_class": SensorDeviceClass.ENUM
-                },
-                "station_error_desc": {
                     "device_class": SensorDeviceClass.ENUM
                 },
                 "sweep_mop_mode": {
@@ -171,6 +234,13 @@ DEVICE_MAPPING = {
                     }
                 }
             },
+            Platform.NUMBER: {
+                "voice_level": {
+                    "min": 1,
+                    "max": 100,
+                    "step": 1,
+                },
+            },
             Platform.SELECT: {
                 "sweep_mop_mode": {
                     "options": {
@@ -190,11 +260,6 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "battery_percent": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "voice_level": {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT

@@ -61,7 +61,7 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(True)
         else:
-            await self._async_set_status_on_off(attribute, True)
+            await self._async_set_switch_status(attribute, True)
 
     async def async_turn_off(self):
         """Turn the switch off."""
@@ -69,7 +69,18 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(False)
         else:
-            await self._async_set_status_on_off(attribute, False)
+            await self._async_set_switch_status(attribute, False)
+
+    async def _async_set_switch_status(self, attribute: str | None, turn_on: bool):
+        """Set switch status, merging fixed command parameters if configured."""
+        if attribute is None:
+            return
+        command = self._config.get("command")
+        if command and isinstance(command, dict):
+            merged_command = {**command, attribute: self._rationale[int(turn_on)]}
+            await self.async_set_attributes(merged_command)
+        else:
+            await self._async_set_status_on_off(attribute, turn_on)
 
     async def _async_set_central_ac_switch_status(self, is_on: bool):
         """设置中央空调开关设备的状态"""
