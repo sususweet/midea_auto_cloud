@@ -1217,9 +1217,10 @@
       "wind_speed": {
         "name": "Wind Speed",
         "state": {
+          "low": "low",
           "medium": "medium",
           "middle": "middle",
-          "high": "High",
+          "high": "high",
           "auto": "auto",
           "invalid": "invalid",
           "silent": "Silent",

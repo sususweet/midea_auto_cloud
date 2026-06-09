@@ -1410,6 +1410,7 @@
       "wind_speed": {
         "name": "风速",
         "state": {
+          "low": "低速",
           "medium": "中速",
           "middle": "中速",
           "high": "高速",
