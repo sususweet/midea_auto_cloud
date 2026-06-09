@@ -467,7 +467,7 @@ class MiedaDevice(threading.Thread):
                         except Exception as e:
                             traceback.print_exc()
                             MideaLogger.warning(
-                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                                f"_parse_cloud_message Calculation Error1: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
                                 self._device_id
                             )
                         try:
@@ -475,7 +475,7 @@ class MiedaDevice(threading.Thread):
                         except Exception as e:
                             traceback.print_exc()
                             MideaLogger.warning(
-                                f"Calculation Error: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
+                                f"_parse_cloud_message Calculation Error2: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
                                 self._device_id
                             )
             if update:
@@ -535,10 +535,15 @@ class MiedaDevice(threading.Thread):
                                                 .replace("[", "[\"").replace("]", "\"]")
                                         try:
                                             exec(calculate_str1)
+                                        except Exception:
+                                            MideaLogger.warning(
+                                                f"_parse_message Calculation Error1: {lvalue} = {rvalue}", self._device_id
+                                            )
+                                        try:
                                             exec(calculate_str2)
                                         except Exception:
                                             MideaLogger.warning(
-                                                f"Calculation Error: {lvalue} = {rvalue}", self._device_id
+                                                f"_parse_message Calculation Error2: {lvalue} = {rvalue}", self._device_id
                                             )
                             if update:
                                 self._update_all(new_status)
