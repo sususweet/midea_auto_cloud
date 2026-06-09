@@ -128,7 +128,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_ACCOUNT): str,
                 vol.Required(CONF_PASSWORD): str,
-                vol.Required(CONF_SERVER, default=2): vol.In(CONF_SERVERS)
+                # Coerce before vol.In: recent Home Assistant frontends submit the
+                # selected value as a string ("1"/"2"), which vol.In with the integer
+                # CONF_SERVERS keys rejects ("value must be one of [1, 2]"). Coercing
+                # accepts both string and int; the field still renders as a select.
+                vol.Required(CONF_SERVER, default=2): vol.All(vol.Coerce(int), vol.In(CONF_SERVERS))
             }),
             errors=errors,
         )
@@ -447,7 +451,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema({
                 vol.Required(CONF_ACCOUNT, default=current_data.get(CONF_ACCOUNT, "")): str,
                 vol.Required(CONF_PASSWORD, default=""): str,
-                vol.Required(CONF_SERVER, default=current_data.get(CONF_SERVER, 2)): vol.In(CONF_SERVERS)
+                # Same coercion as the login step; the default is int-coerced too in
+                # case an older config entry stored the server value as a string.
+                vol.Required(CONF_SERVER, default=int(current_data.get(CONF_SERVER) or 2)): vol.All(vol.Coerce(int), vol.In(CONF_SERVERS))
             }),
             errors=errors,
         )
