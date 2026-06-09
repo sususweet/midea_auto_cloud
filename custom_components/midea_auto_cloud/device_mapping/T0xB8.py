@@ -48,7 +48,7 @@ DEVICE_MAPPING = {
             Platform.SWITCH: {
                 "carpet_switch": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["no", "yes"],
+                    "rationale": [0, 1],
                     "command": {"work_status": "switch"}
                 },
             },
