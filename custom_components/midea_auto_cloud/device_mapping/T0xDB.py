@@ -366,6 +366,7 @@ DEVICE_MAPPING = {
                         "shirt": {"program": "shirt"},
                         "silk": {"program": "silk"},
                         "single_dehytration": {"program": "single_dehytration"},
+                        "single_drying": {"program": "single_drying"},
                         "sport_clothes": {"program": "sport_clothes"},
                         "spring_autumn_wash": {"program": "spring_autumn_wash"},
                         "ssp": {"program": "ssp"},
