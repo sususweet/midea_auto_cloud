@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": [{}, {"query_type": "status"}, {"device_type": "controller"}],
         "centralized": [],
         "entities": {
             Platform.SWITCH: {
@@ -48,6 +48,21 @@ DEVICE_MAPPING = {
                 },
                 "person_mode_three": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "lamp_control1_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "light",
+                    "merge_attributes": ["lamp_control2_power", "lamp_control3_power"],
+                },
+                "lamp_control2_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "lamp_control2_power",
+                    "merge_attributes": ["lamp_control1_power", "lamp_control3_power"],
+                },
+                "lamp_control3_power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "lamp_control3_power",
+                    "merge_attributes": ["lamp_control1_power", "lamp_control2_power"],
                 },
                 # "gesture_function": {
                 #     "device_class": SwitchDeviceClass.SWITCH,

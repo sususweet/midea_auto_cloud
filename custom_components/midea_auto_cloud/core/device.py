@@ -30,6 +30,13 @@ class ParseMessageResult(IntEnum):
     ERROR = 99
 
 
+LAMP_CONTROL_KEYS = frozenset({
+    "lamp_control1_power",
+    "lamp_control2_power",
+    "lamp_control3_power",
+})
+
+
 class MiedaDevice(threading.Thread):
     def __init__(self,
                  name: str,
@@ -226,6 +233,21 @@ class MiedaDevice(threading.Thread):
                 nested[key] = value
         return nested
 
+    def _status_for_lua_control(self, control_attributes: dict) -> dict:
+        """Exclude lamp states from status when controlling lamps.
+
+        The E3 lua script requires all three lamp_control*_power keys in control,
+        and applies status before control. Keeping lamp states in status would
+        prevent turning lights off.
+        """
+        if LAMP_CONTROL_KEYS.intersection(control_attributes.keys()):
+            return {
+                key: value
+                for key, value in self._attributes.items()
+                if key not in LAMP_CONTROL_KEYS
+            }
+        return self._attributes
+
     async def set_attribute(self, attribute, value):
         if attribute in self._attributes.keys():
             new_status = {}
@@ -244,9 +266,11 @@ class MiedaDevice(threading.Thread):
             # Convert dot-notation attributes to nested structure for transmission
             nested_status = self._convert_to_nested_structure(new_status)
 
+            status_for_lua = self._status_for_lua_control(new_status)
+
             if self._lua_runtime is not None:
                 try:
-                    if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
+                    if set_cmd := self._lua_runtime.build_control(nested_status, status=status_for_lua):
                         await self._build_send(set_cmd)
                         return
                 except Exception as e:
@@ -263,9 +287,9 @@ class MiedaDevice(threading.Thread):
                         model_number=self.subtype,
                         manufacturer_code=self._manufacturer_code,
                         control=nested_status,
-                        status=self._attributes)
+                        status=status_for_lua)
                 elif isinstance(cloud, MeijuCloud):
-                    await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
+                    await cloud.send_device_control(self._device_id, control=nested_status, status=status_for_lua)
 
     async def set_attributes(self, attributes):
         new_status = {}
@@ -273,7 +297,7 @@ class MiedaDevice(threading.Thread):
             new_status[attr] = self._attributes.get(attr)
         has_new = False
         for attribute, value in attributes.items():
-            if attribute in self._attributes.keys():
+            if attribute in self._attributes.keys() or attribute in LAMP_CONTROL_KEYS:
                 has_new = True
                 new_status[attribute] = value
     
@@ -288,11 +312,12 @@ class MiedaDevice(threading.Thread):
 
         # Convert dot-notation attributes to nested structure for transmission
         nested_status = self._convert_to_nested_structure(new_status)
+        status_for_lua = self._status_for_lua_control(new_status)
         
         if has_new:
             if self._lua_runtime is not None:
                 try:
-                    if set_cmd := self._lua_runtime.build_control(nested_status, status=self._attributes):
+                    if set_cmd := self._lua_runtime.build_control(nested_status, status=status_for_lua):
                         await self._build_send(set_cmd)
                         return
                 except Exception as e:
@@ -309,9 +334,9 @@ class MiedaDevice(threading.Thread):
                         model_number=self.subtype,
                         manufacturer_code=self._manufacturer_code,
                         control=nested_status,
-                        status=self._attributes)
+                        status=status_for_lua)
                 elif isinstance(cloud, MeijuCloud):
-                    await cloud.send_device_control(self._device_id, control=nested_status, status=self._attributes)
+                    await cloud.send_device_control(self._device_id, control=nested_status, status=status_for_lua)
 
     def set_ip_address(self, ip_address):
         MideaLogger.debug(f"Update IP address to {ip_address}")

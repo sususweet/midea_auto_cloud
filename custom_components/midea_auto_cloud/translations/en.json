@@ -3242,6 +3242,12 @@
       "cold_water_pressure": {
         "name": "Cold Water Pressure"
       },
+      "lamp_control2_power": {
+        "name": "Light 2"
+      },
+      "lamp_control3_power": {
+        "name": "Light 3"
+      },
       "comp_state": {
         "name": "Comp State"
       },

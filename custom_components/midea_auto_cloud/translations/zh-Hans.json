@@ -3600,6 +3600,12 @@
       "cold_water_pressure": {
         "name": "双增压"
       },
+      "lamp_control2_power": {
+        "name": "灯光2"
+      },
+      "lamp_control3_power": {
+        "name": "灯光3"
+      },
       "comp_state": {
         "name": "压缩机状态"
       },

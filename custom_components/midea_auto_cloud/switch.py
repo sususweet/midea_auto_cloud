@@ -75,6 +75,14 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         """Set switch status, merging fixed command parameters if configured."""
         if attribute is None:
             return
+        merge_attributes = self._config.get("merge_attributes")
+        if merge_attributes:
+            merged_command = {attribute: self._rationale[int(turn_on)]}
+            for attr in merge_attributes:
+                value = self._get_nested_value(attr)
+                merged_command[attr] = value if value is not None else self._rationale[0]
+            await self.async_set_attributes(merged_command)
+            return
         command = self._config.get("command")
         if command and isinstance(command, dict):
             merged_command = {**command, attribute: self._rationale[int(turn_on)]}
