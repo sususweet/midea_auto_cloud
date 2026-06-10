@@ -229,7 +229,14 @@ class MideaCloud:
         aes_key = payload.get("aes_key")
         aes_iv = payload.get("aes_iv")
         if aes_key:
-            self._security.set_aes_keys(aes_key, aes_iv)
+            # export_session_payload() stores the *already-decrypted* AES key/iv
+            # (self._security._aes_key/_aes_iv). Restore them directly. Do NOT
+            # route them back through set_aes_keys(): on the MSmart cloud that
+            # override expects the *encrypted* values and would try to decrypt our
+            # plaintext again, raising "Data must be padded to 16 byte boundary
+            # in CBC" and aborting the session restore.
+            self._security._aes_key = aes_key.encode("ascii")
+            self._security._aes_iv = aes_iv.encode("ascii") if aes_iv else None
 
 
     async def login(self) -> bool:
