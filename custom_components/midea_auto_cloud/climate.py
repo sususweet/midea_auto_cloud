@@ -2,6 +2,7 @@ from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
     HVACMode,
+    HVACAction,
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_LOW,
     ATTR_TARGET_TEMP_HIGH,
@@ -85,6 +86,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_target_temperature_low = self._config.get("target_temperature_low")
         self._key_target_temperature_high = self._config.get("target_temperature_high")
         self._range_hvac_modes = self._config.get("range_hvac_modes") or []
+        # Optional runtime-status attributes for hvac_action: which device
+        # attribute reports the compressor / indoor-fan run state, and the
+        # auto-resolved cooling/heating direction.
+        self._key_action_compressor = self._config.get("action_compressor")
+        self._key_action_fan = self._config.get("action_fan")
+        self._key_action_direction = self._config.get("action_direction")
         self._key_min_humidity = self._config.get("min_humidity")
         self._key_max_humidity = self._config.get("max_humidity")
         self._key_current_humidity = self._config.get("current_humidity")
@@ -330,6 +337,72 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     @property
     def hvac_modes(self):
         return list(self._key_hvac_modes.keys())
+
+    @staticmethod
+    def _is_running(value) -> bool:
+        return value in (1, "1", True, "on", "true")
+
+    def _running_direction(self) -> "HVACAction":
+        """Cooling vs heating while the compressor is running.
+
+        Explicit cool/heat modes are unambiguous. For auto/range mode we read the
+        device's resolved direction from action_direction
+        (auto_mode_actual_operating_status): 1 = cooling, 2 = heating — confirmed
+        empirically on the T0x44 (cooling and idle reported 1; a real heating
+        cycle reported 2, cross-checked against the Midea app). Falls back to
+        room-vs-band if that value is missing or unexpected, so other variants
+        degrade gracefully instead of misreporting.
+        """
+        mode = self.hvac_mode
+        if mode == HVACMode.HEAT:
+            return HVACAction.HEATING
+        if mode == HVACMode.COOL:
+            return HVACAction.COOLING
+        if self._key_action_direction is not None:
+            d = self._get_nested_value(self._key_action_direction)
+            if d in (1, "1"):
+                return HVACAction.COOLING
+            if d in (2, "2"):
+                return HVACAction.HEATING
+        cur = self.current_temperature
+        if cur is not None and self._uses_temperature_range():
+            hi = self.target_temperature_high
+            lo = self.target_temperature_low
+            if lo is not None and cur <= lo:
+                return HVACAction.HEATING
+            if hi is not None and cur >= hi:
+                return HVACAction.COOLING
+        return HVACAction.COOLING
+
+    @property
+    def hvac_action(self):
+        """What the equipment is actually doing (running vs idle).
+
+        Only active when the mapping provides the run-status / direction keys, so
+        other device types are unaffected (returns None). Running vs idle comes
+        from the compressor/fan run-status flags; cooling vs heating from
+        _running_direction:
+          off -> OFF; compressor running -> COOLING/HEATING; only fan -> FAN;
+          otherwise -> IDLE.
+        """
+        if (self._key_action_compressor is None and self._key_action_fan is None
+                and self._key_action_direction is None):
+            return None
+        if not self.is_on:
+            return HVACAction.OFF
+        compressor = (
+            self._is_running(self._get_nested_value(self._key_action_compressor))
+            if self._key_action_compressor else False
+        )
+        fan = (
+            self._is_running(self._get_nested_value(self._key_action_fan))
+            if self._key_action_fan else False
+        )
+        if compressor:
+            return self._running_direction()
+        if fan:
+            return HVACAction.FAN
+        return HVACAction.IDLE
 
     @property
     def is_aux_heat(self):

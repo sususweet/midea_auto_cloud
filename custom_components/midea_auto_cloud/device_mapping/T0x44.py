@@ -4,6 +4,7 @@ from homeassistant.const import (
 )
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 
 DEVICE_MAPPING = {
     "default": {
@@ -55,6 +56,23 @@ DEVICE_MAPPING = {
                     "max_temp": "set_temperature_upper_limit",
                     "temperature_unit": "temperature_unit",
                     "precision": PRECISION_WHOLE,
+                    # Surface running/idle on the climate card via hvac_action.
+                    # Direction in auto mode: auto_mode_actual_operating_status
+                    # (1 = cooling, 2 = heating), confirmed against the Midea app.
+                    "action_compressor": "outdoor_compressor_operating_status",
+                    "action_fan": "indoor_fan_run_status",
+                    "action_direction": "auto_mode_actual_operating_status",
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                # 0 = idle, 1 = running (generic binary sensor: on when value == 1)
+                "outdoor_compressor_operating_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "name": "Compressor",
+                },
+                "indoor_fan_run_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "name": "Indoor Fan",
                 },
             },
             Platform.SELECT: {
