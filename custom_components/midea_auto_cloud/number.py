@@ -100,7 +100,11 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Set the value of the number entity."""
         # 确保值在有效范围内
-        value = max(self._min_value, min(self._max_value, value))
+        # Clamp with the resolved float bounds (native_min_value/native_max_value),
+        # not the raw config values. When min/max are attribute *names* (e.g. the
+        # T0x44 auto-mode limits), the raw values are strings and comparing a float
+        # against them raises "'<' not supported between instances of 'float' and 'str'".
+        value = max(self.native_min_value, min(self.native_max_value, value))
 
         # 首先尝试使用command字段（如果存在）
         command = self._config.get("command")

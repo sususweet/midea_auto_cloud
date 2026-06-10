@@ -43,6 +43,12 @@ DEVICE_MAPPING = {
                         "auto": {"wind_speed": 102},
                     },
                     "target_temperature": "temperature",
+                    # In auto mode the thermostat controls to a low/high range
+                    # (the control_function limits, same as the number entities),
+                    # not the single "temperature" setpoint.
+                    "target_temperature_low": "control_function_set_temperature_lower_limit",
+                    "target_temperature_high": "control_function_set_temperature_upper_limit",
+                    "range_hvac_modes": ["auto"],
                     "current_temperature": "screen_temperature_sensor_value",
                     "aux_heat": "ptc",
                     "min_temp": "set_temperature_lower_limit",
