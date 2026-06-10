@@ -42,7 +42,12 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             name=f"{device.device_name} ({device.device_id})",
             update_method=self.poll_device_state,
             update_interval=timedelta(seconds=device._refresh_interval),
-            always_update=False,
+            # Must be True: our data payload references the device's attribute
+            # dict. We now emit a fresh snapshot copy each push (see _snapshot),
+            # but always_update=True also guarantees listeners are refreshed on
+            # every successful poll so device-side changes (e.g. made in the
+            # Midea app) reliably reach HA entities.
+            always_update=True,
         )
         self.device = device
         self.state_update_muted: CALLBACK_TYPE | None = None
@@ -56,6 +61,22 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         
         # Register for device updates
         self.device.register_update(self._device_update_callback)
+
+    def _snapshot(self, available: bool | None = None) -> MideaDeviceData:
+        """Build a coordinator data payload from a COPY of the device attributes.
+
+        Critical: the device mutates self.device.attributes in place. If we hand
+        HA the same dict object every time, change-detection compares the new
+        payload against the previous one and sees the *same mutated object* on
+        both sides -> "no change" -> entities never refresh. Copying the dict
+        makes each push a distinct snapshot so updates actually propagate.
+        """
+        connected = self.device.connected
+        return MideaDeviceData(
+            attributes=dict(self.device.attributes),
+            available=self.device.connected if available is None else available,
+            connected=connected,
+        )
 
     def mute_state_update_for_a_while(self) -> None:
         """Mute subscription for a while to avoid state bouncing."""
@@ -76,15 +97,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # Update device attributes (allow new keys to be added)
         for key, value in status.items():
             self.device.attributes[key] = value
-        
-        # Update coordinator data
-        self.async_set_updated_data(
-            MideaDeviceData(
-                attributes=self.device.attributes,
-                available=self.device.connected,
-                connected=self.device.connected,
-            )
-        )
+
+        # Update coordinator data (fresh snapshot so HA detects the change)
+        self.async_set_updated_data(self._snapshot())
 
     async def poll_device_state(self) -> MideaDeviceData:
         """Poll device state."""
@@ -98,22 +113,14 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             else:
                 await self.device.refresh_status()
 
-            # 返回并推送当前状态
-            updated = MideaDeviceData(
-                attributes=self.device.attributes,
-                available=self.device.connected,
-                connected=self.device.connected,
-            )
+            # 返回并推送当前状态 (fresh snapshot so HA detects changes)
+            updated = self._snapshot()
             self.async_set_updated_data(updated)
             return updated
         except Exception as e:
             traceback.print_exc()
             _LOGGER.error(f"Error polling device state: {e}")
-            return MideaDeviceData(
-                attributes=self.device.attributes,
-                available=False,
-                connected=False,
-            )
+            return self._snapshot(available=False)
     
     async def _poll_central_ac_state(self) -> None:
         """轮询中央空调状态"""
@@ -231,7 +238,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # 更新所有属性到本地状态（包括有默认值的变量）
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()
-        self.async_update_listeners()
+        # Push a fresh snapshot so the optimistic value lands in coordinator.data
+        # (entities read coordinator.data.attributes, which is now a copy).
+        self.async_set_updated_data(self._snapshot())
 
     async def async_send_command(self, cmd_type: int, cmd_body: str) -> None:
         """Send a command to the device."""
@@ -272,7 +281,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     # 更新本地状态
                     self.device.attributes.update(control)
                     self.mute_state_update_for_a_while()
-                    self.async_update_listeners()
+                    self.async_set_updated_data(self._snapshot())
                     return True
                 else:
                     MideaLogger.warning(f"Failed to send control to {self.device.device_name}")
@@ -321,7 +330,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     # 更新本地状态 - 使用类似poll_central的解析方法
                     await self._update_switch_status_from_control(control)
                     self.mute_state_update_for_a_while()
-                    self.async_update_listeners()
+                    self.async_set_updated_data(self._snapshot())
                     return True
                 else:
                     MideaLogger.warning(f"Failed to send switch control to {self.device.device_name}")
