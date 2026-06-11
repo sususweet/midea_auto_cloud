@@ -10,6 +10,14 @@ DEVICE_MAPPING = {
         "queries": [{}, {"query_type":"run_status"}, {"query_type":"indoor_humidity"},
                     {"query_type":"indoor_temperature"}, {"query_type": "group_data_four"}],
         "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[real_time_power_value]",
+                    "rvalue": "float([real_time_power]) / 10"
+                },
+            ],
+        },
         "entities": {
             Platform.FAN: {
                 "fan": {
@@ -133,7 +141,7 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "real_time_power": {
+                "real_time_power_value": {
                     "device_class": SensorDeviceClass.POWER,
                     "unit_of_measurement": UnitOfPower.WATT,
                     "state_class": SensorStateClass.MEASUREMENT,
@@ -159,6 +167,10 @@ DEVICE_MAPPING = {
                 {
                     "lvalue": "[screen_display]",
                     "rvalue": "[screen_display_now]"
+                },
+                {
+                    "lvalue": "[real_time_power_value]",
+                    "rvalue": "float([real_time_power]) / 10"
                 },
             ],
             "set": []
@@ -294,7 +306,7 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
-                "real_time_power": {
+                "real_time_power_value": {
                     "device_class": SensorDeviceClass.POWER,
                     "unit_of_measurement": UnitOfPower.WATT,
                     "state_class": SensorStateClass.MEASUREMENT,
