@@ -411,11 +411,10 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
-            Platform.SWITCH: {
+            Platform.LOCK: {
                 "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock"
-                }
+                    "translation_key": "child_lock",
+                },
             },
             Platform.NUMBER: {
                 "air_set_hour": {
@@ -479,11 +478,12 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": ["additional"],
         "entities": {
-            Platform.SWITCH: {
+            Platform.LOCK: {
                 "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock"
+                    "translation_key": "child_lock",
                 },
+            },
+            Platform.SWITCH: {
                 "airswitch": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },

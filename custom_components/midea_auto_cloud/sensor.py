@@ -44,6 +44,10 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
             config=config,
         )
         self._key_dynamic_unit = self._config.get("dynamic_unit")
+        if "suggested_display_precision" in self._config:
+            self._attr_suggested_display_precision = self._config["suggested_display_precision"]
+        if "options" in self._config:
+            self._attr_options = self._config["options"]
 
     @property
     def native_unit_of_measurement(self):

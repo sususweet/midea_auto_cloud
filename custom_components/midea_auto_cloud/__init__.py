@@ -63,7 +63,10 @@ PLATFORMS: list[Platform] = [
     Platform.HUMIDIFIER,
     Platform.NUMBER,
     Platform.BUTTON,
-    Platform.VACUUM
+    Platform.VACUUM,
+    Platform.COVER,
+    Platform.TEXT,
+    Platform.LOCK,
 ]
 
 
@@ -555,6 +558,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                         str(Platform.FAN),
                                         str(Platform.SELECT),
                                         str(Platform.VACUUM),
+                                        str(Platform.LOCK),
+                                        str(Platform.TEXT),
                                     ]:
                                         for entity_key in platform_cfg.keys():
                                             preset_keys.add(entity_key)

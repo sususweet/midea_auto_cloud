@@ -151,6 +151,9 @@
       }
     },
     "binary_sensor": {
+      "device_status": {
+        "name": "Device Status"
+      },
       "probo_on": {
         "name": "Probo on"
       },
@@ -600,6 +603,11 @@
       },
       "heating": {
         "name": "Heating"
+      }
+    },
+    "cover": {
+      "updown": {
+        "name": "Laundry Rack"
       }
     },
     "humidifier": {
@@ -2704,6 +2712,14 @@
         "name": "Light"
       }
     },
+    "lock": {
+      "child_lock": {
+        "name": "Child Lock"
+      },
+      "lock": {
+        "name": "Lock"
+      }
+    },
     "number": {
       "voice_level": {
         "name": "Voice Level"
@@ -4061,6 +4077,11 @@
       },
       "sound": {
         "name": "Buzzer"
+      }
+    },
+    "text": {
+      "external_humidity_sensor": {
+        "name": "External Humidity Sensor"
       }
     },
     "vacuum": {

@@ -10,10 +10,12 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
-            Platform.SWITCH: {
+            Platform.LOCK: {
                 "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "child_lock",
                 },
+            },
+            Platform.SWITCH: {
                 "screen_close": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["on", "off"],
@@ -56,6 +58,11 @@ DEVICE_MAPPING = {
         "queries": [{}],
         "centralized": [],
         "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "auto_power_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -63,10 +70,6 @@ DEVICE_MAPPING = {
                 "humidification": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ['off', 'no_change'],
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock",
                 },
                 "screen_close": {
                     "device_class": SwitchDeviceClass.SWITCH,

@@ -32,7 +32,8 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
         # 自动判断是否为中央空调设备（T0x21）
         self._is_central_ac = device.device_type == 0x21
-        
+        self._include_current = config.get("include_current") or []
+
         super().__init__(
             coordinator,
             device.device_id,
@@ -84,8 +85,15 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             await self.async_set_attributes(merged_command)
             return
         command = self._config.get("command")
+        merged_command = {}
         if command and isinstance(command, dict):
-            merged_command = {**command, attribute: self._rationale[int(turn_on)]}
+            merged_command.update(command)
+        merged_command[attribute] = self._rationale[int(turn_on)]
+        for attr in self._include_current:
+            current_value = self._get_nested_value(attr)
+            if current_value is not None:
+                merged_command[attr] = current_value
+        if command or self._include_current:
             await self.async_set_attributes(merged_command)
         else:
             await self._async_set_status_on_off(attribute, turn_on)

@@ -36,6 +36,12 @@ DEVICE_MAPPING = {
                     "translation_key": "detergent_lack"
                 }
             },
+            Platform.LOCK: {
+                "db_baby_lock": {
+                    "rationale": [0, 1],
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "db_power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -45,11 +51,6 @@ DEVICE_MAPPING = {
                     "rationale": ["pause", "start"],
                     "translation_key": "control_status",
                 },
-                "db_baby_lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                    "translation_key": "child_lock",
-                }
             },
             Platform.SELECT: {
                 "db_location_selection": {

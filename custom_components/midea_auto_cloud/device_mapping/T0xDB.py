@@ -74,15 +74,17 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 },
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "control_status": {
                     "rationale": ["pause", "start"],
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "flocks_switcher": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -314,6 +316,11 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -321,9 +328,6 @@ DEVICE_MAPPING = {
                 "control_status": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["pause", "start"],
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "nightly": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -492,6 +496,11 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -499,10 +508,6 @@ DEVICE_MAPPING = {
                 "control_status": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["pause", "start"],
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock",
                 },
                 "nightly": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -660,6 +665,11 @@ DEVICE_MAPPING = {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -668,10 +678,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["pause", "start"],
                 },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock",
-                }
             },
             Platform.SELECT: {
                 "mode": {

@@ -22,6 +22,11 @@ DEVICE_MAPPING = {
                     "step": 1
                 },
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -30,9 +35,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "buzzer": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "waterions":{
@@ -129,14 +131,16 @@ DEVICE_MAPPING = {
                     "step": 1
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "buzzer": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "waterions": {
@@ -199,6 +203,11 @@ DEVICE_MAPPING = {
                     "step": 1
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -206,10 +215,6 @@ DEVICE_MAPPING = {
                 "buzzer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "voice",
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock",
                 },
                 "waterions":{
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -300,6 +305,11 @@ DEVICE_MAPPING = {
                     "step": 1
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -307,10 +317,6 @@ DEVICE_MAPPING = {
                 "buzzer": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "voice",
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock",
                 },
                 "waterions":{
                     "device_class": SwitchDeviceClass.SWITCH,

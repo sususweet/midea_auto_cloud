@@ -97,6 +97,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_current_humidity = self._config.get("current_humidity")
         self._key_target_humidity = self._config.get("target_humidity")
         self._key_temperature_unit = self._config.get("temperature_unit")
+        self._device_type = device.device_type
         self._attr_temperature_unit = (
             self._key_temperature_unit
             if not isinstance(self._key_temperature_unit, str)
@@ -104,6 +105,19 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         )
         self._attr_precision = self._config.get("precision")
         self._attr_target_temperature_step = self._config.get("precision")
+
+    @property
+    def is_bath_heater(self) -> bool:
+        return self._device_type == 0x26
+
+    @staticmethod
+    def _safe_convert_to_float(value) -> float | None:
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return None
 
     @property
     def temperature_unit(self):
@@ -143,8 +157,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             features |= ClimateEntityFeature.TARGET_HUMIDITY
         if self._key_preset_modes is not None:
             features |= ClimateEntityFeature.PRESET_MODE
-        # if self._key_aux_heat is not None:
-        #     features |= ClimateEntityFeature.AUX_HEAT
+        if self._key_aux_heat is not None and hasattr(ClimateEntityFeature, "AUX_HEAT"):
+            features |= ClimateEntityFeature.AUX_HEAT
         if self._key_swing_modes is not None:
             features |= ClimateEntityFeature.SWING_MODE
         if self._key_fan_modes is not None:
@@ -157,19 +171,73 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             temp_int = self._get_nested_value(self._key_current_temperature[0])
             tem_dec = self._get_nested_value(self._key_current_temperature[1])
             if temp_int is not None and tem_dec is not None:
-                try:
-                    return float(temp_int) + float(tem_dec)
-                except (ValueError, TypeError):
-                    return None
+                t_int = self._safe_convert_to_float(temp_int)
+                t_dec = self._safe_convert_to_float(tem_dec)
+                if t_int is not None and t_dec is not None:
+                    return t_int + t_dec
             return None
-        else:
-            temp = self._get_nested_value(self._key_current_temperature)
-            if temp is not None:
-                try:
-                    return float(temp)
-                except (ValueError, TypeError):
-                    return None
+        return self._safe_convert_to_float(
+            self._get_nested_value(self._key_current_temperature)
+        )
+
+    def _get_bath_heater_hvac_mode(self) -> HVACMode:
+        current_mode = self._get_nested_value("mode")
+        if current_mode == "close_all":
+            return HVACMode.OFF
+        mode_mapping = {
+            "heating": HVACMode.HEAT,
+            "bath": HVACMode.HEAT,
+            "drying": HVACMode.DRY,
+            "ventilation": HVACMode.AUTO,
+            "blowing": HVACMode.FAN_ONLY,
+        }
+        return mode_mapping.get(current_mode, HVACMode.AUTO)
+
+    def _get_bath_heater_target_temp(self) -> float | None:
+        if not isinstance(self._key_target_temperature, dict):
             return None
+        current_mode = self.preset_mode
+        key = self._key_target_temperature.get(current_mode)
+        if not key:
+            return None
+        return self._safe_convert_to_float(self._get_nested_value(key))
+
+    def _get_target_temp_from_list(self) -> float | None:
+        if len(self._key_target_temperature) == 1:
+            return self._safe_convert_to_float(
+                self._get_nested_value(self._key_target_temperature[0])
+            )
+        temp_int = self._get_nested_value(self._key_target_temperature[0])
+        tem_dec = self._get_nested_value(self._key_target_temperature[1])
+        if temp_int is not None and tem_dec is not None:
+            t_int = self._safe_convert_to_float(temp_int)
+            t_dec = self._safe_convert_to_float(tem_dec)
+            if t_int is not None and t_dec is not None:
+                return t_int + t_dec
+        return None
+
+    def _match_swing_option(self, options: dict, current_value: str) -> str | None:
+        for option_key, option_config in options.items():
+            if isinstance(option_config, dict):
+                if any(str(attr_value) == current_value for attr_value in option_config.values()):
+                    return option_key
+            elif str(option_config) == current_value:
+                return option_key
+        return None
+
+    def _get_bath_heater_swing_mode(self) -> str | None:
+        current_mode = self.preset_mode
+        mode_config = self._key_swing_modes.get(current_mode)
+        if not (mode_config and isinstance(mode_config, dict)):
+            return self._dict_get_selected(self._key_swing_modes)
+        direction_key = mode_config.get("key")
+        options = mode_config.get("options")
+        if not (direction_key and options):
+            return self._dict_get_selected(self._key_swing_modes)
+        current_value = self._get_nested_value(direction_key)
+        if current_value is None:
+            return None
+        return self._match_swing_option(options, str(current_value))
 
     @property
     def target_temperature(self):
@@ -182,24 +250,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             elif run_mode == "3":  # 制热模式
                 return self._get_nested_value("cool_temp_set")
             return None
-        else:
-            if isinstance(self._key_target_temperature, list):
-                temp_int = self._get_nested_value(self._key_target_temperature[0])
-                tem_dec = self._get_nested_value(self._key_target_temperature[1])
-                if temp_int is not None and tem_dec is not None:
-                    try:
-                        return float(temp_int) + float(tem_dec)
-                    except (ValueError, TypeError):
-                        return None
-                return None
-            else:
-                temp = self._get_nested_value(self._key_target_temperature)
-                if temp is not None:
-                    try:
-                        return float(temp)
-                    except (ValueError, TypeError):
-                        return None
-                return None
+        if isinstance(self._key_target_temperature, dict):
+            if self.is_bath_heater:
+                return self._get_bath_heater_target_temp()
+            return None
+        if isinstance(self._key_target_temperature, list):
+            return self._get_target_temp_from_list()
+        return self._safe_convert_to_float(
+            self._get_nested_value(self._key_target_temperature)
+        )
 
     @property
     def current_humidity(self) -> float | None:
@@ -312,8 +371,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     def swing_modes(self):
         if self._is_central_ac:
             return ["off", "on"]
-        else:
-            return list(self._key_swing_modes.keys())
+        if self.is_bath_heater and isinstance(self._key_swing_modes, dict):
+            current_mode = self.preset_mode
+            mode_config = self._key_swing_modes.get(current_mode)
+            if mode_config and isinstance(mode_config, dict) and "options" in mode_config:
+                return list(mode_config["options"].keys())
+        return list(self._key_swing_modes.keys())
 
     @property
     def swing_mode(self):
@@ -323,8 +386,9 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             if extflag in ["4", "6"]:
                 return "on"
             return "off"
-        else:
-            return self._dict_get_selected(self._key_swing_modes)
+        if self.is_bath_heater and isinstance(self._key_swing_modes, dict):
+            return self._get_bath_heater_swing_mode()
+        return self._dict_get_selected(self._key_swing_modes)
 
     @property
     def is_on(self) -> bool:
@@ -332,7 +396,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def hvac_mode(self):
-        return self._dict_get_selected(self._key_hvac_modes)
+        if self.is_bath_heater and self._key_hvac_modes is not None:
+            return self._get_bath_heater_hvac_mode()
+        mode = self._dict_get_selected(self._key_hvac_modes)
+        return mode if mode is not None else HVACMode.OFF
 
     @property
     def hvac_modes(self):
@@ -480,6 +547,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                 await self.coordinator.async_send_central_ac_control(control)
             return
 
+        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+        if hvac_mode is not None:
+            await self.async_set_hvac_mode(hvac_mode)
+
         # Dual-setpoint range (e.g. T0x44 in auto mode): write the low/high limit
         # attributes instead of the single setpoint. Sent as str(int(...)) to match
         # how the corresponding number entities write these same attributes.
@@ -502,16 +573,27 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = kwargs.get(ATTR_TEMPERATURE)
+
+        if isinstance(self._key_target_temperature, dict):
+            if self.is_bath_heater:
+                current_mode = self.preset_mode
+                target_key = self._key_target_temperature.get(current_mode)
+                if target_key:
+                    await self.async_set_attribute(target_key, int(temperature))
+            return
+
         temp_int, temp_dec = divmod(temperature, 1)
         temp_int = int(temp_int)
-        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
         if hvac_mode is not None:
-            new_status = self._key_hvac_modes.get(hvac_mode)
+            new_status = self._key_hvac_modes.get(hvac_mode) or {}
         else:
             new_status = {}
         if isinstance(self._key_target_temperature, list):
-            new_status[self._key_target_temperature[0]] = temp_int
-            new_status[self._key_target_temperature[1]] = temp_dec
+            if len(self._key_target_temperature) == 2:
+                new_status[self._key_target_temperature[0]] = temp_int
+                new_status[self._key_target_temperature[1]] = temp_dec
+            else:
+                new_status[self._key_target_temperature[0]] = int(temperature)
         else:
             new_status[self._key_target_temperature] = temperature
         await self.async_set_attributes(new_status)
@@ -545,9 +627,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if self._is_central_ac:
             run_mode = self._key_hvac_modes.get(hvac_mode)
             await self.coordinator.async_send_central_ac_control(run_mode)
+        elif self.is_bath_heater and hvac_mode != HVACMode.OFF:
+            return
         else:
             new_status = self._key_hvac_modes.get(hvac_mode)
-            await self.async_set_attributes(new_status)
+            if new_status:
+                await self.async_set_attributes(new_status)
 
     async def async_set_swing_mode(self, swing_mode: str):
         if self._is_central_ac:
@@ -568,6 +653,14 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             
             control = {"extflag": new_extflag}
             await self.coordinator.async_send_central_ac_control(control)
+        elif self.is_bath_heater and isinstance(self._key_swing_modes, dict):
+            current_mode = self.preset_mode
+            mode_config = self._key_swing_modes.get(current_mode)
+            if mode_config and isinstance(mode_config, dict):
+                options = mode_config.get("options") or {}
+                swing_config = options.get(swing_mode)
+                if swing_config:
+                    await self.async_set_attributes(swing_config)
         else:
             new_status = self._key_swing_modes.get(swing_mode)
             await self.async_set_attributes(new_status)

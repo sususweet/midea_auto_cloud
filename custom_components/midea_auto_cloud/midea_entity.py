@@ -54,6 +54,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         self._device = device
         self._config = config or {}
         self._rationale = rationale
+        self._condition = self._config.get("condition")
         self._name_cfg = None
         self._name_attribute = None
         if (self._config.get("rationale")) is not None:
@@ -151,10 +152,33 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        if self.coordinator.data:
-            return self.coordinator.data.available
-        else:
+        if not self.coordinator.data or not self.coordinator.data.available:
             return False
+        return self._check_condition(self._condition)
+
+    def _check_condition(self, condition: dict | None = None) -> bool:
+        condition = condition or self._condition
+        if not condition:
+            return True
+
+        if "not" in condition:
+            for attr in condition["not"]:
+                if self.device_attributes.get(attr):
+                    return False
+            return True
+
+        if "eq" in condition:
+            attr, expected_value = condition["eq"]
+            return self.device_attributes.get(attr) == expected_value
+
+        return True
+
+    def _extract_deepest_value(self, config: dict) -> Any:
+        for value in config.values():
+            if isinstance(value, dict):
+                return self._extract_deepest_value(value)
+            return value
+        return None
 
     async def _publish_command(self) -> None:
         """Publish commands to the device."""

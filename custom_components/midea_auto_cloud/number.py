@@ -48,7 +48,9 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         self._min_value = self._config.get("min", 0.0)
         self._max_value = self._config.get("max", 100.0)
         self._step = self._config.get("step", 1.0)
-        self._mode = self._config.get("mode", "auto")  # auto, box, slider
+        self._mode = self._config.get("mode", "auto")
+        if "device_class" in self._config:
+            self._attr_device_class = self._config["device_class"]
 
     @property
     def native_value(self) -> float | None:

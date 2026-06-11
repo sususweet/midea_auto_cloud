@@ -43,10 +43,22 @@ class MideaFanEntity(MideaEntity, FanEntity):
             config=config,
         )
         self._key_power = self._config.get("power")
+        self._power_rationale = self._config.get("rationale")
         self._key_preset_modes = self._config.get("preset_modes")
         speeds_config = self._config.get("speeds")
         # 处理范围形式的 speeds 配置: {"key": "gear", "value": [1, 9]}
-        if isinstance(speeds_config, dict) and "key" in speeds_config and "value" in speeds_config:
+        if isinstance(speeds_config, list) and speeds_config:
+            if isinstance(speeds_config[0], dict) and "key" in speeds_config[0]:
+                key_name = speeds_config[0]["key"]
+                value_range = speeds_config[0].get("value", [1, 100])
+                if isinstance(value_range, list) and len(value_range) == 2:
+                    start, end = value_range[0], value_range[1]
+                    self._key_speeds = [{key_name: str(i)} for i in range(start, end + 1)]
+                else:
+                    self._key_speeds = speeds_config
+            else:
+                self._key_speeds = speeds_config
+        elif isinstance(speeds_config, dict) and "key" in speeds_config and "value" in speeds_config:
             key_name = speeds_config["key"]
             value_range = speeds_config["value"]
             if isinstance(value_range, list) and len(value_range) == 2:
@@ -79,7 +91,18 @@ class MideaFanEntity(MideaEntity, FanEntity):
 
     @property
     def is_on(self) -> bool:
-        return self._get_status_on_off(self._key_power)
+        if self._key_power is None:
+            return False
+        value = self._get_nested_value(self._key_power)
+        if value is None:
+            return False
+        rationale = self._fan_rationale()
+        try:
+            return bool(rationale.index(value))
+        except ValueError:
+            if isinstance(value, int) or value in ("0", "1"):
+                return int(value) != 0
+            return False
 
     @property
     def preset_modes(self):
@@ -134,6 +157,23 @@ class MideaFanEntity(MideaEntity, FanEntity):
     def current_direction(self):
         return self._dict_get_selected(self._key_directions)
 
+    def _fan_rationale(self) -> list:
+        return self._power_rationale or self._rationale
+
+    async def _async_set_fan_power(self, turn_on: bool) -> None:
+        if self._key_power is None:
+            return
+        rationale = self._fan_rationale()
+        await self.async_set_attribute(self._key_power, rationale[int(turn_on)])
+
+    def _get_speed_index_from_percentage(self, percentage: int) -> int:
+        if not self._current_speeds or self._attr_speed_count == 0:
+            return -1
+        if self._attr_speed_count == 1:
+            return 0
+        index = round(percentage * self._attr_speed_count / 100) - 1
+        return max(0, min(index, self._attr_speed_count - 1))
+
     async def async_turn_on(
             self,
             percentage: int | None = None,
@@ -177,39 +217,27 @@ class MideaFanEntity(MideaEntity, FanEntity):
         
             new_status.update(self._current_speeds[index])
 
-        # 打开风扇
-        await self._async_set_status_on_off(self._key_power, True)
+        await self._async_set_fan_power(True)
         if new_status:
             await self.async_set_attributes(new_status)
 
     async def async_turn_off(self):
-        await self._async_set_status_on_off(self._key_power, False)
+        await self._async_set_fan_power(False)
 
     async def async_set_percentage(self, percentage: int):
         if not self._current_speeds:
             return
 
-        # 处理关闭情况（0% 表示关闭）
         if percentage == 0:
             await self.async_turn_off()
             return
-        
-        # 如果风扇当前是关闭状态，先打开风扇
+
         if not self.is_on:
-            await self._async_set_status_on_off(self._key_power, True)
-    
-        # 将百分比转换为档位索引（从1开始，因为0%已处理）
-        if self._attr_speed_count <= 1:
-            index = 0
-        else:
-            # 百分比1-100对应档位1到最大档位
-            index = round((percentage / 100) * self._attr_speed_count)
-            index = max(1, min(index, self._attr_speed_count))  # 确保至少为1档
-    
-        # 获取对应档位的配置
-        if 1 <= index <= len(self._current_speeds):
-            new_status = self._current_speeds[index - 1]  # 索引从0开始，所以减1
-            await self.async_set_attributes(new_status)
+            await self._async_set_fan_power(True)
+
+        index = self._get_speed_index_from_percentage(percentage)
+        if index >= 0:
+            await self.async_set_attributes(self._current_speeds[index])
 
     async def async_set_preset_mode(self, preset_mode: str):
         if not self._key_preset_modes:
@@ -220,7 +248,7 @@ class MideaFanEntity(MideaEntity, FanEntity):
 
             # 如果风扇当前是关闭状态，先打开风扇
             if not self.is_on:
-                await self._async_set_status_on_off(self._key_power, True)
+                await self._async_set_fan_power(True)
 
             # 切换到该模式的档位配置
             if "speeds" in mode_config:

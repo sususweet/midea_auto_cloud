@@ -151,6 +151,9 @@
       }
     },
     "binary_sensor": {
+      "device_status": {
+        "name": "设备状态"
+      },
       "probo_on": {
         "name": "探针连接"
       },
@@ -634,6 +637,11 @@
       },
       "heating": {
         "name": "采暖"
+      }
+    },
+    "cover": {
+      "updown": {
+        "name": "晾衣架"
       }
     },
     "humidifier": {
@@ -3046,6 +3054,14 @@
         }
       }
     },
+    "lock": {
+      "child_lock": {
+        "name": "童锁"
+      },
+      "lock": {
+        "name": "锁定"
+      }
+    },
     "number": {
       "voice_level": {
         "name": "语音音量"
@@ -4416,6 +4432,11 @@
       },
       "sound": {
         "name": "蜂鸣器"
+      }
+    },
+    "text": {
+      "external_humidity_sensor": {
+        "name": "外部湿度传感器"
       }
     },
     "vacuum": {

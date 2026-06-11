@@ -39,6 +39,11 @@ DEVICE_MAPPING = {
                     }
                 },
             },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -47,9 +52,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "cool": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "sleep": {
@@ -429,6 +431,11 @@ DEVICE_MAPPING = {
     "default_pipeline_machine": {
         "rationale": ["off", "on"],
         "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "germicidal": {
                     "device_class": SwitchDeviceClass.SWITCH
@@ -437,9 +444,6 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH
                 },
                 "cool": {
-                    "device_class": SwitchDeviceClass.SWITCH
-                },
-                "lock": {
                     "device_class": SwitchDeviceClass.SWITCH
                 },
                 "human_sensing_switch": {
@@ -582,11 +586,12 @@ DEVICE_MAPPING = {
                     }
                 }
             },
-            Platform.SWITCH: {
+            Platform.LOCK: {
                 "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "child_lock"
+                    "translation_key": "child_lock",
                 },
+            },
+            Platform.SWITCH: {
                 "sleep": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_off"

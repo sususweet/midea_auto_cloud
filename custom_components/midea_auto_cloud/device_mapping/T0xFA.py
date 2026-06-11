@@ -232,15 +232,17 @@ DEVICE_MAPPING = {
             "gear"
         ],
         "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "display_on_off": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["on", "off"]
                 },
                 "temp_wind_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "swing": {

@@ -45,8 +45,7 @@ class MideaLightEntity(MideaEntity, LightEntity):
         self._key_preset_modes = self._config.get("preset_modes")
         self._key_brightness = self._config.get("brightness")
         self._key_color_temp = self._config.get("color_temp")
-        self._key_oscillate = self._config.get("oscillate")
-        self._key_directions = self._config.get("directions")
+        self._command = self._config.get("command")
 
         # 检测亮度配置类型：范围 [min, max] 或嵌套格式 {"brightness": [min, max]}
         self._brightness_is_range = False
@@ -157,7 +156,15 @@ class MideaLightEntity(MideaEntity, LightEntity):
 
     @property
     def is_on(self) -> bool:
-        return self._get_status_on_off(self._key_power)
+        if self._key_power is None:
+            return False
+        value = self._get_nested_value(self._key_power)
+        if value is None:
+            return False
+        try:
+            return bool(self._rationale.index(value))
+        except ValueError:
+            return False
 
     @property
     def effect_list(self):
@@ -299,9 +306,21 @@ class MideaLightEntity(MideaEntity, LightEntity):
 
             new_status[self._color_temp_key] = str(device_value)
 
-        await self._async_set_status_on_off(self._key_power, True)
+        if self._key_power:
+            new_status[self._key_power] = self._rationale[1]
+        if self._command and isinstance(self._command, dict):
+            merged = dict(self._command)
+            merged.update(new_status)
+            new_status = merged
         if new_status:
             await self.async_set_attributes(new_status)
 
     async def async_turn_off(self):
-        await self._async_set_status_on_off(self._key_power, False)
+        if not self._key_power:
+            return
+        new_status = {self._key_power: self._rationale[0]}
+        if self._command and isinstance(self._command, dict):
+            merged = dict(self._command)
+            merged.update(new_status)
+            new_status = merged
+        await self.async_set_attributes(new_status)

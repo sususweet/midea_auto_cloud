@@ -1,13 +1,14 @@
 from homeassistant.components.humidifier import (
     HumidifierEntity,
-    HumidifierDeviceClass, HumidifierEntityFeature
+    HumidifierDeviceClass,
+    HumidifierEntityFeature,
+    HumidifierAction,
 )
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
@@ -17,7 +18,6 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up humidifier entities for Midea devices."""
     await async_setup_platform_entities(
         hass,
         config_entry,
@@ -30,8 +30,6 @@ async def async_setup_entry(
 
 
 class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
-    """Generic humidifier entity."""
-
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
         super().__init__(
             coordinator,
@@ -47,111 +45,123 @@ class MideaHumidifierEntity(MideaEntity, HumidifierEntity):
             rationale=rationale,
             config=config,
         )
-        self._attr_supported_features = HumidifierEntityFeature.MODES
-        self._attr_available_modes = list(self._config.get("modes").keys())
-        
-        # 新增：外部湿度传感器支持
-		# 设备当前使用加湿器内置湿度传感器。如需外接更高精度传感器，可在midea_auto_cloud/device_mapping设备对应文件中编辑 'external_humidity_sensor_map' 部分进行配置
+        self._key_power = self._config.get("power")
+        self._key_target_humidity = self._config.get("target_humidity")
+        self._key_current_humidity = self._config.get("current_humidity")
+        self._key_external_humidity = "external_humidity_sensor"
+        self._key_mode = self._config.get("mode")
+        self._key_modes = self._config.get("modes") or {}
+        self._min_humidity = self._config.get("min_humidity", 30)
+        self._max_humidity = self._config.get("max_humidity", 80)
+        self._target_humidity_step = self._config.get("target_humidity_step", 1)
+
+        if self._key_modes:
+            self._attr_supported_features = HumidifierEntityFeature.MODES
+
         external_map = self._config.get("external_humidity_sensor_map", {})
-        self._has_external_sensor = self._sn8 in external_map
-        if self._has_external_sensor:
-            self._external_sensor_id = external_map[self._sn8]
+        self._external_sensor_by_sn8 = external_map.get(self._sn8) if external_map else None
 
     @property
     def device_class(self):
-        """Return the device class."""
         return self._config.get("device_class", HumidifierDeviceClass.HUMIDIFIER)
 
     @property
-    def is_on(self):
-        """Return if the humidifier is on."""
-        power_key = self._config.get("power")
-        if power_key:
-            value = self.device_attributes.get(power_key)
-            if isinstance(value, bool):
-                return value
-            return value == 1 or value == "on" or value == "true"
-        return False
+    def min_humidity(self) -> int:
+        return self._min_humidity
 
     @property
-    def target_humidity(self):
-        """Return the target humidity."""
-        target_humidity_key = self._config.get("target_humidity")
-        if target_humidity_key:
-            return self.device_attributes.get(target_humidity_key, 0)
-        return 0
+    def max_humidity(self) -> int:
+        return self._max_humidity
 
     @property
-    def current_humidity(self):
-        """Return the current humidity."""
-        # 支持外部湿度传感器 jesusya
-        if self._has_external_sensor:
-            state = self.hass.states.get(self._external_sensor_id)
-            if state and state.state not in (None, "unknown", "unavailable"):
+    def target_humidity_step(self) -> int | float | None:
+        return self._target_humidity_step
+
+    @property
+    def action(self) -> HumidifierAction:
+        if not self.is_on:
+            return HumidifierAction.OFF
+        current = self.current_humidity
+        target = self.target_humidity
+        if current is None or target is None:
+            return HumidifierAction.IDLE
+        dc = self.device_class
+        if dc == HumidifierDeviceClass.DEHUMIDIFIER and current > target:
+            return HumidifierAction.DRYING
+        if dc == HumidifierDeviceClass.HUMIDIFIER and current < target:
+            return HumidifierAction.HUMIDIFYING
+        return HumidifierAction.IDLE
+
+    @property
+    def is_on(self) -> bool:
+        if not self._key_power:
+            return False
+        return self._get_status_on_off(self._key_power)
+
+    @property
+    def target_humidity(self) -> int | None:
+        if not self._key_target_humidity:
+            return None
+        value = self._get_nested_value(self._key_target_humidity)
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return None
+
+    @property
+    def current_humidity(self) -> int | None:
+        external_entity_id = self._external_sensor_by_sn8
+        if not external_entity_id:
+            external_entity_id = self._get_nested_value(self._key_external_humidity)
+        if external_entity_id and isinstance(external_entity_id, str) and external_entity_id.strip():
+            state = self.hass.states.get(external_entity_id.strip())
+            if state and state.state not in ("unknown", "unavailable", None):
                 try:
-                    new_humidity = round(float(state.state))
-                    self._current_humidity = new_humidity
-                    MideaLogger.debug(f"{self.entity_id} using external sensor humidity from {self._external_sensor_id}: {self._current_humidity}")
-                    return self._current_humidity
-                except (ValueError, TypeError, AttributeError) as e:
-                    MideaLogger.warning(f"{self.entity_id} failed to parse external sensor state from {self._external_sensor_id}: {e}")
-            else:
-                MideaLogger.warning(f"{self.entity_id} external sensor {self._external_sensor_id} unavailable")
-
-        # 回退到内部传感器或直接使用内部传感器
-        current_humidity_key = self._config.get("current_humidity")
-        if current_humidity_key:
-            return self.device_attributes.get(current_humidity_key, 0)
-        return 0
-
-    @property
-    def min_humidity(self):
-        """Return the minimum humidity."""
-        return self._config.get("min_humidity", 30)
+                    return int(float(state.state))
+                except (ValueError, TypeError):
+                    pass
+            return None
+        if not self._key_current_humidity:
+            return None
+        value = self._get_nested_value(self._key_current_humidity)
+        if value is None:
+            return None
+        try:
+            return int(float(value))
+        except (ValueError, TypeError):
+            return None
 
     @property
-    def max_humidity(self):
-        """Return the maximum humidity."""
-        return self._config.get("max_humidity", 80)
+    def mode(self) -> str | None:
+        if not self._key_mode:
+            return None
+        return self._get_nested_value(self._key_mode)
 
     @property
-    def mode(self):
-        """Return the current mode."""
-        mode_key = self._config.get("mode")
-        if mode_key:
-            return self.device_attributes.get(mode_key, "manual")
-        return "manual"
+    def available_modes(self) -> list[str] | None:
+        if self._key_modes:
+            return list(self._key_modes.keys())
+        return None
 
-    @property
-    def available_modes(self):
-        """Return the available modes."""
-        modes = self._config.get("modes", {})
-        return list(modes.keys())
+    async def async_turn_on(self, **kwargs) -> None:
+        if self._key_power:
+            await self._async_set_status_on_off(self._key_power, True)
 
-    async def async_turn_on(self, **kwargs):
-        """Turn the humidifier on."""
-        power_key = self._config.get("power")
-        if power_key:
-            await self._device.set_attribute(power_key, self._rationale[int(True)])
+    async def async_turn_off(self, **kwargs) -> None:
+        if self._key_power:
+            await self._async_set_status_on_off(self._key_power, False)
 
-    async def async_turn_off(self, **kwargs):
-        """Turn the humidifier off."""
-        power_key = self._config.get("power")
-        if power_key:
-            await self._device.set_attribute(power_key, self._rationale[int(False)])
-            await self._device.set_attribute(power_key, self._rationale[int(False)])  #避免美的加湿器，挂机启动风干湿帘，噪音过大
+    async def async_set_humidity(self, humidity: int) -> None:
+        if self._key_target_humidity:
+            await self.async_set_attribute(self._key_target_humidity, humidity)
 
-    async def async_set_humidity(self, humidity: int):
-        """Set the target humidity."""
-        target_humidity_key = self._config.get("target_humidity")
-        if target_humidity_key:
-            await self._device.set_attribute(target_humidity_key, humidity)
-
-    async def async_set_mode(self, mode: str):
-        """Set the mode."""
-        mode_key = self._config.get("mode")
-        modes = self._config.get("modes", {})
-        if mode_key and mode in modes:
-            mode_config = modes[mode]
-            for attr_key, attr_value in mode_config.items():
-                await self._device.set_attribute(attr_key, attr_value)
+    async def async_set_mode(self, mode: str) -> None:
+        if not self._key_modes or mode not in self._key_modes:
+            return
+        mode_config = self._key_modes[mode]
+        if isinstance(mode_config, dict):
+            await self.async_set_attributes(mode_config)
+        elif self._key_mode:
+            await self.async_set_attribute(self._key_mode, mode)

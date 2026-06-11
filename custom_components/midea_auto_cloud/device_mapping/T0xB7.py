@@ -16,19 +16,21 @@ DEVICE_MAPPING = {
             "is_error", "left_cookmode", "light_lampblack_mode", "error_type"
         ],
         "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "rationale": ["0", "1"],
+                    "translation_key": "child_lock",
+                },
+                "left_lock": {
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "left_power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "left_dry_fire_protection": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "left_lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ['0', '1'],
                 },
                 "light_lampblack_mode": {
                     "device_class": SwitchDeviceClass.SWITCH,

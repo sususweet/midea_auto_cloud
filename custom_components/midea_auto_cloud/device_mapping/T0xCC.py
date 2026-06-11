@@ -426,14 +426,16 @@ DEVICE_MAPPING = {
                     "precision": PRECISION_HALVES,
                 }
             },
+            Platform.LOCK: {
+                "lock": {
+                    "attribute": "wirectrl_child_lock",
+                    "rationale": ["wirectrl_child_unlocked", "wirectrl_child_locked"],
+                    "translation_key": "child_lock",
+                },
+            },
             Platform.SWITCH: {
                 "eco": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "lock": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "attribute": "wirectrl_child_lock",
-                    "rationale": ["wirectrl_child_unlocked", "wirectrl_child_locked"]
                 },
                 "light": {
                     "device_class": SwitchDeviceClass.SWITCH,
