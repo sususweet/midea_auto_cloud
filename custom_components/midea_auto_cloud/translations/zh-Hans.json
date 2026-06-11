@@ -1810,6 +1810,9 @@
       }
     },
     "sensor": {
+      "indoor_humidity": {
+        "name": "室内湿度"
+      },
       "current_water_temperature": {
         "name": "当前水温"
       },
