@@ -14,11 +14,18 @@ DEVICE_MAPPING = {
                 "child_lock": {}
             },
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "anion": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "filter_tip": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
                 },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -55,10 +62,17 @@ DEVICE_MAPPING = {
                         "continuity": {"mode": "continuity"},
                         "dry_clothes": {"mode": "dry_clothes"},
                         "auto": {"mode": "auto"},
+                        "fan": {"mode": "fan"},
+                        "dry_shoes": {"mode": "dry_shoes"},
                         "eco": {"mode": "eco"},
                         "set": {"mode": "set"},
                     },
                 }
+            },
+            Platform.BINARY_SENSOR: {
+                "tank_status": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
             },
             Platform.TEXT: {
                 "external_humidity_sensor": {}
@@ -76,7 +90,9 @@ DEVICE_MAPPING = {
                 "power_on_time": {
                     "options": {
                         "off": {"power_on_timer": "off"},
+                        "15": {"power_on_timer": "on", "power_on_time_value": 15},
                         "30": {"power_on_timer": "on", "power_on_time_value": 30},
+                        "45": {"power_on_timer": "on", "power_on_time_value": 45},
                         "60": {"power_on_timer": "on", "power_on_time_value": 60},
                         "90": {"power_on_timer": "on", "power_on_time_value": 90},
                         "120": {"power_on_timer": "on", "power_on_time_value": 120},
@@ -115,7 +131,9 @@ DEVICE_MAPPING = {
                 "power_off_time": {
                     "options": {
                         "off": {"power_off_timer": "off"},
+                        "15": {"power_off_timer": "on", "power_off_time_value": 15},
                         "30": {"power_off_timer": "on", "power_off_time_value": 30},
+                        "45": {"power_off_timer": "on", "power_off_time_value": 45},
                         "60": {"power_off_timer": "on", "power_off_time_value": 60},
                         "90": {"power_off_timer": "on", "power_off_time_value": 90},
                         "120": {"power_off_timer": "on", "power_off_time_value": 120},
@@ -153,6 +171,11 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SENSOR: {
+                "water_full_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
                 "water_full_level": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
@@ -179,11 +202,18 @@ DEVICE_MAPPING = {
                 "child_lock": {}
             },
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "anion": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "filter_tip": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
                 },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -220,10 +250,17 @@ DEVICE_MAPPING = {
                         "continuity": {"mode": "continuity"},
                         "dry_clothes": {"mode": "dry_clothes"},
                         "auto": {"mode": "auto"},
+                        "fan": {"mode": "fan"},
+                        "dry_shoes": {"mode": "dry_shoes"},
                         "eco": {"mode": "eco"},
                         "set": {"mode": "set"},
                     },
                 }
+            },
+            Platform.BINARY_SENSOR: {
+                "tank_status": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
             },
             Platform.TEXT: {
                 "external_humidity_sensor": {}
@@ -240,6 +277,11 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SENSOR: {
+                "water_full_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
                 "water_full_level": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
@@ -266,11 +308,18 @@ DEVICE_MAPPING = {
                 "child_lock": {}
             },
             Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
                 "anion": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "filter_tip": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
                 },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
