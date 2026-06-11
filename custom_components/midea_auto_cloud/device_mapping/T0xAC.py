@@ -1644,7 +1644,7 @@ DEVICE_MAPPING = {
         }
     },
     # Colmo Turing Central AC indoor units, different cooling capacity models share the same config.
-    ("22396961", "22396963", "22396965", "22396969", "22396973"): {
+    ("22396961", "22396963", "22396965", "22396969", "22396973","22397057","22397059","22397061","22397065","22397067"): {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type":"run_status"}],
         "centralized": [],
