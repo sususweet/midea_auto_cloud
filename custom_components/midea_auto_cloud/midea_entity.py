@@ -22,6 +22,9 @@ class Rationale(IntEnum):
     GREATER = 1
     LESS = 2
 
+_YES_NO_VALUES = frozenset({"yes", "no"})
+
+
 class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     """Base class for Midea entities."""
 
@@ -212,30 +215,50 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             # Handle flat attributes
             return self.device_attributes.get(attribute_key)
 
+    def _coerce_on_off(self, value: Any) -> bool | None:
+        """Normalize common on/off wire formats to bool."""
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, (int, float)) and int(value) in (0, 1):
+            return bool(int(value))
+        if isinstance(value, str):
+            normalized = value.lower()
+            if normalized in ("yes", "on", "true", "1"):
+                return True
+            if normalized in ("no", "off", "false", "0"):
+                return False
+        return None
+
+    def _on_off_wire_value(self, turn_on: bool, attribute_key: str | None = None) -> Any:
+        """Return the on/off value to send, matching the device's wire format."""
+        if attribute_key:
+            current = self._get_nested_value(attribute_key)
+            if isinstance(current, str) and current.lower() in _YES_NO_VALUES:
+                return "yes" if turn_on else "no"
+        return self._rationale[int(turn_on)]
+
     def _get_status_on_off(self, attribute_key: str | None) -> bool:
         """Return boolean value from device attributes for given key.
 
-        Accepts common truthy representations: True/1/"on"/"true".
+        Accepts rationale values plus common aliases: yes/no, on/off, 0/1, true/false.
         Supports nested attributes with dot notation.
         """
-        result = False
         if attribute_key is None:
-            return result
+            return False
         status = self._get_nested_value(attribute_key)
-        if status is not None:
-            try:
-                result = bool(self._rationale.index(status))
-            except ValueError:
-                if isinstance(status, int) or status in ['0', '1']:
-                    if int(status) == 0:
-                        result = False
-                    else:
-                        result = True
-                else:
-                    MideaLogger.warning(f"The value of attribute {attribute_key} ('{status}') "
-                                      f"is not in rationale {self._rationale}")
-                return result
-        return result
+        if status is None:
+            return False
+        try:
+            return bool(self._rationale.index(status))
+        except ValueError:
+            coerced = self._coerce_on_off(status)
+            if coerced is not None:
+                return coerced
+            MideaLogger.warning(
+                f"The value of attribute {attribute_key} ('{status}') "
+                f"is not in rationale {self._rationale}"
+            )
+            return False
 
     def _set_nested_value(self, attribute_key: str, value: Any) -> None:
         """Set nested value in device attributes using dot notation.
@@ -267,7 +290,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         """Set boolean attribute via coordinator, no-op if key is None."""
         if attribute_key is None:
             return
-        await self.async_set_attribute(attribute_key, self._rationale[int(turn_on)])
+        await self.async_set_attribute(attribute_key, self._on_off_wire_value(turn_on, attribute_key))
 
     def _list_get_selected(self, key_of_list: list, rationale: Rationale = Rationale.EQUALLY):
         for index in range(0, len(key_of_list)):

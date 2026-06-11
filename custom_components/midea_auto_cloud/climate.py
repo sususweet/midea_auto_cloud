@@ -673,19 +673,14 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     def _get_status_on_off(self, key):
         """Get on/off status from device attributes."""
-        if key is None:
-            return False
-        value = self._get_nested_value(key)
-        if isinstance(value, bool):
-            return value
-        return value == 1 or value == "on" or value == "true"
+        return super()._get_status_on_off(key)
 
     async def _async_set_status_on_off(self, attribute_key: str | None, turn_on: bool):
         """Set on/off status for device attribute."""
         if attribute_key is None:
             return
         new_status = {}
-        new_status[attribute_key] = self._rationale[int(turn_on)]
+        new_status[attribute_key] = self._on_off_wire_value(turn_on, attribute_key)
         if turn_on:
             new_status[self._key_pre_mode] = self._get_nested_value(self._key_pre_mode)
         await self.async_set_attributes(new_status)

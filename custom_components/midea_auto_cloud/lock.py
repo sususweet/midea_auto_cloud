@@ -54,7 +54,7 @@ class MideaLockEntity(MideaEntity, LockEntity):
         attribute = self._config.get("attribute", self._entity_key)
         if attribute is None:
             return
-        value = self._rationale[int(locked)]
+        value = self._on_off_wire_value(locked, attribute)
         merged_command = {}
         if isinstance(self._command, dict):
             merged_command.update(self._command)

@@ -78,7 +78,7 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             return
         merge_attributes = self._config.get("merge_attributes")
         if merge_attributes:
-            merged_command = {attribute: self._rationale[int(turn_on)]}
+            merged_command = {attribute: self._on_off_wire_value(turn_on, attribute)}
             for attr in merge_attributes:
                 value = self._get_nested_value(attr)
                 merged_command[attr] = value if value is not None else self._rationale[0]
@@ -88,7 +88,7 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         merged_command = {}
         if command and isinstance(command, dict):
             merged_command.update(command)
-        merged_command[attribute] = self._rationale[int(turn_on)]
+        merged_command[attribute] = self._on_off_wire_value(turn_on, attribute)
         for attr in self._include_current:
             current_value = self._get_nested_value(attr)
             if current_value is not None:
