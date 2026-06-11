@@ -2088,6 +2088,9 @@
       "real_time_setting_min": {
         "name": "Real Time Setting Min"
       },
+      "real_time_power": {
+        "name": "Real-time Power"
+      },
       "refrigeration_fahrenheit_level": {
         "name": "Refrigeration Fahrenheit Level"
       },

@@ -2415,6 +2415,9 @@
       "real_time_setting_min": {
         "name": "实时设置分钟"
       },
+      "real_time_power": {
+        "name": "实时功率"
+      },
       "refrigeration_fahrenheit_level": {
         "name": "冷藏华氏等级"
       },

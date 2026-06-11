@@ -1,4 +1,4 @@
-from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, PRECISION_WHOLE, \
+from homeassistant.const import Platform, UnitOfTemperature, UnitOfPower, PRECISION_HALVES, PRECISION_WHOLE, \
     CONCENTRATION_PARTS_PER_MILLION, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, PERCENTAGE
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 # from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -7,7 +7,8 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}, {"query_type":"run_status"}, {"query_type":"indoor_humidity"}, {"query_type":"indoor_temperature"}],
+        "queries": [{}, {"query_type":"run_status"}, {"query_type":"indoor_humidity"},
+                    {"query_type":"indoor_temperature"}, {"query_type": "group_data_four"}],
         "centralized": [],
         "entities": {
             Platform.FAN: {
@@ -132,6 +133,12 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "real_time_power": {
+                    "device_class": SensorDeviceClass.POWER,
+                    "unit_of_measurement": UnitOfPower.WATT,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "real_time_power",
+                }
             }
         }
     },
@@ -143,7 +150,8 @@ DEVICE_MAPPING = {
             {"query_type": "prevent_straight_wind"},
             {"query_type": "prevent_super_cool"},
             {"query_type": "wind_swing_lr_angle"},
-            {"query_type": "wind_swing_ud_angle"}
+            {"query_type": "wind_swing_ud_angle"},
+            {"query_type": "group_data_four"}
         ],
         "centralized": ["buzzer"],
         "calculate": {
@@ -286,6 +294,12 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
+                "real_time_power": {
+                    "device_class": SensorDeviceClass.POWER,
+                    "unit_of_measurement": UnitOfPower.WATT,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "real_time_power",
+                }
             }
         }
     },
