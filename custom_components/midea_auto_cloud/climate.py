@@ -376,33 +376,75 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
 
     @property
     def hvac_action(self):
-        """What the equipment is actually doing (running vs idle).
-
-        Only active when the mapping provides the run-status / direction keys, so
-        other device types are unaffected (returns None). Running vs idle comes
-        from the compressor/fan run-status flags; cooling vs heating from
-        _running_direction:
-          off -> OFF; compressor running -> COOLING/HEATING; only fan -> FAN;
-          otherwise -> IDLE.
-        """
-        if (self._key_action_compressor is None and self._key_action_fan is None
-                and self._key_action_direction is None):
-            return None
+        """What the equipment is actually doing (running vs idle)."""
         if not self.is_on:
             return HVACAction.OFF
-        compressor = (
-            self._is_running(self._get_nested_value(self._key_action_compressor))
-            if self._key_action_compressor else False
-        )
-        fan = (
-            self._is_running(self._get_nested_value(self._key_action_fan))
-            if self._key_action_fan else False
-        )
-        if compressor:
-            return self._running_direction()
-        if fan:
+
+        current_mode = self.hvac_mode
+        if current_mode == HVACMode.FAN_ONLY:
             return HVACAction.FAN
-        return HVACAction.IDLE
+        elif current_mode == HVACMode.DRY:
+            return HVACAction.DRYING
+
+        if (self._key_action_compressor is None and self._key_action_fan is None
+                and self._key_action_direction is None):
+            # Get current and target temperatures
+            current_temp = self.current_temperature
+            target_temp = self.target_temperature
+
+            # If we have both temperatures, use them to determine action
+            if current_temp is not None and target_temp is not None:
+                if current_mode == HVACMode.HEAT:
+                    # Heating if current temp is below target
+                    if current_temp < target_temp:
+                        return HVACAction.HEATING
+                    else:
+                        return HVACAction.IDLE
+                elif current_mode == HVACMode.COOL:
+                    # Cooling if current temp is above target
+                    if current_temp > target_temp:
+                        return HVACAction.COOLING
+                    else:
+                        return HVACAction.IDLE
+                elif current_mode == HVACMode.AUTO:
+                    # In auto mode, determine based on temperature difference
+                    # Assuming a small hysteresis of 1 degree
+                    if current_temp < target_temp - 0.5:
+                        return HVACAction.HEATING
+                    elif current_temp > target_temp + 0.5:
+                        return HVACAction.COOLING
+                    else:
+                        return HVACAction.IDLE
+
+            # Fallback to mode-based determination if temperature data is unavailable
+            if current_mode == HVACMode.HEAT:
+                return HVACAction.HEATING
+            elif current_mode == HVACMode.COOL:
+                return HVACAction.COOLING
+            else:
+                return HVACAction.IDLE
+        else:
+            """
+            Only active when the mapping provides the run-status / direction keys, so
+            other device types are unaffected (returns None). Running vs idle comes
+            from the compressor/fan run-status flags; cooling vs heating from
+            _running_direction:
+              off -> OFF; compressor running -> COOLING/HEATING; only fan -> FAN;
+              otherwise -> IDLE.
+            """
+            compressor = (
+                self._is_running(self._get_nested_value(self._key_action_compressor))
+                if self._key_action_compressor else False
+            )
+            fan = (
+                self._is_running(self._get_nested_value(self._key_action_fan))
+                if self._key_action_fan else False
+            )
+            if compressor:
+                return self._running_direction()
+            if fan:
+                return HVACAction.FAN
+            return HVACAction.IDLE
 
     @property
     def is_aux_heat(self):
