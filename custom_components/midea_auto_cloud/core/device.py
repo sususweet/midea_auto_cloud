@@ -36,6 +36,13 @@ LAMP_CONTROL_KEYS = frozenset({
     "lamp_control3_power",
 })
 
+# E3 newCtrlAgreementJsonToCmd(status) runs before control; these fields reuse
+# cmd[12]/cmd[13] and corrupt lamp_control (0x21) when temperature=39 -> 0x27.
+LAMP_CONTROL_STATUS_EXCLUDE = frozenset({
+    "temperature",
+    "temperature_beep",
+})
+
 
 class MiedaDevice(threading.Thread):
     def __init__(self,
@@ -242,15 +249,21 @@ class MiedaDevice(threading.Thread):
 
         The E3 lua script requires all three lamp_control*_power keys in control,
         and applies status before control. Keeping lamp states in status would
-        prevent turning lights off.
+        prevent turning lights off. temperature also maps to cmd[13] and breaks
+        the lamp bit field (e.g. 39 -> 0x27 turns all lamps on).
         """
-        if LAMP_CONTROL_KEYS.intersection(control_attributes.keys()):
-            return {
-                key: value
-                for key, value in self._attributes.items()
-                if key not in LAMP_CONTROL_KEYS
-            }
-        return self._attributes
+        if not LAMP_CONTROL_KEYS.intersection(control_attributes.keys()):
+            return self._attributes
+
+        if set(control_attributes.keys()) <= LAMP_CONTROL_KEYS:
+            return {}
+
+        excluded = LAMP_CONTROL_KEYS | LAMP_CONTROL_STATUS_EXCLUDE
+        return {
+            key: value
+            for key, value in self._attributes.items()
+            if key not in excluded
+        }
 
     async def set_attribute(self, attribute, value):
         if attribute in self._attributes.keys():
