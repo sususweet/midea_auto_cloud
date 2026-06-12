@@ -722,7 +722,7 @@ DEVICE_MAPPING = {
             Platform.SWITCH: {
                 "heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "Heat_function"
+                    "translation_key": "heat_function"
                 },
                 "antifreeze": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -787,7 +787,7 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "life_2_PCB"
+                    "translation_key": "life_2_pcb"
                 },
                 "water_consumption": {
                     "device_class": SensorDeviceClass.VOLUME,
@@ -830,7 +830,7 @@ DEVICE_MAPPING = {
                 },
                 "heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "Heat_function",
+                    "translation_key": "heat_function",
                 },
                 "reheating": {
                     "device_class": SwitchDeviceClass.SWITCH,

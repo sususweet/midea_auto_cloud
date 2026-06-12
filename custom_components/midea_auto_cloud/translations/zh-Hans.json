@@ -802,6 +802,15 @@
           "rightmost": "右"
         }
       },
+      "light_sensitive": {
+        "name": "智能光感",
+        "state": {
+          "off": "关闭",
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
       "custom_temperature": {
         "name": "自定义烧水温度"
       },
@@ -2997,7 +3006,7 @@
       "life_2": {
         "name": "MPC滤芯寿命"
       },
-      "life_2_PCB": {
+      "life_2_pcb": {
         "name": "PCB滤芯寿命"
       },
       "water_consumption": {
@@ -3623,7 +3632,7 @@
       "hot_power": {
         "name": "加热电源"
       },
-      "Heat_function": {
+      "heat_function": {
         "name": "加热功能"
       },
       "midea_manager": {
@@ -3741,9 +3750,6 @@
         "name": "AI开关"
       },
       "airdry_on_off": {
-        "name": "湿帘风干"
-      },
-      "airDry_on_off": {
         "name": "湿帘风干"
       },
       "appointment": {
@@ -4029,9 +4035,6 @@
         "name": "中层预热"
       },
       "netions_on_off": {
-        "name": "负离子开关"
-      },
-      "netIons_on_off": {
         "name": "负离子开关"
       },
       "nightly": {
@@ -4567,9 +4570,6 @@
       },
       "full": {
         "name": "水箱已满"
-      },
-      "Heat_function": {
-        "name": "加热"
       },
       "sedentary_remind": {
         "name": "久坐提醒"

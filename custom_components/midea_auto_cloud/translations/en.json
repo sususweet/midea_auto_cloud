@@ -754,6 +754,15 @@
           "rightmost": "Rightmost"
         }
       },
+      "light_sensitive": {
+        "name": "Light Sensitive",
+        "state": {
+          "off": "Off",
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
       "custom_temperature": {
         "name": "Custom Temperature"
       },
@@ -4209,9 +4218,6 @@
       },
       "full": {
         "name": "Tank Full"
-      },
-      "Heat_function": {
-        "name": "Heat"
       },
       "sedentary_remind": {
         "name": "Sedentary Remind"

@@ -1494,9 +1494,6 @@ DEVICE_MAPPING = {
                 "cool_power_saving": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "light_sensitive": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
                 "buzzer_all": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -1518,6 +1515,14 @@ DEVICE_MAPPING = {
                     "options": {
                         "auto_mode_one": {"ptc_default_rule": 0},
                         "auto_mode_two": {"ptc_default_rule": 1},
+                    }
+                },
+                "light_sensitive": {
+                    "options": {
+                        "off": {"light_sensitive": "0"},
+                        "low": {"light_sensitive": "1"},
+                        "medium": {"light_sensitive": "2"},
+                        "high": {"light_sensitive": "3"},
                     }
                 },
                 "wind_swing_ud_angle": {
