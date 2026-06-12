@@ -558,6 +558,19 @@
       "dhw": {
         "name": "DHW"
       },
+      "water": {
+        "name": "Water",
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "Off",
+              "heat": "Heat",
+              "cool": "Cool",
+              "pump": "Pump"
+            }
+          }
+        }
+      },
       "colmo_turing_central_ac_climate": {
         "name": "Thermostat",
         "state_attributes": {
@@ -1058,7 +1071,12 @@
           "fast": "Fast Mode",
           "service": "service",
           "sleep": "Sleep Mode",
-          "normal_continus": "normal continus"
+          "normal_continus": "normal continus",
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool",
+          "waterpump": "Pump",
+          "dhw": "DHW"
         }
       },
       "mode_state": {
@@ -2660,6 +2678,18 @@
       "outside_temperature": {
         "name": "Outside Temperature"
       },
+      "inlet_water_temperature": {
+        "name": "Inlet Water Temperature"
+      },
+      "outlet_water_temperature": {
+        "name": "Outlet Water Temperature"
+      },
+      "set_temperature": {
+        "name": "Set Temperature"
+      },
+      "total_kwh": {
+        "name": "Total Energy"
+      },
       "lua_version": {
         "name": "Lua Version"
       },
@@ -4046,6 +4076,12 @@
       },
       "forcetbh_state": {
         "name": "Force Standby"
+      },
+      "force_heat": {
+        "name": "Force Heat"
+      },
+      "mute_en": {
+        "name": "Mute"
       },
       "manul_humi": {
         "name": "humidification"

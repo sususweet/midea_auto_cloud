@@ -590,6 +590,19 @@
       "dhw": {
         "name": "DHW"
       },
+      "water": {
+        "name": "水温",
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "关闭",
+              "heat": "制热",
+              "cool": "制冷",
+              "pump": "水泵"
+            }
+          }
+        }
+      },
       "colmo_turing_central_ac_climate": {
         "name": "温控器",
         "state_attributes": {
@@ -1251,7 +1264,12 @@
           "bath": "安心沐浴",
           "blowing": "吹风",
           "ventilation": "换气",
-          "drying": "干燥"
+          "drying": "干燥",
+          "off": "关闭",
+          "heat": "制热",
+          "cool": "制冷",
+          "waterpump": "水泵",
+          "dhw": "热水"
         }
       },
       "mode_state": {
@@ -2996,6 +3014,18 @@
       "outside_temperature": {
         "name": "室外温度"
       },
+      "inlet_water_temperature": {
+        "name": "进水温度"
+      },
+      "outlet_water_temperature": {
+        "name": "出水温度"
+      },
+      "set_temperature": {
+        "name": "设定温度"
+      },
+      "total_kwh": {
+        "name": "累计电量"
+      },
       "lua_version": {
         "name": "Lua版本"
       },
@@ -4410,6 +4440,12 @@
       },
       "forcetbh_state": {
         "name": "强制待机"
+      },
+      "force_heat": {
+        "name": "强热"
+      },
+      "mute_en": {
+        "name": "静音"
       },
       "manul_humi": {
         "name": "加湿"
