@@ -53,7 +53,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self.state_update_muted: CALLBACK_TYPE | None = None
         self._device_id = device.device_id
         self._cloud = cloud
-        self._last_electricity_poll: datetime | None = None
+        self._last_cloud_poll: dict[str, datetime | None] = {}
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -118,10 +118,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             _LOGGER.error(f"Error polling device state: {e}")
 
         try:
-            await self._poll_cloud_electricity()
+            await self._poll_cloud_stats()
         except Exception as e:
             traceback.print_exc()
-            _LOGGER.error(f"Error polling cloud electricity: {e}")
+            _LOGGER.error(f"Error polling cloud stats: {e}")
 
         try:
             updated = self._snapshot()
@@ -202,26 +202,39 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         except Exception as e:
             MideaLogger.warning(f"Error polling central AC state: {e}")
 
-    def _electricity_poll_interval(self) -> int:
+    def _cloud_poll_interval(self, query_key: str, default: int = 3600) -> int:
         cloud_queries = getattr(self.device, "_cloud_queries", None) or {}
-        electricity_cfg = cloud_queries.get("electricity") or {}
-        return int(electricity_cfg.get("interval", 3600))
+        query_cfg = cloud_queries.get(query_key) or {}
+        return int(query_cfg.get("interval", default))
 
-    async def _poll_cloud_electricity(self) -> None:
-        """轮询云端电量统计（月 + 年），独立于设备状态轮询。"""
+    def _should_poll_cloud(self, query_key: str, now: datetime) -> bool:
+        poll_interval = self._cloud_poll_interval(query_key)
+        last_poll = self._last_cloud_poll.get(query_key)
+        if last_poll is not None:
+            elapsed = (now - last_poll).total_seconds()
+            if elapsed < poll_interval:
+                return False
+        return True
+
+    async def _poll_cloud_stats(self) -> None:
+        """轮询云端统计（空调电量、洗衣机/洗碗机水电等）。"""
         cloud_queries = getattr(self.device, "_cloud_queries", None) or {}
-        if not cloud_queries.get("electricity"):
+        if not cloud_queries:
             return
         cloud = self._cloud
-        if not cloud or not hasattr(cloud, "query_electricity"):
+        if not cloud:
             return
 
         now = datetime.now()
-        poll_interval = self._electricity_poll_interval()
-        if self._last_electricity_poll is not None:
-            elapsed = (now - self._last_electricity_poll).total_seconds()
-            if elapsed < poll_interval:
-                return
+        if cloud_queries.get("electricity") and self._should_poll_cloud("electricity", now):
+            await self._poll_cloud_electricity(cloud, now)
+        if cloud_queries.get("water_power") and self._should_poll_cloud("water_power", now):
+            await self._poll_cloud_water_power(cloud, now, cloud_queries["water_power"])
+
+    async def _poll_cloud_electricity(self, cloud, now: datetime) -> None:
+        """轮询空调云端电量（月 + 年）。"""
+        if not hasattr(cloud, "query_electricity"):
+            return
 
         today = now.strftime("%Y-%m-%d")
         try:
@@ -253,7 +266,90 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 f"Error polling cloud electricity for device {self._device_id}: {e}"
             )
         finally:
-            self._last_electricity_poll = now
+            self._last_cloud_poll["electricity"] = now
+
+    def _apply_wash_cloud_totals(
+        self,
+        result: dict | None,
+        *,
+        period: str,
+        dual_drum: bool,
+    ) -> None:
+        cloud = self._cloud
+        if not cloud or not result:
+            return
+
+        drums = ("da", "db") if dual_drum else ("da", "db")
+        if dual_drum:
+            for drum in drums:
+                water_raw = cloud._sum_wash_resource(result, drum, "water")
+                power_raw = cloud._sum_wash_resource(result, drum, "power")
+                self.device._attributes[f"cloud_water_{period}_{drum}"] = round(
+                    cloud.wash_water_liters(water_raw), 2
+                )
+                self.device._attributes[f"cloud_power_{period}_{drum}"] = round(
+                    cloud.wash_power_kwh(power_raw), 3
+                )
+        else:
+            water_raw = sum(
+                cloud._sum_wash_resource(result, drum, "water") for drum in drums
+            )
+            power_raw = sum(
+                cloud._sum_wash_resource(result, drum, "power") for drum in drums
+            )
+            self.device._attributes[f"cloud_water_{period}"] = round(
+                cloud.wash_water_liters(water_raw), 2
+            )
+            self.device._attributes[f"cloud_power_{period}"] = round(
+                cloud.wash_power_kwh(power_raw), 3
+            )
+
+    async def _poll_cloud_water_power(
+        self, cloud, now: datetime, water_power_cfg: dict
+    ) -> None:
+        """轮询洗衣机/洗碗机云端水电统计（月 + 年）。"""
+        if not hasattr(cloud, "query_wash_water_power"):
+            return
+
+        device_type = water_power_cfg.get("device_type", self.device.device_type)
+        dual_drum = bool(water_power_cfg.get("dual_drum"))
+        today = now.strftime("%Y%m%d")
+        try:
+            month_result = await cloud.query_wash_water_power(
+                self._device_id,
+                device_type=device_type,
+                result_type=2,
+                time=today,
+            )
+            if month_result:
+                self._apply_wash_cloud_totals(
+                    month_result, period="month", dual_drum=dual_drum
+                )
+            else:
+                MideaLogger.debug(
+                    f"Cloud water/power month query returned no data for {self._device_id}"
+                )
+
+            year_result = await cloud.query_wash_water_power(
+                self._device_id,
+                device_type=device_type,
+                result_type=3,
+                time=today,
+            )
+            if year_result:
+                self._apply_wash_cloud_totals(
+                    year_result, period="year", dual_drum=dual_drum
+                )
+            else:
+                MideaLogger.debug(
+                    f"Cloud water/power year query returned no data for {self._device_id}"
+                )
+        except Exception as e:
+            MideaLogger.warning(
+                f"Error polling cloud water/power for device {self._device_id}: {e}"
+            )
+        finally:
+            self._last_cloud_poll["water_power"] = now
 
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""

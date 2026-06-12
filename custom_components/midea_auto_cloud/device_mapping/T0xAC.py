@@ -4,29 +4,6 @@ from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 # from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
-_CLOUD_ELECTRICITY_QUERIES = {
-    "electricity": {
-        "interval": 300,
-    }
-}
-
-_CLOUD_ELECTRICITY_SENSORS = {
-    "cloud_electricity_month": {
-        "attribute": "cloud_electricity_month",
-        "device_class": SensorDeviceClass.ENERGY,
-        "unit_of_measurement": "kWh",
-        "state_class": SensorStateClass.MEASUREMENT,
-        "translation_key": "cloud_electricity_month",
-    },
-    "cloud_electricity_year": {
-        "attribute": "cloud_electricity_year",
-        "device_class": SensorDeviceClass.ENERGY,
-        "unit_of_measurement": "kWh",
-        "state_class": SensorStateClass.MEASUREMENT,
-        "translation_key": "cloud_electricity_year",
-    },
-}
-
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],

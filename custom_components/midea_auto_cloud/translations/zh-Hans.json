@@ -3155,6 +3155,42 @@
       "cloud_electricity_year": {
         "name": "今年耗电量"
       },
+      "cloud_water_month": {
+        "name": "本月用水量"
+      },
+      "cloud_water_year": {
+        "name": "今年用水量"
+      },
+      "cloud_power_month": {
+        "name": "本月用电量"
+      },
+      "cloud_power_year": {
+        "name": "今年用电量"
+      },
+      "cloud_water_month_da": {
+        "name": "上筒本月用水量"
+      },
+      "cloud_water_month_db": {
+        "name": "下筒本月用水量"
+      },
+      "cloud_water_year_da": {
+        "name": "上筒今年用水量"
+      },
+      "cloud_water_year_db": {
+        "name": "下筒今年用水量"
+      },
+      "cloud_power_month_da": {
+        "name": "上筒本月用电量"
+      },
+      "cloud_power_month_db": {
+        "name": "下筒本月用电量"
+      },
+      "cloud_power_year_da": {
+        "name": "上筒今年用电量"
+      },
+      "cloud_power_year_db": {
+        "name": "下筒今年用电量"
+      },
       "clean_water_consumption_next_remaining": {
         "name": "距离下次冲洗剩余吨数"
       },

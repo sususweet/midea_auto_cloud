@@ -521,6 +521,65 @@ class MeijuCloud(MideaCloud):
             },
         )
 
+    @staticmethod
+    def _normalize_wash_device_type(device_type: int | str) -> str:
+        if isinstance(device_type, int):
+            return f"{device_type:02X}"
+        value = str(device_type).upper()
+        if value.startswith("T0X"):
+            return value[3:]
+        if value.startswith("0X"):
+            return value[2:]
+        return value
+
+    @staticmethod
+    def _sum_wash_resource(result: dict | None, drum: str, resource: str) -> float:
+        if not result:
+            return 0.0
+        entries = ((result.get(drum) or {}).get(resource)) or []
+        total = 0.0
+        for entry in entries:
+            try:
+                total += float(entry.get("amount") or 0)
+            except (TypeError, ValueError):
+                continue
+        return total
+
+    @staticmethod
+    def wash_water_liters(amount: float) -> float:
+        """云端水量原始值单位为 mL。"""
+        return amount / 1000.0
+
+    @staticmethod
+    def wash_power_kwh(amount: float) -> float:
+        """云端电量原始值单位为 0.0001 kWh。"""
+        return amount / 10000.0
+
+    async def query_wash_water_power(
+        self,
+        appliance_id: int,
+        device_type: int | str,
+        result_type: int = 2,
+        time: str | None = None,
+        expend_type: int = 3,
+    ) -> dict | None:
+        """查询洗衣机/洗碗机云端水电统计。
+
+        result_type: 1=日, 2=月, 3=年。
+        """
+        if time is None:
+            time = datetime.date.today().strftime("%Y%m%d")
+        device_type_hex = self._normalize_wash_device_type(device_type)
+        endpoint = (
+            f"/xyj/h5/api/WashSessions/getWaterPower"
+            f"&applianceId={appliance_id}"
+            f"&time={time}"
+            f"&resultType={result_type}"
+            f"&expendType={expend_type}"
+            f"&deviceType={device_type_hex}"
+        )
+        return await self._jykt_api_request(endpoint, {})
+
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
             "applianceCode": str(appliance_code),

@@ -2819,6 +2819,42 @@
       "cloud_electricity_year": {
         "name": "Yearly Electricity"
       },
+      "cloud_water_month": {
+        "name": "Monthly Water Usage"
+      },
+      "cloud_water_year": {
+        "name": "Yearly Water Usage"
+      },
+      "cloud_power_month": {
+        "name": "Monthly Electricity Usage"
+      },
+      "cloud_power_year": {
+        "name": "Yearly Electricity Usage"
+      },
+      "cloud_water_month_da": {
+        "name": "Upper Drum Monthly Water"
+      },
+      "cloud_water_month_db": {
+        "name": "Lower Drum Monthly Water"
+      },
+      "cloud_water_year_da": {
+        "name": "Upper Drum Yearly Water"
+      },
+      "cloud_water_year_db": {
+        "name": "Lower Drum Yearly Water"
+      },
+      "cloud_power_month_da": {
+        "name": "Upper Drum Monthly Electricity"
+      },
+      "cloud_power_month_db": {
+        "name": "Lower Drum Monthly Electricity"
+      },
+      "cloud_power_year_da": {
+        "name": "Upper Drum Yearly Electricity"
+      },
+      "cloud_power_year_db": {
+        "name": "Lower Drum Yearly Electricity"
+      },
       "clean_water_consumption_next_remaining": {
         "name": "Clean Water Consumption Next Remaining"
       },
