@@ -87,6 +87,7 @@ class MiedaDevice(threading.Thread):
         self._heartbeat_interval = 10
         self._device_connected(connected)
         self._queries = [{}]
+        self._cloud_queries = {}
         self._centralized = []
         self._calculate_get = []
         self._calculate_set = []
@@ -194,6 +195,9 @@ class MiedaDevice(threading.Thread):
 
     def set_queries(self, queries: list):
         self._queries = queries
+
+    def set_cloud_queries(self, cloud_queries: dict):
+        self._cloud_queries = cloud_queries or {}
 
     def set_centralized(self, centralized: list):
         self._centralized = centralized

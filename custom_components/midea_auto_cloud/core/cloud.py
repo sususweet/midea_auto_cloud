@@ -420,6 +420,107 @@ class MeijuCloud(MideaCloud):
 
         return None
 
+    async def _jykt_api_request(
+        self,
+        endpoint: str,
+        data: dict,
+        header=None,
+        _retried_after_login: bool = False,
+    ) -> dict | None:
+        """家用空调 jykt 接口，响应格式为 errCode/result 而非 code/data。"""
+        header = header or {}
+        random = str(int(time.time() * 1000))
+        url = self._api_url + endpoint
+        dump_data = json.dumps(data)
+        sign = self._security.sign(dump_data, random)
+        header.update({
+            "content-type": "application/json",
+            "secretVersion": "1",
+            "sign": sign,
+            "random": random,
+        })
+        if self._access_token is not None:
+            header.update({
+                "accesstoken": self._access_token
+            })
+        response: dict = {}
+        try:
+            r = await self._session.request(
+                "POST",
+                url,
+                headers=header,
+                data=dump_data,
+                timeout=30,
+                proxy=self._proxy,
+            )
+            raw = await r.read()
+            MideaLogger.debug(
+                f"Midea jykt API url: {url}, data: {data}, response: {raw}"
+            )
+            response = json.loads(raw)
+        except Exception:
+            traceback.print_exc()
+            return None
+
+        if str(response.get("errCode")) == "0":
+            if _retried_after_login:
+                self._token_invalid_retry_count = 0
+            return response.get("result")
+
+        err_code = response.get("errCode")
+        err_msg = response.get("errMsg") or response.get("message")
+        if err_code is not None:
+            MideaLogger.debug(
+                f"Midea jykt API failed: endpoint={endpoint}, "
+                f"errCode={err_code}, errMsg={err_msg}, data={data}"
+            )
+
+        if (
+            not _retried_after_login
+            and isinstance(response, dict)
+            and self._is_token_invalid_response(response)
+        ):
+            if self._token_invalid_retry_count >= 3:
+                MideaLogger.warning(
+                    "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
+                    f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
+                )
+                return None
+            self._token_invalid_retry_count += 1
+            self._access_token = None
+            try:
+                async with self._relogin_lock:
+                    if self._access_token is None:
+                        if not await self.login():
+                            return None
+                return await self._jykt_api_request(
+                    endpoint=endpoint,
+                    data=data,
+                    header=header,
+                    _retried_after_login=True,
+                )
+            except Exception:
+                traceback.print_exc()
+        return None
+
+    async def query_electricity(
+        self,
+        appliance_id: int,
+        query_type: int = 2,
+        date: str | None = None,
+    ) -> dict | None:
+        """查询空调云端电量统计。type: 1=周, 2=月, 3=年。"""
+        if date is None:
+            date = datetime.date.today().strftime("%Y-%m-%d")
+        return await self._jykt_api_request(
+            "/jykt/bluetooth/control/queryElec",
+            {
+                "applianceId": str(appliance_id),
+                "type": query_type,
+                "date": date,
+            },
+        )
+
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
             "applianceCode": str(appliance_code),

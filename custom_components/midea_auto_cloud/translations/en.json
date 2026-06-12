@@ -2783,6 +2783,12 @@
       "total_elec_value": {
         "name": "Total Electricity"
       },
+      "cloud_electricity_month": {
+        "name": "Monthly Electricity"
+      },
+      "cloud_electricity_year": {
+        "name": "Yearly Electricity"
+      },
       "clean_water_consumption_next_remaining": {
         "name": "Clean Water Consumption Next Remaining"
       },

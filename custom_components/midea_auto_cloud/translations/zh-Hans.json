@@ -3119,6 +3119,12 @@
       "total_elec_value": {
         "name": "总耗电量"
       },
+      "cloud_electricity_month": {
+        "name": "本月耗电量"
+      },
+      "cloud_electricity_year": {
+        "name": "今年耗电量"
+      },
       "clean_water_consumption_next_remaining": {
         "name": "距离下次冲洗剩余吨数"
       },

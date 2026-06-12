@@ -53,6 +53,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self.state_update_muted: CALLBACK_TYPE | None = None
         self._device_id = device.device_id
         self._cloud = cloud
+        self._last_electricity_poll: datetime | None = None
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -112,14 +113,23 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 await self._poll_central_ac_state()
             else:
                 await self.device.refresh_status()
+        except Exception as e:
+            traceback.print_exc()
+            _LOGGER.error(f"Error polling device state: {e}")
 
-            # 返回并推送当前状态 (fresh snapshot so HA detects changes)
+        try:
+            await self._poll_cloud_electricity()
+        except Exception as e:
+            traceback.print_exc()
+            _LOGGER.error(f"Error polling cloud electricity: {e}")
+
+        try:
             updated = self._snapshot()
             self.async_set_updated_data(updated)
             return updated
         except Exception as e:
             traceback.print_exc()
-            _LOGGER.error(f"Error polling device state: {e}")
+            _LOGGER.error(f"Error building device snapshot: {e}")
             return self._snapshot(available=False)
     
     async def _poll_central_ac_state(self) -> None:
@@ -191,6 +201,59 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                                 break
         except Exception as e:
             MideaLogger.warning(f"Error polling central AC state: {e}")
+
+    def _electricity_poll_interval(self) -> int:
+        cloud_queries = getattr(self.device, "_cloud_queries", None) or {}
+        electricity_cfg = cloud_queries.get("electricity") or {}
+        return int(electricity_cfg.get("interval", 3600))
+
+    async def _poll_cloud_electricity(self) -> None:
+        """轮询云端电量统计（月 + 年），独立于设备状态轮询。"""
+        cloud_queries = getattr(self.device, "_cloud_queries", None) or {}
+        if not cloud_queries.get("electricity"):
+            return
+        cloud = self._cloud
+        if not cloud or not hasattr(cloud, "query_electricity"):
+            return
+
+        now = datetime.now()
+        poll_interval = self._electricity_poll_interval()
+        if self._last_electricity_poll is not None:
+            elapsed = (now - self._last_electricity_poll).total_seconds()
+            if elapsed < poll_interval:
+                return
+
+        today = now.strftime("%Y-%m-%d")
+        try:
+            month_result = await cloud.query_electricity(
+                self._device_id, query_type=2, date=today
+            )
+            if month_result and month_result.get("totalValue") is not None:
+                self.device._attributes["cloud_electricity_month"] = float(
+                    month_result["totalValue"]
+                )
+            elif month_result is None:
+                MideaLogger.debug(
+                    f"Cloud electricity month query returned no data for {self._device_id}"
+                )
+
+            year_result = await cloud.query_electricity(
+                self._device_id, query_type=3, date=today
+            )
+            if year_result and year_result.get("totalValue") is not None:
+                self.device._attributes["cloud_electricity_year"] = float(
+                    year_result["totalValue"]
+                )
+            elif year_result is None:
+                MideaLogger.debug(
+                    f"Cloud electricity year query returned no data for {self._device_id}"
+                )
+        except Exception as e:
+            MideaLogger.warning(
+                f"Error polling cloud electricity for device {self._device_id}: {e}"
+            )
+        finally:
+            self._last_electricity_poll = now
 
     async def async_set_attribute(self, attribute: str, value) -> None:
         """Set a device attribute."""

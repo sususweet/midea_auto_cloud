@@ -148,6 +148,33 @@ def get_device_mapping(
     return result
 
 
+def merge_ac_cloud_electricity_mapping(mapping: dict, device_type: int) -> dict:
+    """为 T0xAC 合并云端电量查询与传感器，避免 sn8 专属 mapping 遗漏配置。"""
+    if device_type != 0xAC or not mapping:
+        return mapping
+    try:
+        from .device_mapping.T0xAC import (
+            _CLOUD_ELECTRICITY_QUERIES,
+            _CLOUD_ELECTRICITY_SENSORS,
+        )
+    except ImportError:
+        return mapping
+
+    merged = {**mapping}
+    merged["cloud_queries"] = {
+        **_CLOUD_ELECTRICITY_QUERIES,
+        **(mapping.get("cloud_queries") or {}),
+    }
+    entities = {**(mapping.get("entities") or {})}
+    sensors = {
+        **(entities.get(Platform.SENSOR) or {}),
+        **_CLOUD_ELECTRICITY_SENSORS,
+    }
+    entities[Platform.SENSOR] = sensors
+    merged["entities"] = entities
+    return merged
+
+
 async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
     # def _ensure_dir_and_load(path_dir: str, path_file: str):
     #     os.makedirs(path_dir, exist_ok=True)
@@ -180,7 +207,7 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
     # save_data = {sn8: json_data}
     # offload save_json as well
     # await hass.async_add_executor_job(save_json, config_file, save_data)
-    return json_data
+    return merge_ac_cloud_electricity_mapping(json_data, device_type)
 
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -473,6 +500,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
                             try:
                                 device.set_queries(mapping.get("queries", [{}]))
+                            except Exception:
+                                pass
+                            try:
+                                device.set_cloud_queries(mapping.get("cloud_queries", {}))
                             except Exception:
                                 pass
                             try:
