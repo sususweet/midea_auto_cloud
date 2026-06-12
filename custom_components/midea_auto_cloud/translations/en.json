@@ -769,6 +769,13 @@
           "large_amount": "Large"
         }
       },
+      "no_obsolete_water_mode": {
+        "name": "Water Mode",
+        "state": {
+          "water_saving": "Water Saving",
+          "water_quality": "Water Quality"
+        }
+      },
       "quantify_1": {
         "name": "Quantify 1",
         "state": {
@@ -4184,6 +4191,27 @@
       },
       "save_mode": {
         "name": "Save Mode"
+      },
+      "reheating": {
+        "name": "Reheating"
+      },
+      "smart_no_obsolete_water": {
+        "name": "Smart Zero Stale Water"
+      },
+      "filter_wash": {
+        "name": "Filter Wash"
+      },
+      "autoclean_ctrl": {
+        "name": "Auto Clean"
+      },
+      "leaking_protect_status": {
+        "name": "Leak Protection"
+      },
+      "full": {
+        "name": "Tank Full"
+      },
+      "Heat_function": {
+        "name": "Heat"
       },
       "sedentary_remind": {
         "name": "Sedentary Remind"

@@ -817,6 +817,13 @@
           "large_amount": "大量"
         }
       },
+      "no_obsolete_water_mode": {
+        "name": "零陈水模式",
+        "state": {
+          "water_saving": "省水优先",
+          "water_quality": "水质优先"
+        }
+      },
       "quantify_1": {
         "name": "定量1",
         "state": {
@@ -4542,6 +4549,27 @@
       },
       "save_mode": {
         "name": "零陈水_省水优先"
+      },
+      "reheating": {
+        "name": "再加热"
+      },
+      "smart_no_obsolete_water": {
+        "name": "智能零陈水"
+      },
+      "filter_wash": {
+        "name": "滤芯清洗"
+      },
+      "autoclean_ctrl": {
+        "name": "自动清洁"
+      },
+      "leaking_protect_status": {
+        "name": "漏水保护"
+      },
+      "full": {
+        "name": "水箱已满"
+      },
+      "Heat_function": {
+        "name": "加热"
       },
       "sedentary_remind": {
         "name": "久坐提醒"
