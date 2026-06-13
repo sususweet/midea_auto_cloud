@@ -1,6 +1,7 @@
 import threading
 import socket
 import traceback
+import re
 from enum import IntEnum
 
 from .cloud import MideaCloud, MSmartHomeCloud, MeijuCloud
@@ -218,6 +219,57 @@ class MiedaDevice(threading.Thread):
     def set_default_values(self, default_values: dict):
         """设置属性的默认值"""
         self._default_values = default_values or {}
+
+    @staticmethod
+    def _formula_attribute_names(formula: str) -> list[str]:
+        return re.findall(r"\[(\w+)\]", formula)
+
+    def _calculated_get_output_names(self) -> set[str]:
+        names: set[str] = set()
+        for entry in self._calculate_get:
+            lvalue = entry.get("lvalue") or ""
+            if lvalue.startswith("[") and lvalue.endswith("]"):
+                names.add(lvalue[1:-1])
+        return names
+
+    def _calculate_inputs_ready(self, rvalue: str) -> bool:
+        attrs = self._formula_attribute_names(rvalue)
+        if not attrs:
+            return False
+        return all(self._attributes.get(attr) is not None for attr in attrs)
+
+    def _apply_calculate_get(self, new_status: dict) -> None:
+        for c in self._calculate_get:
+            lvalue = c.get("lvalue")
+            rvalue = c.get("rvalue")
+            if not (lvalue and rvalue):
+                continue
+            if not self._calculate_inputs_ready(rvalue):
+                continue
+            calculate_str1 = (
+                f"{lvalue.replace('[', 'self._attributes[').replace(']', '\"]')} = "
+                f"{rvalue.replace('[', 'self._attributes[').replace(']', '\"]')}"
+            ).replace("[", "[\"")
+            calculate_str2 = (
+                f"{lvalue.replace('[', 'new_status[').replace(']', '\"]')} = "
+                f"{rvalue.replace('[', 'new_status[').replace(']', '\"]')}"
+            ).replace("[", "[\"")
+            try:
+                exec(calculate_str1)
+            except Exception:
+                traceback.print_exc()
+                MideaLogger.warning(
+                    f"_apply_calculate_get Calculation Error1: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                    self._device_id,
+                )
+            try:
+                exec(calculate_str2)
+            except Exception:
+                traceback.print_exc()
+                MideaLogger.warning(
+                    f"_apply_calculate_get Calculation Error2: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
+                    self._device_id,
+                )
 
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
@@ -458,6 +510,7 @@ class MiedaDevice(threading.Thread):
     def _parse_cloud_message(self, status, update=True):
         # MideaLogger.debug(f"Received: {decrypted}")
         new_status = {}
+        calculated_outputs = self._calculated_get_output_names()
         # 对于有默认值的变量，在解析前先设置一次默认值
         for attr, default_value in self._default_values.items():
             # self._attributes[attr] = default_value
@@ -467,6 +520,8 @@ class MiedaDevice(threading.Thread):
         # 处理云端返回的状态，云端结果会覆盖默认值
         for single in status.keys():
             value = status.get(single)
+            if value is None and single in calculated_outputs:
+                continue
             if single not in self._attributes or self._attributes[single] != value:
                 # self._attributes[single] = value
                 new_status[single] = value
@@ -481,47 +536,15 @@ class MiedaDevice(threading.Thread):
             running_status = new_status["running_status"]
             self._adjust_control_status(running_status)
 
-        if len(new_status) > 0:
-            # 确保所有状态都更新后再进行计算
+        if new_status:
             for key, value in new_status.items():
                 self._attributes[key] = value
 
-            for c in self._calculate_get:
-                lvalue = c.get("lvalue")
-                rvalue = c.get("rvalue")
-                if lvalue and rvalue:
-                    calculate = False
-                    for s, v in new_status.items():
-                        if rvalue.find(f"[{s}]") >= 0:
-                            calculate = True
-                            break
-                    if calculate:
-                        calculate_str1 = \
-                            (f"{lvalue.replace('[', 'self._attributes[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'self._attributes[').replace(']', "\"]")}") \
-                                .replace("[", "[\"")
-                        calculate_str2 = \
-                            (f"{lvalue.replace('[', 'new_status[').replace("]", "\"]")} = "
-                             f"{rvalue.replace('[', 'new_status[').replace(']', "\"]")}") \
-                                .replace("[", "[\"")
-                        try:
-                            exec(calculate_str1)
-                        except Exception as e:
-                            traceback.print_exc()
-                            MideaLogger.warning(
-                                f"_parse_cloud_message Calculation Error1: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
-                                self._device_id
-                            )
-                        try:
-                            exec(calculate_str2)
-                        except Exception as e:
-                            traceback.print_exc()
-                            MideaLogger.warning(
-                                f"_parse_cloud_message Calculation Error2: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
-                                self._device_id
-                            )
-            if update:
-                self._update_all(new_status)
+        if status:
+            self._apply_calculate_get(new_status)
+
+        if update and new_status:
+            self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
     def _parse_message(self, msg, update=True):
@@ -547,48 +570,19 @@ class MiedaDevice(threading.Thread):
                     if status := self._lua_runtime.decode_status(decrypted.hex()):
                         MideaLogger.debug(f"Decoded: {status}")
                         new_status = {}
+                        calculated_outputs = self._calculated_get_output_names()
                         for single in status.keys():
                             value = status.get(single)
+                            if value is None and single in calculated_outputs:
+                                continue
                             if single not in self._attributes or self._attributes[single] != value:
-                                self._attributes[single] = value
                                 new_status[single] = value
-                        if len(new_status) > 0:
-                            # 确保所有状态都更新后再进行计算
+                        if new_status:
                             for key, value in new_status.items():
                                 self._attributes[key] = value
-
-                            for c in self._calculate_get:
-                                lvalue = c.get("lvalue")
-                                rvalue = c.get("rvalue")
-                                if lvalue and rvalue:
-                                    calculate = False
-                                    for s, v in new_status.items():
-                                        if rvalue.find(f"[{s}]") >= 0:
-                                            calculate = True
-                                            break
-                                    if calculate:
-                                        calculate_str1 = \
-                                            (f"{lvalue.replace('[', 'self._attributes[')} = "
-                                             f"{rvalue.replace('[', 'self._attributes[')}") \
-                                                .replace("[", "[\"").replace("]", "\"]")
-                                        calculate_str2 = \
-                                            (f"{lvalue.replace('[', 'new_status[')} = "
-                                             f"{rvalue.replace('[', 'self._attributes[')}") \
-                                                .replace("[", "[\"").replace("]", "\"]")
-                                        try:
-                                            exec(calculate_str1)
-                                        except Exception:
-                                            MideaLogger.warning(
-                                                f"_parse_message Calculation Error1: {lvalue} = {rvalue}", self._device_id
-                                            )
-                                        try:
-                                            exec(calculate_str2)
-                                        except Exception:
-                                            MideaLogger.warning(
-                                                f"_parse_message Calculation Error2: {lvalue} = {rvalue}", self._device_id
-                                            )
-                            if update:
-                                self._update_all(new_status)
+                        self._apply_calculate_get(new_status)
+                        if update and new_status:
+                            self._update_all(new_status)
         return ParseMessageResult.SUCCESS
 
     async def _send_message(self, data):
