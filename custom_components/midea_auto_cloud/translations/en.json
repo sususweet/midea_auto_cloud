@@ -555,6 +555,9 @@
       "zone1": {
         "name": "zone 1"
       },
+      "zone2": {
+        "name": "zone 2"
+      },
       "dhw": {
         "name": "DHW"
       },
@@ -2960,6 +2963,12 @@
       },
       "heating_target_temperature": {
         "name": "Heating Target Temperature"
+      },
+      "zone1_cooling_temperature": {
+        "name": "Zone 1 Cooling Temperature"
+      },
+      "zone2_cooling_temperature": {
+        "name": "Zone 2 Cooling Temperature"
       },
       "heating_gap_temperature": {
         "name": "Heating Gap Temperature"

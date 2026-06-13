@@ -587,6 +587,9 @@
       "zone1": {
         "name": "区域1"
       },
+      "zone2": {
+        "name": "区域2"
+      },
       "dhw": {
         "name": "DHW"
       },
@@ -3314,6 +3317,12 @@
       },
       "heating_target_temperature": {
         "name": "采暖目标温度"
+      },
+      "zone1_cooling_temperature": {
+        "name": "区域1制冷温度"
+      },
+      "zone2_cooling_temperature": {
+        "name": "区域2制冷温度"
       },
       "heating_gap_temperature": {
         "name": "采暖回差温度"
