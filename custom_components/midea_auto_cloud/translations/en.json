@@ -3733,6 +3733,9 @@
       "prevent_straight_wind": {
         "name": "Prevent Straight Wind"
       },
+      "follow_body_sense": {
+        "name": "Follow Body Sense"
+      },
       "prevent_wrinkle_switch": {
         "name": "Prevent Wrinkle Switch"
       },

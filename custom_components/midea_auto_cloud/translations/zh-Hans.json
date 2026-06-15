@@ -4091,6 +4091,9 @@
       "prevent_straight_wind": {
         "name": "防直吹"
       },
+      "follow_body_sense": {
+        "name": "随身感"
+      },
       "prevent_wrinkle_switch": {
         "name": "防皱开关"
       },

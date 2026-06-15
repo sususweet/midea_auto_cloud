@@ -118,14 +118,11 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-            },
-            Platform.SELECT: {
                 "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
-                    }
-                }
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
+                },
             },
             Platform.SENSOR: {
                 "mode": {
@@ -223,12 +220,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SELECT: {
-                "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
-                    }
-                },
                 "wind_swing_ud_angle": {
                     "options": {
                         "off": {"wind_swing_ud_angle": 0},
@@ -284,6 +275,11 @@ DEVICE_MAPPING = {
                 "ptc": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "aux_heat",
+                },
+                "follow_body_sense": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
                 }
             },
             Platform.SENSOR: {
@@ -512,14 +508,11 @@ DEVICE_MAPPING = {
                 "ptc": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "aux_heat",
-                }
-            },
-            Platform.SELECT: {
+                },
                 "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
-                    }
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
                 }
             },
             Platform.SENSOR: {
@@ -599,14 +592,11 @@ DEVICE_MAPPING = {
                 "dry": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "ac_dry"
-                }
-            },
-            Platform.SELECT: {
+                },
                 "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
-                    }
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
                 }
             },
             Platform.SENSOR: {
@@ -1817,14 +1807,11 @@ DEVICE_MAPPING = {
                 "ptc": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "aux_heat",
-                }
-            },
-            Platform.SELECT: {
+                },
                 "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
-                    }
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
                 }
             },
             Platform.SENSOR: {
@@ -1903,6 +1890,11 @@ DEVICE_MAPPING = {
                 "ptc": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "aux_heat",
+                },
+                "follow_body_sense": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
                 }
             },
             Platform.SELECT: {
@@ -1921,12 +1913,6 @@ DEVICE_MAPPING = {
                         "silent": {"new_wind_model_exhaust_switch": "on", "new_wind_model_exhaust_wind": "20"},
                         "high": {"new_wind_model_exhaust_switch": "on", "new_wind_model_exhaust_wind": "80"},
                         "full": {"new_wind_model_exhaust_switch": "on", "new_wind_model_exhaust_wind": "100"}
-                    }
-                },
-                "follow_body_sense": {
-                    "options": {
-                        "on": {"follow_body_sense": "on", "follow_body_sense_enable": 1},
-                        "off": {"follow_body_sense": "off", "follow_body_sense_enable": 1},
                     }
                 }
             },
