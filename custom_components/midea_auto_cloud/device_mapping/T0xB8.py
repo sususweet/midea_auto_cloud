@@ -76,6 +76,7 @@ DEVICE_MAPPING = {
                 },
                 "fan_setting": {
                     "command": {"work_status": "switch"},
+                    "include_current": ["fan_level", "water_level"],
                     "options": {
                         "off": {"fan_level": "off"},
                         "soft": {"fan_level": "soft"},
@@ -87,8 +88,9 @@ DEVICE_MAPPING = {
                 },
                 "water_level": {
                     "command": {"work_status": "switch"},
+                    "include_current": ["fan_level", "water_level"],
                     "options": {
-                        "dry": {"water_level": "dry"},
+                        "dry": {"water_level": "off"},
                         "low": {"water_level": "low"},
                         "normal": {"water_level": "normal"},
                         "high": {"water_level": "high"}

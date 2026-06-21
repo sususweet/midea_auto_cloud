@@ -45,6 +45,7 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
         self._key_options = self._config.get("options") or {}
         self._status_key = self._config.get("status_key")
         self._ignore_values = self._config.get("ignore_values") or []
+        self._include_current = self._config.get("include_current") or []
         self._last_option: str | None = None
 
     @property
@@ -144,6 +145,12 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
             merged_command.update(new_status)
         if command and isinstance(command, dict):
             merged_command.update(command)
+        for attr in self._include_current:
+            if attr in merged_command:
+                continue
+            current_value = self._get_nested_value(attr)
+            if current_value is not None:
+                merged_command[attr] = current_value
         if merged_command:
             await self.async_set_attributes(merged_command)
         else:
