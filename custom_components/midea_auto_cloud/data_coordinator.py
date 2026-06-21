@@ -5,7 +5,6 @@ import traceback
 from datetime import datetime, timedelta
 from typing import NamedTuple
 
-from attr import attributes
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later
@@ -63,19 +62,27 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # Register for device updates
         self.device.register_update(self._device_update_callback)
 
+    def _is_cloud_only_device(self) -> bool:
+        """Return True when the device is controlled via cloud only."""
+        return self.device._ip_address is None and self._cloud is not None
+
     def _snapshot(self, available: bool | None = None) -> MideaDeviceData:
         """Build a coordinator data payload from a COPY of the device attributes.
 
         Critical: the device mutates self.device.attributes in place. If we hand
-        HA the same dict object every time, change-detection compares the new
+        HA the same payload object every time, change-detection compares the new
         payload against the previous one and sees the *same mutated object* on
         both sides -> "no change" -> entities never refresh. Copying the dict
         makes each push a distinct snapshot so updates actually propagate.
         """
         connected = self.device.connected
+        if available is None:
+            # Cloud appliances remain controllable even when Midea reports them
+            # offline at list time (onlineStatus != 1).
+            available = True if self._is_cloud_only_device() else connected
         return MideaDeviceData(
             attributes=dict(self.device.attributes),
-            available=self.device.connected if available is None else available,
+            available=available,
             connected=connected,
         )
 

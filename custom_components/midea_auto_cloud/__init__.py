@@ -452,7 +452,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 port=None,
                                 token=None,
                                 key=None,
-                                connected=info.get("online"),
+                                connected=info.get("online", True),
                                 protocol=info.get(CONF_PROTOCOL) or 2,
                                 model=info.get(CONF_MODEL),
                                 subtype=info.get(CONF_MODEL_NUMBER),

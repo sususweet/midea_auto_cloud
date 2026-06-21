@@ -1,12 +1,25 @@
-from homeassistant.components.vacuum import (
-    StateVacuumEntity,
-    VacuumEntityFeature,
-    VacuumActivity,
-)
+from homeassistant.components.vacuum import StateVacuumEntity, VacuumEntityFeature
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+try:
+    from homeassistant.components.vacuum import VacuumActivity
+
+    _USE_VACUUM_ACTIVITY = True
+except ImportError:
+    _USE_VACUUM_ACTIVITY = False
+
+    class VacuumActivity:
+        """Fallback for HA < 2025.1 (VacuumActivity not yet available)."""
+
+        CLEANING = "cleaning"
+        DOCKED = "docked"
+        ERROR = "error"
+        IDLE = "idle"
+        PAUSED = "paused"
+        RETURNING = "returning"
 
 from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
@@ -79,37 +92,24 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
             return status
         return None
 
-    @property
-    def state(self):
-        """Return the state of the vacuum cleaner."""
+    def _get_mapped_vacuum_state(self):
+        """Map Midea work_status to Home Assistant vacuum state."""
         status = self.status
         if not status:
             return None
 
-        # Map Midea status to Home Assistant states
         status_mapping = {
-            # === 清洁中状态 (CLEANING) ===
-            "work": VacuumActivity.CLEANING,           # 清扫中
-            "auto_clean": VacuumActivity.CLEANING,     # 自动清扫中
-
-            # === 已停靠状态 (DOCKED) ===
-            "charging_on_dock": VacuumActivity.DOCKED, # 座充中
-            "on_base": VacuumActivity.DOCKED,          # 在基站上
-            "charge_finish": VacuumActivity.DOCKED,    # 充电完成
-
-            # === 空闲状态 (IDLE) ===
-            "stop": VacuumActivity.IDLE,               # 已停止
-            "sleep": VacuumActivity.IDLE,              # 休眠中
-
-            # === 暂停状态 (PAUSED) ===
-            "clean_pause": VacuumActivity.PAUSED,      # 清扫暂停
-            "charge_pause": VacuumActivity.PAUSED,     # 充电暂停
-
-            # === 返回中状态 (RETURNING) ===
-            "charging": VacuumActivity.RETURNING,      # 返回基站中
-
-            # === 错误状态 (ERROR) ===
-            "error": VacuumActivity.ERROR,             # 错误
+            "work": VacuumActivity.CLEANING,
+            "auto_clean": VacuumActivity.CLEANING,
+            "charging_on_dock": VacuumActivity.DOCKED,
+            "on_base": VacuumActivity.DOCKED,
+            "charge_finish": VacuumActivity.DOCKED,
+            "stop": VacuumActivity.IDLE,
+            "sleep": VacuumActivity.IDLE,
+            "clean_pause": VacuumActivity.PAUSED,
+            "charge_pause": VacuumActivity.PAUSED,
+            "charging": VacuumActivity.RETURNING,
+            "error": VacuumActivity.ERROR,
         }
 
         return status_mapping.get(status, status)
@@ -179,5 +179,15 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
         #"""Perform a clean spot."""
         # 执行定点清扫
         # 具体实现取决于设备的控制方式
-        #if hasattr(self, "_key_clean_spot"):
+        #if hasattr(self, "_key_locate"):
             #await self.async_set_attribute(self._key_clean_spot, True)
+
+
+if _USE_VACUUM_ACTIVITY:
+    MideaVacuumEntity.activity = property(
+        lambda self: self._get_mapped_vacuum_state()
+    )
+else:
+    MideaVacuumEntity.state = property(
+        lambda self: self._get_mapped_vacuum_state()
+    )

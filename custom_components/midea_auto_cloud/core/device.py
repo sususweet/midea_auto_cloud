@@ -542,6 +542,8 @@ class MiedaDevice(threading.Thread):
 
         if status:
             self._apply_calculate_get(new_status)
+            if self._cloud is not None and self._ip_address is None:
+                self._device_connected(True)
 
         if update and new_status:
             self._update_all(new_status)
