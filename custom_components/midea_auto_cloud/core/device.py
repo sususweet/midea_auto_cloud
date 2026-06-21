@@ -238,6 +238,14 @@ class MiedaDevice(threading.Thread):
             return False
         return all(self._attributes.get(attr) is not None for attr in attrs)
 
+    def _calculate_output_name(self, lvalue: str) -> str | None:
+        if not (lvalue.startswith("[") and lvalue.endswith("]")):
+            return None
+        inner = lvalue[1:-1]
+        if re.fullmatch(r"\w+", inner):
+            return inner
+        return None
+
     def _apply_calculate_get(self, new_status: dict) -> None:
         for c in self._calculate_get:
             lvalue = c.get("lvalue")
@@ -250,26 +258,19 @@ class MiedaDevice(threading.Thread):
                 f"{lvalue.replace('[', 'self._attributes[').replace(']', '\"]')} = "
                 f"{rvalue.replace('[', 'self._attributes[').replace(']', '\"]')}"
             ).replace("[", "[\"")
-            calculate_str2 = (
-                f"{lvalue.replace('[', 'new_status[').replace(']', '\"]')} = "
-                f"{rvalue.replace('[', 'new_status[').replace(']', '\"]')}"
-            ).replace("[", "[\"")
             try:
                 exec(calculate_str1)
             except Exception:
                 traceback.print_exc()
                 MideaLogger.warning(
-                    f"_apply_calculate_get Calculation Error1: {lvalue} = {rvalue}, calculate_str1: {calculate_str1}",
+                    f"_apply_calculate_get Calculation Error: {lvalue} = {rvalue}, calculate_str: {calculate_str1}",
                     self._device_id,
                 )
-            try:
-                exec(calculate_str2)
-            except Exception:
-                traceback.print_exc()
-                MideaLogger.warning(
-                    f"_apply_calculate_get Calculation Error2: {lvalue} = {rvalue}, calculate_str2: {calculate_str2}",
-                    self._device_id,
-                )
+                continue
+
+            output_name = self._calculate_output_name(lvalue)
+            if output_name is not None and output_name in self._attributes:
+                new_status[output_name] = self._attributes[output_name]
 
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
