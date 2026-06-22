@@ -7,9 +7,11 @@ from typing import NamedTuple
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from .const import DOMAIN
 from .core.device import MiedaDevice
 from .core.logger import MideaLogger
 
@@ -53,6 +55,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self._device_id = device.device_id
         self._cloud = cloud
         self._last_cloud_poll: dict[str, datetime | None] = {}
+        self._market_model_fetched = False
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -233,10 +236,34 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             return
 
         now = datetime.now()
+        await self._ensure_market_model(cloud)
         if cloud_queries.get("electricity") and self._should_poll_cloud("electricity", now):
             await self._poll_cloud_electricity(cloud, now)
         if cloud_queries.get("water_power") and self._should_poll_cloud("water_power", now):
             await self._poll_cloud_water_power(cloud, now, cloud_queries["water_power"])
+
+    async def _ensure_market_model(self, cloud) -> None:
+        """洗碗机等设备从 DCP 拉取营销型号，更新 HA 设备注册信息。"""
+        if self._market_model_fetched or self.device.device_type != 0xE1:
+            return
+        self._market_model_fetched = True
+        if not hasattr(cloud, "query_market_model"):
+            return
+        try:
+            market = await cloud.query_market_model(self.device.sn)
+            if not market or market == self.device.model:
+                return
+            self.device._model = market
+            registry = dr.async_get(self.hass)
+            device_entry = registry.async_get_device(
+                identifiers={(DOMAIN, str(self._device_id))}
+            )
+            if device_entry:
+                registry.async_update_device(device_entry.id, model=market)
+        except Exception as e:
+            MideaLogger.debug(
+                f"Market model query failed for device {self._device_id}: {e}"
+            )
 
     async def _poll_cloud_electricity(self, cloud, now: datetime) -> None:
         """轮询空调云端电量（月 + 年）。"""
@@ -284,6 +311,15 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
     ) -> None:
         cloud = self._cloud
         if not cloud or not result:
+            return
+
+        if result.get("_dishwasher"):
+            self.device._attributes[f"cloud_water_{period}"] = round(
+                float(result.get("water_liters") or 0), 2
+            )
+            self.device._attributes[f"cloud_power_{period}"] = round(
+                float(result.get("power_kwh") or 0), 3
+            )
             return
 
         drums = ("da", "db") if dual_drum else ("da", "db")

@@ -138,7 +138,7 @@ _CLOUD_STATS_REGISTRY: dict[int, dict] = {
     },
     0xE1: {
         "cloud_queries": {
-            "water_power": {"interval": 300},
+            "water_power": {"interval": 300, "dishwasher": True},
         },
         "sensors": _WATER_POWER_SENSORS,
     },
