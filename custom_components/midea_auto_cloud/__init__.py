@@ -204,6 +204,11 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
                 device.set_refresh_interval(refresh_interval)
 
 
+def _write_lua_support_file(path: str, content: str) -> None:
+    with open(path, "wt", encoding="utf-8") as fp:
+        fp.write(content)
+
+
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     hass.data.setdefault(DOMAIN, {})
     os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
@@ -217,32 +222,28 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         from .const import CJSON_LUA
         cjson_lua = base64.b64decode(CJSON_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(cjson, "wt", encoding="utf-8") as fp:
-                fp.write(cjson_lua)
+            await hass.async_add_executor_job(_write_lua_support_file, cjson, cjson_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create cjson.lua at {cjson}: {e}")
             # 如果无法创建文件，尝试使用临时目录
             import tempfile
             temp_dir = tempfile.gettempdir()
             cjson = os.path.join(temp_dir, "cjson.lua")
-            with open(cjson, "wt", encoding="utf-8") as fp:
-                fp.write(cjson_lua)
+            await hass.async_add_executor_job(_write_lua_support_file, cjson, cjson_lua)
             MideaLogger.warning(f"Using temporary file for cjson.lua: {cjson}")
 
     if not os.path.exists(bit):
         from .const import BIT_LUA
         bit_lua = base64.b64decode(BIT_LUA.encode("utf-8")).decode("utf-8")
         try:
-            with open(bit, "wt", encoding="utf-8") as fp:
-                fp.write(bit_lua)
+            await hass.async_add_executor_job(_write_lua_support_file, bit, bit_lua)
         except PermissionError as e:
             MideaLogger.error(f"Failed to create bit.lua at {bit}: {e}")
             # 如果无法创建文件，尝试使用临时目录
             import tempfile
             temp_dir = tempfile.gettempdir()
             bit = os.path.join(temp_dir, "bit.lua")
-            with open(bit, "wt", encoding="utf-8") as fp:
-                fp.write(bit_lua)
+            await hass.async_add_executor_job(_write_lua_support_file, bit, bit_lua)
             MideaLogger.warning(f"Using temporary file for bit.lua: {bit}")
 
     return True
