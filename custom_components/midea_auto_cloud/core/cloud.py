@@ -41,120 +41,6 @@ default_keys = {
 }
 
 
-def _parse_device_type(raw_type: int | str | None) -> int:
-    if raw_type is None:
-        raise ValueError("missing device type")
-    if isinstance(raw_type, int):
-        return raw_type
-    text = str(raw_type).strip().upper()
-    if text.startswith("T0X"):
-        text = text[3:]
-    if text.startswith("0X"):
-        text = text[2:]
-    return int(text, 16)
-
-
-def _appliance_code(appliance: dict) -> int:
-    code = appliance.get("applianceCode") or appliance.get("id")
-    if code is None:
-        raise KeyError("applianceCode/id missing")
-    return int(code)
-
-
-def _build_appliance_info(appliance: dict, security: CloudSecurity) -> dict:
-    sn_enc = appliance.get("sn")
-    sn = security.aes_decrypt(sn_enc) if sn_enc else ""
-    sn8 = appliance.get("sn8") or ""
-    if not sn8 and len(sn) > 17:
-        sn8 = sn[9:17]
-    if not sn8:
-        sn8 = "00000000"
-    model = appliance.get("productModel") or ""
-    if not model:
-        model = sn8
-    return {
-        "name": appliance.get("name"),
-        "type": _parse_device_type(appliance.get("type")),
-        "sn": sn,
-        "sn8": sn8,
-        "category": appliance.get("category"),
-        "smart_product_id": appliance.get("smartProductId", "0"),
-        "model_number": appliance.get("modelNumber", "0"),
-        "manufacturer_code": appliance.get("enterpriseCode", "0000"),
-        "model": model,
-        "online": appliance.get("onlineStatus") == "1",
-    }
-
-
-def _collect_appliances_from_home_list(
-    response: dict,
-    home_id,
-    security: CloudSecurity,
-) -> dict[int, dict]:
-    appliances: dict[int, dict] = {}
-
-    def add(appliance: dict | None) -> None:
-        if not isinstance(appliance, dict):
-            return
-        try:
-            code = _appliance_code(appliance)
-            appliances[code] = _build_appliance_info(appliance, security)
-        except Exception as exc:
-            MideaLogger.debug(f"Skip appliance entry {appliance!r}: {exc}")
-
-    for appliance in response.get("applianceList") or []:
-        add(appliance)
-
-    target_home_id = None
-    if home_id is not None:
-        try:
-            target_home_id = int(home_id)
-        except (TypeError, ValueError):
-            target_home_id = None
-
-    for home in response.get("homeList") or []:
-        if target_home_id is not None:
-            hg = home.get("homegroupId")
-            if hg is not None and int(hg) != target_home_id:
-                continue
-        for appliance in home.get("applianceList") or []:
-            add(appliance)
-        for room in home.get("roomList") or []:
-            for appliance in room.get("applianceList") or []:
-                add(appliance)
-        for key in ("unassignedApplianceList", "noRoomApplianceList"):
-            for appliance in home.get(key) or []:
-                add(appliance)
-    return appliances
-
-
-def _collect_appliances_from_user_list(
-    response: dict,
-    home_id,
-    security: CloudSecurity,
-) -> dict[int, dict]:
-    appliances: dict[int, dict] = {}
-    target_home_id = None
-    if home_id is not None:
-        try:
-            target_home_id = int(home_id)
-        except (TypeError, ValueError):
-            target_home_id = None
-
-    for appliance in response.get("list") or []:
-        if not isinstance(appliance, dict):
-            continue
-        try:
-            hg = appliance.get("homegroupId") or appliance.get("homeGroupId")
-            if target_home_id is not None and hg is not None and int(hg) != target_home_id:
-                continue
-            code = _appliance_code(appliance)
-            appliances[code] = _build_appliance_info(appliance, security)
-        except Exception as exc:
-            MideaLogger.debug(f"Skip user-list appliance entry {appliance!r}: {exc}")
-    return appliances
-
-
 class MideaCloud:
     def __init__(
             self,
@@ -493,13 +379,27 @@ class MeijuCloud(MideaCloud):
             endpoint="/v1/appliance/home/list/get",
             data=data
         ):
-            appliances = _collect_appliances_from_home_list(
-                response, home_id, self._security
-            )
-            if not appliances:
-                MideaLogger.warning(
-                    f"No appliances found for home {home_id} via home list API"
-                )
+            appliances = {}
+            for home in response.get("homeList") or []:
+                for room in home.get("roomList") or []:
+                    for appliance in room.get("applianceList"):
+                        device_info = {
+                            "name": appliance.get("name"),
+                            "type": int(appliance.get("type"), 16),
+                            "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
+                            "sn8": appliance.get("sn8", "00000000"),
+                            "category": appliance.get("category"),
+                            "smart_product_id": appliance.get("smartProductId", "0"),
+                            "model_number": appliance.get("modelNumber", "0"),
+                            "manufacturer_code": appliance.get("enterpriseCode", "0000"),
+                            "model": appliance.get("productModel"),
+                            "online": appliance.get("onlineStatus") == "1",
+                        }
+                        if device_info.get("sn8") is None or len(device_info.get("sn8")) == 0:
+                            device_info["sn8"] = "00000000"
+                        if device_info.get("model") is None or len(device_info.get("model")) == 0:
+                            device_info["model"] = device_info["sn8"]
+                        appliances[int(appliance["applianceCode"])] = device_info
             return appliances
         return None
 
@@ -1189,21 +1089,28 @@ class MSmartHomeCloud(MideaCloud):
         return await super().list_home()
 
     async def list_appliances(self, home_id=None) -> dict | None:
-        self._homegroup_id = str(home_id) if home_id is not None else None
         data = self._make_general_data()
         if response := await self._api_request(
             endpoint="/v1/appliance/user/list/get",
-            data=data,
+            data=data
         ):
-            appliances = _collect_appliances_from_user_list(
-                response, home_id, self._security
-            )
-            if not appliances:
-                MideaLogger.warning(
-                    f"No appliances found for MSmartHome home {home_id} "
-                    "via user list API"
-                )
-                return {}
+            appliances = {}
+            for appliance in response["list"]:
+                device_info = {
+                    "name": appliance.get("name"),
+                    "type": int(appliance.get("type"), 16),
+                    "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
+                    "sn8": "",
+                    "category": appliance.get("category"),
+                    "model_number": appliance.get("modelNumber", "0"),
+                    "manufacturer_code": appliance.get("enterpriseCode", "0000"),
+                    "model": "",
+                    "online": appliance.get("onlineStatus") == "1",
+                    "smart_product_id": appliance.get("smartProductId"),
+                }
+                device_info["sn8"] = device_info.get("sn")[9:17] if len(device_info["sn"]) > 17 else ""
+                device_info["model"] = device_info.get("sn8")
+                appliances[int(appliance["id"])] = device_info
             return appliances
         return None
 
