@@ -497,17 +497,8 @@ class MeijuCloud(MideaCloud):
                 response, home_id, self._security
             )
             if not appliances:
-                user_response = await self._api_request(
-                    endpoint="/v1/appliance/user/list/get",
-                    data={},
-                )
-                if user_response:
-                    appliances = _collect_appliances_from_user_list(
-                        user_response, home_id, self._security
-                    )
-            if not appliances:
                 MideaLogger.warning(
-                    f"No appliances found for home {home_id} via home/user list APIs"
+                    f"No appliances found for home {home_id} via home list API"
                 )
             return appliances
         return None
@@ -1192,43 +1183,29 @@ class MSmartHomeCloud(MideaCloud):
         ):
             homes = {}
             for home in response.get("homeList") or []:
-                homes[int(home["homegroupId"])] = home.get("name") or home["name"]
+                homes[int(home["homegroupId"])] = home.get("homeName") or home["homeName"]
             if homes:
                 return homes
         return await super().list_home()
 
     async def list_appliances(self, home_id=None) -> dict | None:
         self._homegroup_id = str(home_id) if home_id is not None else None
-        appliances: dict[int, dict] = {}
-
-        if home_id is not None:
-            data = self._make_general_data()
-            data["homegroupId"] = home_id
-            if response := await self._api_request(
-                endpoint="/v1/appliance/home/list/get",
-                data=data,
-            ):
-                appliances = _collect_appliances_from_home_list(
-                    response, home_id, self._security
-                )
-
-        if not appliances:
-            data = self._make_general_data()
-            if response := await self._api_request(
-                endpoint="/v1/appliance/user/list/get",
-                data=data,
-            ):
-                appliances = _collect_appliances_from_user_list(
-                    response, home_id, self._security
-                )
-
-        if not appliances:
-            MideaLogger.warning(
-                f"No appliances found for MSmartHome home {home_id} "
-                "via home/user list APIs"
+        data = self._make_general_data()
+        if response := await self._api_request(
+            endpoint="/v1/appliance/user/list/get",
+            data=data,
+        ):
+            appliances = _collect_appliances_from_user_list(
+                response, home_id, self._security
             )
-            return {}
-        return appliances
+            if not appliances:
+                MideaLogger.warning(
+                    f"No appliances found for MSmartHome home {home_id} "
+                    "via user list API"
+                )
+                return {}
+            return appliances
+        return None
 
     async def download_lua(
         self, path: str,
