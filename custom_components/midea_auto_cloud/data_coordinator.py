@@ -286,15 +286,6 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         if not cloud or not result:
             return
 
-        if result.get("_dishwasher"):
-            self.device._attributes[f"cloud_water_{period}"] = round(
-                float(result.get("water_liters") or 0), 2
-            )
-            self.device._attributes[f"cloud_power_{period}"] = round(
-                float(result.get("power_kwh") or 0), 3
-            )
-            return
-
         drums = ("da", "db") if dual_drum else ("da", "db")
         if dual_drum:
             for drum in drums:

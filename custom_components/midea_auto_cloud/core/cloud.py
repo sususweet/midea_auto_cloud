@@ -40,7 +40,6 @@ default_keys = {
     }
 }
 
-
 class MideaCloud:
     def __init__(
             self,
@@ -309,7 +308,6 @@ class MeijuCloud(MideaCloud):
             proxy=proxy
         )
         self._homegroup_id = None
-        self._user_id: str | None = None
 
     async def login(self) -> bool:
         if login_id := await self._get_login_id():
@@ -344,14 +342,11 @@ class MeijuCloud(MideaCloud):
                         response["key"]
                     ), None
                 )
-                user_info = response.get("userInfo") or {}
-                if user_info.get("nickName"):
-                    self._nickname = user_info["nickName"]
+                # 获取用户昵称
+                if "userInfo" in response and "nickName" in response["userInfo"]:
+                    self._nickname = response["userInfo"]["nickName"]
                 else:
                     self._nickname = self._account
-                uid = user_info.get("userId") or user_info.get("uid")
-                if uid:
-                    self._user_id = str(uid)
                 await self._notify_login_success()
                 return True
         return False
@@ -560,104 +555,6 @@ class MeijuCloud(MideaCloud):
         """云端电量原始值单位为 0.0001 kWh。"""
         return amount / 10000.0
 
-    async def _ensure_user_id(self) -> str | None:
-        if self._user_id:
-            return self._user_id
-        user_info = await self.get_user_info()
-        if isinstance(user_info, dict):
-            uid = user_info.get("userId") or user_info.get("uid")
-            if uid:
-                self._user_id = str(uid)
-        return self._user_id
-
-    @staticmethod
-    def _parse_dishwasher_consumption(result: dict | list | None) -> tuple[float, float]:
-        """解析洗碗机 cfhrs 水电统计，返回 (用水升, 用电千瓦时)。"""
-        if not result:
-            return 0.0, 0.0
-        payload = result
-        if isinstance(payload, dict):
-            entries = payload.get("data")
-            if entries is None and isinstance(payload.get("messageBody"), (dict, str)):
-                body = payload["messageBody"]
-                if isinstance(body, str):
-                    try:
-                        body = json.loads(body)
-                    except json.JSONDecodeError:
-                        body = {}
-                entries = (body or {}).get("data")
-        else:
-            entries = payload
-        if not isinstance(entries, list):
-            return 0.0, 0.0
-        water = 0.0
-        power = 0.0
-        for entry in entries:
-            if not isinstance(entry, dict):
-                continue
-            try:
-                water += float(entry.get("yWater") or 0)
-            except (TypeError, ValueError):
-                pass
-            try:
-                power += float(entry.get("yElectricity") or 0)
-            except (TypeError, ValueError):
-                pass
-        return water, power
-
-    async def query_dishwasher_consumption(
-        self,
-        appliance_id: int,
-        query_type: str,
-    ) -> dict | None:
-        """查询洗碗机云端水电统计（cfhrs/e1 API）。
-
-        query_type: week / month / year
-        """
-        user_id = await self._ensure_user_id()
-        if not user_id:
-            MideaLogger.debug(
-                f"Dishwasher consumption skipped for {appliance_id}: userId unavailable"
-            )
-            return None
-        params = {
-            "applianceId": str(appliance_id),
-            "userId": user_id,
-            "queryType": query_type,
-            "authUserId": user_id,
-        }
-        result = await self._api_request(
-            endpoint="/cfhrs/e1/v1/api",
-            data={"msg": "WaterDisherConsumptionV2", "params": params},
-        )
-        if result is None:
-            return None
-        water, power = self._parse_dishwasher_consumption(result)
-        return {
-            "_dishwasher": True,
-            "water_liters": water,
-            "power_kwh": power,
-        }
-
-    async def query_market_model(self, sn: str) -> str | None:
-        """查询 DCP 营销型号（美居 App 显示名称）。"""
-        if not sn:
-            return None
-        result = await self._api_request(
-            endpoint="/dcp-web/api-product/message/getProdMessageByIotSN",
-            data={"data": {"snCode": sn}},
-        )
-        products = result if isinstance(result, list) else None
-        if products is None and isinstance(result, dict):
-            nested = result.get("data")
-            products = nested if isinstance(nested, list) else None
-        if not products:
-            return None
-        product = (products[0] or {}).get("product") or products[0]
-        if not isinstance(product, dict):
-            return None
-        return product.get("marketModel") or product.get("productModel")
-
     async def query_wash_water_power(
         self,
         appliance_id: int,
@@ -668,14 +565,11 @@ class MeijuCloud(MideaCloud):
     ) -> dict | None:
         """查询洗衣机/洗碗机云端水电统计。
 
-        result_type: 1=周, 2=月, 3=年。
+        result_type: 1=日, 2=月, 3=年。
         """
-        device_type_hex = self._normalize_wash_device_type(device_type)
-        if device_type_hex == "E1":
-            query_type = {1: "week", 2: "month", 3: "year"}.get(result_type, "month")
-            return await self.query_dishwasher_consumption(appliance_id, query_type)
         if time is None:
             time = datetime.date.today().strftime("%Y%m%d")
+        device_type_hex = self._normalize_wash_device_type(device_type)
         endpoint = (
             f"/xyj/h5/api/WashSessions/getWaterPower"
             f"&applianceId={appliance_id}"
@@ -807,12 +701,19 @@ class MeijuCloud(MideaCloud):
 
     async def get_user_info(self):
         """获取用户信息"""
+        data = {}
         if response := await self._api_request(
             endpoint="/v1/user/info/get",
-            data={},
+            data=data
         ):
-            if isinstance(response, dict) and "userInfo" in response:
-                return response["userInfo"]
+            MideaLogger.debug(f"Get user info response keys: {list(response.keys())}")
+            # 检查响应结构
+            if "data" in response:
+                MideaLogger.debug(f"Get user info data keys: {list(response['data'].keys())}")
+                if "userInfo" in response['data']:
+                    MideaLogger.debug(f"Get user info userInfo keys: {list(response['data']['userInfo'].keys())}")
+                    return response['data']['userInfo']
+            # 直接返回响应
             return response
         return None
 
