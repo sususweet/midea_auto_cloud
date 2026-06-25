@@ -88,7 +88,9 @@ class MideaCloud:
         msg = str(response.get("msg") or response.get("message") or "")
         msg_lower = msg.lower()
         return (
-            "user token not exist" in msg_lower
+            code in (7400, 40002)
+            or "user token not exist" in msg_lower
+            or "user does not exist" in msg_lower
             or ("token" in msg_lower and "not exist" in msg_lower)
             or "token校验不通过" in msg
         )
@@ -243,7 +245,7 @@ class MideaCloud:
         raise NotImplementedError()
 
     async def list_home(self) -> dict | None:
-        return {1: "My home"}
+        return None
 
     async def list_appliances(self, home_id) -> dict | None:
         raise NotImplementedError()
@@ -898,12 +900,15 @@ class MSmartHomeCloud(MideaCloud):
         payload = super().export_session_payload()
         payload.update({
             "uid": self._uid,
+            "api_url": self._api_url,
         })
         return payload
 
     def import_session_payload(self, payload: dict):
         super().import_session_payload(payload)
         self._uid = payload.get("uid") or ""
+        if api_url := payload.get("api_url"):
+            self._api_url = api_url
 
     async def _api_request(self,
         endpoint: str,
@@ -985,9 +990,7 @@ class MSmartHomeCloud(MideaCloud):
             homes = {}
             for home in response.get("homeList") or []:
                 homes[int(home["homegroupId"])] = home.get("homeName") or home["homeName"]
-            if homes:
-                return homes
-        return await super().list_home()
+            return homes if homes else None
 
     async def list_appliances(self, home_id=None) -> dict | None:
         data = self._make_general_data()

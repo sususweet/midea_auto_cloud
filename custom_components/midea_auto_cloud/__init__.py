@@ -148,6 +148,104 @@ def get_device_mapping(
     return result
 
 
+def _home_display_name(home_info, home_id) -> str:
+    if isinstance(home_info, dict):
+        return home_info.get("name") or home_info.get("homeName") or f"家庭 {home_id}"
+    return str(home_info) if home_info else f"家庭 {home_id}"
+
+
+def _match_home_ids(selected_homes: list, homes: dict) -> list:
+    home_ids = []
+    for selected_home in selected_homes:
+        for key in (
+            selected_home,
+            str(selected_home),
+            int(selected_home) if str(selected_home).isdigit() else None,
+        ):
+            if key is not None and key in homes and key not in home_ids:
+                home_ids.append(key)
+                break
+    return home_ids
+
+
+def _resolve_home_ids(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    selected_homes: list,
+    homes: dict,
+) -> list:
+    """Resolve configured home ids against the live cloud home list.
+
+    Older releases could persist placeholder ids (e.g. ``1``) when the cloud
+    API was unavailable during setup. Recover by name, sole-home fallback, or
+    all-homes fallback, then migrate the config entry to real homegroup ids.
+    """
+    if not homes:
+        return []
+    if not selected_homes:
+        return list(homes.keys())
+
+    home_ids = _match_home_ids(selected_homes, homes)
+    if home_ids:
+        return home_ids
+
+    configured_name = config_entry.data.get("home_name", "")
+    if configured_name:
+        for hid, info in homes.items():
+            if _home_display_name(info, hid) == configured_name:
+                home_ids = [hid]
+                break
+
+    if not home_ids:
+        for name in config_entry.data.get("home_names", {}).values():
+            for hid, info in homes.items():
+                if _home_display_name(info, hid) == name and hid not in home_ids:
+                    home_ids.append(hid)
+
+    if not home_ids and len(homes) == 1:
+        home_ids = list(homes.keys())
+        MideaLogger.warning(
+            f"Configured home id(s) {selected_homes} not found; "
+            f"using sole available home {home_ids[0]}"
+        )
+
+    if not home_ids:
+        MideaLogger.warning(
+            f"Configured home id(s) {selected_homes} not found in {list(homes.keys())}; "
+            f"falling back to all available homes"
+        )
+        home_ids = list(homes.keys())
+
+    if home_ids and not _match_home_ids(selected_homes, homes):
+        new_data = dict(config_entry.data)
+        new_data[CONF_SELECTED_HOMES] = [home_ids[0]]
+        new_data["all_selected_homes"] = home_ids
+        new_data["home_names"] = {
+            str(hid): _home_display_name(homes[hid], hid) for hid in home_ids
+        }
+        new_data["home_name"] = new_data["home_names"][str(home_ids[0])]
+        title_prefix = config_entry.data.get(CONF_ACCOUNT, "")
+        if " | " in config_entry.title:
+            title_prefix = config_entry.title.split(" | ", 1)[0]
+        hass.config_entries.async_update_entry(
+            config_entry,
+            title=f"{title_prefix} | {new_data['home_name']}",
+            data=new_data,
+        )
+        MideaLogger.info(
+            f"Migrated stale home ids {selected_homes} to {home_ids}"
+        )
+
+    return home_ids
+
+
+async def _ensure_msmart_home_api_route(cloud) -> None:
+    """Re-resolve MSmartHome regional API URL after restoring a cached session."""
+    re_route = getattr(cloud, "_re_route", None)
+    if re_route is not None:
+        await re_route()
+
+
 async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
     # def _ensure_dir_and_load(path_dir: str, path_file: str):
     #     os.makedirs(path_dir, exist_ok=True)
@@ -291,8 +389,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                         lambda c, _h=hass, _a=account, _p=password, _s=server: session_store.async_persist_cloud_session(_h, c, _a, _p, _s)
                     )
                     if await session_store.async_restore_cloud_session(hass, cloud, account, password, server):
-                        # 启动恢复成功，直接复用登录态
-                        pass
+                        await _ensure_msmart_home_api_route(cloud)
                     elif not await cloud.login():
                         MideaLogger.error("Midea cloud login failed")
                         return False
@@ -307,7 +404,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     lambda c, _h=hass, _a=account, _p=password, _s=server: session_store.async_persist_cloud_session(_h, c, _a, _p, _s)
                 )
                 if await session_store.async_restore_cloud_session(hass, cloud, account, password, server):
-                    pass
+                    await _ensure_msmart_home_api_route(cloud)
                 elif not await cloud.login():
                     MideaLogger.error("Midea cloud login failed")
                     return False
@@ -369,18 +466,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 selected_homes = config_entry.data.get(CONF_SELECTED_HOMES, [])
                 MideaLogger.debug(
                     f"Selected homes from config: {selected_homes}, Available homes keys: {list(homes.keys())}")
-                if not selected_homes:
-                    # 如果没有选择，默认使用所有家庭
-                    home_ids = list(homes.keys())
-                else:
-                    # 只处理用户选择的家庭，确保类型匹配
-                    home_ids = []
-                    for selected_home in selected_homes:
-                        for key in [selected_home, str(selected_home),
-                                    int(selected_home) if str(selected_home).isdigit() else None]:
-                            if key is not None and key in homes and key not in home_ids:
-                                home_ids.append(key)
-                                break
+                home_ids = _resolve_home_ids(hass, config_entry, selected_homes, homes)
                 MideaLogger.debug(f"Final home_ids to process: {home_ids}")
 
                 # 同步云端家庭名称到本地配置
