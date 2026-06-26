@@ -43,6 +43,10 @@ DEVICE_MAPPING = {
                         "high": {"wind_speed": 90},
                         "auto": {"wind_speed": 102},
                     },
+                    # The thermostat/app lock fan speed while the hvac mode is
+                    # auto (the unit manages airflow itself), so hide the
+                    # fan-mode control on the climate card in that mode.
+                    "fan_lock_hvac_modes": ["auto"],
                     "target_temperature": "temperature",
                     # In auto mode the thermostat controls to a low/high range
                     # (the control_function limits, same as the number entities),

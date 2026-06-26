@@ -76,6 +76,9 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_aux_heat = self._config.get("aux_heat")
         self._key_swing_modes = self._config.get("swing_modes")
         self._key_fan_modes = self._config.get("fan_modes")
+        # Hvac modes in which the device locks fan speed (it manages airflow
+        # itself); the fan-mode control is hidden while in one of these modes.
+        self._fan_lock_hvac_modes = self._config.get("fan_lock_hvac_modes") or []
         self._key_min_temp = self._config.get("min_temp")
         self._key_max_temp = self._config.get("max_temp")
         self._key_current_temperature = self._config.get("current_temperature")
@@ -144,6 +147,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             and self.hvac_mode in self._range_hvac_modes
         )
 
+    def _fan_mode_locked(self) -> bool:
+        """True when the current hvac mode locks fan speed (device-managed)."""
+        return self.hvac_mode in self._fan_lock_hvac_modes
+
     @property
     def supported_features(self):
         features = ClimateEntityFeature(0)
@@ -161,7 +168,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             features |= ClimateEntityFeature.AUX_HEAT
         if self._key_swing_modes is not None:
             features |= ClimateEntityFeature.SWING_MODE
-        if self._key_fan_modes is not None:
+        if self._key_fan_modes is not None and not self._fan_mode_locked():
             features |= ClimateEntityFeature.FAN_MODE
         return features
 
@@ -606,6 +613,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         await self.async_set_attributes(new_status)
 
     async def async_set_fan_mode(self, fan_mode: str):
+        if self._fan_mode_locked():
+            # Fan speed is device-managed in these hvac modes (e.g. auto); the
+            # control is hidden, so ignore stray service calls rather than write.
+            return
         fan_mode = normalize_fan_mode_input(self._key_fan_modes, fan_mode)
         fan_modes = fan_mode_lookup_mapping(self._key_fan_modes)
         if self._is_central_ac:
