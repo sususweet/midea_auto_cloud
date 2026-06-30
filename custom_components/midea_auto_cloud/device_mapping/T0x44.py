@@ -23,14 +23,6 @@ DEVICE_MAPPING = {
                         "heat": {"power": "on", "mode": 4},
                         "fan_only": {"power": "on", "mode": 5},
                     },
-                    "preset_modes": {
-                        "none": {
-                            "eco": "off",
-                            "strong_wind": "off",
-                        },
-                        "eco": {"eco": "on"},
-                        "boost": {"strong_wind": "on"},
-                    },
                     # "swing_modes": {
                     #     "off": {"horizontal_swing_wind": 0, "vertical_swing_wind": 0},
                     #     "both": {"horizontal_swing_wind": 1, "vertical_swing_wind": 1},
@@ -104,7 +96,6 @@ DEVICE_MAPPING = {
                 },
             },
             Platform.SWITCH: {
-                "eco": {"device_class": SwitchDeviceClass.SWITCH},
                 "ptc": {"device_class": SwitchDeviceClass.SWITCH},
                 "digital_display": {"device_class": SwitchDeviceClass.SWITCH},
                 "voice_control": {"device_class": SwitchDeviceClass.SWITCH},
