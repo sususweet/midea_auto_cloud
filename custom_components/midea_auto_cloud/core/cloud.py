@@ -64,6 +64,8 @@ class MideaCloud:
         # 发生 token 失效时，避免每次请求都触发重复登录
         self._token_invalid_retry_count = 0
         self._relogin_lock = asyncio.Lock()
+        # 临时关闭：token 失效时不再自动重新登录（40002 等场景易刷屏/风暴）
+        self._auto_relogin_on_token_invalid = False
         self._on_login_success = None
 
     def _make_general_data(self):
@@ -158,6 +160,13 @@ class MideaCloud:
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
+            if not self._auto_relogin_on_token_invalid:
+                MideaLogger.debug(
+                    f"Midea cloud token失效，已跳过自动重新登录。"
+                    f"endpoint={endpoint}, code={response.get('code')}, "
+                    f"msg={response.get('msg') or response.get('message')}"
+                )
+                return None
             if self._token_invalid_retry_count >= 3:
                 MideaLogger.warning(
                     "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
@@ -482,6 +491,13 @@ class MeijuCloud(MideaCloud):
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
+            if not self._auto_relogin_on_token_invalid:
+                MideaLogger.debug(
+                    f"Midea jykt token失效，已跳过自动重新登录。"
+                    f"endpoint={endpoint}, code={response.get('code') or response.get('errCode')}, "
+                    f"msg={response.get('msg') or response.get('errMsg') or response.get('message')}"
+                )
+                return None
             if self._token_invalid_retry_count >= 3:
                 MideaLogger.warning(
                     "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
