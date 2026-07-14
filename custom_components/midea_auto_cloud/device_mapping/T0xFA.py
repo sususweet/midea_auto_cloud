@@ -408,7 +408,79 @@ DEVICE_MAPPING = {
 
     # 旧 swing 协议
     ("56001177",): _LEGACY_SWING_FAN_MAPPING,
-
+    # Pelonis FG25-25TSW (560001F4)：左右摇为 on/off；上下为 off/default/固定角度
+    "560001F4": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "power",
+            "gear",
+            "mode",
+            "lr_shake_switch",
+            "ud_shake_switch",
+            "ud_angle",
+        ],
+        "entities": {
+            Platform.SWITCH: {
+                "display_on_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"],
+                    "translation_key": "screen_close",
+                },
+                "temp_wind_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "auto_power_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "voice": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "attribute": "voice",
+                    "rationale": ["close_buzzer", "open_buzzer"],
+                },
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    # 1–9 档；HA Fan 仍以百分比展示，步进对应档位
+                    "speeds": list({"gear": value + 1} for value in range(0, 9)),
+                    "oscillate": "lr_shake_switch",
+                    "oscillate_rationale": ["off", "on"],
+                    "preset_modes": {
+                        "normal": {"mode": "normal"},
+                        "natural": {"mode": "natural"},
+                        "sleep": {"mode": "sleep"},
+                        "comfort": {"mode": "comfort"},
+                        "mute": {"mode": "mute"},
+                        "baby": {"mode": "baby"},
+                    },
+                }
+            },
+            Platform.SELECT: {
+                # 上下摇头：关闭 / 默认幅面 / 30°·60°·135°
+                "ud_swing_angle": {
+                    "options": {
+                        "off": {"ud_shake_switch": "off"},
+                        "default": {"ud_shake_switch": "default"},
+                        "30": {"ud_shake_switch": "normal", "ud_angle": 30},
+                        "60": {"ud_shake_switch": "normal", "ud_angle": 60},
+                        "135": {"ud_shake_switch": "normal", "ud_angle": 135},
+                    },
+                    "translation_key": "ud_swing_angle",
+                },
+            },
+            Platform.SENSOR: {
+                "real_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+            },
+        },
+    },
     "BGF10000": {  # BGF10000
         "rationale": ["off", "on"],
         "queries": [{}],
