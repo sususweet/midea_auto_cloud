@@ -83,11 +83,19 @@ class MideaFanEntity(MideaEntity, FanEntity):
             features |= FanEntityFeature.PRESET_MODE
         if self._current_speeds is not None and len(self._current_speeds) > 0:
             features |= FanEntityFeature.SET_SPEED
-        if self._key_oscillate is not None:
+        if self._key_oscillate is not None and self._oscillate_supported():
             features |= FanEntityFeature.OSCILLATE
         if self._key_directions is not None and len(self._key_directions) > 0:
             features |= FanEntityFeature.DIRECTION
         return features
+
+    def _oscillate_supported(self) -> bool:
+        """Show oscillate only when device reports capability or state attribute."""
+        en_key = f"en_{self._key_oscillate}"
+        en_val = self._get_nested_value(en_key)
+        if en_val is not None:
+            return self._get_status_on_off(en_key)
+        return self._get_nested_value(self._key_oscillate) is not None
 
     @property
     def is_on(self) -> bool:

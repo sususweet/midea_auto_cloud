@@ -306,13 +306,32 @@ class MideaLightEntity(MideaEntity, LightEntity):
 
             new_status[self._color_temp_key] = str(device_value)
 
-        if self._key_power:
+        # 部分 0x13 风扇灯协议用 if/elseif 互斥组包：电源与亮度/色温/场景不能同包下发
+        if self._key_power and not self.is_on:
+            power_status = {self._key_power: self._rationale[1]}
+            if self._command and isinstance(self._command, dict):
+                merged = dict(self._command)
+                merged.update(power_status)
+                power_status = merged
+            await self.async_set_attributes(power_status)
+        elif self._key_power and not new_status:
             new_status[self._key_power] = self._rationale[1]
+
         if self._command and isinstance(self._command, dict):
             merged = dict(self._command)
             merged.update(new_status)
             new_status = merged
+
         if new_status:
+            # 色温与亮度在同类设备上也是互斥命令，同时存在时拆成两次下发
+            if (
+                self._brightness_is_range
+                and self._color_temp_is_range
+                and self._brightness_key in new_status
+                and self._color_temp_key in new_status
+            ):
+                color_status = {self._color_temp_key: new_status.pop(self._color_temp_key)}
+                await self.async_set_attributes(color_status)
             await self.async_set_attributes(new_status)
 
     async def async_turn_off(self):
