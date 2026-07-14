@@ -1,216 +1,414 @@
 from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENTAGE, DEGREE, \
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
-DEVICE_MAPPING = {
-    "default": {
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [
-            "power", "swing", "display_on_off", "temp_wind_switch",
-        ],
-        "entities": {
-            Platform.SWITCH: {
-                "display_on_off": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["on", "off"]
-                },
-                "temp_wind_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
+# 新协议：lr/ud_shake_switch（T_0000_FA.lua、56011CH9、56011CBE 等）
+# 作为 default，覆盖未单独配置的 SN8
+_SHAKE_FAN_MAPPING = {
+    "rationale": ["off", "on"],
+    "queries": [{}],
+    "centralized": [
+        "power",
+        "gear",
+        "lr_shake_switch",
+        "ud_shake_switch",
+        "lr_diy_angle_down",
+        "lr_diy_angle_up",
+        "ud_diy_angle_down",
+        "ud_diy_angle_up",
+        "area1_time",
+        "area2_time",
+        "area1_gear",
+        "area2_gear",
+    ],
+    "entities": {
+        Platform.SWITCH: {
+            "display_on_off": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["on", "off"]
             },
-            Platform.FAN: {
-                "fan": {
-                    "power": "power",
-                    "speeds": list({"gear": value + 1} for value in range(0, 9)),
-                    "oscillate": "swing",
-                    "preset_modes": {
-                        "normal": {"mode": "normal"},
-                        "sleep": {"mode": "sleep"},
-                        "baby": {"mode": "baby"}
-                    }
-                }
+            "anion": {
+                "device_class": SwitchDeviceClass.SWITCH,
             },
-            Platform.SELECT: {
-                "voice": {
-                    "options": {
-                        "open_buzzer": {"voice": "open_buzzer"},
-                        "close_buzzer": {"voice": "close_buzzer"},
-                        "mute": {"voice": "mute"}
-                    }
-                },
-                "swing_angle": {
-                    "options": {
-                        "unknown": {"swing_angle": "unknown"},
-                        "30": {"swing_angle": "30"},
-                        "60": {"swing_angle": "60"},
-                        "90": {"swing_angle": "90"},
-                        "120": {"swing_angle": "120"},
-                        "150": {"swing_angle": "150"},
-                        "180": {"swing_angle": "180"}
-                    }
-                },
-                "swing_direction": {
-                    "options": {
-                        "unknown": {"swing_direction": "unknown"},
-                        "horizontal": {"swing_direction": "horizontal"},
-                        "vertical": {"swing_direction": "vertical"},
-                        "both": {"swing_direction": "both"}
-                    }
-                },
-                "sleep_sensor": {
-                    "options": {
-                        "none": {"sleep_sensor": "none"},
-                        "light": {"sleep_sensor": "light"},
-                        "sound": {"sleep_sensor": "sound"},
-                        "both": {"sleep_sensor": "both"}
-                    }
-                },
+            "temp_wind_switch": {
+                "device_class": SwitchDeviceClass.SWITCH,
             },
-            Platform.SENSOR: {
-                "real_gear": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "dust_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "filter_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "temperature_feedback": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "water_feedback": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "pm25": {
-                    "device_class": SensorDeviceClass.PM25,
-                    "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "ud_swing_angle": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "lr_diy_down_percent": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": PERCENTAGE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "lr_diy_up_percent": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": PERCENTAGE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "ud_diy_down_percent": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": PERCENTAGE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "ud_diy_up_percent": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": PERCENTAGE,
-                    "state_class": SensorStateClass.MEASUREMENT
+        },
+        Platform.FAN: {
+            "fan": {
+                "power": "power",
+                "speeds": list({"gear": value + 1} for value in range(0, 12)),
+                # off 关闭；default 为整幅摇头
+                "oscillate": "lr_shake_switch",
+                "oscillate_rationale": ["off", "default"],
+                "preset_modes": {
+                    "normal": {"mode": "normal"},
+                    "natural": {"mode": "natural"},
+                    "sleep": {"mode": "sleep"},
+                    "comfort": {"mode": "comfort"},
+                    "baby": {"mode": "baby"},
+                    "strong": {"mode": "strong"},
+                    "self_selection": {"mode": "self_selection"},
+                    "sleeping_wind": {"mode": "sleeping_wind"},
+                    "purified_wind": {"mode": "ecology"},
+                    "double_area": {
+                        "mode": "double_area",
+                        "area1_time": 3,
+                        "area2_time": 3,
+                        "area1_gear": 1,
+                        "area2_gear": 1,
+                        "lr_shake_switch": "diy",
+                    },
                 }
             }
-        }
-    },
-    "default_fan": {  # 56011C99, 56011C8T
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [
-            "power",
-            "gear"
-        ],
-        "entities": {
-            Platform.SWITCH: {
-                "display_on_off": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["on", "off"]
+        },
+        Platform.SELECT: {
+            "lr_shake_switch": {
+                "options": {
+                    "off": {"lr_shake_switch": "off"},
+                    "default": {"lr_shake_switch": "default"},
+                    "diy": {"lr_shake_switch": "diy"},
                 },
-                "waterions": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
+                "translation_key": "lr_swing_angle"
             },
-            Platform.FAN: {
-                "fan": {
-                    "power": "power",
-                    "speeds": list({"gear": value + 1} for value in range(0, 9)),
-                    "preset_modes": {
-                        "normal": {"mode": "normal"},
-                        "storm": {"mode": "storm"},
-                        "self_selection": {"mode": "self_selection"}
-                    }
+            "ud_shake_switch": {
+                "options": {
+                    "off": {"ud_shake_switch": "off"},
+                    "default": {"ud_shake_switch": "default"},
+                    "diy": {"ud_shake_switch": "diy"},
+                },
+                "translation_key": "ud_swing_angle"
+            },
+            "voice": {
+                "options": {
+                    "open_buzzer": {"voice": "open_buzzer"},
+                    "close_buzzer": {"voice": "close_buzzer"},
+                    "mute": {"voice": "mute"}
                 }
             },
-            Platform.SELECT: {
-                "ud_swing": {
-                    "options": {
-                        "off": {"ud_swing": "off"},
-                        "on": {"ud_swing": "on"},
-                        "30°": {"ud_swing": 30},
-                        "60°": {"ud_swing": 60},
-                        "135°": {"ud_swing": 135},
-                    },
-                    "translation_key": "ud_swing_angle"
-                },
-                "lr_swing": {
-                    "options": {
-                        "off": {"lr_swing": "off"},
-                        "on": {"lr_swing": "on"},
-                        "30°": {"lr_swing": 30},
-                        "60°": {"lr_swing": 60},
-                        "120°": {"lr_swing": 120},
-                    },
-                    "translation_key": "lr_swing_angle"
-                },
-                "voice": {
-                    "options": {
-                        "open_buzzer": {"voice": "open_buzzer"},
-                        "close_buzzer": {"voice": "close_buzzer"},
-                        "mute": {"voice": "mute"}
-                    }
-                },
+        },
+        Platform.SENSOR: {
+            "real_gear": {
+                "device_class": SensorDeviceClass.ENUM,
+                "state_class": SensorStateClass.MEASUREMENT
             },
-            Platform.SENSOR: {
-                "real_gear": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "dust_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "filter_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "current_angle": {
-                    "device_class": SensorDeviceClass.WIND_DIRECTION,
-                    "unit_of_measurement": DEGREE,
-                    "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "lr_current_angle"
-                },
-                "ud_swing_angle": {
-                    "device_class": SensorDeviceClass.WIND_DIRECTION,
-                    "unit_of_measurement": DEGREE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
+            "dust_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "filter_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "current_angle": {
+                "device_class": SensorDeviceClass.WIND_DIRECTION,
+                "unit_of_measurement": DEGREE,
+                "state_class": SensorStateClass.MEASUREMENT,
+                "translation_key": "lr_current_angle"
+            },
+            "ud_current_angle": {
+                "device_class": SensorDeviceClass.WIND_DIRECTION,
+                "unit_of_measurement": DEGREE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "temperature_feedback": {
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT,
+                "translation_key": "indoor_temperature"
+            }
+        },
+        Platform.NUMBER: {
+            "target_angle": {
+                "min": 0,
+                "max": 120,
+                "step": 1,
+                "unit_of_measurement": DEGREE,
+                "default_value": 60,
+                "translation_key": "lr_target_angle"
+            },
+            "ud_target_angle": {
+                "min": 0,
+                "max": 135,
+                "step": 1,
+                "unit_of_measurement": DEGREE,
+                "default_value": 60
+            },
+            "lr_diy_angle_down": {
+                "min": 0,
+                "max": 120,
+                "step": 1,
+                "unit_of_measurement": DEGREE
+            },
+            "lr_diy_angle_up": {
+                "min": 0,
+                "max": 120,
+                "step": 1,
+                "unit_of_measurement": DEGREE
+            },
+            "ud_diy_angle_down": {
+                "min": 0,
+                "max": 120,
+                "step": 1,
+                "unit_of_measurement": DEGREE
+            },
+            "ud_diy_angle_up": {
+                "min": 0,
+                "max": 120,
+                "step": 1,
+                "unit_of_measurement": DEGREE
+            },
+            "area1_time": {
+                "min": 3,
+                "max": 10,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.SECONDS
+            },
+            "area2_time": {
+                "min": 3,
+                "max": 10,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.SECONDS
+            },
+            "area1_gear": {
+                "min": 1,
+                "max": 12,
+                "step": 1
+            },
+            "area2_gear": {
+                "min": 1,
+                "max": 12,
+                "step": 1
             },
         }
-    },
+    }
+}
+
+# 左右/上下角度选择协议（category=fan 或指定 SN8）
+_ANGLE_SELECT_FAN_MAPPING = {
+    "rationale": ["off", "on"],
+    "queries": [{}],
+    "centralized": [
+        "power",
+        "gear"
+    ],
+    "entities": {
+        Platform.SWITCH: {
+            "display_on_off": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["on", "off"]
+            },
+            "waterions": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+        },
+        Platform.FAN: {
+            "fan": {
+                "power": "power",
+                "speeds": list({"gear": value + 1} for value in range(0, 9)),
+                "preset_modes": {
+                    "normal": {"mode": "normal"},
+                    "storm": {"mode": "storm"},
+                    "self_selection": {"mode": "self_selection"}
+                }
+            }
+        },
+        Platform.SELECT: {
+            "ud_swing": {
+                "options": {
+                    "off": {"ud_swing": "off"},
+                    "on": {"ud_swing": "on"},
+                    "30°": {"ud_swing": 30},
+                    "60°": {"ud_swing": 60},
+                    "135°": {"ud_swing": 135},
+                },
+                "translation_key": "ud_swing_angle"
+            },
+            "lr_swing": {
+                "options": {
+                    "off": {"lr_swing": "off"},
+                    "on": {"lr_swing": "on"},
+                    "30°": {"lr_swing": 30},
+                    "60°": {"lr_swing": 60},
+                    "120°": {"lr_swing": 120},
+                },
+                "translation_key": "lr_swing_angle"
+            },
+            "voice": {
+                "options": {
+                    "open_buzzer": {"voice": "open_buzzer"},
+                    "close_buzzer": {"voice": "close_buzzer"},
+                    "mute": {"voice": "mute"}
+                }
+            },
+        },
+        Platform.SENSOR: {
+            "real_gear": {
+                "device_class": SensorDeviceClass.ENUM,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "dust_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "filter_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "current_angle": {
+                "device_class": SensorDeviceClass.WIND_DIRECTION,
+                "unit_of_measurement": DEGREE,
+                "state_class": SensorStateClass.MEASUREMENT,
+                "translation_key": "lr_current_angle"
+            },
+            "ud_swing_angle": {
+                "device_class": SensorDeviceClass.WIND_DIRECTION,
+                "unit_of_measurement": DEGREE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+        },
+    }
+}
+
+# 旧协议：swing on/off（56001177 等）
+_LEGACY_SWING_FAN_MAPPING = {
+    "rationale": ["off", "on"],
+    "queries": [{}],
+    "centralized": [
+        "power", "swing", "display_on_off", "temp_wind_switch",
+    ],
+    "entities": {
+        Platform.SWITCH: {
+            "display_on_off": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["on", "off"]
+            },
+            "temp_wind_switch": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+        },
+        Platform.FAN: {
+            "fan": {
+                "power": "power",
+                "speeds": list({"gear": value + 1} for value in range(0, 9)),
+                "oscillate": "swing",
+                "preset_modes": {
+                    "normal": {"mode": "normal"},
+                    "sleep": {"mode": "sleep"},
+                    "baby": {"mode": "baby"}
+                }
+            }
+        },
+        Platform.SELECT: {
+            "voice": {
+                "options": {
+                    "open_buzzer": {"voice": "open_buzzer"},
+                    "close_buzzer": {"voice": "close_buzzer"},
+                    "mute": {"voice": "mute"}
+                }
+            },
+            "swing_angle": {
+                "options": {
+                    "unknown": {"swing_angle": "unknown"},
+                    "30": {"swing_angle": "30"},
+                    "60": {"swing_angle": "60"},
+                    "90": {"swing_angle": "90"},
+                    "120": {"swing_angle": "120"},
+                    "150": {"swing_angle": "150"},
+                    "180": {"swing_angle": "180"}
+                }
+            },
+            "swing_direction": {
+                "options": {
+                    "unknown": {"swing_direction": "unknown"},
+                    "horizontal": {"swing_direction": "horizontal"},
+                    "vertical": {"swing_direction": "vertical"},
+                    "both": {"swing_direction": "both"}
+                }
+            },
+            "sleep_sensor": {
+                "options": {
+                    "none": {"sleep_sensor": "none"},
+                    "light": {"sleep_sensor": "light"},
+                    "sound": {"sleep_sensor": "sound"},
+                    "both": {"sleep_sensor": "both"}
+                }
+            },
+        },
+        Platform.SENSOR: {
+            "real_gear": {
+                "device_class": SensorDeviceClass.ENUM,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "dust_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "filter_life_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "temperature_feedback": {
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "water_feedback": {
+                "device_class": SensorDeviceClass.ENUM,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "pm25": {
+                "device_class": SensorDeviceClass.PM25,
+                "unit_of_measurement": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "ud_swing_angle": {
+                "device_class": SensorDeviceClass.ENUM,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "lr_diy_down_percent": {
+                "device_class": SensorDeviceClass.BATTERY,
+                "unit_of_measurement": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "lr_diy_up_percent": {
+                "device_class": SensorDeviceClass.BATTERY,
+                "unit_of_measurement": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "ud_diy_down_percent": {
+                "device_class": SensorDeviceClass.BATTERY,
+                "unit_of_measurement": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "ud_diy_up_percent": {
+                "device_class": SensorDeviceClass.BATTERY,
+                "unit_of_measurement": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
+        }
+    }
+}
+
+DEVICE_MAPPING = {
+    # 新协议默认（含 56011CH9 / 56011CBE 及未单独配置的同系列）
+    "default": _SHAKE_FAN_MAPPING,
+    ("56011CH9", "56011CBE"): _SHAKE_FAN_MAPPING,
+
+    # category=fan 回退，以及已知角度选择协议 SN8
+    "default_fan": _ANGLE_SELECT_FAN_MAPPING,
+    ("56011C99", "56011C8T"): _ANGLE_SELECT_FAN_MAPPING,
+
+    # 旧 swing 协议
+    ("56001177",): _LEGACY_SWING_FAN_MAPPING,
+
     "BGF10000": {  # BGF10000
         "rationale": ["off", "on"],
         "queries": [{}],
@@ -284,174 +482,6 @@ DEVICE_MAPPING = {
                     "translation_key": "timer_on_minute"
                 },
             },
-        }
-    },
-    "56011CBE": { # 56011CBE
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [
-            "power",
-            "gear",
-            # 摇头控制：保证切换摇头模式或角度时，control 中不会缺少关键字段
-            "lr_shake_switch",
-            "ud_shake_switch",
-            "lr_diy_angle_down",
-            "lr_diy_angle_up",
-            "ud_diy_angle_down",
-            "ud_diy_angle_up",
-            # 双区送风
-            "area1_time",
-            "area2_time",
-            "area1_gear",
-            "area2_gear",
-        ],
-        "entities": {
-            Platform.SWITCH: {
-                "display_on_off": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": ["on", "off"]
-                },
-                "anion": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "temp_wind_switch": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                },
-            },
-            Platform.FAN: {
-                "fan": {
-                    "power": "power",
-                    "speeds": list({"gear": value + 1} for value in range(0, 12)),
-                    "preset_modes": {
-                        "double_area": {"mode": "double_area", "area1_time": 3, "area2_time": 3, "area1_gear": 1, "area2_gear": 1, "lr_shake_switch": "diy"},
-                        "self_selection": {"mode": "self_selection"},
-                        "sleeping_wind": {"mode": "sleeping_wind"},
-                        "purified_wind": {"mode": "ecology"}
-                    }
-                }
-            },
-            Platform.SELECT: {
-                "voice": {
-                    "options": {
-                        "open_buzzer": {"voice": "open_buzzer"},
-                        "close_buzzer": {"voice": "close_buzzer"},
-                        "mute": {"voice": "mute"}
-                    }
-                },
-                "lr_shake_switch": {
-                    "options": {
-                        "off": {"lr_shake_switch": "off"},
-                        "default": {"lr_shake_switch": "default"},
-                        "diy": {"lr_shake_switch": "diy"},
-                    }
-                },
-                "ud_shake_switch": {
-                    "options": {
-                        "off": {"ud_shake_switch": "off"},
-                        "default": {"ud_shake_switch": "default"},
-                        "diy": {"ud_shake_switch": "diy"},
-                    }
-                },
-            },
-            Platform.SENSOR: {
-                "real_gear": {
-                    "device_class": SensorDeviceClass.ENUM,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "dust_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "filter_life_time": {
-                    "device_class": SensorDeviceClass.DURATION,
-                    "unit_of_measurement": UnitOfTime.HOURS,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "current_angle": {
-                    "device_class": SensorDeviceClass.WIND_DIRECTION,
-                    "unit_of_measurement": DEGREE,
-                    "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "lr_current_angle"
-                },
-                "ud_current_angle": {
-                    "device_class": SensorDeviceClass.WIND_DIRECTION,
-                    "unit_of_measurement": DEGREE,
-                    "state_class": SensorStateClass.MEASUREMENT
-                },
-                "temperature_feedback": {
-                    "device_class": SensorDeviceClass.TEMPERATURE,
-                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
-                    "state_class": SensorStateClass.MEASUREMENT,
-                    "translation_key": "indoor_temperature"
-                }
-            },
-            Platform.NUMBER: {
-                # normal 模式角度
-                "target_angle": {
-                    "min": 0,
-                    "max": 120,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE,
-                    "default_value": 60,
-                    "translation_key": "lr_target_angle"
-                },
-                "ud_target_angle": {
-                    "min": 0,
-                    "max": 135,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE,
-                    "default_value": 60
-                },
-                # diy 模式起始/结束角度
-                "lr_diy_angle_down": {
-                    "min": 0,
-                    "max": 120,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE
-                },
-                "lr_diy_angle_up": {
-                    "min": 0,
-                    "max": 120,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE
-                },
-                "ud_diy_angle_down": {
-                    "min": 0,
-                    "max": 120,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE
-                },
-                "ud_diy_angle_up": {
-                    "min": 0,
-                    "max": 120,
-                    "step": 1,
-                    "unit_of_measurement": DEGREE
-                },
-                # 双区送风（area1/area2）
-                "area1_time": {
-                    "min": 3,
-                    "max": 10,
-                    "step": 1,
-                    "unit_of_measurement": UnitOfTime.SECONDS
-                },
-                "area2_time": {
-                    "min": 3,
-                    "max": 10,
-                    "step": 1,
-                    "unit_of_measurement": UnitOfTime.SECONDS
-                },
-                "area1_gear": {
-                    "min": 1,
-                    "max": 12,
-                    "step": 1
-                },
-                "area2_gear": {
-                    "min": 1,
-                    "max": 12,
-                    "step": 1
-                },
-            }
         }
     },
     "5600119Z": {
