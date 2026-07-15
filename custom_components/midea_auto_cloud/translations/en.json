@@ -2617,7 +2617,14 @@
         "name": "PM2.5"
       },
       "ud_swing_angle": {
-        "name": "UD Swing Angle"
+        "name": "UD Swing Angle",
+        "state": {
+          "off": "Off",
+          "on": "On",
+          "30": "30°",
+          "60": "60°",
+          "135": "135°"
+        }
       },
       "lr_swing_angle": {
         "name": "LR Swing Angle",
@@ -2629,10 +2636,7 @@
           "default": "Full",
           "diy": "DIY",
           "normal": "Fixed angle",
-          "on": "On",
-          "30°": "30°",
-          "60°": "60°",
-          "120°": "120°"
+          "on": "On"
         }
       },
       "lr_diy_down_percent": {

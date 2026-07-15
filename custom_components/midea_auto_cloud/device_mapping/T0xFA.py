@@ -220,9 +220,9 @@ _ANGLE_SELECT_FAN_MAPPING = {
                 "options": {
                     "off": {"ud_swing": "off"},
                     "on": {"ud_swing": "on"},
-                    "30°": {"ud_swing": 30},
-                    "60°": {"ud_swing": 60},
-                    "135°": {"ud_swing": 135},
+                    "30": {"ud_swing": 30},
+                    "60": {"ud_swing": 60},
+                    "135": {"ud_swing": 135},
                 },
                 "translation_key": "ud_swing_angle"
             },
@@ -230,9 +230,9 @@ _ANGLE_SELECT_FAN_MAPPING = {
                 "options": {
                     "off": {"lr_swing": "off"},
                     "on": {"lr_swing": "on"},
-                    "30°": {"lr_swing": 30},
-                    "60°": {"lr_swing": 60},
-                    "120°": {"lr_swing": 120},
+                    "30": {"lr_swing": 30},
+                    "60": {"lr_swing": 60},
+                    "120": {"lr_swing": 120},
                 },
                 "translation_key": "lr_swing_angle"
             },
