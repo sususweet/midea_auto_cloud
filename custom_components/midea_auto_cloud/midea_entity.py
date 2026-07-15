@@ -313,6 +313,19 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                 return index
         return None
 
+    def _values_equal_soft(self, state_value: Any, expected: Any) -> bool:
+        """Loose equality for wire formats (on/off aliases, numeric strings)."""
+        if state_value == expected:
+            return True
+        state_on_off = self._coerce_on_off(state_value)
+        expected_on_off = self._coerce_on_off(expected)
+        if state_on_off is not None and expected_on_off is not None:
+            return state_on_off == expected_on_off
+        try:
+            return float(state_value) == float(expected)
+        except (TypeError, ValueError):
+            return str(state_value) == str(expected)
+
     def _dict_get_selected(self, key_of_dict: dict, rationale: Rationale = Rationale.EQUALLY):
         for mode, status in key_of_dict.items():
             match = True
@@ -321,7 +334,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                 if state_value is None:
                     match = False
                     break
-                if rationale is Rationale.EQUALLY and state_value != value:
+                if rationale is Rationale.EQUALLY and not self._values_equal_soft(state_value, value):
                     match = False
                     break
                 if rationale is Rationale.GREATER and state_value < value:

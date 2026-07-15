@@ -108,6 +108,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         )
         self._attr_precision = self._config.get("precision")
         self._attr_target_temperature_step = self._config.get("precision")
+        # 短暂回读抖动时保留上次有效模式，避免调温后误显示 off (#211)
+        self._last_hvac_mode: str | None = None
 
     @property
     def is_bath_heater(self) -> bool:
@@ -401,12 +403,33 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     def is_on(self) -> bool:
         return self.hvac_mode != HVACMode.OFF
 
+    def _hvac_power_is_on(self) -> bool | None:
+        """Return True/False if power is known, else None."""
+        if not self._key_power:
+            return None
+        power = self._get_nested_value(self._key_power)
+        if power is None:
+            return None
+        coerced = self._coerce_on_off(power)
+        if coerced is not None:
+            return coerced
+        try:
+            return bool(self._rationale.index(power))
+        except (ValueError, TypeError):
+            return None
+
     @property
     def hvac_mode(self):
         if self.is_bath_heater and self._key_hvac_modes is not None:
             return self._get_bath_heater_hvac_mode()
         mode = self._dict_get_selected(self._key_hvac_modes)
-        return mode if mode is not None else HVACMode.OFF
+        if mode is not None:
+            self._last_hvac_mode = mode
+            return mode
+        # 开机态但 mode/power 字面量短暂不匹配时，不要回落到 off（#211）
+        if self._hvac_power_is_on() and self._last_hvac_mode not in (None, HVACMode.OFF, "off"):
+            return self._last_hvac_mode
+        return HVACMode.OFF
 
     @property
     def hvac_modes(self):
@@ -589,12 +612,23 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                     await self.async_set_attribute(target_key, int(temperature))
             return
 
-        temp_int, temp_dec = divmod(temperature, 1)
+        temp_int, temp_dec = divmod(float(temperature), 1)
         temp_int = int(temp_int)
+        # 半度精度：0 / 0.5，避免浮点噪音导致 Lua small_temperature 判断失败
+        temp_dec = 0.5 if temp_dec >= 0.25 else 0.0
         if hvac_mode is not None:
-            new_status = self._key_hvac_modes.get(hvac_mode) or {}
+            new_status = dict(self._key_hvac_modes.get(hvac_mode) or {})
         else:
             new_status = {}
+            # 调温时显式带上当前开关/模式，避免仅发 temperature 时状态回读匹配失败 (#211)
+            if self._key_power:
+                power = self._get_nested_value(self._key_power)
+                if power is not None:
+                    new_status[self._key_power] = power
+            if self._key_pre_mode:
+                mode = self._get_nested_value(self._key_pre_mode)
+                if mode is not None:
+                    new_status[self._key_pre_mode] = mode
         if isinstance(self._key_target_temperature, list):
             if len(self._key_target_temperature) == 2:
                 new_status[self._key_target_temperature[0]] = temp_int
