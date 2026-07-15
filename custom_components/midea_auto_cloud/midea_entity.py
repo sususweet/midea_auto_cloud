@@ -190,30 +190,33 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
     # ===== Unified helpers migrated from legacy entity base =====
     def _get_nested_value(self, attribute_key: str | None) -> Any:
-        """Get nested value from device attributes using dot notation.
-        
-        Supports both flat and nested attribute access.
-        Examples: 'power', 'eco.status', 'temperature.room'
+        """Get value from device attributes.
+
+        Resolution order for dotted keys:
+        1. Exact flat key (literal ``mode.current``)
+        2. Nested path (``mode`` → ``current``)
+        3. Underscore flat key (``mode_current``)
         """
         if attribute_key is None:
             return None
-        
-        # Handle nested attributes with dot notation
-        if '.' in attribute_key:
-            keys = attribute_key.split('.')
-            value = self.device_attributes
-            try:
-                for key in keys:
-                    if isinstance(value, dict):
-                        value = value.get(key)
-                    else:
-                        return None
-                return value
-            except (KeyError, TypeError):
-                return None
-        else:
-            # Handle flat attributes
-            return self.device_attributes.get(attribute_key)
+
+        attrs = self.device_attributes
+        if not isinstance(attrs, dict):
+            return None
+
+        if attribute_key in attrs:
+            return attrs[attribute_key]
+
+        if "." not in attribute_key:
+            return None
+
+        value: Any = attrs
+        for key in attribute_key.split("."):
+            if isinstance(value, dict) and key in value:
+                value = value[key]
+            else:
+                return attrs.get(attribute_key.replace(".", "_"))
+        return value
 
     def _coerce_on_off(self, value: Any) -> bool | None:
         """Normalize common on/off wire formats to bool."""

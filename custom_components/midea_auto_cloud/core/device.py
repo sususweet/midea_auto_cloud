@@ -275,26 +275,51 @@ class MiedaDevice(threading.Thread):
     def get_attribute(self, attribute):
         return self._attributes.get(attribute)
 
+    @staticmethod
+    def _has_nested_path(attrs: dict, dotted_key: str) -> bool:
+        value = attrs
+        for key in dotted_key.split("."):
+            if not isinstance(value, dict) or key not in value:
+                return False
+            value = value[key]
+        return True
+
     def _convert_to_nested_structure(self, attributes):
-        """Convert dot-notation attributes to nested structure."""
+        """Convert control keys to the device's wire format.
+
+        Dotted mapping keys (e.g. ``mode.current``) become nested objects when
+        the device status is nested; otherwise prefer flat underscore / literal
+        dotted keys so the same default mapping works for both #216-style and
+        Clivet nested 17100001 payloads.
+        """
         nested = {}
+        attrs = self._attributes if isinstance(self._attributes, dict) else {}
         for key, value in attributes.items():
-            if '.' in key:
-                # Handle nested attributes with dot notation
-                keys = key.split('.')
+            if "." not in key:
+                nested[key] = value
+                continue
+
+            underscore = key.replace(".", "_")
+            if self._has_nested_path(attrs, key):
+                keys = key.split(".")
                 current_dict = nested
-                
-                # Navigate to the parent dictionary
                 for k in keys[:-1]:
                     if k not in current_dict:
                         current_dict[k] = {}
                     current_dict = current_dict[k]
-                
-                # Set the final value
                 current_dict[keys[-1]] = value
-            else:
-                # Handle flat attributes
+            elif underscore in attrs:
+                nested[underscore] = value
+            elif key in attrs:
                 nested[key] = value
+            else:
+                keys = key.split(".")
+                current_dict = nested
+                for k in keys[:-1]:
+                    if k not in current_dict:
+                        current_dict[k] = {}
+                    current_dict = current_dict[k]
+                current_dict[keys[-1]] = value
         return nested
 
     def _status_for_lua_control(self, control_attributes: dict) -> dict:

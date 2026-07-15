@@ -3,7 +3,8 @@ from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, C
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
-# 下划线扁平字段（171PNL01 / 17100001 等），default 的点号嵌套键不适用
+# 下划线扁平字段（171PNL01）。
+# 17100001 同 SN8 有两套：扁平(#216)与嵌套(Clivet)，走 default + _get_nested_value 回退，勿绑进本组。
 _UNDERSCORE_CC_MAPPING = {
     "rationale": ["off", "on"],
     "queries": [{}],
@@ -515,6 +516,8 @@ DEVICE_MAPPING = {
             }
         }
     },
-    ("171PNL01", "17100001"): _UNDERSCORE_CC_MAPPING,
+    # 171PNL01：扁平下划线（#110）
+    # 17100001：勿绑在此。嵌套走 default；扁平(#216)靠 _get_nested_value / 下发线格式探测兼容
+    "171PNL01": _UNDERSCORE_CC_MAPPING,
     ("000K86JB", "793777GT"): _FLAT_MULTI_SPLIT_MAPPING,
 }
