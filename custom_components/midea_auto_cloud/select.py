@@ -90,10 +90,23 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
                 if self._is_ignored_value(state_value):
                     return None, True
                 try:
-                    if isinstance(value, int) and state_value != value:
-                        match = False
-                        break
-                    if isinstance(value, str) and str(state_value) != value:
+                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                        try:
+                            if float(state_value) != float(value):
+                                match = False
+                                break
+                            continue
+                        except (TypeError, ValueError):
+                            match = False
+                            break
+                    if isinstance(value, str):
+                        if str(state_value) == value:
+                            continue
+                        try:
+                            if float(state_value) == float(value):
+                                continue
+                        except (TypeError, ValueError):
+                            pass
                         match = False
                         break
                 except (TypeError, ValueError):

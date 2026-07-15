@@ -3,8 +3,7 @@ from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime, PERCENT
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
-# 新协议：lr/ud_shake_switch（T_0000_FA.lua、56011CH9、56011CBE 等）
-# 作为 default，覆盖未单独配置的 SN8
+# 新协议：lr/ud_shake_switch（T_0000_FA.lua、56011CBE 等公共部分）
 _SHAKE_FAN_MAPPING = {
     "rationale": ["off", "on"],
     "queries": [{}],
@@ -51,7 +50,7 @@ _SHAKE_FAN_MAPPING = {
                     "strong": {"mode": "strong"},
                     "self_selection": {"mode": "self_selection"},
                     "sleeping_wind": {"mode": "sleeping_wind"},
-                    "purified_wind": {"mode": "ecology"},
+                    "ai_smart": {"mode": "ai_smart"},
                     "double_area": {
                         "mode": "double_area",
                         "area1_time": 3,
@@ -398,9 +397,177 @@ _LEGACY_SWING_FAN_MAPPING = {
 }
 
 DEVICE_MAPPING = {
-    # 新协议默认（含 56011CH9 / 56011CBE 及未单独配置的同系列）
+    # 新协议公共默认（56011CBE 等同系列）
     "default": _SHAKE_FAN_MAPPING,
-    ("56011CH9", "56011CBE"): _SHAKE_FAN_MAPPING,
+    "56011CBE": _SHAKE_FAN_MAPPING,
+    # 56011CH9：左右摆风 Select=关闭/30/60/120（对齐美居 App）
+    "56011CH9": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [
+            "power",
+            "gear",
+            "lr_shake_switch",
+            "ud_shake_switch",
+            "lr_angle",
+            "ud_angle",
+            "lr_diy_angle_down",
+            "lr_diy_angle_up",
+            "ud_diy_angle_down",
+            "ud_diy_angle_up",
+            "area1_time",
+            "area2_time",
+            "area1_gear",
+            "area2_gear",
+        ],
+        "entities": {
+            Platform.SWITCH: {
+                "display_on_off": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"],
+                },
+                "anion": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "temp_wind_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.FAN: {
+                "fan": {
+                    "power": "power",
+                    "speeds": list({"gear": value + 1} for value in range(0, 12)),
+                    "preset_modes": {
+                        "normal": {"mode": "normal"},
+                        "natural": {"mode": "natural"},
+                        "sleep": {"mode": "sleep"},
+                        "comfort": {"mode": "comfort"},
+                        "baby": {"mode": "baby"},
+                        "strong": {"mode": "strong"},
+                        "self_selection": {"mode": "self_selection"},
+                        "sleeping_wind": {"mode": "sleeping_wind"},
+                        "ai_smart": {"mode": "ai_smart"},
+                        "double_area": {
+                            "mode": "double_area",
+                            "area1_time": 3,
+                            "area2_time": 3,
+                            "area1_gear": 1,
+                            "area2_gear": 1,
+                            "lr_shake_switch": "diy",
+                        },
+                    },
+                }
+            },
+            Platform.SELECT: {
+                "lr_shake_switch": {
+                    "options": {
+                        "off": {"lr_shake_switch": "off"},
+                        "30": {"lr_shake_switch": "normal", "lr_angle": "30"},
+                        "60": {"lr_shake_switch": "normal", "lr_angle": "60"},
+                        "120": {"lr_shake_switch": "normal", "lr_angle": "120"},
+                    },
+                    "translation_key": "lr_swing_angle",
+                },
+                "ud_shake_switch": {
+                    "options": {
+                        "off": {"ud_shake_switch": "off"},
+                        "default": {"ud_shake_switch": "default"},
+                        "normal": {"ud_shake_switch": "normal"},
+                        "diy": {"ud_shake_switch": "diy"},
+                    },
+                    "translation_key": "ud_swing_angle",
+                },
+                "voice": {
+                    "options": {
+                        "open_buzzer": {"voice": "open_buzzer"},
+                        "close_buzzer": {"voice": "close_buzzer"},
+                        "mute": {"voice": "mute"},
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "real_gear": {
+                    "device_class": SensorDeviceClass.ENUM,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "dust_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "filter_life_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "current_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "lr_current_angle",
+                },
+                "ud_current_angle": {
+                    "device_class": SensorDeviceClass.WIND_DIRECTION,
+                    "unit_of_measurement": DEGREE,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "temperature_feedback": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "indoor_temperature",
+                },
+            },
+            Platform.NUMBER: {
+                "lr_diy_angle_down": {
+                    "min": 0,
+                    "max": 120,
+                    "step": 1,
+                    "unit_of_measurement": DEGREE,
+                },
+                "lr_diy_angle_up": {
+                    "min": 0,
+                    "max": 120,
+                    "step": 1,
+                    "unit_of_measurement": DEGREE,
+                },
+                "ud_diy_angle_down": {
+                    "min": 0,
+                    "max": 120,
+                    "step": 1,
+                    "unit_of_measurement": DEGREE,
+                },
+                "ud_diy_angle_up": {
+                    "min": 0,
+                    "max": 120,
+                    "step": 1,
+                    "unit_of_measurement": DEGREE,
+                },
+                "area1_time": {
+                    "min": 3,
+                    "max": 10,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.SECONDS,
+                },
+                "area2_time": {
+                    "min": 3,
+                    "max": 10,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.SECONDS,
+                },
+                "area1_gear": {
+                    "min": 1,
+                    "max": 12,
+                    "step": 1,
+                },
+                "area2_gear": {
+                    "min": 1,
+                    "max": 12,
+                    "step": 1,
+                },
+            },
+        },
+    },
 
     # category=fan 回退，以及已知角度选择协议 SN8
     "default_fan": _ANGLE_SELECT_FAN_MAPPING,

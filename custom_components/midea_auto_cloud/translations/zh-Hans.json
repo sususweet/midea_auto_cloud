@@ -2956,7 +2956,20 @@
         "name": "上下摆风角度"
       },
       "lr_swing_angle": {
-        "name": "左右摆风角度"
+        "name": "左右摆风角度",
+        "state": {
+          "off": "关闭",
+          "30": "30°",
+          "60": "60°",
+          "120": "120°",
+          "default": "整幅",
+          "diy": "自定义",
+          "normal": "定点幅度",
+          "on": "开",
+          "30°": "30°",
+          "60°": "60°",
+          "120°": "120°"
+        }
       },
       "lr_diy_down_percent": {
         "name": "左右自定义下百分比"
@@ -3454,7 +3467,7 @@
               "sleep": "睡眠风",
               "self_selection": "自选风",
               "sleeping_wind": "睡眠风",
-              "purified_wind": "净化风",
+              "ai_smart": "生态风",
               "double_area": "双区送风"
             }
           }
