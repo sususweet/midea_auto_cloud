@@ -67,6 +67,9 @@ class MideaCloud:
         # token 失效（如 40002 user token not exist）时自动重新登录并重试请求
         self._auto_relogin_on_token_invalid = True
         self._on_login_success = None
+        # 仅 /status/lua/get 可能返回 1014 lua analysis exception
+        self._lua_status_analysis_error = False
+        self._lua_status_analysis_msg: str | None = None
 
     def _make_general_data(self):
         return {}
@@ -89,6 +92,30 @@ class MideaCloud:
         if not hasattr(self, "_nickname"):
             self._nickname = self._account
         return self._nickname
+
+    @property
+    def lua_status_analysis_error(self) -> bool:
+        """最近一次 status/lua/get 是否因 lua 解析异常失败。"""
+        return self._lua_status_analysis_error
+
+    @property
+    def lua_status_analysis_msg(self) -> str | None:
+        return self._lua_status_analysis_msg
+
+    @staticmethod
+    def _is_lua_status_endpoint(endpoint: str) -> bool:
+        return "status/lua/get" in endpoint
+
+    @staticmethod
+    def _is_lua_analysis_response(response: dict) -> bool:
+        try:
+            code = int(response.get("code", -1))
+        except Exception:
+            code = -1
+        if code == 1014:
+            return True
+        msg = str(response.get("msg") or response.get("message") or "").lower()
+        return "lua analysis exception" in msg
 
     @staticmethod
     def _is_token_invalid_response(response: dict) -> bool:
@@ -141,6 +168,10 @@ class MideaCloud:
                 "accesstoken": self._access_token
             })
         response:dict = {"code": -1}
+        is_lua_status = self._is_lua_status_endpoint(endpoint)
+        if is_lua_status:
+            self._lua_status_analysis_error = False
+            self._lua_status_analysis_msg = None
         try:
             r = await self._session.request(
                 method, 
@@ -168,6 +199,12 @@ class MideaCloud:
                 return response["data"]
             else:
                 return {"message": "ok"}
+
+        # 仅 status/lua/get 会出现 lua analysis exception，标记后供调用方跳过重试
+        if is_lua_status and self._is_lua_analysis_response(response):
+            self._lua_status_analysis_error = True
+            self._lua_status_analysis_msg = response.get("msg") or response.get("message")
+            return None
 
         # 关闭自动重登时，不做 token 失效专项检测与日志记录，按普通失败返回
         if (

@@ -95,6 +95,8 @@ class MiedaDevice(threading.Thread):
         self._heartbeat_interval = 10
         self._device_connected(connected)
         self._queries = [{}]
+        # 云端返回 lua analysis exception (1014) 的查询，后续刷新不再重试
+        self._skipped_queries: set = set()
         self._cloud_queries = {}
         self._centralized = []
         self._calculate_get = []
@@ -203,9 +205,16 @@ class MiedaDevice(threading.Thread):
 
     def set_queries(self, queries: list):
         self._queries = queries
+        self._skipped_queries.clear()
 
     def set_cloud_queries(self, cloud_queries: dict):
         self._cloud_queries = cloud_queries or {}
+
+    @staticmethod
+    def _query_signature(query) -> tuple:
+        if isinstance(query, dict):
+            return tuple(sorted(query.items()))
+        return (("__raw__", query),)
 
     def set_centralized(self, centralized: list):
         self._centralized = centralized
@@ -495,6 +504,10 @@ class MiedaDevice(threading.Thread):
 
     async def refresh_status(self):
         for query in self._queries:
+            query_sig = self._query_signature(query)
+            if query_sig in self._skipped_queries:
+                continue
+
             # 针对T0xD9复式洗衣机，根据 db_position 动态调整 db_location
             actual_query = query.copy() if isinstance(query, dict) else query
             if self._device_type == 0xD9 and isinstance(actual_query, dict):
@@ -516,6 +529,12 @@ class MiedaDevice(threading.Thread):
                         query=actual_query
                     ):
                         self._parse_cloud_message(status)
+                    elif cloud.lua_status_analysis_error:
+                        self._skipped_queries.add(query_sig)
+                        MideaLogger.warning(
+                            f"Cloud lua analysis exception for query {query}, "
+                            f"skip further retries. msg={cloud.lua_status_analysis_msg}"
+                        )
                     else:
                         if self._lua_runtime is not None:
                             if query_cmd := self._lua_runtime.build_query(actual_query):
@@ -527,6 +546,12 @@ class MiedaDevice(threading.Thread):
                         query=actual_query
                     ):
                         self._parse_cloud_message(status)
+                    elif cloud.lua_status_analysis_error:
+                        self._skipped_queries.add(query_sig)
+                        MideaLogger.warning(
+                            f"Cloud lua analysis exception for query {query}, "
+                            f"skip further retries. msg={cloud.lua_status_analysis_msg}"
+                        )
                     else:
                         if self._lua_runtime is not None:
                             if query_cmd := self._lua_runtime.build_query(actual_query):
