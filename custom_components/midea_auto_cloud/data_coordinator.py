@@ -1,9 +1,10 @@
 """Data coordinator for Midea Auto Cloud integration."""
 
+import copy
 import logging
 import traceback
 from datetime import datetime, timedelta
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
@@ -53,6 +54,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self._device_id = device.device_id
         self._cloud = cloud
         self._last_cloud_poll: dict[str, datetime | None] = {}
+        # True while poll_device_state runs; avoid async_set_updated_data from
+        # device callbacks mid-refresh (resets the poll timer and races the
+        # coordinator's own listener notification).
+        self._polling = False
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -66,22 +71,46 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         """Return True when the device is controlled via cloud only."""
         return self.device._ip_address is None and self._cloud is not None
 
-    def _snapshot(self, available: bool | None = None) -> MideaDeviceData:
-        """Build a coordinator data payload from a COPY of the device attributes.
+    @staticmethod
+    def _flatten_nested_scalars(attrs: dict[str, Any]) -> None:
+        """Write nested dict scalars as dotted flat keys in-place.
 
-        Critical: the device mutates self.device.attributes in place. If we hand
-        HA the same payload object every time, change-detection compares the new
-        payload against the previous one and sees the *same mutated object* on
-        both sides -> "no change" -> entities never refresh. Copying the dict
-        makes each push a distinct snapshot so updates actually propagate.
+        Mapping presets often use ``temperature.room`` while the cloud returns
+        ``{"temperature": {"room": "29.8"}}``. Expanding into the snapshot lets
+        entity lookups see fresh scalars even when only nested objects change.
+        """
+        stack: list[tuple[str, dict]] = [
+            (key, value) for key, value in list(attrs.items()) if isinstance(value, dict)
+        ]
+        while stack:
+            prefix, node = stack.pop()
+            for key, value in node.items():
+                dotted = f"{prefix}.{key}"
+                if isinstance(value, dict):
+                    stack.append((dotted, value))
+                else:
+                    attrs[dotted] = value
+
+    def _snapshot(self, available: bool | None = None) -> MideaDeviceData:
+        """Build a coordinator data payload from a deep copy of device attributes.
+
+        Critical: the device mutates self.device.attributes in place, and nested
+        values (e.g. ``temperature``) are themselves dicts. A shallow
+        ``dict(...)`` copy keeps sharing those nested objects with the live
+        device state (and with previous snapshots), so entities can keep reading
+        stale nested values even after a successful poll. Deep-copying gives
+        each push an independent tree; we also expand nested scalars to dotted
+        keys for stable entity lookups.
         """
         connected = self.device.connected
         if available is None:
             # Cloud appliances remain controllable even when Midea reports them
             # offline at list time (onlineStatus != 1).
             available = True if self._is_cloud_only_device() else connected
+        attrs = copy.deepcopy(self.device.attributes)
+        self._flatten_nested_scalars(attrs)
         return MideaDeviceData(
-            attributes=dict(self.device.attributes),
+            attributes=attrs,
             available=available,
             connected=connected,
         )
@@ -106,6 +135,12 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         for key, value in status.items():
             self.device.attributes[key] = value
 
+        # During poll_device_state the coordinator will snapshot/notify itself.
+        # Pushing here would call async_set_updated_data mid-refresh and reset
+        # the polling interval.
+        if self._polling:
+            return
+
         # Update coordinator data (fresh snapshot so HA detects the change)
         self.async_set_updated_data(self._snapshot())
 
@@ -114,6 +149,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         if self.state_update_muted:
             return self.data
 
+        self._polling = True
         try:
             # 检查是否为中央空调设备（T0x21）
             if self.device.device_type == 0x21:
@@ -123,6 +159,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         except Exception as e:
             traceback.print_exc()
             _LOGGER.error(f"Error polling device state: {e}")
+        finally:
+            self._polling = False
 
         try:
             await self._poll_cloud_stats()
@@ -131,9 +169,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             _LOGGER.error(f"Error polling cloud stats: {e}")
 
         try:
-            updated = self._snapshot()
-            self.async_set_updated_data(updated)
-            return updated
+            # Return a fresh snapshot; DataUpdateCoordinator notifies listeners
+            # (always_update=True). Do not call async_set_updated_data here —
+            # that would nest a manual update inside an active refresh.
+            return self._snapshot()
         except Exception as e:
             traceback.print_exc()
             _LOGGER.error(f"Error building device snapshot: {e}")
