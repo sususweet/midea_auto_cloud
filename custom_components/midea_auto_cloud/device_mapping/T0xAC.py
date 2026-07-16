@@ -147,6 +147,104 @@ DEVICE_MAPPING = {
             }
         }
     },
+    # Midea portable split family (subtype/modelNumber 524, smartProductId 10006481 -
+    # the latter names the protocol lua T_0000_AC_10006481_*.lua). The sn8 on these units
+    # is the shared placeholder "00000Q1F" (the same code appears on unrelated device
+    # types, e.g. a dehumidifier in midea_ac_lan#664), so subtype is the only reliable
+    # key. Differences from "default", all verified on hardware 2026-07-16:
+    #   - min_temp 16: the unit accepts and holds 16 (set from the Midea app, mirrored
+    #     back, and cloud-controlled at 16 all day). The device protocol lua
+    #     (T_0000_AC_10006481_*.lua) validates 13..16 as an extended range with its own
+    #     encoding next to the normal 17..30 - the static 17 was the integration
+    #     clamping, not the hardware. 16 is the deepest the vendor app itself offers.
+    #   - whole-degree steps: the unit rounds half-degree targets.
+    #   - single vertical louvre: no left/right swing motor (wind_swing_lr does nothing).
+    #   - no fresh-air module, no body-presence sensor, no straight-wind vane, and the
+    #     humidity register reads a constant 0 -> those entities/queries are dropped.
+    ("subtype", 524): {
+        "rationale": ["off", "on"],
+        "queries": [{}, {"query_type": "run_status"},
+                    {"query_type": "indoor_temperature"}, {"query_type": "group_data_four"}],
+        "centralized": [],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[real_time_power_value]",
+                    "rvalue": "float([real_time_power]) / 10"
+                },
+            ],
+        },
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "auto": {"power": "on", "mode": "auto"},
+                        "dry": {"power": "on", "mode": "dry"},
+                        "fan_only": {"power": "on", "mode": "fan"}
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "eco": "off",
+                            "comfort_power_save": "off",
+                            "cool_power_saving": 0,
+                            "strong_wind": "off"
+                        },
+                        "eco": {"eco": "on", "cool_power_saving": 1},
+                        "comfort": {"comfort_power_save": "on"},
+                        "boost": {"strong_wind": "on"}
+                    },
+                    "swing_modes": {
+                        "off": {"wind_swing_lr": "off", "wind_swing_ud": "off"},
+                        "vertical": {"wind_swing_lr": "off", "wind_swing_ud": "on"},
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "pre_mode": "mode",
+                    "aux_heat": "ptc",
+                    "min_temp": 16,
+                    "max_temp": 30,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_WHOLE,
+                }
+            },
+            Platform.SWITCH: {
+                "dry": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "aux_heat": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "real_time_power_value": {
+                    "device_class": SensorDeviceClass.POWER,
+                    "unit_of_measurement": UnitOfPower.WATT,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "real_time_power",
+                }
+            }
+        }
+    },
     # Issue #211：22012895 调温需带 power/mode，避免实体误显示 off
     "22012895": {
         "rationale": ["off", "on"],
