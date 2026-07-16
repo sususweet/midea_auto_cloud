@@ -193,9 +193,13 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         """Get value from device attributes.
 
         Resolution order for dotted keys:
-        1. Exact flat key (literal ``mode.current``)
+        1. Exact flat key with a real value (literal ``mode.current``)
         2. Nested path (``mode`` → ``current``)
         3. Underscore flat key (``mode_current``)
+        4. Exact flat key even if None (preset placeholders)
+
+        Mapping setup may preset dotted keys to None (e.g. ``temperature.room``).
+        Those must not shadow a live nested payload under ``temperature.room``.
         """
         if attribute_key is None:
             return None
@@ -205,7 +209,11 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             return None
 
         if attribute_key in attrs:
-            return attrs[attribute_key]
+            exact = attrs[attribute_key]
+            # Non-None exact wins (flat #216-style literal dotted keys).
+            # None may be only a mapping preset — keep looking.
+            if exact is not None or "." not in attribute_key:
+                return exact
 
         if "." not in attribute_key:
             return None
@@ -215,7 +223,11 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             if isinstance(value, dict) and key in value:
                 value = value[key]
             else:
-                return attrs.get(attribute_key.replace(".", "_"))
+                underscore = attrs.get(attribute_key.replace(".", "_"))
+                if underscore is not None:
+                    return underscore
+                # Fall back to preset exact key (None) if nothing else matched
+                return attrs.get(attribute_key)
         return value
 
     def _coerce_on_off(self, value: Any) -> bool | None:
