@@ -40,6 +40,9 @@ default_keys = {
     }
 }
 
+# 重新登录节流：一次登录尝试失败后，至少间隔该秒数才允许下一次尝试，避免登录风暴
+RELOGIN_RETRY_COOLDOWN = 60
+
 class MideaCloud:
     def __init__(
             self,
@@ -66,6 +69,10 @@ class MideaCloud:
         self._relogin_lock = asyncio.Lock()
         # token 失效（如 40002 user token not exist）时自动重新登录并重试请求
         self._auto_relogin_on_token_invalid = True
+        # 最近一次重新登录尝试的时间（monotonic），用于节流
+        self._last_relogin_attempt = float("-inf")
+        # 正在执行 login() 的任务，用于避免登录流程内部的请求递归触发重登（死锁）
+        self._relogin_task: asyncio.Task | None = None
         self._on_login_success = None
         # 仅 /status/lua/get 可能返回 1014 lua analysis exception
         self._lua_status_analysis_error = False
@@ -118,6 +125,47 @@ class MideaCloud:
         return "lua analysis exception" in msg
 
     @staticmethod
+    def _is_login_endpoint(endpoint: str) -> bool:
+        """登录流程自身使用的接口：不参与自动重登/计数清零，避免递归与死锁。"""
+        return "/user/login" in endpoint or "/unitcenter/router/" in endpoint
+
+    async def _ensure_logged_in(self) -> bool:
+        """访问令牌缺失时自动重新登录（带节流）。
+
+        会话失效后若当场重登失败（如云端瞬时故障返回非 JSON），旧实现不会再有
+        任何登录重试，集成会永久停留在未登录状态：轮询与控制全部静默失败。
+        这里在每次业务请求前补一次登录机会，保证会话可自愈。
+        """
+        if self._access_token is not None:
+            return True
+        if self._relogin_task is asyncio.current_task():
+            # login() 流程内部的嵌套请求，直接放行，避免对自身锁死锁
+            return False
+        async with self._relogin_lock:
+            if self._access_token is not None:
+                return True
+            now = time.monotonic()
+            if now - self._last_relogin_attempt < RELOGIN_RETRY_COOLDOWN:
+                return False
+            self._last_relogin_attempt = now
+            self._relogin_task = asyncio.current_task()
+            try:
+                MideaLogger.warning("Midea cloud session已丢失，尝试自动重新登录。")
+                if await self.login():
+                    self._token_invalid_retry_count = 0
+                    MideaLogger.info("Midea cloud 自动重新登录成功。")
+                    return True
+                MideaLogger.warning(
+                    f"Midea cloud 自动重新登录失败，{RELOGIN_RETRY_COOLDOWN}秒后随下次请求重试。"
+                )
+                return False
+            except Exception:
+                traceback.print_exc()
+                return False
+            finally:
+                self._relogin_task = None
+
+    @staticmethod
     def _is_token_invalid_response(response: dict) -> bool:
         try:
             code = int(response.get("code", -1))
@@ -153,6 +201,14 @@ class MideaCloud:
             data.update({
                 "stamp":  datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             })
+        # 会话已丢失（如重登失败后）时先尝试恢复登录，修复“登录失败后永不重试”的死状态
+        if (
+            self._auto_relogin_on_token_invalid
+            and self._access_token is None
+            and not _retried_after_login
+            and not self._is_login_endpoint(endpoint)
+        ):
+            await self._ensure_logged_in()
         random = str(int(time.time()))
         url = self._api_url + endpoint
         dump_data = json.dumps(data)
@@ -191,9 +247,9 @@ class MideaCloud:
             traceback.print_exc()
 
         if int(response["code"]) == 0:
-            # 只在“重试后的业务请求”成功时才清零计数
-            # 否则 login() 过程中也会返回 code==0，从而把计数过早重置导致永远无法累计到上限。
-            if _retried_after_login:
+            # 业务请求成功即可清零计数；登录流程自身的 code==0 不算
+            # （login() 过程中也会返回 code==0，若计入会把计数过早重置）。
+            if _retried_after_login or not self._is_login_endpoint(endpoint):
                 self._token_invalid_retry_count = 0
             if "data" in response:
                 return response["data"]
@@ -210,23 +266,35 @@ class MideaCloud:
         if (
             self._auto_relogin_on_token_invalid
             and not _retried_after_login
+            and not self._is_login_endpoint(endpoint)
+            and self._relogin_task is not asyncio.current_task()
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
             if self._token_invalid_retry_count >= 3:
-                MideaLogger.warning(
-                    "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
-                    f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
-                )
-                return None
+                if time.monotonic() - self._last_relogin_attempt < RELOGIN_RETRY_COOLDOWN:
+                    MideaLogger.warning(
+                        "Midea cloud token失效重试次数过多，冷却期内跳过登录重试。"
+                        f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
+                    )
+                    return None
+                # 冷却期已过：重置计数继续尝试，避免永久放弃登录
+                self._token_invalid_retry_count = 0
             self._token_invalid_retry_count += 1
             MideaLogger.warning(f"Midea cloud token失效，准备重新登录后重试请求。endpoint={endpoint}, retry_count={self._token_invalid_retry_count}, code={response.get('code')}, msg={response.get('msg') or response.get('message')}")
             self._access_token = None
             try:
                 async with self._relogin_lock:
                     if self._access_token is None:
-                        if not await self.login():
+                        if time.monotonic() - self._last_relogin_attempt < RELOGIN_RETRY_COOLDOWN:
                             return None
+                        self._last_relogin_attempt = time.monotonic()
+                        self._relogin_task = asyncio.current_task()
+                        try:
+                            if not await self.login():
+                                return None
+                        finally:
+                            self._relogin_task = None
                 return await self._api_request(
                     endpoint=endpoint,
                     data=data,
@@ -486,6 +554,13 @@ class MeijuCloud(MideaCloud):
     ) -> dict | None:
         """家用空调 jykt 接口，响应格式为 errCode/result 而非 code/data。"""
         header = header or {}
+        # 会话已丢失时先尝试恢复登录（带节流），与 _api_request 保持一致
+        if (
+            self._auto_relogin_on_token_invalid
+            and self._access_token is None
+            and not _retried_after_login
+        ):
+            await self._ensure_logged_in()
         random = str(int(time.time() * 1000))
         url = self._api_url + endpoint
         dump_data = json.dumps(data)
@@ -536,22 +611,33 @@ class MeijuCloud(MideaCloud):
         if (
             self._auto_relogin_on_token_invalid
             and not _retried_after_login
+            and self._relogin_task is not asyncio.current_task()
             and isinstance(response, dict)
             and self._is_token_invalid_response(response)
         ):
             if self._token_invalid_retry_count >= 3:
-                MideaLogger.warning(
-                    "Midea cloud token失效重试次数过多，已跳过后续登录重试。"
-                    f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
-                )
-                return None
+                if time.monotonic() - self._last_relogin_attempt < RELOGIN_RETRY_COOLDOWN:
+                    MideaLogger.warning(
+                        "Midea cloud token失效重试次数过多，冷却期内跳过登录重试。"
+                        f"endpoint={endpoint}, retry_count={self._token_invalid_retry_count}"
+                    )
+                    return None
+                # 冷却期已过：重置计数继续尝试，避免永久放弃登录
+                self._token_invalid_retry_count = 0
             self._token_invalid_retry_count += 1
             self._access_token = None
             try:
                 async with self._relogin_lock:
                     if self._access_token is None:
-                        if not await self.login():
+                        if time.monotonic() - self._last_relogin_attempt < RELOGIN_RETRY_COOLDOWN:
                             return None
+                        self._last_relogin_attempt = time.monotonic()
+                        self._relogin_task = asyncio.current_task()
+                        try:
+                            if not await self.login():
+                                return None
+                        finally:
+                            self._relogin_task = None
                 return await self._jykt_api_request(
                     endpoint=endpoint,
                     data=data,
@@ -984,7 +1070,17 @@ class MSmartHomeCloud(MideaCloud):
             header.update({
                 "uid": self._uid
             })
-        return await super()._api_request(endpoint, data, header, print_log=True)
+        # 必须透传 method 与 _retried_after_login：
+        # 丢失 _retried_after_login 会让基类的“重试成功后清零计数”永远不生效，
+        # token 失效计数只增不减，累计 3 次后自动重登被永久跳过。
+        return await super()._api_request(
+            endpoint,
+            data,
+            header,
+            method=method,
+            _retried_after_login=_retried_after_login,
+            print_log=True,
+        )
 
     async def _re_route(self):
         data = self._make_general_data()
