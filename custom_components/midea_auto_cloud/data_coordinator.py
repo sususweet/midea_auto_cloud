@@ -58,6 +58,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # device callbacks mid-refresh (resets the poll timer and races the
         # coordinator's own listener notification).
         self._polling = False
+        # E1: track last user-selected wash mode for fallback when device
+        # reports neutral_gear / "" / invalid in idle state.
+        self.last_user_mode: str = ""
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -126,6 +129,36 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
 
         self.state_update_muted = async_call_later(self.hass, 10, unmute)
 
+    def _auto_seed_e1_mode(self) -> None:
+        """Auto-seed mode into _LOCAL_DATA for E1 dishwasher devices.
+
+        Device-reported ``mode`` in idle state may be ``neutral_gear`` / ``""``
+        / ``invalid`` — stale from a previous wash or model-dependent.  This
+        seeds ``_LOCAL_DATA["mode"]`` from the real device mode (when valid)
+        or falls back to ``last_user_mode`` so mode_dependent sub-feature
+        entities (temperature, region, additional, etc.) stay visible and the
+        start/order command receives the correct mode.
+        """
+        if self.device.device_type != 0xE1:
+            return
+        local = self.device._local_data
+        if "mode" in local:
+            return  # already seeded — do NOT overwrite user selection
+
+        mode = self.device.attributes.get("mode", "")
+        work_status = self.device.attributes.get("work_status", "")
+
+        # Idle states: restore mode from device or last_user_mode
+        if work_status in ("standby", "power_off", "cancel", ""):
+            if not mode or mode in ("neutral_gear", "invalid"):
+                if self.last_user_mode:
+                    local["mode"] = self.last_user_mode
+            else:
+                local["mode"] = mode
+        # Running states: seed real wash mode so entities reflect active cycle
+        elif mode and mode not in ("neutral_gear", "invalid"):
+            local["mode"] = mode
+
     def _device_update_callback(self, status: dict) -> None:
         """Callback for device status updates."""
         if self.state_update_muted:
@@ -134,6 +167,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # Update device attributes (allow new keys to be added)
         for key, value in status.items():
             self.device.attributes[key] = value
+
+        # E1 auto-seed: ensure mode_dependent entities have a mode to work with
+        self._auto_seed_e1_mode()
 
         # During poll_device_state the coordinator will snapshot/notify itself.
         # Pushing here would call async_set_updated_data mid-refresh and reset
@@ -167,6 +203,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         except Exception as e:
             traceback.print_exc()
             _LOGGER.error(f"Error polling cloud stats: {e}")
+
+        # E1 auto-seed: ensure mode_dependent entities have a mode to work with
+        # after each poll cycle.
+        self._auto_seed_e1_mode()
 
         try:
             # Return a fresh snapshot; DataUpdateCoordinator notifies listeners
@@ -402,6 +442,10 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         attributes = {}
         attributes[attribute] = value
         await self.async_set_attributes(attributes)
+
+    async def async_set_control(self, attributes: dict) -> None:
+        """Send control command directly — no optimistic local update (matching smart_home)."""
+        await self.device.set_attributes(attributes)
 
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""

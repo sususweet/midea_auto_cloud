@@ -51,12 +51,7 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
 
     @property
     def native_unit_of_measurement(self):
-        """Return the native unit (static or device attribute driven).
-
-        If mapping provides dynamic_unit key (e.g. "temperature_unit"), it is read from device attributes:
-        - 1 => Fahrenheit
-        - 0/others => Celsius
-        """
+        """Return the native unit (static or device attribute driven)."""
         if isinstance(self._key_dynamic_unit, str):
             raw = self._get_nested_value(self._key_dynamic_unit)
             try:
@@ -69,28 +64,34 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        # Use attribute from config if available, otherwise fall back to entity_key
+        if self._computed_status:
+            from .device_mapping.T0xE1 import get_status_num, get_status_text
+            attrs = self.device_attributes
+            mapping = getattr(self.coordinator, "_device_mapping", {}) or {}
+            keep_text = mapping.get("_keep_text_name", "")
+            dry_text = mapping.get("_dry_text_name", "")
+            keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+            status_num = get_status_num(
+                attrs.get("work_status"),
+                airswitch=attrs.get("airswitch", 0),
+                air_left_hour=attrs.get("air_left_hour", 0),
+                dryswitch=attrs.get("dryswitch", 0),
+                keep_start_now=keep_start_now,
+            )
+            return get_status_text(status_num, keep_text, dry_text)
+
         attribute = self._config.get("attribute", self._entity_key)
         value = self._get_nested_value(attribute)
-        
-        # Handle invalid string values
         if isinstance(value, str) and value.lower() in ['invalid', 'none', 'null', '']:
             return None
-            
-        # Try to convert to number if it's a string that looks like a number
         if isinstance(value, str):
             try:
-                # Try integer first
                 if '.' not in value:
                     return int(value)
-                # Then float
                 return float(value)
             except (ValueError, TypeError):
-                # If conversion fails, return None for numeric sensors
-                # or return the original string for enum sensors
                 device_class = self._config.get("device_class")
                 if device_class and "enum" not in device_class.lower():
                     return None
                 return value
-                
         return value

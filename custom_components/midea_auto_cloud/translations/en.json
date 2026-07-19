@@ -148,6 +148,27 @@
       },
       "find": {
         "name": "Locate Robot"
+      },
+      "start": {
+        "name": "Start"
+      },
+      "start_wash": {
+        "name": "Start"
+      },
+      "start_keep": {
+        "name": "Start Keep"
+      },
+      "start_dry": {
+        "name": "Start Dry"
+      },
+      "cancel": {
+        "name": "Cancel"
+      },
+      "pause": {
+        "name": "Pause"
+      },
+      "start_order": {
+        "name": "Start Order"
       }
     },
     "binary_sensor": {
@@ -729,7 +750,14 @@
           "extra_rinse_1": "Extra Rinse 1",
           "extra_rinse_2": "Extra Rinse 2",
           "few_dishes_extra_rinse_1": "Few Dishes Extra Rinse 1",
-          "few_dishes_extra_rinse_2": "Few Dishes Extra Rinse 2"
+          "few_dishes_extra_rinse_2": "Few Dishes Extra Rinse 2",
+          "half_load": "Half Load",
+          "strong_wash_func": "Strong Wash",
+          "half_rinse_1": "Half Load + Rinse 1",
+          "half_rinse_2": "Half Load + Rinse 2",
+          "door_open_dry": "Door Open Dry",
+          "steam": "Steam",
+          "speed_up": "Speed Up"
         }
       },
       "no_wind_sense": {
@@ -995,7 +1023,10 @@
           "low": "low",
           "medium": "medium",
           "high": "high",
-          "auto": "auto"
+          "auto": "auto",
+          "1": "Level 1",
+          "2": "Level 2",
+          "3": "Level 3"
         }
       },
       "db_water_level": {
@@ -1318,7 +1349,6 @@
       "wash_mode": {
         "name": "wash mode",
         "state": {
-          "neutral_gear": "neutral gear",
           "auto_wash": "auto wash",
           "strong_wash": "strong wash",
           "standard_wash": "standard wash",
@@ -1351,7 +1381,9 @@
           "wash_dry": "wash dry",
           "auto_dry": "auto dry",
           "fire_disinfect": "fire disinfect",
-          "toy_wash": "toy wash"
+          "toy_wash": "toy wash",
+          "keep": "keep",
+          "dry": "dry"
         }
       },
       "func_select": {
@@ -1654,6 +1686,38 @@
           "3": "Medium",
           "4": "Medium High",
           "5": "High"
+        }
+      },
+      "water_strong_level": {
+        "name": "Strong Water Level",
+        "state": {
+          "auto": "Auto",
+          "1": "Level 1",
+          "2": "Level 2"
+        }
+      },
+      "wash_region": {
+        "name": "Wash Region",
+        "state": {
+          "all": "All",
+          "upper": "Upper",
+          "lower": "Lower"
+        }
+      },
+      "work_time": {
+        "name": "Work Time",
+        "state": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5",
+          "6": "6",
+          "7": "7",
+          "8": "8",
+          "9": "9",
+          "10": "10"
         }
       }
     },
@@ -2902,6 +2966,12 @@
       },
       "indoor_humidity": {
         "name": "Indoor Humidity"
+      },
+      "device_status": {
+        "name": "Device Status"
+      },
+      "order_left_time": {
+        "name": "Order Remaining Time"
       }
     },
     "light": {
@@ -3135,6 +3205,9 @@
             }
           }
         }
+      },
+      "dry_set_min": {
+        "name": "Dry Time"
       }
     },
     "switch": {
@@ -4313,11 +4386,28 @@
       },
       "water_pump": {
         "name": "Water Pump"
+      },
+      "door_auto_open": {
+        "name": "Auto Door Open"
+      },
+      "auto_throw": {
+        "name": "Auto Throw"
+      },
+      "more_dry": {
+        "name": "More Dry"
+      },
+      "more_dry_wash": {
+        "name": "More Dry Wash"
       }
     },
     "text": {
       "external_humidity_sensor": {
         "name": "External Humidity Sensor"
+      }
+    },
+    "time": {
+      "order_set_time": {
+        "name": "Order Time"
       }
     },
     "vacuum": {

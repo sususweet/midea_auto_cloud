@@ -126,6 +126,12 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
                 return matched
             if ignored:
                 return self._last_option
+            # No match and not ignored: device reports an internal state
+            # (e.g. neutral_gear / "" / invalid in idle) that is not in
+            # the option list.  Show the last user-selected mode so the
+            # UI never flashes blank (matching smart_home behaviour).
+            if self._last_option is not None:
+                return self._last_option
 
         if attribute and attribute != self._entity_key:
             value = self._get_nested_value(attribute)
@@ -151,6 +157,9 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
         if not new_status:
             return
 
+        # Run validators
+        await self._run_validators(option)
+
         self._last_option = option
         command = self._config.get("command")
         merged_command = {}
@@ -164,7 +173,39 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
             current_value = self._get_nested_value(attr)
             if current_value is not None:
                 merged_command[attr] = current_value
-        if merged_command:
+
+        if self._local_only:
+            # ── Clear stale sub-feature values when wash mode changes ──
+            local_data = self.coordinator.device._local_data
+            if self._entity_key == "wash_mode":
+                for key in list(local_data):
+                    if key != "mode":
+                        del local_data[key]
+                # Store the actual mode identifier (e.g. "glass_wash"),
+                # not the display key (e.g. "轻柔洗").  This is needed
+                # by _auto_seed_e1_mode and build_start_command.
+                actual_mode = merged_command.get("mode", option)
+                self.coordinator.last_user_mode = actual_mode
+
+            local_data.update(merged_command)
+            # ── Optimistic UI update: notify coordinator so ALL mode_dependent
+            #     entities immediately re-check their available property.
+            self.async_write_ha_state()
+            self.coordinator.async_update_listeners()
+        elif merged_command:
             await self.async_set_attributes(merged_command)
         else:
             await self.async_set_attributes(new_status)
+
+    async def _run_validators(self, option: str) -> None:
+        if not self._validators:
+            return
+        from .device_mapping.T0xE1 import dispatch_validator
+        data = self.device_attributes
+        diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
+        keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+        for v in self._validators:
+            await dispatch_validator(
+                v, data, diff_flags, keep_start_now,
+                option=option, options_map=self._key_options,
+            )

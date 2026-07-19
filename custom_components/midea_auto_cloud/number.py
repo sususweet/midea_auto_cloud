@@ -99,31 +99,67 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         """Return the mode of the number entity."""
         return self._mode
 
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Extra attributes for E1 keepTimeType formatting (days/hours display)."""
+        if self._entity_key != "air_set_hour":
+            return None
+        mapping = getattr(self.coordinator, "_device_mapping", {}) or {}
+        keep_time_type = mapping.get("_keep_time_type", 0)
+        if keep_time_type != 2:
+            return None
+        try:
+            hours = int(self.device_attributes.get("air_set_hour", 0))
+        except (ValueError, TypeError):
+            hours = 0
+        if hours >= 24:
+            days = hours // 24
+            rem = hours % 24
+            formatted = f"{days}天{rem:02d}时"
+        else:
+            formatted = f"{hours}小时"
+        return {"formatted": formatted}
+
     async def async_set_native_value(self, value: float) -> None:
         """Set the value of the number entity."""
-        # 确保值在有效范围内
-        # Clamp with the resolved float bounds (native_min_value/native_max_value),
-        # not the raw config values. When min/max are attribute *names* (e.g. the
-        # T0x44 auto-mode limits), the raw values are strings and comparing a float
-        # against them raises "'<' not supported between instances of 'float' and 'str'".
         value = max(self.native_min_value, min(self.native_max_value, value))
+        int_value = int(value)
 
-        # 首先尝试使用command字段（如果存在）
         command = self._config.get("command")
         if command and isinstance(command, dict):
-            # 替换{value}模板
             import copy
             merged_command = copy.deepcopy(command)
             for key, val in merged_command.items():
                 if isinstance(val, str) and "{value}" in val:
-                    merged_command[key] = val.replace("{value}", str(int(value)))
+                    merged_command[key] = val.replace("{value}", str(int_value))
             await self.async_set_attributes(merged_command)
-            return
-        
-        # Use attribute from config if available, otherwise fall back to entity_key
-        attribute = self._config.get("attribute", self._entity_key)
-        
-        # 如果配置中指定了转换函数或映射，可以在这里处理
-        # 否则直接设置属性值
-        await self.async_set_attribute(attribute, str(int(value)))
+        else:
+            attribute = self._config.get("attribute", self._entity_key)
+            await self.async_set_attribute(attribute, str(int_value))
+
+        # E1 side_effect: keep/dry auto-enable
+        if self._side_effect:
+            effect_type = self._side_effect.get("type", "")
+            attrs = self.device_attributes
+            if effect_type == "keep_auto_enable":
+                keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+                if not keep_start_now:
+                    return
+                try:
+                    airswitch = int(attrs.get("airswitch", 0))
+                except (ValueError, TypeError):
+                    airswitch = 0
+                if int_value > 0 and airswitch == 0:
+                    await self.async_set_attribute("airswitch", "1")
+                elif int_value == 0 and airswitch == 1:
+                    await self.async_set_attribute("airswitch", "0")
+            elif effect_type == "dry_auto_enable":
+                try:
+                    dryswitch = int(attrs.get("dryswitch", 0))
+                except (ValueError, TypeError):
+                    dryswitch = 0
+                if int_value > 0 and dryswitch == 0:
+                    await self.async_set_attribute("dryswitch", "1")
+                elif int_value == 0 and dryswitch == 1:
+                    await self.async_set_attribute("dryswitch", "0")
 

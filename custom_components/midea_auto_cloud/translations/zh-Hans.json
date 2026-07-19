@@ -148,6 +148,27 @@
       },
       "find": {
         "name": "寻找机器人"
+      },
+      "start": {
+        "name": "启动"
+      },
+      "start_wash": {
+        "name": "启动"
+      },
+      "start_keep": {
+        "name": "单储存启动"
+      },
+      "start_dry": {
+        "name": "单烘干启动"
+      },
+      "cancel": {
+        "name": "取消"
+      },
+      "pause": {
+        "name": "暂停"
+      },
+      "start_order": {
+        "name": "预约启动"
       }
     },
     "binary_sensor": {
@@ -777,7 +798,14 @@
           "extra_rinse_1": "+漂洗1次",
           "extra_rinse_2": "+漂洗2次",
           "few_dishes_extra_rinse_1": "少量餐具+漂洗1次",
-          "few_dishes_extra_rinse_2": "少量餐具+漂洗2次"
+          "few_dishes_extra_rinse_2": "少量餐具+漂洗2次",
+          "half_load": "半载洗",
+          "strong_wash_func": "强力洗",
+          "half_rinse_1": "半载+漂洗1次",
+          "half_rinse_2": "半载+漂洗2次",
+          "door_open_dry": "开门速干",
+          "steam": "蒸汽洗",
+          "speed_up": "加速"
         }
       },
       "no_wind_sense": {
@@ -1158,7 +1186,10 @@
           "low": "低",
           "medium": "中",
           "high": "高",
-          "auto": "自动"
+          "auto": "自动",
+          "1": "1档",
+          "2": "2档",
+          "3": "3档"
         }
       },
       "db_water_level": {
@@ -1540,7 +1571,6 @@
       "wash_mode": {
         "name": "洗涤模式",
         "state": {
-          "neutral_gear": "待机",
           "auto_wash": "智能洗",
           "strong_wash": "超强洗",
           "standard_wash": "标准洗",
@@ -1573,7 +1603,9 @@
           "wash_dry": "洗烘",
           "auto_dry": "自动烘干",
           "fire_disinfect": "火焰消毒",
-          "toy_wash": "玩具洗"
+          "toy_wash": "玩具洗",
+          "keep": "保管",
+          "dry": "烘干"
         }
       },
       "func_select": {
@@ -1929,6 +1961,38 @@
           "3": "中档",
           "4": "中高档",
           "5": "高档"
+        }
+      },
+      "water_strong_level": {
+        "name": "强力洗水位",
+        "state": {
+          "auto": "自动",
+          "1": "1档",
+          "2": "2档"
+        }
+      },
+      "wash_region": {
+        "name": "洗涤区域",
+        "state": {
+          "all": "全篮",
+          "upper": "上碗篮",
+          "lower": "下碗篮"
+        }
+      },
+      "work_time": {
+        "name": "工作时间",
+        "state": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5",
+          "6": "6",
+          "7": "7",
+          "8": "8",
+          "9": "9",
+          "10": "10"
         }
       }
     },
@@ -3235,6 +3299,12 @@
       },
       "filter_use_per": {
         "name": "滤芯使用百分比"
+      },
+      "device_status": {
+        "name": "设备状态"
+      },
+      "order_left_time": {
+        "name": "预约剩余时间"
       }
     },
     "light": {
@@ -3487,6 +3557,9 @@
             }
           }
         }
+      },
+      "dry_set_min": {
+        "name": "烘干设置时间"
       }
     },
     "switch": {
@@ -4665,11 +4738,28 @@
       },
       "water_pump": {
         "name": "水泵"
+      },
+      "door_auto_open": {
+        "name": "自动开门"
+      },
+      "auto_throw": {
+        "name": "自动投放"
+      },
+      "more_dry": {
+        "name": "加强烘干"
+      },
+      "more_dry_wash": {
+        "name": "加强烘干洗"
       }
     },
     "text": {
       "external_humidity_sensor": {
         "name": "外部湿度传感器"
+      }
+    },
+    "time": {
+      "order_set_time": {
+        "name": "预约时间"
       }
     },
     "vacuum": {

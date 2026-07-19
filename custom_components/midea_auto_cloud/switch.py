@@ -30,7 +30,6 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     """Midea switch entity."""
 
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
-        # 自动判断是否为中央空调设备（T0x21）
         self._is_central_ac = device.device_type == 0x21
         self._include_current = config.get("include_current") or []
 
@@ -52,12 +51,16 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return if the switch is on."""
-        # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
+        if self._local_only:
+            val = self.coordinator.device._local_data.get(attribute)
+            if val is not None:
+                return bool(val)
         return self._get_status_on_off(attribute)
 
     async def async_turn_on(self):
         """Turn the switch on."""
+        await self._run_validators()
         attribute = self._config.get("attribute", self._entity_key)
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(True)
@@ -66,15 +69,43 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
 
     async def async_turn_off(self):
         """Turn the switch off."""
+        await self._run_validators()
+        # E1: devOffKeep — close keep before power off
+        if self._entity_key == "power":
+            diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
+            if diff_flags.get("devOffKeep"):
+                attrs = self.device_attributes
+                try:
+                    airswitch = int(attrs.get("airswitch", 0))
+                except (ValueError, TypeError):
+                    airswitch = 0
+                if airswitch > 0:
+                    await self.async_set_attributes({"airswitch": 0})
         attribute = self._config.get("attribute", self._entity_key)
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(False)
         else:
             await self._async_set_switch_status(attribute, False)
 
+    async def _run_validators(self) -> None:
+        """Run validator chain before executing action."""
+        if not self._validators:
+            return
+        from .device_mapping.T0xE1 import dispatch_validator
+        data = self.device_attributes
+        diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
+        keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+        for v in self._validators:
+            await dispatch_validator(v, data, diff_flags, keep_start_now)
+
     async def _async_set_switch_status(self, attribute: str | None, turn_on: bool):
         """Set switch status, merging fixed command parameters if configured."""
         if attribute is None:
+            return
+        # local_only: store in cache for bundling with start/order command
+        if self._local_only:
+            self.coordinator.device._local_data[attribute] = self._on_off_wire_value(turn_on, attribute)
+            self.async_write_ha_state()
             return
         merge_attributes = self._config.get("merge_attributes")
         if merge_attributes:
@@ -99,20 +130,15 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             await self._async_set_status_on_off(attribute, turn_on)
 
     async def _async_set_central_ac_switch_status(self, is_on: bool):
-        """设置中央空调开关设备的状态"""
-        # 从entity_key中提取endpoint ID
-        # entity_key格式: endpoint_1_OnOff -> 提取出 1
-        endpoint_id = 1  # 默认值
+        """Set central AC switch status."""
+        endpoint_id = 1
         if self._entity_key.startswith("endpoint_"):
             try:
-                # 提取endpoint_后面的数字
                 parts = self._entity_key.split("_")
                 if len(parts) >= 2:
                     endpoint_id = int(parts[1])
             except (ValueError, IndexError):
                 MideaLogger.warning(f"Failed to extract endpoint ID from {self._entity_key}, using default 1")
-        
-        # 构建控制命令
         control = {
             "run_mode": "1" if is_on else "0",
             "endpoint": endpoint_id

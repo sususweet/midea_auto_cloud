@@ -84,6 +84,7 @@ class MiedaDevice(threading.Thread):
         self._sn8 = sn8
         self._manufacturer_code = manufacturer_code
         self._category = category
+        self._local_data: dict[str, int | str] = {}
         self._attributes = {
             "device_type": "T0x%02X" % device_type,
             "sn": sn,
@@ -401,9 +402,8 @@ class MiedaDevice(threading.Thread):
             new_status[attr] = self._attributes.get(attr)
         has_new = False
         for attribute, value in attributes.items():
-            if attribute in self._attributes.keys() or attribute in LAMP_CONTROL_KEYS:
-                has_new = True
-                new_status[attribute] = value
+            has_new = True
+            new_status[attribute] = value
     
         # 针对T0xD9复式洗衣机，根据 db_location_selection 调整 db_location
         if self._device_type == 0xD9:

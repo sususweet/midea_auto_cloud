@@ -907,6 +907,81 @@ class MeijuCloud(MideaCloud):
                 traceback.print_exc()
         return fnm
 
+    async def download_device_config(self, sn8: str, device_type: int) -> dict | None:
+        """Download per-model device configuration from cloud (getAppModelConfig)."""
+        import hashlib
+        import hmac
+
+        iot_key = clouds["美的美居"]["iot_key"]
+        hmac_key = clouds["美的美居"]["hmac_key"]
+
+        config_data = {
+            "msg": "getAppModelConfig",
+            "params": {
+                "protype": f"{device_type:x}",
+                "sn8": sn8,
+            },
+            "reqId": token_hex(16),
+            "stamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+        }
+        json_data = json.dumps(config_data, separators=(',', ':'))
+        random = str(int(time.time()))
+        msg = iot_key + json_data + random
+        sign = hmac.new(hmac_key.encode("ascii"), msg.encode("ascii"), hashlib.sha256).hexdigest()
+
+        headers = {
+            "content-type": "application/json; charset=utf-8",
+            "secretVersion": "1",
+            "accesstoken": self._access_token,
+            "random": random,
+            "sign": sign,
+        }
+        url = self._api_url + "/cfhrs/common/v1/api"
+        try:
+            r = await self._session.request(
+                "POST", url, headers=headers, data=json_data,
+                timeout=30, proxy=self._proxy,
+            )
+            raw = await r.read()
+            MideaLogger.debug(
+                f"download_device_config url: {url}, response: {raw}"
+            )
+            result = json.loads(raw)
+        except Exception as e:
+            MideaLogger.warning(f"download_device_config exception: {e}")
+            return None
+
+        if not isinstance(result, dict) or not result:
+            return None
+
+        ret_code = str(result.get("retCode", result.get("code", "-1")))
+        if ret_code != "0":
+            return None
+
+        data = result.get("data") or result.get("result") or {}
+        if isinstance(data, str):
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                return None
+        if "config" in data:
+            config = data["config"]
+        elif "result" in data and "config" in data["result"]:
+            config = data["result"]["config"]
+        else:
+            config = data
+
+        if isinstance(config, str):
+            try:
+                config = json.loads(config)
+            except json.JSONDecodeError:
+                return None
+        return config if isinstance(config, dict) else None
+
+    async def download_diff_config(self, device_type: int) -> dict | None:
+        """Download global diff config (sn8='DIFFTYPE')."""
+        return await self.download_device_config("DIFFTYPE", device_type)
+
 class MSmartHomeCloud(MideaCloud):
     APP_ID = "1010"
     SRC = "10"
@@ -1094,7 +1169,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType ": "2",
+            "encryptedType": "2",
         }
         if smart_product_id:
             data.update({"smartProductId": smart_product_id})
@@ -1185,7 +1260,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType ": "2",
+            "encryptedType": "2",
             "applianceCode": appliance_code,
             "command": {
                 "query": query
@@ -1219,7 +1294,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType ": "2",
+            "encryptedType": "2",
             "applianceCode": appliance_code,
             "command": {
                 "control": control
