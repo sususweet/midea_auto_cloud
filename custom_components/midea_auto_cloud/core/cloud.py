@@ -153,7 +153,7 @@ class MideaCloud:
                 MideaLogger.warning("Midea cloud session已丢失，尝试自动重新登录。")
                 if await self.login():
                     self._token_invalid_retry_count = 0
-                    MideaLogger.info("Midea cloud 自动重新登录成功。")
+                    MideaLogger.warning("Midea cloud 自动重新登录成功。")
                     return True
                 MideaLogger.warning(
                     f"Midea cloud 自动重新登录失败，{RELOGIN_RETRY_COOLDOWN}秒后随下次请求重试。"
