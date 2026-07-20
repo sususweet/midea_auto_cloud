@@ -30,6 +30,7 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     """Midea switch entity."""
 
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
+        # 自动判断是否为中央空调设备（T0x21）
         self._is_central_ac = device.device_type == 0x21
         self._include_current = config.get("include_current") or []
 
@@ -51,6 +52,7 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return if the switch is on."""
+        # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
         if self._local_only:
             val = self.coordinator.device._local_data.get(attribute)
@@ -130,15 +132,20 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             await self._async_set_status_on_off(attribute, turn_on)
 
     async def _async_set_central_ac_switch_status(self, is_on: bool):
-        """Set central AC switch status."""
-        endpoint_id = 1
+        """设置中央空调开关设备的状态"""
+        # 从entity_key中提取endpoint ID
+        # entity_key格式: endpoint_1_OnOff -> 提取出 1
+        endpoint_id = 1  # 默认值
         if self._entity_key.startswith("endpoint_"):
             try:
+                # 提取endpoint_后面的数字
                 parts = self._entity_key.split("_")
                 if len(parts) >= 2:
                     endpoint_id = int(parts[1])
             except (ValueError, IndexError):
                 MideaLogger.warning(f"Failed to extract endpoint ID from {self._entity_key}, using default 1")
+        
+        # 构建控制命令
         control = {
             "run_mode": "1" if is_on else "0",
             "endpoint": endpoint_id

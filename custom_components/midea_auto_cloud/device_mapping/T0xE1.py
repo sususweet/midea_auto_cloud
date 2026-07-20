@@ -10,10 +10,9 @@ from typing import Any
 
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.const import Platform, UnitOfTemperature, UnitOfTime
+from homeassistant.const import Platform, UnitOfTemperature, PRECISION_HALVES, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-
-# ---- E1 statusNum computation ----
+from homeassistant.components.switch import SwitchDeviceClass
 
 _WORK_STATUS_NUM: dict[str, int] = {
     "power_off": 0, "power_on": 1, "cancel": 1, "standby": 1,
@@ -26,6 +25,743 @@ _STATUS_TEXT: dict[int, str] = {
     1: "待机中", 2: "预约中", 3: "运行中", 4: "故障", 5: "保管中", 6: "烘干中", 10: "待机中",
 }
 
+_LOGGER = logging.getLogger(__name__)
+
+# Cloud-feature → (platform, entity_key) mapping used by apply_device_config
+_FEATURE_MAP: dict[str, tuple[str, str]] = {
+    "additional":       ("select", "additional"),
+    "waterLevel":       ("select", "water_level"),
+    "waterStrongLevel": ("select", "water_strong_level"),
+    "region":           ("select", "wash_region"),
+    "germ":             ("select", "work_time"),
+    "autoOpen":         ("switch", "door_auto_open"),
+    "autoThrow":        ("switch", "auto_throw"),
+    "moreDry":          ("switch", "more_dry"),
+    "moreDryWash":      ("switch", "more_dry_wash"),
+}
+
+# Select entities rebuilt dynamically from cloud config
+_DYNAMIC_SELECTS: dict[str, tuple[str, str]] = {
+    "additional":       ("additional",        "additional"),
+    "water_level":      ("waterLevel",        "water_level"),
+    "water_strong_level":("waterStrongLevel", "water_strong_level"),
+    "wash_region":      ("region",            "wash_region"),
+}
+
+# Built-in diff fallback (local hardcoded, matching mini-program utils/diff.js).
+# Used when cloud diff download fails, ensuring basic diff functionality.
+_DEFAULT_DIFF: dict = {
+    "diffType": {
+        "withoutLockOnStart": ["000W5601","760RX10P","760Y0002","760Y0004","7600JV20","7600061Y","7600062Q","7600646H","7600643T","76000613","76000624","76006440","76006441","76000628","7600644L","76006452","76006456","76006457","76006458","76006455","76006450","7600645A","76006451","7600645B","76006459","7600644Z","7600645J","7600645L","760Y0009","7600645Q","7600059A","7600645D","7600645N","7600645F","760Y0010","76006469","7600646A","76006460","76006467","7600646G","7600646T","7600646L","7600646N","7600646W","7600646Q"],
+        "keepOffOnPowerOff": ["000000X4","000000Y1","00000X4S","0000V1E6"],
+        "deviceUploadFaltDataOnPower": ["000000K2","000000K1","7600062E"],
+        "doorOff": ["00003906"],
+        "devOffKeep": ["0000D25A","0000D26A","0000D26W","000000E6","000000E8","000000H1","000000H3","00000H3P","000000H4","000000H5","0HW2601C","000000K1","000000K2","000000L2","000000L3","000000M6","00000P30","000000Q1","0000RX30","000000V1","0000V1E6","00W2601C","00W3602H","00W3602K","00W3802H","00W3909R","000W8501","00W9601B","000000X3","000000X4","00000X4S","000000X5","000000X6","000000Y1","760BLV66","760BLV88","760JD103","760P0P23","760P40T1","760SN101","760TM101","760V1E10","760WE203","7600JV13","7600P30S","7600P40P","7600RX50","7600645H","7600V1E7","7600V1E9","76000D25","76000P40","760000E1","7600061B","7600061C","7600061D","7600061F","7600061H","7600061J","7600061K","7600062B","7600062L","7600643V","76000002","76000009","76000572","76000610","76000614","7600062C","76000623","000000E6","000000E8","00W9601B","760B108B"],
+        "withoutOrder": ["00W2601C"],
+        "minuteOrder": ["000000MT","760P30PL","7600V1E0","76000CF4","760000GZ","760000V5","7600061E","7600062R"],
+        "turnOffOnKeepStart": ["7600644N","76000014","760DB412","760B108B","00000D18","0000D25A","0000D26A","0000D26W","000000E6","000000E8","000000F1","00000F2A","00000F3B","000000F4","000000H1","000000H3","00000H3D","00000H3P","00000H3S","000000H5","0HW2601C","000000J1","000000K1","000000K2","000000L1","000000L2","000000L3","000000M6","000000M7","00000M10","000000MT","00000P10","00000P30","000000Q1","0000RX10","0000RX30","000000S2","000000S3","000000V1","0000V1E6","00W2601C","00W3602H","00W3602K","00W3802H","0W3905CN","00W3909R","000W5601","00W7635R","000W8501","00W9601B","000000X3","000000X4","00000X4S","000000X5","000000X6","000000Y1","760BLV66","760BLV88","760BVL68","760GX6HP","760GX600","760JD103","760JD201","760M10CD","760P0P23","760P0P36","760P40T1","760RX20G","760RX20S","760SN101","760TM101","760V1E10","760WE203","00003906","7600BF01","7600BF03","7600JV13","7600M10P","7600P23Q","7600P30S","7600P40P","7600RX20","7600RX50","7600645H","7600V1E0","7600V1E7","7600V1E9","11111M10","76000CF4","76000D25","76000JV8","76000MG1","76000NS8","76000P40","760000C1","760000E1","760000LX","760000M1","760000M8","760000Q7","760000V2","760000V3","7600061B","7600061C","7600061D","7600061F","7600061H","7600061J","7600061K","7600061Z","7600062B","7600062E","7600062G","7600062L","7600643V","7603602D","7603905P","76000002","76000007","76000009","76000012","76000018","76000572","76000596","76000601","7600646B","76000610","76000614","76000619","76000623"],
+        "autoThrowWithMode": ["7600062S"],
+        "keepWithoutDry": ["00000P30","000000L3","760WE203","760P0P23","7600JV13","7600P30S","7600RX50","760P30PL","00003906","76000610","7600061F","7600644N","7600061C","7600061D"],
+        "additionalSync": ["76000015","76000017","76000628","7600H0P9"],
+    },
+}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DEVICE MAPPING
+# ══════════════════════════════════════════════════════════════════════════════
+#
+#  Key lookup order: subtype → sn8 → default_category → "default"
+#  MeijuCloud E1 devices use "auto_default" (full superset), then cloud config
+#  filters it via apply_device_config().  MSmartHome devices use the original
+#  per-SN8 / "default" entries so behaviour is unchanged from before the restructure.
+
+DEVICE_MAPPING = {
+    "default": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "wash_stage": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_main_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_piao_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_times": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "dry_step_switch": {
+                    "options": {
+                        "cancel": {"dry_step_switch": 0},
+                        "waiting": {"dry_step_switch": 1},
+                        "running": {"dry_step_switch": 2},
+                    }
+                },
+                "air_set_hour": {
+                    "options": {
+                        "12": {"air_set_hour": "12"},
+                        "24": {"air_set_hour": "24"},
+                        "36": {"air_set_hour": "36"},
+                        "48": {"air_set_hour": "48"},
+                        "60": {"air_set_hour": "60"},
+                        "72": {"air_set_hour": "72"},
+                    }
+                },
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash", "additional": 0, "wash_region": 3},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                        "self_define": {"work_status": "work", "mode": "self_define"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "bowl_wash": {"work_status": "work", "mode": "bowl_wash"},
+                        "kill_germ": {"work_status": "work", "mode": "kill_germ"},
+                        "seafood_wash": {"work_status": "work", "mode": "seafood_wash"},
+                        "hotpot_wash": {"work_status": "work", "mode": "hotpot_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "less_wash": {"work_status": "work", "mode": "less_wash"},
+                        "oilnet_wash": {"work_status": "work", "mode": "oilnet_wash"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "softwater": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            }
+        }
+    },
+    "76006481": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "wash_stage": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_main_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_piao_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_times": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {
+                    "min": 1,
+                    "max": 72,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS
+                }
+            },
+            Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash", "additional": 0, "wash_region": 3},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                        "self_define": {"work_status": "work", "mode": "self_define"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "bowl_wash": {"work_status": "work", "mode": "bowl_wash"},
+                        "kill_germ": {"work_status": "work", "mode": "kill_germ"},
+                        "seafood_wash": {"work_status": "work", "mode": "seafood_wash"},
+                        "hotpot_wash": {"work_status": "work", "mode": "hotpot_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "less_wash": {"work_status": "work", "mode": "less_wash"},
+                        "oilnet_wash": {"work_status": "work", "mode": "oilnet_wash"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "softwater": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            }
+        }
+    },
+    "7600649Q": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "wash_stage":{
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_main_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_piao_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_times": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "dry_step_switch": {
+                    "options": {
+                        "cancel": {"dry_step_switch": 0},
+                        "waiting": {"dry_step_switch": 1},
+                        "running": {"dry_step_switch": 2},
+                    }
+                },
+                "air_set_hour": {
+                     "options": {
+                        "12": {"air_set_hour": "12" },
+                        "24": {"air_set_hour": "24" },
+                        "36": {"air_set_hour": "36" },
+                        "48": {"air_set_hour": "48" },
+                        "60": {"air_set_hour": "60" },
+                        "72": {"air_set_hour": "72" },
+                    }
+                },
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off" },
+                        "power_on": {"work_status": "power_on" },
+                        "cancel": {"work_status": "cancel" },
+                        "pause": {"operator":"pause"},
+                        "resume": {"operator":"start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status":"work","mode":"eco_wash","additional":0,"wash_region":3},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                        "self_define": {"work_status": "work", "mode": "self_define"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "bowl_wash": {"work_status": "work", "mode": "bowl_wash"},
+                        "kill_germ": {"work_status": "work", "mode": "kill_germ"},
+                        "seafood_wash": {"work_status": "work", "mode": "seafood_wash"},
+                        "hotpot_wash": {"work_status": "work", "mode": "hotpot_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "less_wash": {"work_status": "work", "mode": "less_wash"},
+                        "oilnet_wash": {"work_status": "work", "mode": "oilnet_wash"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "softwater": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            }
+        }
+    },
+    "7600V1E7": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {
+                    "min": 1,
+                    "max": 72,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS
+                }
+            },
+            Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off" },
+                        "power_on": {"work_status": "power_on" },
+                        "cancel": {"work_status": "cancel" },
+                        "pause": {"operator":"pause"},
+                        "resume": {"operator":"start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "work", "mode": "neutral_gear"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status":"work","mode":"eco_wash","additional":0,"wash_region":3},
+                        "soft_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
+        }
+    },
+    "760Y0026": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": ["additional"],
+        "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.SWITCH: {
+                "airswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM
+                },
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING
+                }
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {
+                    "min": 0,
+                    "max": 72,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.HOURS
+                }
+            },
+            Platform.SELECT: {
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"}
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "cancel", "mode": "neutral_gear"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "single_disinfect": {"work_status": "work", "mode": "single_disinfect"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash"},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "seafood_wash": {"work_status": "work", "mode": "seafood_wash"},
+                        "hotpot_wash": {"work_status": "work", "mode": "hotpot_wash"}
+                    }
+                },
+                "softwater": {
+                    "options": {
+                        "1": {"softwater": 1},
+                        "2": {"softwater": 2},
+                        "3": {"softwater": 3},
+                        "4": {"softwater": 4},
+                        "5": {"softwater": 5},
+                        "6": {"softwater": 6}
+                    }
+                },
+                "rinse_aid": {
+                    "options": {
+                        "1": {"bright": 1},
+                        "2": {"bright": 2},
+                        "3": {"bright": 3},
+                        "4": {"bright": 4},
+                        "5": {"bright": 5}
+                    }
+                },
+                "additional": {
+                    "options": {
+                        "none": {"additional": 0},
+                        "extra_rinse_1": {"additional": 9},
+                        "extra_rinse_2": {"additional": 10},
+                        "few_dishes_extra_rinse_1": {"additional": 13},
+                        "few_dishes_extra_rinse_2": {"additional": 14}
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "remain_time"
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "wash_stage": {
+                    "device_class": SensorDeviceClass.ENUM
+                }
+            },
+        },
+    },
+    # ── auto_default: full superset used by MeijuCloud path.
+    #     Cloud config (apply_device_config) filters it down per-device.
+    "auto_default": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.LOCK: {
+                "lock": {"translation_key": "child_lock"},
+            },
+            Platform.SWITCH: {
+                "power": {"validator": ["can_operate:power"]},
+                "door_auto_open": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
+                "auto_throw": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
+                "more_dry": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
+                "more_dry_wash": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
+            },
+            Platform.BUTTON: {
+                "start_wash": {
+                    "command_builder": "start_wash",
+                    "translation_key": "start",
+                    "validator": ["can_operate:start"],
+                },
+                "start_keep": {
+                    "command": {"airswitch": 2},
+                    "translation_key": "start_keep",
+                    "validator": ["keep", "keep_on", "can_operate:start"],
+                },
+                "start_dry": {
+                    "command": {"dryswitch": 2},
+                    "translation_key": "start_dry",
+                    "validator": ["dry", "can_operate:start"],
+                },
+                "cancel": {
+                    "command_builder": "cancel",
+                    "translation_key": "cancel",
+                    "validator": ["can_operate:cancel"],
+                },
+                "pause": {
+                    "command_builder": "pause",
+                    "translation_key": "pause",
+                    "validator": ["can_operate:pause"],
+                },
+                "start_order": {
+                    "command_builder": "order",
+                    "translation_key": "start_order",
+                    "validator": ["can_operate:order"],
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {"device_class": BinarySensorDeviceClass.OPENING, "rationale": [1, 0], "translation_key": "door_opened"},
+                "air_status": {"device_class": BinarySensorDeviceClass.RUNNING},
+                "water_lack": {"device_class": BinarySensorDeviceClass.PROBLEM, "translation_key": "lack_water"},
+                "softwater_lack": {"device_class": BinarySensorDeviceClass.PROBLEM},
+                "bright_lack": {"device_class": BinarySensorDeviceClass.PROBLEM},
+            },
+            Platform.NUMBER: {
+                "air_set_hour": {"min": 0, "max": 72, "step": 1, "unit_of_measurement": UnitOfTime.HOURS, "side_effect": {"type": "keep_auto_enable"}},
+                "dry_set_min": {"min": 0, "max": 180, "step": 10, "unit_of_measurement": UnitOfTime.MINUTES, "side_effect": {"type": "dry_auto_enable"}},
+            },
+            Platform.TIME: {
+                "order_set_time": {
+                    "target_keys": {"hour": "order_target_hour", "minute": "order_target_min"},
+                    "time_mode": "direct",
+                    "local_only": True,
+                },
+            },
+            Platform.SELECT: {
+                "wash_mode": {"options": {"standard_wash": {"mode": "standard_wash"}, "auto_wash": {"mode": "auto_wash"}, "strong_wash": {"mode": "strong_wash"}, "eco_wash": {"mode": "eco_wash", "additional": 0, "wash_region": 3}, "glass_wash": {"mode": "glass_wash"}, "hour_wash": {"mode": "hour_wash"}, "fast_wash": {"mode": "fast_wash"}, "soak_wash": {"mode": "soak_wash"}, "90min_wash": {"mode": "90min_wash"}, "self_clean": {"mode": "self_clean"}, "fruit_wash": {"mode": "fruit_wash"}, "self_define": {"mode": "self_define"}, "germ": {"mode": "germ"}, "bowl_wash": {"mode": "bowl_wash"}, "kill_germ": {"mode": "kill_germ"}, "seafood_wash": {"mode": "seafood_wash"}, "hotpot_wash": {"mode": "hotpot_wash"}, "quietnight_wash": {"mode": "quietnight_wash"}, "less_wash": {"mode": "less_wash"}, "oilnet_wash": {"mode": "oilnet_wash"}, "keep": {"mode": "keep"}, "dry": {"mode": "dry"}}, "local_only": True},
+                "softwater": {"options": {"1": {"softwater": 1}, "2": {"softwater": 2}, "3": {"softwater": 3}, "4": {"softwater": 4}, "5": {"softwater": 5}, "6": {"softwater": 6}}},
+                "rinse_aid": {"options": {"1": {"bright": 1}, "2": {"bright": 2}, "3": {"bright": 3}, "4": {"bright": 4}, "5": {"bright": 5}}},
+                "additional": {"options": {"none": {"additional": 0}, "half_load": {"additional": 7}, "extra_rinse_1": {"additional": 9}, "extra_rinse_2": {"additional": 10}, "strong_wash_func": {"additional": 12}, "half_rinse_1": {"additional": 13}, "half_rinse_2": {"additional": 14}, "door_open_dry": {"additional": 18}, "steam": {"additional": 21}, "speed_up": {"additional": 23}}, "validator": "additional", "mode_dependent": True, "local_only": True},
+                "water_level": {"options": {"auto": {"water_level": 0}, "1": {"water_level": 1}, "2": {"water_level": 2}, "3": {"water_level": 3}}, "mode_dependent": True, "local_only": True},
+                "water_strong_level": {"options": {"auto": {"water_strong_level": 0}, "1": {"water_strong_level": 1}, "2": {"water_strong_level": 2}}, "mode_dependent": True, "local_only": True},
+                "wash_region": {"options": {"all": {"wash_region": 0}, "upper": {"wash_region": 1}, "lower": {"wash_region": 2}}, "mode_dependent": True, "local_only": True},
+                "work_time": {"options": {"0": {"work_time": 0}, "1": {"work_time": 1}, "2": {"work_time": 2}, "3": {"work_time": 3}, "4": {"work_time": 4}, "5": {"work_time": 5}, "6": {"work_time": 6}, "7": {"work_time": 7}, "8": {"work_time": 8}, "9": {"work_time": 9}, "10": {"work_time": 10}}, "mode_dependent": True, "local_only": True},
+            },
+            Platform.SENSOR: {
+                "error_code": {"device_class": SensorDeviceClass.ENUM},
+                "temperature": {"device_class": SensorDeviceClass.TEMPERATURE, "unit_of_measurement": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+                "left_time": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.MINUTES, "state_class": SensorStateClass.MEASUREMENT},
+                "air_left_hour": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.HOURS, "state_class": SensorStateClass.MEASUREMENT},
+                "order_left_time": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.MINUTES, "state_class": SensorStateClass.MEASUREMENT, "attribute": "order_left_total"},
+                "device_status": {"device_class": SensorDeviceClass.ENUM, "computed_status": True},
+                "wash_stage": {"device_class": SensorDeviceClass.ENUM}
+                }
+            }
+        },
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Functions
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── E1 statusNum computation ──
 
 def get_status_num(work_status, airswitch=0, air_left_hour=0, dryswitch=0, keep_start_now=False):
     """Compute statusNum from device attributes."""
@@ -62,6 +798,8 @@ def get_status_text(status_num: int, keep_name: str = "", dry_name: str = "") ->
         return f"{dry_name or '烘干'}中"
     return _STATUS_TEXT.get(status_num, _STATUS_TEXT[-3])
 
+
+# ── Validators ──
 
 def validate_additional(
     option_key: str, options_map: dict, data: dict, diff_flags: dict,
@@ -156,8 +894,7 @@ async def dispatch_validator(
         validate_additional(option or "", options_map or {}, data, diff_flags)
 
 
-# ---- E1 button command builders ----
-
+# ── Condition computation ──
 
 def calc_condition_result(
     mode_name: str, mode_conditions: dict, data: dict, bright_condition: bool,
@@ -186,6 +923,8 @@ def calc_condition_result(
                 return dict(item.get("result", {}))
     return dict(conditions.get("default", {}))
 
+
+# ── Command builders ──
 
 def build_cancel_command(status_num: int) -> dict:
     """Build cancel command dispatching on statusNum."""
@@ -345,118 +1084,30 @@ def build_order_command(
     return cmd
 
 
-# ---- DEVICE MAPPING ----
+def build_keep_command(data: dict, status_num: int, keep_start_now: bool) -> dict:
+    """Build keep start/cancel command."""
+    if status_num in (1, 2) and keep_start_now:
+        return {"airswitch": 2}
+    if status_num == 5:
+        return {"airswitch": 0}
+    return {}
 
-DEVICE_MAPPING = {
-    "default": {
-        "rationale": [0, 1],
-        "queries": [{}],
-        "centralized": [],
-        "entities": {
-            Platform.LOCK: {
-                "lock": {"translation_key": "child_lock"},
-            },
-            Platform.SWITCH: {
-                "power": {"validator": ["can_operate:power"]},
-                "door_auto_open": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
-                "auto_throw": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
-                "more_dry": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
-                "more_dry_wash": {"rationale": [0, 1], "mode_dependent": True, "local_only": True},
-            },
-            Platform.BUTTON: {
-                "start_wash": {
-                    "command_builder": "start_wash",
-                    "translation_key": "start",
-                    "validator": ["can_operate:start"],
-                },
-                "start_keep": {
-                    "command": {"airswitch": 2},
-                    "translation_key": "start_keep",
-                    "validator": ["keep", "keep_on", "can_operate:start"],
-                },
-                "start_dry": {
-                    "command": {"dryswitch": 2},
-                    "translation_key": "start_dry",
-                    "validator": ["dry", "can_operate:start"],
-                },
-                "cancel": {
-                    "command_builder": "cancel",
-                    "translation_key": "cancel",
-                    "validator": ["can_operate:cancel"],
-                },
-                "pause": {
-                    "command_builder": "pause",
-                    "translation_key": "pause",
-                    "validator": ["can_operate:pause"],
-                },
-                "start_order": {
-                    "command_builder": "order",
-                    "translation_key": "start_order",
-                    "validator": ["can_operate:order"],
-                },
-            },
-            Platform.BINARY_SENSOR: {
-                "doorswitch": {"device_class": BinarySensorDeviceClass.OPENING, "rationale": [1, 0], "translation_key": "door_opened"},
-                "air_status": {"device_class": BinarySensorDeviceClass.RUNNING},
-                "water_lack": {"device_class": BinarySensorDeviceClass.PROBLEM, "translation_key": "lack_water"},
-                "softwater_lack": {"device_class": BinarySensorDeviceClass.PROBLEM},
-                "bright_lack": {"device_class": BinarySensorDeviceClass.PROBLEM},
-            },
-            Platform.NUMBER: {
-                "air_set_hour": {"min": 0, "max": 72, "step": 1, "unit_of_measurement": UnitOfTime.HOURS, "side_effect": {"type": "keep_auto_enable"}},
-                "dry_set_min": {"min": 0, "max": 180, "step": 10, "unit_of_measurement": UnitOfTime.MINUTES, "side_effect": {"type": "dry_auto_enable"}},
-            },
-            Platform.TIME: {
-                "order_set_time": {
-                    "target_keys": {"hour": "order_target_hour", "minute": "order_target_min"},
-                    "time_mode": "direct",
-                    "local_only": True,
-                },
-            },
-            Platform.SELECT: {
-                "wash_mode": {"options": {"standard_wash": {"mode": "standard_wash"}, "auto_wash": {"mode": "auto_wash"}, "strong_wash": {"mode": "strong_wash"}, "eco_wash": {"mode": "eco_wash", "additional": 0, "wash_region": 3}, "glass_wash": {"mode": "glass_wash"}, "hour_wash": {"mode": "hour_wash"}, "fast_wash": {"mode": "fast_wash"}, "soak_wash": {"mode": "soak_wash"}, "90min_wash": {"mode": "90min_wash"}, "self_clean": {"mode": "self_clean"}, "fruit_wash": {"mode": "fruit_wash"}, "self_define": {"mode": "self_define"}, "germ": {"mode": "germ"}, "bowl_wash": {"mode": "bowl_wash"}, "kill_germ": {"mode": "kill_germ"}, "seafood_wash": {"mode": "seafood_wash"}, "hotpot_wash": {"mode": "hotpot_wash"}, "quietnight_wash": {"mode": "quietnight_wash"}, "less_wash": {"mode": "less_wash"}, "oilnet_wash": {"mode": "oilnet_wash"}, "keep": {"mode": "keep"}, "dry": {"mode": "dry"}}, "local_only": True},
-                "softwater": {"options": {"1": {"softwater": 1}, "2": {"softwater": 2}, "3": {"softwater": 3}, "4": {"softwater": 4}, "5": {"softwater": 5}, "6": {"softwater": 6}}},
-                "rinse_aid": {"options": {"1": {"bright": 1}, "2": {"bright": 2}, "3": {"bright": 3}, "4": {"bright": 4}, "5": {"bright": 5}}},
-                "additional": {"options": {"none": {"additional": 0}, "half_load": {"additional": 7}, "extra_rinse_1": {"additional": 9}, "extra_rinse_2": {"additional": 10}, "strong_wash_func": {"additional": 12}, "half_rinse_1": {"additional": 13}, "half_rinse_2": {"additional": 14}, "door_open_dry": {"additional": 18}, "steam": {"additional": 21}, "speed_up": {"additional": 23}}, "validator": "additional", "mode_dependent": True, "local_only": True},
-                "water_level": {"options": {"auto": {"water_level": 0}, "1": {"water_level": 1}, "2": {"water_level": 2}, "3": {"water_level": 3}}, "mode_dependent": True, "local_only": True},
-                "water_strong_level": {"options": {"auto": {"water_strong_level": 0}, "1": {"water_strong_level": 1}, "2": {"water_strong_level": 2}}, "mode_dependent": True, "local_only": True},
-                "wash_region": {"options": {"all": {"wash_region": 0}, "upper": {"wash_region": 1}, "lower": {"wash_region": 2}}, "mode_dependent": True, "local_only": True},
-                "work_time": {"options": {"0": {"work_time": 0}, "1": {"work_time": 1}, "2": {"work_time": 2}, "3": {"work_time": 3}, "4": {"work_time": 4}, "5": {"work_time": 5}, "6": {"work_time": 6}, "7": {"work_time": 7}, "8": {"work_time": 8}, "9": {"work_time": 9}, "10": {"work_time": 10}}, "mode_dependent": True, "local_only": True},
-            },
-            Platform.SENSOR: {
-                "error_code": {"device_class": SensorDeviceClass.ENUM},
-                "temperature": {"device_class": SensorDeviceClass.TEMPERATURE, "unit_of_measurement": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-                "left_time": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.MINUTES, "state_class": SensorStateClass.MEASUREMENT},
-                "air_left_hour": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.HOURS, "state_class": SensorStateClass.MEASUREMENT},
-                "order_left_time": {"device_class": SensorDeviceClass.DURATION, "unit_of_measurement": UnitOfTime.MINUTES, "state_class": SensorStateClass.MEASUREMENT, "attribute": "order_left_total"},
-                "device_status": {"device_class": SensorDeviceClass.ENUM, "computed_status": True},
-                "wash_stage": {"device_class": SensorDeviceClass.ENUM},
-            },
-        }
-    },
-}
 
-_LOGGER = logging.getLogger(__name__)
+def build_dry_command(data: dict, status_num: int) -> dict:
+    """Build dry start/cancel command."""
+    if status_num in (1, 2):
+        return {"dryswitch": 2}
+    if status_num == 6:
+        return {"dryswitch": 0}
+    return {}
 
-_FEATURE_MAP: dict[str, tuple[str, str]] = {
-    "additional":       ("select", "additional"),
-    "waterLevel":       ("select", "water_level"),
-    "waterStrongLevel": ("select", "water_strong_level"),
-    "region":           ("select", "wash_region"),
-    "germ":             ("select", "work_time"),
-    "autoOpen":         ("switch", "door_auto_open"),
-    "autoThrow":        ("switch", "auto_throw"),
-    "moreDry":          ("switch", "more_dry"),
-    "moreDryWash":      ("switch", "more_dry_wash"),
-}
 
-_DYNAMIC_SELECTS: dict[str, tuple[str, str]] = {
-    "additional":       ("additional",        "additional"),
-    "water_level":      ("waterLevel",        "water_level"),
-    "water_strong_level":("waterStrongLevel", "water_strong_level"),
-    "wash_region":      ("region",            "wash_region"),
-}
+def build_auto_throw_command(data: dict, value: bool) -> dict:
+    """Build auto_throw toggle command."""
+    return {"auto_throw": 1 if value else 2}
 
+
+# ── Cloud config helpers ──
 
 def apply_device_config(mapping: dict, device_config: dict, device_type: int = 0, device_version: int = 0) -> dict:
     """Merge cloud-downloaded device config into static mapping."""
@@ -488,15 +1139,10 @@ def apply_device_config(mapping: dict, device_config: dict, device_type: int = 0
     wm = dict(sc.get("wash_mode", {}))
     if wm and mode_list:
         opts = dict(wm.get("options", {}))
-        # Rebuild options using cloud-provided names as keys (matching the
-        # pattern used by additional/softwater/rinse_aid in step 2).
-        # Example: {"轻柔洗": {"mode": "glass_wash"}, "烘干储存": {"mode": "keep"}}
         named: dict[str, dict] = {}
         for mode_key in set(mode_list) & set(opts):
             md = mode_list.get(mode_key, {})
             cloud_name = md.get("name", mode_key) if isinstance(md, dict) else mode_key
-            # Deduplicate: some devices share the same cloud name for different
-            # internal keys (e.g. two modes both named "轻柔洗").
             dedup = cloud_name
             suffix = 1
             while dedup in named:
@@ -555,9 +1201,6 @@ def apply_device_config(mapping: dict, device_config: dict, device_type: int = 0
     if isinstance(more, dict):
         active.update(more.keys())
 
-    # ── Step 4: pop unsupported entities from local copies (put back at end) ──
-    # Matches smart_home: coordinator.device_mapping only has supported entities.
-    # The original DEVICE_MAPPING (module-level) stays intact as superset.
     missing_features: set[str] = set()
     for fk, (pf, eid) in _FEATURE_MAP.items():
         if fk not in active:
@@ -568,9 +1211,6 @@ def apply_device_config(mapping: dict, device_config: dict, device_type: int = 0
         missing_features.add("uvswitch")
 
     # 4a. Build per-mode feature availability map (_mode_features)
-    # {mode_name: {entity_key, ...}} — used for:
-    #   a) mode_dependent entity visibility (hide unsupported features)
-    #   b) start/order command bundling (only include supported features)
     mode_features: dict[str, set[str]] = {}
     for mode_name, mode_data in mode_list.items():
         if not isinstance(mode_data, dict):
@@ -668,28 +1308,6 @@ def apply_device_config(mapping: dict, device_config: dict, device_type: int = 0
     return result
 
 
-# ── Built-in diff fallback (local hardcoded, matching mini-program utils/diff.js) ──
-# Used when cloud diff download fails, ensuring basic diff functionality.
-_DEFAULT_DIFF: dict = {
-    "diffType": {
-        "withoutLockOnStart": ["000W5601","760RX10P","760Y0002","760Y0004","7600JV20","7600061Y","7600062Q","7600646H","7600643T","76000613","76000624","76006440","76006441","76000628","7600644L","76006452","76006456","76006457","76006458","76006455","76006450","7600645A","76006451","7600645B","76006459","7600644Z","7600645J","7600645L","760Y0009","7600645Q","7600059A","7600645D","7600645N","7600645F","760Y0010","76006469","7600646A","76006460","76006467","7600646G","7600646T","7600646L","7600646N","7600646W","7600646Q"],
-        "keepOffOnPowerOff": ["000000X4","000000Y1","00000X4S","0000V1E6"],
-        "deviceUploadFaltDataOnPower": ["000000K2","000000K1","7600062E"],
-        "doorOff": ["00003906"],
-        "devOffKeep": ["0000D25A","0000D26A","0000D26W","000000E6","000000E8","000000H1","000000H3","00000H3P","000000H4","000000H5","0HW2601C","000000K1","000000K2","000000L2","000000L3","000000M6","00000P30","000000Q1","0000RX30","000000V1","0000V1E6","00W2601C","00W3602H","00W3602K","00W3802H","00W3909R","000W8501","00W9601B","000000X3","000000X4","00000X4S","000000X5","000000X6","000000Y1","760BLV66","760BLV88","760JD103","760P0P23","760P40T1","760SN101","760TM101","760V1E10","760WE203","7600JV13","7600P30S","7600P40P","7600RX50","7600645H","7600V1E7","7600V1E9","76000D25","76000P40","760000E1","7600061B","7600061C","7600061D","7600061F","7600061H","7600061J","7600061K","7600062B","7600062L","7600643V","76000002","76000009","76000572","76000610","76000614","7600062C","76000623","000000E6","000000E8","00W9601B","760B108B"],
-        "withoutOrder": ["00W2601C"],
-        "minuteOrder": ["000000MT","760P30PL","7600V1E0","76000CF4","760000GZ","760000V5","7600061E","7600062R"],
-        "turnOffOnKeepStart": ["7600644N","76000014","760DB412","760B108B","00000D18","0000D25A","0000D26A","0000D26W","000000E6","000000E8","000000F1","00000F2A","00000F3B","000000F4","000000H1","000000H3","00000H3D","00000H3P","00000H3S","000000H5","0HW2601C","000000J1","000000K1","000000K2","000000L1","000000L2","000000L3","000000M6","000000M7","00000M10","000000MT","00000P10","00000P30","000000Q1","0000RX10","0000RX30","000000S2","000000S3","000000V1","0000V1E6","00W2601C","00W3602H","00W3602K","00W3802H","0W3905CN","00W3909R","000W5601","00W7635R","000W8501","00W9601B","000000X3","000000X4","00000X4S","000000X5","000000X6","000000Y1","760BLV66","760BLV88","760BVL68","760GX6HP","760GX600","760JD103","760JD201","760M10CD","760P0P23","760P0P36","760P40T1","760RX20G","760RX20S","760SN101","760TM101","760V1E10","760WE203","00003906","7600BF01","7600BF03","7600JV13","7600M10P","7600P23Q","7600P30S","7600P40P","7600RX20","7600RX50","7600645H","7600V1E0","7600V1E7","7600V1E9","11111M10","76000CF4","76000D25","76000JV8","76000MG1","76000NS8","76000P40","760000C1","760000E1","760000LX","760000M1","760000M8","760000Q7","760000V2","760000V3","7600061B","7600061C","7600061D","7600061F","7600061H","7600061J","7600061K","7600061Z","7600062B","7600062E","7600062G","7600062L","7600643V","7603602D","7603905P","76000002","76000007","76000009","76000012","76000018","76000572","76000596","76000601","7600646B","76000610","76000614","76000619","76000623"],
-        "autoThrowWithMode": ["7600062S"],
-        "keepWithoutDry": ["00000P30","000000L3","760WE203","760P0P23","7600JV13","7600P30S","7600RX50","760P30PL","00003906","76000610","7600061F","7600644N","7600061C","7600061D"],
-        "additionalSync": ["76000015","76000017","76000628","7600H0P9"],
-    },
-}
-
-
 def get_default_diff() -> dict:
     """Return the built-in diff config fallback (matching mini-program utils/diff.js)."""
     return _DEFAULT_DIFF
-
-
-

@@ -160,7 +160,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
     @property
     def device_attributes(self) -> dict:
-        """Return device attributes merged with local cache (matching smart_home device.data)."""
+        """Return device attributes."""
         attrs = self.coordinator.data.attributes if self.coordinator.data else {}
         ld = self.coordinator.device._local_data
         if ld:

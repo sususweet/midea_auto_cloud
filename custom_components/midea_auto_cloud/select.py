@@ -126,12 +126,13 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
                 return matched
             if ignored:
                 return self._last_option
-            # No match and not ignored: device reports an internal state
-            # (e.g. neutral_gear / "" / invalid in idle) that is not in
-            # the option list.  Show the last user-selected mode so the
-            # UI never flashes blank (matching smart_home behaviour).
-            if self._last_option is not None:
-                return self._last_option
+            # No match and not ignored: E1 devices may report an internal
+            # state (neutral_gear) that is
+            # not in the option list.  Show the last user-selected mode
+            # so the UI never flashes blank
+            if self._device and self._device.device_type == 0xE1:
+                if self._last_option is not None:
+                    return self._last_option
 
         if attribute and attribute != self._entity_key:
             value = self._get_nested_value(attribute)

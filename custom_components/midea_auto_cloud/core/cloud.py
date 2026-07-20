@@ -1169,7 +1169,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType": "2",
+            "encryptedType ": "2",
         }
         if smart_product_id:
             data.update({"smartProductId": smart_product_id})
@@ -1260,7 +1260,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType": "2",
+            "encryptedType ": "2",
             "applianceCode": appliance_code,
             "command": {
                 "query": query
@@ -1294,7 +1294,7 @@ class MSmartHomeCloud(MideaCloud):
             "modelNumber": model_number,
             "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
             "version": "0",
-            "encryptedType": "2",
+            "encryptedType ": "2",
             "applianceCode": appliance_code,
             "command": {
                 "control": control

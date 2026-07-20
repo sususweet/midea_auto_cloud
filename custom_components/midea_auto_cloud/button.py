@@ -1,5 +1,3 @@
-"""Button entities for Midea Auto Cloud integration."""
-
 import asyncio
 
 from homeassistant.components.button import ButtonEntity
@@ -51,7 +49,7 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
         )
 
     async def async_press(self) -> None:
-        """Press the button."""
+        """Handle the button press."""
         command_builder = self._config.get("command_builder")
 
         # For start_wash: auto power-on if the device is off before running
@@ -82,30 +80,48 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
         await self._run_validators()
 
+        # ── E1 command_builder path ──
         if command_builder:
             command = await self._build_with_hook(command_builder)
-        else:
-            command = dict(self._config.get("command", {}))
+            if command:
+                if command_builder in ("start_wash", "order"):
+                    self._clear_local_data()
+                action = command.pop("_action", None)
+                if action == "cancel_keep_then_start":
+                    await self.coordinator.async_set_control({"airswitch": 0})
+                    await self.coordinator.async_set_control({"airswitch": 2})
+                else:
+                    await self.coordinator.async_set_control(command)
+            elif command_builder:
+                MideaLogger.info(
+                    "Button %s (%s): device not in operable state, no command sent"
+                    % (self._entity_key, command_builder),
+                )
+            return
 
+        # 从配置中获取要执行的命令或操作
+        command = self._config.get("command")
+        attribute = self._config.get("attribute", self._entity_key)
+        value = self._config.get("value")
+        
+        # 判断是否为中央空调设备（T0x21）
+        is_central_ac = self._device.device_type == 0x21 if self._device else False
+        
         if command:
-            # ── Clear local_only cache BEFORE sending command ──
-            # The command dict is already fully built by _build_with_hook,
-            # so _local_data values are no longer needed.  Clearing first
-            # avoids a race: async_set_control yields the event loop, and
-            # a device status callback could fire mid-await, seed mode,
-            # then get deleted by _clear_local_data running afterwards.
-            if command_builder in ("start_wash", "order"):
-                self._clear_local_data()
-            action = command.pop("_action", None)
-            if action == "cancel_keep_then_start":
-                await self.coordinator.async_set_control({"airswitch": 0})
-                await self.coordinator.async_set_control({"airswitch": 2})
-            else:
-                await self.coordinator.async_set_control(command)
-        elif command_builder:
-            MideaLogger.info(
-                "Button %s (%s): device not in operable state, no command sent"
-                % (self._entity_key, command_builder),
+            # 如果配置中指定了命令，执行该命令
+            if isinstance(command, dict):
+                # 如果是字典，可能需要发送多个属性
+                await self.async_set_attributes(command)
+            elif isinstance(command, str):
+                # 如果是字符串，可能是特殊命令类型
+                await self._async_execute_command(command)
+        elif value is not None:
+            # 如果配置中指定了值，设置该属性值
+            await self.async_set_attribute(attribute, value)
+        else:
+            # 默认行为：如果没有指定命令或值，记录警告
+            MideaLogger.warning(
+                f"Button {self._entity_key} has no command or value configured"
             )
 
     async def _run_validators(self) -> None:
@@ -200,3 +216,15 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
                 self.coordinator._auto_seed_e1_mode()
         except Exception:
             pass
+
+    async def _async_execute_command(self, command: str) -> None:
+        """Execute a special command."""
+        # 这里可以处理特殊的命令类型
+        # 例如：重启、重置、测试等
+        if command == "reset" or command == "restart":
+            # 可以在这里实现重置或重启逻辑
+            MideaLogger.debug(f"Executing {command} command for button {self._entity_key}")
+        else:
+            # 对于其他命令，可以通过 coordinator 发送
+            await self.coordinator.async_send_command(0, command)
+

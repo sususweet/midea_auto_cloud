@@ -752,12 +752,12 @@
           "few_dishes_extra_rinse_1": "Few Dishes Extra Rinse 1",
           "few_dishes_extra_rinse_2": "Few Dishes Extra Rinse 2",
           "half_load": "Half Load",
-          "strong_wash_func": "Strong Wash",
+          "strong_wash_func": "Enhanced Wash",
           "half_rinse_1": "Half Load + Rinse 1",
           "half_rinse_2": "Half Load + Rinse 2",
           "door_open_dry": "Door Open Dry",
-          "steam": "Steam",
-          "speed_up": "Speed Up"
+          "steam": "Steam Boost",
+          "speed_up": "Speed Boost"
         }
       },
       "no_wind_sense": {
@@ -1020,10 +1020,7 @@
       "water_level": {
         "name": "Water Level",
         "state": {
-          "low": "low",
-          "medium": "medium",
-          "high": "high",
-          "auto": "auto",
+          "auto": "Auto",
           "1": "Level 1",
           "2": "Level 2",
           "3": "Level 3"
@@ -1349,6 +1346,7 @@
       "wash_mode": {
         "name": "wash mode",
         "state": {
+          "neutral_gear": "neutral gear",
           "auto_wash": "auto wash",
           "strong_wash": "strong wash",
           "standard_wash": "standard wash",
@@ -1689,7 +1687,7 @@
         }
       },
       "water_strong_level": {
-        "name": "Strong Water Level",
+        "name": "Strength",
         "state": {
           "auto": "Auto",
           "1": "Level 1",
@@ -1697,7 +1695,7 @@
         }
       },
       "wash_region": {
-        "name": "Wash Region",
+        "name": "Zone",
         "state": {
           "all": "All",
           "upper": "Upper",
@@ -1705,19 +1703,19 @@
         }
       },
       "work_time": {
-        "name": "Work Time",
+        "name": "UV Sterilization",
         "state": {
-          "0": "0",
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5",
-          "6": "6",
-          "7": "7",
-          "8": "8",
-          "9": "9",
-          "10": "10"
+          "0": "0 min",
+          "1": "1 min",
+          "2": "2 min",
+          "3": "3 min",
+          "4": "4 min",
+          "5": "5 min",
+          "6": "6 min",
+          "7": "7 min",
+          "8": "8 min",
+          "9": "9 min",
+          "10": "10 min"
         }
       }
     },
