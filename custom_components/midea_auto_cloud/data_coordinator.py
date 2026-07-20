@@ -161,7 +161,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         """记录轮询结果；连续失败达到阈值后标记不可用，成功一次即恢复。"""
         if success:
             if self._consecutive_poll_failures >= MAX_CONSECUTIVE_POLL_FAILURES:
-                _LOGGER.info(
+                _LOGGER.warning(
                     "Device %s (%s) recovered after %s failed polls",
                     self.device.device_name,
                     self._device_id,
