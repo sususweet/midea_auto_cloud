@@ -70,13 +70,14 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
                 # Poll for power-on readiness (matching smart_home logic).
                 # Device may report power_on / standby / cancel as its
                 # powered-up work_status — any status_num != 0 means ready.
-                for _ in range(100):  # max 10s
+                for _ in range(200):  # max 20s
                     await asyncio.sleep(0.1)
                     ws = self.device_attributes.get("work_status", "")
                     if get_status_num(ws) != 0:
                         break
                 else:
                     raise HomeAssistantError("设备开机超时，请检查设备")
+                await asyncio.sleep(1)
 
         await self._run_validators()
 
@@ -87,7 +88,11 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
                 if command_builder in ("start_wash", "order"):
                     self._clear_local_data()
                 action = command.pop("_action", None)
-                if action == "cancel_keep_then_start":
+                if action == "start_keep":
+                    await self.coordinator.async_set_control({"airswitch": 2})
+                elif action == "start_dry":
+                    await self.coordinator.async_set_control({"dryswitch": 2})
+                elif action == "cancel_keep_then_start":
                     await self.coordinator.async_set_control({"airswitch": 0})
                     await self.coordinator.async_set_control({"airswitch": 2})
                 else:
@@ -130,11 +135,8 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
         if not validators:
             return
         from .device_mapping.T0xE1 import dispatch_validator
-        data = self.device_attributes
-        diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
-        keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
         for v in validators:
-            await dispatch_validator(v, data, diff_flags, keep_start_now)
+            await dispatch_validator(v, self.coordinator)
 
     async def _build_with_hook(self, builder_name: str) -> dict:
         """Call E1 command builder (device_attributes already merges _local_data)."""
@@ -173,7 +175,7 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
         if builder_name == "start_wash":
             return build_start_command(
-                data, status_num, diff_flags, mode_features,
+                data, status_num, mode_features, diff_flags,
                 last_user_mode=self.coordinator.last_user_mode,
             )
 

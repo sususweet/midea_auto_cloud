@@ -4748,6 +4748,12 @@
       },
       "more_dry_wash": {
         "name": "加强烘干洗"
+      },
+      "wash_keep": {
+        "name": "储存烘干"
+      },
+      "wash_dry": {
+        "name": "烘干"
       }
     },
     "text": {

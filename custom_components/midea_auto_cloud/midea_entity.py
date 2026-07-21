@@ -293,10 +293,12 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
         Accepts rationale values plus common aliases: yes/no, on/off, 0/1, true/false.
         Supports nested attributes with dot notation.
+        Supports status_key config override (e.g. power switch reads "work_status").
         """
         if attribute_key is None:
             return False
-        status = self._get_nested_value(attribute_key)
+        status_key = self._config.get("status_key", attribute_key)
+        status = self._get_nested_value(status_key)
         if status is None:
             return False
         try:

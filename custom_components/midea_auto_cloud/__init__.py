@@ -356,11 +356,7 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
                 # Compute diff_flags: cloud-first, local fallback (matching mini-program).
                 fallback_diff = None
                 if not diff_config:
-                    try:
-                        from .device_mapping.T0xE1 import get_default_diff
-                        fallback_diff = get_default_diff()
-                    except ImportError:
-                        pass
+                    fallback_diff = mapping.get("_default_diff")
                 if diff_config:
                     json_data["_diff_config"] = diff_config
                 diff_flags = _compute_diff_flags(diff_config, sn8, fallback_diff)

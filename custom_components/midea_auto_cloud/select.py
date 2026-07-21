@@ -202,11 +202,8 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
         if not self._validators:
             return
         from .device_mapping.T0xE1 import dispatch_validator
-        data = self.device_attributes
-        diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
-        keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
         for v in self._validators:
             await dispatch_validator(
-                v, data, diff_flags, keep_start_now,
+                v, self.coordinator,
                 option=option, options_map=self._key_options,
             )
