@@ -1020,6 +1020,9 @@
       "water_level": {
         "name": "Water Level",
         "state": {
+          "low": "low",
+          "medium": "medium",
+          "high": "high",
           "auto": "Auto",
           "1": "Level 1",
           "2": "Level 2",
