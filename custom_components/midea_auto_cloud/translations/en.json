@@ -4396,6 +4396,12 @@
       },
       "more_dry_wash": {
         "name": "More Dry Wash"
+      },
+      "wash_keep": {
+        "name": "Storage Dry"
+      },
+      "wash_dry": {
+        "name": "Dry"
       }
     },
     "text": {
