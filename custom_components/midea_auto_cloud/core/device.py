@@ -379,7 +379,7 @@ class MiedaDevice(threading.Thread):
         }
 
     async def set_attribute(self, attribute, value) -> bool:
-        if attribute in self._attributes.keys():
+        if self._has_attribute(attribute):
             new_status = {}
             for attr in self._centralized:
                 new_status[attr] = self._attributes.get(attr)
