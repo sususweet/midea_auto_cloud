@@ -293,6 +293,28 @@ class MiedaDevice(threading.Thread):
             value = value[key]
         return True
 
+    def _has_attribute(self, attribute: str) -> bool:
+        attrs = self._attributes if isinstance(self._attributes, dict) else {}
+        if not attrs or attribute in attrs or attribute in LAMP_CONTROL_KEYS:
+            return True
+        if "." in attribute and attribute.replace(".", "_") in attrs:
+            return True
+        if "." in attribute and self._has_nested_path(attrs, attribute):
+            return True
+        return False
+
+    def _get_existing_attr_value(self, attrs: dict, key: str) -> Any:
+        if self._has_nested_path(attrs, key):
+            val = attrs
+            for k in key.split("."):
+                val = val[k]
+            return val
+        if "." in key:
+            underscore = key.replace(".", "_")
+            if underscore in attrs:
+                return attrs[underscore]
+        return attrs.get(key)
+
     def _convert_to_nested_structure(self, attributes):
         """Convert control keys to the device's wire format.
 
@@ -304,6 +326,10 @@ class MiedaDevice(threading.Thread):
         nested = {}
         attrs = self._attributes if isinstance(self._attributes, dict) else {}
         for key, value in attributes.items():
+            existing = self._get_existing_attr_value(attrs, key)
+            if isinstance(existing, str) and not isinstance(value, (str, dict, list)):
+                value = str(value)
+
             if "." not in key:
                 nested[key] = value
                 continue
@@ -353,7 +379,7 @@ class MiedaDevice(threading.Thread):
         }
 
     async def set_attribute(self, attribute, value) -> bool:
-        if attribute in self._attributes.keys():
+        if self._has_attribute(attribute):
             new_status = {}
             for attr in self._centralized:
                 new_status[attr] = self._attributes.get(attr)
@@ -403,7 +429,7 @@ class MiedaDevice(threading.Thread):
             new_status[attr] = self._attributes.get(attr)
         has_new = False
         for attribute, value in attributes.items():
-            if attribute in self._attributes.keys() or attribute in LAMP_CONTROL_KEYS:
+            if self._has_attribute(attribute):
                 has_new = True
                 new_status[attribute] = value
 
