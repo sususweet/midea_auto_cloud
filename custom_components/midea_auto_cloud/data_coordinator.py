@@ -8,6 +8,7 @@ from typing import Any, NamedTuple
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -15,6 +16,9 @@ from .core.device import MiedaDevice
 from .core.logger import MideaLogger
 
 _LOGGER = logging.getLogger(__name__)
+
+# 连续轮询失败达到该次数后，将实体标记为不可用（成功一次即恢复）
+MAX_CONSECUTIVE_POLL_FAILURES = 3
 
 
 class MideaDeviceData(NamedTuple):
@@ -58,6 +62,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # device callbacks mid-refresh (resets the poll timer and races the
         # coordinator's own listener notification).
         self._polling = False
+        # 连续轮询失败计数：会话失效/设备离线时不再假装一切正常
+        self._consecutive_poll_failures = 0
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -104,9 +110,16 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         """
         connected = self.device.connected
         if available is None:
-            # Cloud appliances remain controllable even when Midea reports them
-            # offline at list time (onlineStatus != 1).
-            available = True if self._is_cloud_only_device() else connected
+            if self._is_cloud_only_device():
+                # Cloud appliances remain controllable even when Midea reports
+                # them offline at list time (onlineStatus != 1) — but repeated
+                # poll failures (dead session, device offline) must surface as
+                # unavailable instead of freezing entities at stale values.
+                available = (
+                    self._consecutive_poll_failures < MAX_CONSECUTIVE_POLL_FAILURES
+                )
+            else:
+                available = connected
         attrs = copy.deepcopy(self.device.attributes)
         self._flatten_nested_scalars(attrs)
         return MideaDeviceData(
@@ -144,23 +157,49 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         # Update coordinator data (fresh snapshot so HA detects the change)
         self.async_set_updated_data(self._snapshot())
 
+    def _track_poll_result(self, success: bool) -> None:
+        """记录轮询结果；连续失败达到阈值后标记不可用，成功一次即恢复。"""
+        if success:
+            if self._consecutive_poll_failures >= MAX_CONSECUTIVE_POLL_FAILURES:
+                _LOGGER.warning(
+                    "Device %s (%s) recovered after %s failed polls",
+                    self.device.device_name,
+                    self._device_id,
+                    self._consecutive_poll_failures,
+                )
+            self._consecutive_poll_failures = 0
+            return
+        self._consecutive_poll_failures += 1
+        if self._consecutive_poll_failures == MAX_CONSECUTIVE_POLL_FAILURES:
+            _LOGGER.warning(
+                "Device %s (%s) failed %s consecutive polls; "
+                "marking entities unavailable until data flows again",
+                self.device.device_name,
+                self._device_id,
+                self._consecutive_poll_failures,
+            )
+
     async def poll_device_state(self) -> MideaDeviceData:
         """Poll device state."""
         if self.state_update_muted:
             return self.data
 
+        refresh_ok = True
         self._polling = True
         try:
             # 检查是否为中央空调设备（T0x21）
             if self.device.device_type == 0x21:
                 await self._poll_central_ac_state()
             else:
-                await self.device.refresh_status()
+                refresh_ok = await self.device.refresh_status()
         except Exception as e:
+            refresh_ok = False
             traceback.print_exc()
             _LOGGER.error(f"Error polling device state: {e}")
         finally:
             self._polling = False
+
+        self._track_poll_result(refresh_ok)
 
         try:
             await self._poll_cloud_stats()
@@ -439,7 +478,21 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         
         # 只发送没有默认值的属性到云端
         if attributes_to_send:
-            await self.device.set_attributes(attributes_to_send)
+            if not await self.device.set_attributes(attributes_to_send):
+                # 控制未送达（会话失效/设备离线）：如实报错，
+                # 不做乐观镜像，避免 UI 显示一个设备从未收到的状态。
+                _LOGGER.warning(
+                    "Failed to send control to %s (%s): %s",
+                    self.device.device_name,
+                    self._device_id,
+                    attributes_to_send,
+                )
+                raise HomeAssistantError(
+                    f"Failed to send command to Midea device "
+                    f"{self.device.device_name} ({self._device_id})"
+                )
+            # 控制送达说明云端会话与设备均正常，清零失败计数
+            self._track_poll_result(True)
         # 更新所有属性到本地状态（包括有默认值的变量）
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()
