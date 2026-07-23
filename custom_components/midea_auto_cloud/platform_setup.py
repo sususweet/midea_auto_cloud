@@ -47,7 +47,10 @@ async def async_setup_platform_entities(
         category = device.category if device else None
 
         config = await load_device_config(hass, device_type, sn8, subtype, category) or {}
-        entities_cfg = (config.get("entities") or {}).get(platform, {}) or {}
+        # For E1 devices: use coordinator's filtered entities (apply_device_config
+        # has already popped unsupported ones — matching smart_home behavior).
+        filtered_entities = getattr(coordinator, "_device_mapping_entities", None)
+        entities_cfg = (filtered_entities or config.get("entities", {})).get(platform, {}) or {}
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")
 

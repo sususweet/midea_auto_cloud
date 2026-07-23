@@ -54,10 +54,15 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         """Return if the switch is on."""
         # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
+        if self._local_only:
+            val = self.coordinator.device._local_data.get(attribute)
+            if val is not None:
+                return bool(val)
         return self._get_status_on_off(attribute)
 
     async def async_turn_on(self):
         """Turn the switch on."""
+        await self._run_validators()
         attribute = self._config.get("attribute", self._entity_key)
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(True)
@@ -66,15 +71,40 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
 
     async def async_turn_off(self):
         """Turn the switch off."""
+        await self._run_validators()
+        # E1: devOffKeep — close keep before power off
+        if self._entity_key == "power":
+            diff_flags = getattr(self.coordinator, "_diff_flags", {}) or {}
+            if diff_flags.get("devOffKeep"):
+                attrs = self.device_attributes
+                try:
+                    airswitch = int(attrs.get("airswitch", 0))
+                except (ValueError, TypeError):
+                    airswitch = 0
+                if airswitch > 0:
+                    await self.async_set_attributes({"airswitch": 0})
         attribute = self._config.get("attribute", self._entity_key)
         if self._is_central_ac:
             await self._async_set_central_ac_switch_status(False)
         else:
             await self._async_set_switch_status(attribute, False)
 
+    async def _run_validators(self) -> None:
+        """Run validator chain before executing action."""
+        if not self._validators:
+            return
+        from .device_mapping.T0xE1 import dispatch_validator
+        for v in self._validators:
+            await dispatch_validator(v, self.coordinator)
+
     async def _async_set_switch_status(self, attribute: str | None, turn_on: bool):
         """Set switch status, merging fixed command parameters if configured."""
         if attribute is None:
+            return
+        # local_only: store in cache for bundling with start/order command
+        if self._local_only:
+            self.coordinator.device._local_data[attribute] = self._on_off_wire_value(turn_on, attribute)
+            self.async_write_ha_state()
             return
         merge_attributes = self._config.get("merge_attributes")
         if merge_attributes:
@@ -85,15 +115,19 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             await self.async_set_attributes(merged_command)
             return
         command = self._config.get("command")
+        off_command = self._config.get("off_command")
         merged_command = {}
         if command and isinstance(command, dict):
             merged_command.update(command)
-        merged_command[attribute] = self._on_off_wire_value(turn_on, attribute)
+        if not turn_on and off_command and isinstance(off_command, dict):
+            merged_command = dict(off_command)
+        elif not command:
+            merged_command[attribute] = self._on_off_wire_value(turn_on, attribute)
         for attr in self._include_current:
             current_value = self._get_nested_value(attr)
             if current_value is not None:
                 merged_command[attr] = current_value
-        if command or self._include_current:
+        if merged_command:
             await self.async_set_attributes(merged_command)
         else:
             await self._async_set_status_on_off(attribute, turn_on)

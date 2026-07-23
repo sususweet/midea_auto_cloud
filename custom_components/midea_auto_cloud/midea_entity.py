@@ -60,6 +60,17 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         self._condition = self._config.get("condition")
         self._name_cfg = None
         self._name_attribute = None
+        # E1-specific features
+        self._validators = self._config.get("validator", [])
+        if isinstance(self._validators, str):
+            self._validators = [self._validators]
+        self._local_only = self._config.get("local_only", False)
+        self._mode_dependent = self._config.get("mode_dependent", False)
+        self._computed_status = self._config.get("computed_status", False)
+        self._side_effect = self._config.get("side_effect")
+        self._cloud_name = self._config.get("cloud_name")
+        if self._cloud_name:
+            self._attr_name = self._cloud_name
         if (self._config.get("rationale")) is not None:
             self._rationale = self._config.get("rationale")
         if self._rationale is None:
@@ -150,13 +161,38 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     @property
     def device_attributes(self) -> dict:
         """Return device attributes."""
-        return self.coordinator.data.attributes if self.coordinator.data else {}
+        attrs = self.coordinator.data.attributes if self.coordinator.data else {}
+        ld = self.coordinator.device._local_data
+        if ld:
+            attrs = dict(attrs)
+            attrs.update(ld)
+        return attrs
 
     @property
     def available(self) -> bool:
         """Return if entity is available."""
         if not self.coordinator.data or not self.coordinator.data.available:
             return False
+        # Device-level filtering: entity key in _missing_features means
+        # this device does not support the feature at all (per cloud config).
+        # This replaces init-time .pop() — DEVICE_MAPPING stays intact.
+        missing = getattr(self.coordinator, "_missing_features", None)
+        if missing and self._entity_key in missing:
+            return False
+        # mode_dependent: read user-selected mode from local cache instead of
+        # device-reported mode (which may be neutral_gear / "" / invalid in
+        # idle state).  Without a selected mode, hide all mode-dependent
+        # entities (temperature, region, additional, etc.).
+        if self._mode_dependent:
+            local_mode = self.coordinator.device._local_data.get("mode", "")
+            if not local_mode:
+                local_mode = getattr(self.coordinator, "last_user_mode", "")
+            if not local_mode:
+                return False
+            mode_features = getattr(self.coordinator, "_mode_features", {}) or {}
+            if mode_features:
+                if self._entity_key not in mode_features.get(local_mode, set()):
+                    return False
         return self._check_condition(self._condition)
 
     def _check_condition(self, condition: dict | None = None) -> bool:
@@ -257,10 +293,12 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
         Accepts rationale values plus common aliases: yes/no, on/off, 0/1, true/false.
         Supports nested attributes with dot notation.
+        Supports status_key config override (e.g. power switch reads "work_status").
         """
         if attribute_key is None:
             return False
-        status = self._get_nested_value(attribute_key)
+        status_key = self._config.get("status_key", attribute_key)
+        status = self._get_nested_value(status_key)
         if status is None:
             return False
         try:

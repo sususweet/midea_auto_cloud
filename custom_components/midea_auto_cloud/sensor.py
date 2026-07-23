@@ -69,6 +69,22 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the native value of the sensor."""
+        if self._computed_status:
+            from .device_mapping.T0xE1 import get_status_num, get_status_text
+            attrs = self.device_attributes
+            mapping = getattr(self.coordinator, "_device_mapping", {}) or {}
+            keep_text = mapping.get("_keep_text_name", "")
+            dry_text = mapping.get("_dry_text_name", "")
+            keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+            status_num = get_status_num(
+                attrs.get("work_status"),
+                airswitch=attrs.get("airswitch", 0),
+                air_left_hour=attrs.get("air_left_hour", 0),
+                dryswitch=attrs.get("dryswitch", 0),
+                keep_start_now=keep_start_now,
+            )
+            return get_status_text(status_num, keep_text, dry_text)
+
         # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
         value = self._get_nested_value(attribute)

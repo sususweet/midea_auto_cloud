@@ -127,3 +127,30 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         # 否则直接设置属性值
         await self.async_set_attribute(attribute, str(int(value)))
 
+        # E1 side_effect: keep/dry auto-enable
+        if self._side_effect:
+            int_value = int(value)
+            effect_type = self._side_effect.get("type", "")
+            attrs = self.device_attributes
+            if effect_type == "keep_auto_enable":
+                keep_start_now = getattr(self.coordinator, "_keep_start_now", False)
+                if not keep_start_now:
+                    return
+                try:
+                    airswitch = int(attrs.get("airswitch", 0))
+                except (ValueError, TypeError):
+                    airswitch = 0
+                if int_value > 0 and airswitch == 0:
+                    await self.async_set_attribute("airswitch", "1")
+                elif int_value == 0 and airswitch == 1:
+                    await self.async_set_attribute("airswitch", "0")
+            elif effect_type == "dry_auto_enable":
+                try:
+                    dryswitch = int(attrs.get("dryswitch", 0))
+                except (ValueError, TypeError):
+                    dryswitch = 0
+                if int_value > 0 and dryswitch == 0:
+                    await self.async_set_attribute("dryswitch", "1")
+                elif int_value == 0 and dryswitch == 1:
+                    await self.async_set_attribute("dryswitch", "0")
+

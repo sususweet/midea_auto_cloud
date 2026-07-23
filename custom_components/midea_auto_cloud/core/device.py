@@ -38,6 +38,14 @@ LAMP_CONTROL_KEYS = frozenset({
     "lamp_control3_power",
 })
 
+# Keys that may appear in control commands but are not present in
+# _attributes (device state schema).  They are forwarded to the LUA
+# layer without being filtered out.
+_CONTROL_ONLY_KEYS = frozenset({
+    "order_set_hour",
+    "order_set_min",
+})
+
 # E3 newCtrlAgreementJsonToCmd(status) runs before control; these fields reuse
 # cmd[12]/cmd[13] and corrupt lamp_control (0x21) when temperature=39 -> 0x27.
 LAMP_CONTROL_STATUS_EXCLUDE = frozenset({
@@ -85,6 +93,7 @@ class MiedaDevice(threading.Thread):
         self._sn8 = sn8
         self._manufacturer_code = manufacturer_code
         self._category = category
+        self._local_data: dict[str, int | str] = {}
         self._attributes = {
             "device_type": "T0x%02X" % device_type,
             "sn": sn,

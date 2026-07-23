@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import base64
 import traceback
@@ -33,7 +34,7 @@ from homeassistant.const import (
 from .core.logger import MideaLogger
 from .core.device import MiedaDevice
 from .data_coordinator import MideaDataUpdateCoordinator
-from .core.cloud import get_midea_cloud
+from .core.cloud import get_midea_cloud, MeijuCloud
 from .core import session_store
 from .const import (
     DOMAIN,
@@ -55,6 +56,7 @@ PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.TIME,
     Platform.CLIMATE,
     Platform.SELECT,
     Platform.WATER_HEATER,
@@ -246,7 +248,14 @@ async def _ensure_msmart_home_api_route(cloud) -> None:
         await re_route()
 
 
-async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
+async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None, cloud=None, use_auto_default=False):
+    """Load per-device mapping, optionally enhanced with cloud config and diff.
+
+    When ``use_auto_default`` is True (MeijuCloud path for E1 dishwashers),
+    the `auto_default` superset mapping is used as the base instead of the
+    per-SN8 / fallback ``default``.  Cloud config (if available) then filters
+    the superset down to what the specific device supports.
+    """
     # def _ensure_dir_and_load(path_dir: str, path_file: str):
     #     os.makedirs(path_dir, exist_ok=True)
     #     return load_json(path_file, default={})
@@ -268,6 +277,10 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
             subtype=subtype,
             category=category,
         )
+        # MeijuCloud E1: use auto_default superset so cloud config can filter it.
+        if use_auto_default and "auto_default" in device_mappings:
+            import copy
+            json_data = copy.deepcopy(device_mappings["auto_default"])
     except ModuleNotFoundError:
         # 输出详细的设备信息以便调试
         MideaLogger.warning(
@@ -278,11 +291,147 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
     # save_data = {sn8: json_data}
     # offload save_json as well
     # await hass.async_add_executor_job(save_json, config_file, save_data)
+
+    # ── Download cloud config for auto-adaptation ──
+    if cloud is not None and device_type == 0xE1 and sn8:
+        try:
+            config_dir = hass.config.path(CONFIG_PATH)
+            os.makedirs(config_dir, exist_ok=True)
+            config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}_config.json")
+            diff_file = hass.config.path(f"{CONFIG_PATH}/T0x{device_type:02X}_diff.json")
+
+            # Load or download device config (async file I/O)
+            device_config = None
+            if os.path.exists(config_file):
+                def _read_device_config():
+                    with open(config_file, encoding="utf-8") as f:
+                        return json.loads(f.read())
+                try:
+                    device_config = await hass.async_add_executor_job(_read_device_config)
+                except (json.JSONDecodeError, OSError):
+                    pass
+            if not device_config:
+                device_config = await cloud.download_device_config(sn8, device_type)
+                if device_config:
+                    def _write_device_config():
+                        with open(config_file, "w", encoding="utf-8") as f:
+                            json.dump(device_config, f, ensure_ascii=False)
+                    await hass.async_add_executor_job(_write_device_config)
+                    MideaLogger.info(f"Downloaded device config for SN8={sn8}")
+
+            # Load or download diff config (async file I/O)
+            diff_config = None
+            if os.path.exists(diff_file):
+                def _read_diff_config():
+                    with open(diff_file, encoding="utf-8") as f:
+                        return json.loads(f.read())
+                try:
+                    diff_config = await hass.async_add_executor_job(_read_diff_config)
+                except (json.JSONDecodeError, OSError):
+                    pass
+            if not diff_config:
+                diff_config = await cloud.download_diff_config(device_type)
+                if diff_config:
+                    def _write_diff_config():
+                        with open(diff_file, "w", encoding="utf-8") as f:
+                            json.dump(diff_config, f, ensure_ascii=False)
+                    await hass.async_add_executor_job(_write_diff_config)
+                    MideaLogger.info(f"Downloaded diff config for type 0x{device_type:02X}")
+
+            # Apply device config (currently only E1 supports cloud config merging)
+            if device_config and device_type == 0xE1:
+                try:
+                    from .device_mapping.T0xE1 import apply_device_config
+                    json_data = apply_device_config(
+                        json_data, device_config, device_type, 0
+                    )
+                    MideaLogger.info(
+                        f"Applied cloud config for SN8={sn8}, type=0x{device_type:02X}"
+                    )
+                except Exception as e:
+                    MideaLogger.warning(f"Failed to apply device config: {e}")
+
+            # Compute diff_flags and apply diff-driven entity removal (E1 only).
+            if device_type == 0xE1:
+                # Compute diff_flags: cloud-first, local fallback (matching mini-program).
+                fallback_diff = None
+                if not diff_config:
+                    fallback_diff = mapping.get("_default_diff")
+                if diff_config:
+                    json_data["_diff_config"] = diff_config
+                diff_flags = _compute_diff_flags(diff_config, sn8, fallback_diff)
+                json_data["_diff_flags"] = diff_flags
+                active = {k: v for k, v in diff_flags.items() if v}
+                if active:
+                    source = "cloud" if diff_config else "fallback"
+                    MideaLogger.info(f"Diff flags ({source}) for SN8={sn8}: {active}")
+
+                # withoutOrder: hide order entities
+                if json_data.get("_diff_flags", {}).get("withoutOrder"):
+                    entities_cfg = json_data.get("entities", {})
+                    entities_cfg.get(Platform.TIME, {}).pop("order_set_time", None)
+                    entities_cfg.get(Platform.SENSOR, {}).pop("order_left_time", None)
+                    entities_cfg.get(Platform.BUTTON, {}).pop("start_order", None)
+                    MideaLogger.info(f"Device {sn8} does not support order — hiding order entities")
+
+        except Exception as e:
+            MideaLogger.warning(f"Cloud config download failed, using static mapping: {e}")
+
+    # Compute order_left_total for E1 devices
+    if device_type == 0xE1:
+        json_data = _add_order_left_total(json_data)
+
     try:
         from .device_mapping._cloud_stats import merge_cloud_stats_mapping
     except ImportError:
         return json_data
     return merge_cloud_stats_mapping(json_data, device_type)
+
+
+def _compute_diff_flags(diff_config: dict, sn8: str, fallback: dict = None) -> dict[str, bool]:
+    """Pre-compute diff flags: cloud-first, local fallback (matching mini-program)."""
+    result: dict[str, bool] = {}
+    source = diff_config if (diff_config and sn8) else fallback
+    if source:
+        for category, sn8_list in source.get("diffType", {}).items():
+            result[category] = sn8 in sn8_list
+    return result
+
+
+def _add_order_left_total(mapping: dict) -> dict:
+    """Add order_left_total calculated sensor attribute for E1 devices.
+
+    The cloud API returns order_left_hour and order_left_min separately.
+    This adds a calculate expression to combine them into total minutes.
+    """
+    import copy
+    result = copy.deepcopy(mapping)
+    calculate = dict(result.get("calculate") or {})
+    calc_get = list(calculate.get("get") or [])
+    calc_get.append({
+        "lvalue": "[order_left_total]",
+        "rvalue": "[order_left_min] + 60 * [order_left_hour]"
+    })
+    calculate["get"] = calc_get
+    result["calculate"] = calculate
+    return result
+
+
+def _install_e1_coordinator_attrs(coordinator, mapping: dict, device_type=0) -> None:
+    """Store E1-specific config on coordinator for entity access."""
+    coordinator._device_mapping = mapping
+    coordinator._diff_flags = mapping.get("_diff_flags", {})
+    coordinator._keep_start_now = mapping.get("_keep_start_now", False)
+    coordinator._keep_time_type = mapping.get("_keep_time_type", 0)
+    coordinator._keep_text_name = mapping.get("_keep_text_name", "")
+    coordinator._dry_text_name = mapping.get("_dry_text_name", "")
+    coordinator._mode_features = mapping.get("_mode_features", {})
+    coordinator._missing_features = set(mapping.get("_missing_features", []))
+    coordinator._device_mapping_entities = mapping.get("entities", {})
+    MideaLogger.debug(
+        f"E1 coordinator attrs: keep_start_now={coordinator._keep_start_now}, "
+        f"diff_flags={list(k for k, v in coordinator._diff_flags.items() if v) if coordinator._diff_flags else 'none'}"
+    )
 
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -560,6 +709,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                     info.get(CONF_SN8) or info.get("sn8"),
                                     device.subtype,
                                     device.category,
+                                    cloud=cloud,
+                                    use_auto_default=isinstance(cloud, MeijuCloud),
                                 ) or {}
                             except Exception:
                                 mapping = {}
@@ -671,6 +822,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 pass
 
                             coordinator = MideaDataUpdateCoordinator(hass, config_entry, device, cloud=cloud)
+                            # Store E1-specific config on coordinator
+                            if info.get("type") == 0xE1:
+                                _install_e1_coordinator_attrs(coordinator, mapping, device_type=info.get("type"))
                             # 后台刷新，避免初始化阻塞
                             hass.async_create_task(coordinator.async_config_entry_first_refresh())
                             bucket["device_list"][appliance_code] = info
