@@ -103,8 +103,27 @@ class MiedaDevice(threading.Thread):
         self._calculate_get = []
         self._calculate_set = []
         self._default_values = {}
-        self._lua_runtime = MideaCodec(lua_file, device_type=self._attributes.get("device_type"), sn=sn, subtype=subtype) if lua_file is not None else None
+        # lupa/Lua load is blocking; construct off the event loop via async_init_lua_runtime()
+        self._lua_file = lua_file
+        self._lua_runtime: MideaCodec | None = None
         self._cloud = cloud
+
+    async def async_init_lua_runtime(self) -> None:
+        """Load the device Lua codec in a worker thread (dofile is blocking)."""
+        if self._lua_runtime is not None or not self._lua_file:
+            return
+        try:
+            self._lua_runtime = await MideaCodec.async_create(
+                self._lua_file,
+                device_type=self._attributes.get("device_type"),
+                sn=self._sn,
+                subtype=self._subtype,
+            )
+        except Exception as e:
+            MideaLogger.warning(
+                f"Failed to init Lua runtime for {self._device_name}: {e}"
+            )
+            self._lua_runtime = None
 
     def _handle_t0xd9_db_location_selection(self, status, value):
         # 处理T0xD9复式洗衣机的db_location_selection更新
@@ -401,7 +420,9 @@ class MiedaDevice(threading.Thread):
 
             if self._lua_runtime is not None:
                 try:
-                    if set_cmd := self._lua_runtime.build_control(nested_status, status=status_for_lua):
+                    if set_cmd := await self._lua_runtime.async_build_control(
+                        nested_status, status=status_for_lua
+                    ):
                         return await self._build_send(set_cmd)
                 except Exception as e:
                     MideaLogger.debug(f"LuaRuntimeError in set_attribute {nested_status}: {repr(e)}")
@@ -450,7 +471,9 @@ class MiedaDevice(threading.Thread):
         if has_new:
             if self._lua_runtime is not None:
                 try:
-                    if set_cmd := self._lua_runtime.build_control(nested_status, status=status_for_lua):
+                    if set_cmd := await self._lua_runtime.async_build_control(
+                        nested_status, status=status_for_lua
+                    ):
                         return await self._build_send(set_cmd)
                 except Exception as e:
                     MideaLogger.debug(f"LuaRuntimeError in set_attributes {nested_status}: {repr(e)}")
@@ -572,7 +595,7 @@ class MiedaDevice(threading.Thread):
                         )
                     else:
                         if self._lua_runtime is not None:
-                            if query_cmd := self._lua_runtime.build_query(actual_query):
+                            if query_cmd := await self._lua_runtime.async_build_query(actual_query):
                                 if await self._build_send(query_cmd):
                                     any_success = True
 
@@ -591,7 +614,7 @@ class MiedaDevice(threading.Thread):
                         )
                     else:
                         if self._lua_runtime is not None:
-                            if query_cmd := self._lua_runtime.build_query(actual_query):
+                            if query_cmd := await self._lua_runtime.async_build_query(actual_query):
                                 if await self._build_send(query_cmd):
                                     any_success = True
 
@@ -682,13 +705,16 @@ class MiedaDevice(threading.Thread):
     async def _send_message(self, data) -> bool:
         """经云端透传发送。返回设备是否给出了应答（用于失败上报）。"""
         if reply := await self._cloud.send_cloud(self._device_id, data):
-            if reply_dec := self._lua_runtime.decode_status(dec_string_to_bytes(reply).hex()):
-                MideaLogger.debug(f"Decoded: {reply_dec}")
-                result = self._parse_cloud_message(reply_dec, update=False)
-                if result == ParseMessageResult.ERROR:
-                    MideaLogger.debug(f"Message 'ERROR' received")
-                elif result == ParseMessageResult.SUCCESS:
-                    timeout_counter = 0
+            if self._lua_runtime is not None:
+                if reply_dec := await self._lua_runtime.async_decode_status(
+                    dec_string_to_bytes(reply).hex()
+                ):
+                    MideaLogger.debug(f"Decoded: {reply_dec}")
+                    result = self._parse_cloud_message(reply_dec, update=False)
+                    if result == ParseMessageResult.ERROR:
+                        MideaLogger.debug(f"Message 'ERROR' received")
+                    elif result == ParseMessageResult.SUCCESS:
+                        timeout_counter = 0
             return True
         return False
 

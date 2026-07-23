@@ -1,8 +1,11 @@
-import os
-import traceback
-import lupa
-import threading
+import asyncio
 import json
+import os
+import threading
+import traceback
+
+import lupa
+
 from .logger import MideaLogger
 
 
@@ -41,6 +44,7 @@ class LuaRuntime:
         # 加载设备特定的Lua文件
         string = f'dofile("{file}")'
         self._runtimes.execute(string)
+        # lupa LuaRuntime is not safe to share across threads; serialize use.
         self._lock = threading.Lock()
         self._json_to_data = self._runtimes.eval("function(param) return jsonToData(param) end")
         self._data_to_json = self._runtimes.eval("function(param) return dataToJson(param) end")
@@ -64,6 +68,11 @@ class MideaCodec(LuaRuntime):
         self._sn = sn
         self._subtype = subtype
 
+    @classmethod
+    async def async_create(cls, file, device_type=None, sn=None, subtype=None):
+        """Load Lua codec off the event loop (dofile is CPU/IO heavy)."""
+        return await asyncio.to_thread(cls, file, device_type, sn, subtype)
+
     def _build_base_dict(self):
         device_info ={}
         if self._sn is not None:
@@ -85,6 +94,9 @@ class MideaCodec(LuaRuntime):
         except lupa.LuaError as e:
             MideaLogger.error(f"LuaRuntimeError in build_query {json_str}: {repr(e)}")
         return None
+
+    async def async_build_query(self, append=None):
+        return await asyncio.to_thread(self.build_query, append)
 
     def build_control(self, append=None, status=None):
         query_dict = self._build_base_dict()
@@ -125,6 +137,9 @@ class MideaCodec(LuaRuntime):
             MideaLogger.error(f"LuaRuntimeError in build_control {json_str}: {repr(e)}")
             return None
 
+    async def async_build_control(self, append=None, status=None):
+        return await asyncio.to_thread(self.build_control, append, status)
+
     def build_status(self, append=None):
         query_dict = self._build_base_dict()
         query_dict["status"] = {} if append is None else append
@@ -149,4 +164,7 @@ class MideaCodec(LuaRuntime):
         except lupa.LuaError as e:
             MideaLogger.error(f"LuaRuntimeError in decode_status {data}: {repr(e)}")
         return None
+
+    async def async_decode_status(self, data: str):
+        return await asyncio.to_thread(self.decode_status, data)
 

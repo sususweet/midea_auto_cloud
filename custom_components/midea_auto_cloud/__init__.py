@@ -550,6 +550,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 lua_file=file,
                                 cloud=cloud,
                             )
+                            # lupa dofile is blocking — load codec off the event loop
+                            await device.async_init_lua_runtime()
                             # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
                             try:
                                 mapping = await load_device_config(
