@@ -500,16 +500,18 @@ class MiedaDevice(threading.Thread):
         self._ip_address = ip_address
         self.close_socket()
 
-    def send_command(self, cmd_type, cmd_body: bytearray):
+    async def send_command(self, cmd_type, cmd_body: bytearray) -> bool:
+        """Send a custom MessageQuestCustom command via cloud/local transport."""
         cmd = MessageQuestCustom(self._device_type, cmd_type, cmd_body)
         try:
-            self._build_send(cmd.serialize().hex())
+            return await self._build_send(cmd.serialize().hex())
         except socket.error as e:
             MideaLogger.debug(
                 f"Interface send_command failure, {repr(e)}, "
                 f"cmd_type: {cmd_type}, cmd_body: {cmd_body.hex()}",
                 self._device_id
             )
+            return False
 
     def register_update(self, update):
         self._updates.append(update)

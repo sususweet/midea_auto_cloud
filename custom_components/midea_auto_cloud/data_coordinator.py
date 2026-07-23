@@ -504,7 +504,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         """Send a command to the device."""
         try:
             cmd_body_bytes = bytearray.fromhex(cmd_body)
-            self.device.send_command(cmd_type, cmd_body_bytes)
+            await self.device.send_command(cmd_type, cmd_body_bytes)
         except ValueError as e:
             _LOGGER.error(f"Invalid command body: {e}")
             raise
