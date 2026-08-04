@@ -52,8 +52,14 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return if the switch is on."""
-        # Use attribute from config if available, otherwise fall back to entity_key
-        attribute = self._config.get("attribute", self._entity_key)
+        # Prefer an explicit read-only state attribute; otherwise fall back to
+        # the write attribute / entity_key. This lets a switch report state from
+        # one attribute (e.g. the string on/off ``screen_display_now``) while
+        # writing to another (e.g. the numeric ``screen_display`` the codec
+        # expects).
+        attribute = self._config.get("state_attribute") or self._config.get(
+            "attribute", self._entity_key
+        )
         return self._get_status_on_off(attribute)
 
     async def async_turn_on(self):
