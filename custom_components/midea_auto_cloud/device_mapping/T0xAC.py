@@ -368,10 +368,6 @@ DEVICE_MAPPING = {
         "calculate": {
             "get": [
                 {
-                    "lvalue": "[screen_display]",
-                    "rvalue": "[screen_display_now]"
-                },
-                {
                     "lvalue": "[real_time_power_value]",
                     "rvalue": "float([real_time_power]) / 10"
                 },
@@ -466,7 +462,11 @@ DEVICE_MAPPING = {
                 },
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "display_on_off"
+                    "translation_key": "display_on_off",
+                    # Codec expects a numeric screen_display; read live on/off
+                    # state from screen_display_now.
+                    "state_attribute": "screen_display_now",
+                    "rationale": [0, 100],
                 },
                 "prevent_straight_wind": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -528,12 +528,7 @@ DEVICE_MAPPING = {
         ],
         "centralized": ["buzzer"],
         "calculate":{
-            "get": [
-                {
-                    "lvalue": "[screen_display]",
-                    "rvalue": "[screen_display_now]"
-                },
-            ],
+            "get": [],
             "set": []
         },
         "entities": {
@@ -609,7 +604,11 @@ DEVICE_MAPPING = {
                 },
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                    "translation_key": "display_on_off"
+                    "translation_key": "display_on_off",
+                    # Codec expects a numeric screen_display; read live on/off
+                    # state from screen_display_now.
+                    "state_attribute": "screen_display_now",
+                    "rationale": [0, 100],
                 },
                 "prevent_straight_wind": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -2247,12 +2246,7 @@ DEVICE_MAPPING = {
                     {"query_type": "wind_swing_ud_angle"}, {"query_type": "wind_swing_lr_angle"}],
         "centralized": ["buzzer"],
         "calculate":{
-            "get": [
-                {
-                    "lvalue": "[screen_display]",
-                    "rvalue": "[screen_display_now]"
-                },
-            ],
+            "get": [],
             "set": []
         },
         "entities": {
@@ -2330,6 +2324,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
+                    # Codec expects a numeric screen_display; read live on/off
+                    # state from screen_display_now.
+                    "state_attribute": "screen_display_now",
+                    "rationale": [0, 100],
                 },
                 "prevent_straight_wind": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -2369,12 +2367,7 @@ DEVICE_MAPPING = {
                     {"query_type": "wind_swing_ud_angle"}, {"query_type": "wind_swing_lr_angle"}],
         "centralized": ["buzzer"],
         "calculate":{
-            "get": [
-                {
-                    "lvalue": "[screen_display]",
-                    "rvalue": "[screen_display_now]"
-                },
-            ],
+            "get": [],
             "set": []
         },
         "entities": {
@@ -2460,6 +2453,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
+                    # Codec expects a numeric screen_display; read live on/off
+                    # state from screen_display_now.
+                    "state_attribute": "screen_display_now",
+                    "rationale": [0, 100],
                 },
                 "prevent_super_cool": {
                     "device_class": SwitchDeviceClass.SWITCH,
