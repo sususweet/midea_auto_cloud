@@ -3487,6 +3487,20 @@
             }
           }
         }
+      },
+      "fresh_air_fan": {
+        "name": "新风",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "heat_exchange": "热交换",
+              "rough_in": "强力送风",
+              "smooth_in": "送风",
+              "rough_out": "强力排风",
+              "smooth_out": "排风"
+            }
+          }
+        }
       }
     },
     "switch": {
