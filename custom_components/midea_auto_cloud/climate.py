@@ -620,15 +620,6 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             new_status = dict(self._key_hvac_modes.get(hvac_mode) or {})
         else:
             new_status = {}
-            # 调温时显式带上当前开关/模式，避免仅发 temperature 时状态回读匹配失败 (#211)
-            if self._key_power:
-                power = self._get_nested_value(self._key_power)
-                if power is not None:
-                    new_status[self._key_power] = power
-            if self._key_pre_mode:
-                mode = self._get_nested_value(self._key_pre_mode)
-                if mode is not None:
-                    new_status[self._key_pre_mode] = mode
         if isinstance(self._key_target_temperature, list):
             if len(self._key_target_temperature) == 2:
                 new_status[self._key_target_temperature[0]] = temp_int
