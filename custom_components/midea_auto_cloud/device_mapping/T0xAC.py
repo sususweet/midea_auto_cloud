@@ -463,8 +463,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "display_on_off",
-                    # Codec expects a numeric screen_display; read live on/off
-                    # state from screen_display_now.
+                    # Read state from screen_display_now when reported (string
+                    # or numeric, device dependent). Write numeric 0/100 unless
+                    # the device decodes screen_display as an on/off string, in
+                    # which case the wire format is mirrored.
                     "state_attribute": "screen_display_now",
                     "rationale": [0, 100],
                 },
@@ -605,8 +607,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "display_on_off",
-                    # Codec expects a numeric screen_display; read live on/off
-                    # state from screen_display_now.
+                    # Read state from screen_display_now when reported (string
+                    # or numeric, device dependent). Write numeric 0/100 unless
+                    # the device decodes screen_display as an on/off string, in
+                    # which case the wire format is mirrored.
                     "state_attribute": "screen_display_now",
                     "rationale": [0, 100],
                 },
@@ -2324,8 +2328,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
-                    # Codec expects a numeric screen_display; read live on/off
-                    # state from screen_display_now.
+                    # Read state from screen_display_now when reported (string
+                    # or numeric, device dependent). Write numeric 0/100 unless
+                    # the device decodes screen_display as an on/off string, in
+                    # which case the wire format is mirrored.
                     "state_attribute": "screen_display_now",
                     "rationale": [0, 100],
                 },
@@ -2453,8 +2459,10 @@ DEVICE_MAPPING = {
                 "screen_display": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "translation_key": "screen_close",
-                    # Codec expects a numeric screen_display; read live on/off
-                    # state from screen_display_now.
+                    # Read state from screen_display_now when reported (string
+                    # or numeric, device dependent). Write numeric 0/100 unless
+                    # the device decodes screen_display as an on/off string, in
+                    # which case the wire format is mirrored.
                     "state_attribute": "screen_display_now",
                     "rationale": [0, 100],
                 },
