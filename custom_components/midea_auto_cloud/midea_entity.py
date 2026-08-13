@@ -23,6 +23,7 @@ class Rationale(IntEnum):
     LESS = 2
 
 _YES_NO_VALUES = frozenset({"yes", "no"})
+_ON_OFF_VALUES = frozenset({"on", "off"})
 
 
 class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
@@ -234,22 +235,31 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         """Normalize common on/off wire formats to bool."""
         if isinstance(value, bool):
             return value
-        if isinstance(value, (int, float)) and int(value) in (0, 1):
-            return bool(int(value))
+        if isinstance(value, (int, float)):
+            # Devices report levels like 0/100 for off/on; nonzero means on.
+            return value != 0
         if isinstance(value, str):
             normalized = value.lower()
-            if normalized in ("yes", "on", "true", "1"):
+            if normalized in ("yes", "on", "true"):
                 return True
-            if normalized in ("no", "off", "false", "0"):
+            if normalized in ("no", "off", "false"):
                 return False
+            try:
+                return float(normalized) != 0
+            except ValueError:
+                return None
         return None
 
     def _on_off_wire_value(self, turn_on: bool, attribute_key: str | None = None) -> Any:
         """Return the on/off value to send, matching the device's wire format."""
         if attribute_key:
             current = self._get_nested_value(attribute_key)
-            if isinstance(current, str) and current.lower() in _YES_NO_VALUES:
-                return "yes" if turn_on else "no"
+            if isinstance(current, str):
+                normalized = current.lower()
+                if normalized in _YES_NO_VALUES:
+                    return "yes" if turn_on else "no"
+                if normalized in _ON_OFF_VALUES:
+                    return "on" if turn_on else "off"
         return self._rationale[int(turn_on)]
 
     def _get_status_on_off(self, attribute_key: str | None) -> bool:
