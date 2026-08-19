@@ -1,5 +1,6 @@
 from homeassistant.const import Platform, UnitOfTemperature, UnitOfPower, PRECISION_HALVES, PRECISION_WHOLE, \
-    CONCENTRATION_PARTS_PER_MILLION, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, PERCENTAGE
+    PERCENTAGE
+from ..const import CONCENTRATION_PARTS_PER_MILLION, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 # from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
