@@ -73,21 +73,31 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
             )
             return None
 
+    def _resolve_bound(self, bound: float | str, default: float) -> float:
+        """Resolve a static or attribute-backed bound, falling back when missing/null."""
+        if not isinstance(bound, str):
+            return float(bound)
+        value = self.device_attributes.get(bound)
+        if value is None:
+            return default
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            MideaLogger.warning(
+                f"Failed to convert bound '{bound}' value '{value}' to float "
+                f"for number entity {self._entity_key}; using default {default}"
+            )
+            return default
+
     @property
     def native_min_value(self) -> float:
         """Return the minimum value."""
-        if isinstance(self._min_value, str):
-            return float(self.device_attributes.get(self._min_value, 30))
-        else:
-            return float(self._min_value)
+        return self._resolve_bound(self._min_value, 0.0)
 
     @property
     def native_max_value(self) -> float:
         """Return the maximum value."""
-        if isinstance(self._max_value, str):
-            return float(self.device_attributes.get(self._max_value, 16))
-        else:
-            return float(self._max_value)
+        return self._resolve_bound(self._max_value, 100.0)
 
     @property
     def native_step(self) -> float:

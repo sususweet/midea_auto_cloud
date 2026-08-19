@@ -3135,6 +3135,20 @@
             }
           }
         }
+      },
+      "fresh_air_fan": {
+        "name": "Fresh Air",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "heat_exchange": "Heat Exchange",
+              "rough_in": "Supply Air Strong",
+              "smooth_in": "Supply Air",
+              "rough_out": "Exhaust Air Strong",
+              "smooth_out": "Exhaust Air"
+            }
+          }
+        }
       }
     },
     "switch": {
