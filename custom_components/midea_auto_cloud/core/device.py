@@ -733,7 +733,16 @@ class MiedaDevice(threading.Thread):
         self._connected = connected
         status = {"connected": connected}
         if not connected:
-            MideaLogger.warning(f"Device {self._device_id} disconnected", self._device_id)
+            # This path only fires at construction, reflecting the cloud's
+            # onlineStatus at list time. For a cloud-only appliance that is
+            # routine (e.g. a mains-unplugged unit) and the coordinator already
+            # surfaces genuine unavailability after N failed polls, so keep it
+            # quiet. A device reachable over a local IP that reports
+            # disconnected is still worth a warning.
+            if self._ip_address is None:
+                MideaLogger.debug(f"Device {self._device_id} disconnected", self._device_id)
+            else:
+                MideaLogger.warning(f"Device {self._device_id} disconnected", self._device_id)
         else:
             MideaLogger.debug(f"Device {self._device_id} connected", self._device_id)
         self._update_all(status)
