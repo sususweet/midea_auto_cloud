@@ -35,6 +35,32 @@ CONF_SELECTED_HOMES = "selected_homes"
 
 from homeassistant.const import Platform  # noqa: E402
 
+# ── Air-quality unit constants (HA back-compat shim) ─────────────
+# HA 2026.8 introduced the UnitOfRatio / UnitOfDensity enums and
+# deprecated the flat CONCENTRATION_* constants (slated for removal in
+# HA Core 2027.8). Prefer the enum members where they exist; fall back
+# to the deprecated constants on older cores so we keep supporting the
+# declared minimum (HA 2024.11). Device-mapping modules import these two
+# names from here instead of from homeassistant.const, which is what
+# stops the "deprecated constant ... was used" warnings on newer cores.
+try:  # HA >= 2026.8
+    from homeassistant.const import UnitOfRatio  # noqa: E402
+
+    CONCENTRATION_PARTS_PER_MILLION = UnitOfRatio.PARTS_PER_MILLION
+except (ImportError, AttributeError):  # HA < 2026.8
+    from homeassistant.const import (  # noqa: E402, F401
+        CONCENTRATION_PARTS_PER_MILLION,
+    )
+
+try:  # HA >= 2026.8
+    from homeassistant.const import UnitOfDensity  # noqa: E402
+
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER = UnitOfDensity.MICROGRAMS_PER_CUBIC_METER
+except (ImportError, AttributeError):  # HA < 2026.8
+    from homeassistant.const import (  # noqa: E402, F401
+        CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    )
+
 NUMERIC_FAN_MODE_TO_SEMANTIC = {
     "102": "auto",
     "20": "low",
