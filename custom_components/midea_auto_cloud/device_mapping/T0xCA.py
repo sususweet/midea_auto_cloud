@@ -126,6 +126,18 @@ DEVICE_MAPPING = {
                 "bar_door_state": {
                     "device_class": BinarySensorDeviceClass.DOOR,
                 },
+                # Ice full / presence status for notifications (yes/no).
+                "ice_machine_full": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "ice_machine_full",
+                },
+                "storage_ice_full_tips": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "storage_ice_full_tips",
+                },
+                "is_have_freezing_ice": {
+                    "translation_key": "is_have_freezing_ice",
+                },
                 "is_error": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
                 }

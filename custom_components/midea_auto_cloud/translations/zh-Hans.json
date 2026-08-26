@@ -282,6 +282,15 @@
       "storage_ice_home_door_state": {
         "name": "冷藏制冰室门状态"
       },
+      "ice_machine_full": {
+        "name": "制冰满"
+      },
+      "storage_ice_full_tips": {
+        "name": "冷藏制冰满"
+      },
+      "is_have_freezing_ice": {
+        "name": "有冰"
+      },
       "top_hot": {
         "name": "上盖加热"
       },

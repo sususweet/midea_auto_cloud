@@ -262,6 +262,15 @@
       "storage_ice_home_door_state": {
         "name": "Storage Ice Home Door State"
       },
+      "ice_machine_full": {
+        "name": "Ice Machine Full"
+      },
+      "storage_ice_full_tips": {
+        "name": "Storage Ice Full"
+      },
+      "is_have_freezing_ice": {
+        "name": "Has Freezing Ice"
+      },
       "top_hot": {
         "name": "Top Hot"
       },
