@@ -91,8 +91,140 @@ DEVICE_MAPPING = {
                     }
                 },
                 "wash_mode": {
-                    # Keep the existing option keys for translations and automations,
-                    # but send values understood by the device's Lua codec.
+                    # Lua codecs (e.g. T_0000_E1_000W5601_*, T_0000_E1_76006481_*) expect
+                    # mode strings like standard_wash / eco_wash. Unknown values fall back
+                    # to eco (0x04) when work_status is work — which is the #244 symptom.
+                    "options": {
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash"},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "germ": {"work_status": "work", "mode": "germ"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
+                    }
+                }
+            },
+            Platform.SENSOR: {
+                "bright": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "softwater": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            }
+        }
+    },
+    # WQP8-W7634C-W (and similar): Lua accepts short codec names (auto/normal/eco…).
+    # Hardware-verified in #229; must NOT use *_wash payloads or programs fall back to ECO.
+    "7600020L": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "wash_stage": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_main_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_piao_wash": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "diy_times": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SELECT: {
+                "airswitch": {
+                    "options": {
+                        "cancel": {"airswitch": 0},
+                        "waiting": {"airswitch": 1},
+                        "running": {"airswitch": 2}
+                    }
+                },
+                "dryswitch": {
+                    "options": {
+                        "cancel": {"dryswitch": 0},
+                        "waiting": {"dryswitch": 1},
+                        "running": {"dryswitch": 2},
+                    }
+                },
+                "dry_step_switch": {
+                    "options": {
+                        "cancel": {"dry_step_switch": 0},
+                        "waiting": {"dry_step_switch": 1},
+                        "running": {"dry_step_switch": 2},
+                    }
+                },
+                "air_set_hour": {
+                    "options": {
+                        "12": {"air_set_hour": "12"},
+                        "24": {"air_set_hour": "24"},
+                        "36": {"air_set_hour": "36"},
+                        "48": {"air_set_hour": "48"},
+                        "60": {"air_set_hour": "60"},
+                        "72": {"air_set_hour": "72"},
+                    }
+                },
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"},
+                    }
+                },
+                "wash_mode": {
                     "options": {
                         "auto_wash": {"work_status": "work", "mode": "auto"},
                         "strong_wash": {"work_status": "work", "mode": "intensive"},
@@ -214,19 +346,19 @@ DEVICE_MAPPING = {
                 },
                 "wash_mode": {
                     "options": {
-                        "auto_wash": {"work_status": "work", "mode": "auto"},
-                        "strong_wash": {"work_status": "work", "mode": "intensive"},
-                        "standard_wash": {"work_status": "work", "mode": "normal"},
-                        "eco_wash": {"work_status": "work", "mode": "eco"},
-                        "glass_wash": {"work_status": "work", "mode": "glass"},
-                        "90min_wash": {"work_status": "work", "mode": "90min"},
-                        "fast_wash": {"work_status": "work", "mode": "rapid"},
-                        "soak_wash": {"work_status": "work", "mode": "soak"},
-                        "hour_wash": {"work_status": "work", "mode": "1hour"},
-                        "quietnight_wash": {"work_status": "work", "mode": "quiet"},
-                        "germ": {"work_status": "work", "mode": "hygiene"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash"},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "germ": {"work_status": "work", "mode": "germ"},
                         "self_clean": {"work_status": "work", "mode": "self_clean"},
-                        "fruit_wash": {"work_status": "work", "mode": "fruit"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
                     }
                 }
             },
@@ -343,19 +475,19 @@ DEVICE_MAPPING = {
                 },
                 "wash_mode": {
                     "options": {
-                        "auto_wash": {"work_status": "work", "mode": "auto"},
-                        "strong_wash": {"work_status": "work", "mode": "intensive"},
-                        "standard_wash": {"work_status": "work", "mode": "normal"},
-                        "eco_wash": {"work_status": "work", "mode": "eco"},
-                        "glass_wash": {"work_status": "work", "mode": "glass"},
-                        "90min_wash": {"work_status": "work", "mode": "90min"},
-                        "fast_wash": {"work_status": "work", "mode": "rapid"},
-                        "soak_wash": {"work_status": "work", "mode": "soak"},
-                        "hour_wash": {"work_status": "work", "mode": "1hour"},
-                        "quietnight_wash": {"work_status": "work", "mode": "quiet"},
-                        "germ": {"work_status": "work", "mode": "hygiene"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash"},
+                        "glass_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "90min_wash": {"work_status": "work", "mode": "90min_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
+                        "hour_wash": {"work_status": "work", "mode": "hour_wash"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quietnight_wash"},
+                        "germ": {"work_status": "work", "mode": "germ"},
                         "self_clean": {"work_status": "work", "mode": "self_clean"},
-                        "fruit_wash": {"work_status": "work", "mode": "fruit"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"},
                     }
                 }
             },
@@ -421,15 +553,15 @@ DEVICE_MAPPING = {
                 },
                 "wash_mode": {
                     "options": {
-                        "auto_wash": {"work_status": "work", "mode": "auto"},
-                        "strong_wash": {"work_status": "work", "mode": "intensive"},
-                        "standard_wash": {"work_status": "work", "mode": "normal"},
-                        "eco_wash": {"work_status": "work", "mode": "eco"},
-                        "soft_wash": {"work_status": "work", "mode": "glass"},
-                        "fast_wash": {"work_status": "work", "mode": "rapid"},
-                        "soak_wash": {"work_status": "work", "mode": "soak"},
+                        "auto_wash": {"work_status": "work", "mode": "auto_wash"},
+                        "strong_wash": {"work_status": "work", "mode": "strong_wash"},
+                        "standard_wash": {"work_status": "work", "mode": "standard_wash"},
+                        "eco_wash": {"work_status": "work", "mode": "eco_wash"},
+                        "soft_wash": {"work_status": "work", "mode": "glass_wash"},
+                        "fast_wash": {"work_status": "work", "mode": "fast_wash"},
+                        "soak_wash": {"work_status": "work", "mode": "soak_wash"},
                         "self_clean": {"work_status": "work", "mode": "self_clean"},
-                        "fruit_wash": {"work_status": "work", "mode": "fruit"}
+                        "fruit_wash": {"work_status": "work", "mode": "fruit_wash"}
                     }
                 }
             },
