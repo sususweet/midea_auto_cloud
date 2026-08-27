@@ -404,6 +404,9 @@
       },
       "tank_status": {
         "name": "水箱状态"
+      },
+      "water_box": {
+        "name": "水盒"
       }
     },
     "climate": {
@@ -1406,7 +1409,50 @@
           "hanfu_spring_summer": "汉服（春夏）",
           "hanfu_autumn_winter": "汉服（秋冬）",
           "skin_care_wash": "护肤洗",
-          "hanfu_wash": "汉服洗"
+          "hanfu_wash": "汉服洗",
+          "bedsheet": "床单",
+          "plush": "毛绒",
+          "dehumidify": "除湿",
+          "cold_air_fresh_air": "冷风清新",
+          "hot_air_dry": "热风烘干",
+          "quick_dry": "快烘",
+          "low_temp_dry": "低温烘干",
+          "eco_dry": "节能烘干",
+          "quick_dry_30": "快烘30分",
+          "towel": "毛巾",
+          "intelligent_dry": "智能烘干",
+          "steam_care": "蒸汽护理",
+          "fixed_time_dry": "定时烘干",
+          "night_dry": "夜间烘干",
+          "bracket_dry": "支架烘干",
+          "western_trouser": "西裤",
+          "dehumidification": "除湿",
+          "smart_dry": "智慧烘干",
+          "four_piece_suit": "四件套",
+          "warm_clothes": "暖衣",
+          "quick_dry_20": "快烘20分",
+          "steam_sterilize": "蒸汽除菌",
+          "big_60": "大件60分",
+          "steam_no_iron": "蒸汽免熨",
+          "bed_clothes": "床品",
+          "little_fast_dry": "小快烘",
+          "small_piece_dry": "小件烘干",
+          "big_dry": "大件烘干",
+          "wool_nurse": "羊毛护理",
+          "sun_quilt": "晒被",
+          "fresh_remove_smell": "清新除味",
+          "bucket_self_clean": "筒自洁",
+          "sterilize": "除菌",
+          "heavy_duty": "强力",
+          "towel_warmer": "暖毛巾",
+          "air_fluff": "蓬松",
+          "delicates": "轻柔",
+          "time_drying_30": "定时30分",
+          "time_drying_60": "定时60分",
+          "time_drying_90": "定时90分",
+          "dry_softnurse": "柔护烘干",
+          "uniforms": "制服",
+          "remove_electricity": "除静电"
         }
       },
       "query_type": {
@@ -1939,6 +1985,12 @@
           "4": "中高档",
           "5": "高档"
         }
+      },
+      "temperature_level": {
+        "name": "温度档位"
+      },
+      "smell": {
+        "name": "除味"
       }
     },
     "sensor": {
@@ -3244,6 +3296,9 @@
       },
       "filter_use_per": {
         "name": "滤芯使用百分比"
+      },
+      "keep_fresh_status": {
+        "name": "保鲜状态"
       }
     },
     "light": {
@@ -3466,6 +3521,9 @@
       },
       "area2_gear": {
         "name": "双区区域2档位"
+      },
+      "smell_time": {
+        "name": "除味时间"
       }
     },
     "fan": {
@@ -4688,6 +4746,18 @@
       },
       "water_pump": {
         "name": "水泵"
+      },
+      "dry_night": {
+        "name": "夜间烘干"
+      },
+      "remove_static_electricity": {
+        "name": "除静电"
+      },
+      "intelligent_prevent_damp": {
+        "name": "智能防潮"
+      },
+      "flash_dry": {
+        "name": "闪烘"
       }
     },
     "text": {

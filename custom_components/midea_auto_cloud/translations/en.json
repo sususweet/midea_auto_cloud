@@ -384,6 +384,9 @@
       },
       "tank_status": {
         "name": "Tank Status"
+      },
+      "water_box": {
+        "name": "Water Box"
       }
     },
     "climate": {
@@ -1213,7 +1216,50 @@
           "hanfu_spring_summer": "hanfu spring summer",
           "hanfu_autumn_winter": "hanfu autumn winter",
           "skin_care_wash": "skin care wash",
-          "hanfu_wash": "hanfu wash"
+          "hanfu_wash": "hanfu wash",
+          "bedsheet": "Bedsheet",
+          "plush": "Plush",
+          "dehumidify": "Dehumidify",
+          "cold_air_fresh_air": "Cold Air Fresh",
+          "hot_air_dry": "Hot Air Dry",
+          "quick_dry": "Quick Dry",
+          "low_temp_dry": "Low Temp Dry",
+          "eco_dry": "Eco Dry",
+          "quick_dry_30": "Quick Dry 30min",
+          "towel": "Towel",
+          "intelligent_dry": "Intelligent Dry",
+          "steam_care": "Steam Care",
+          "fixed_time_dry": "Timed Dry",
+          "night_dry": "Night Dry",
+          "bracket_dry": "Bracket Dry",
+          "western_trouser": "Trousers",
+          "dehumidification": "Dehumidification",
+          "smart_dry": "Smart Dry",
+          "four_piece_suit": "Four-piece Suit",
+          "warm_clothes": "Warm Clothes",
+          "quick_dry_20": "Quick Dry 20min",
+          "steam_sterilize": "Steam Sterilize",
+          "big_60": "Bulky 60min",
+          "steam_no_iron": "Steam No-Iron",
+          "bed_clothes": "Bedding",
+          "little_fast_dry": "Little Fast Dry",
+          "small_piece_dry": "Small Piece Dry",
+          "big_dry": "Bulky Dry",
+          "wool_nurse": "Wool Care",
+          "sun_quilt": "Sun Quilt",
+          "fresh_remove_smell": "Fresh Deodorize",
+          "bucket_self_clean": "Drum Self-clean",
+          "sterilize": "Sterilize",
+          "heavy_duty": "Heavy Duty",
+          "towel_warmer": "Towel Warmer",
+          "air_fluff": "Air Fluff",
+          "delicates": "Delicates",
+          "time_drying_30": "Timed 30min",
+          "time_drying_60": "Timed 60min",
+          "time_drying_90": "Timed 90min",
+          "dry_softnurse": "Soft Care Dry",
+          "uniforms": "Uniforms",
+          "remove_electricity": "Anti-static"
         }
       },
       "query_type": {
@@ -1664,6 +1710,12 @@
           "4": "Medium High",
           "5": "High"
         }
+      },
+      "temperature_level": {
+        "name": "Temperature Level"
+      },
+      "smell": {
+        "name": "Deodorize"
       }
     },
     "sensor": {
@@ -2911,6 +2963,9 @@
       },
       "indoor_humidity": {
         "name": "Indoor Humidity"
+      },
+      "keep_fresh_status": {
+        "name": "Keep Fresh Status"
       }
     },
     "light": {
@@ -3115,6 +3170,9 @@
       },
       "area2_gear": {
         "name": "Double Area Area 2 Gear"
+      },
+      "smell_time": {
+        "name": "Deodorize Time"
       }
     },
     "fan": {
@@ -4336,6 +4394,18 @@
       },
       "water_pump": {
         "name": "Water Pump"
+      },
+      "dry_night": {
+        "name": "Night Dry"
+      },
+      "remove_static_electricity": {
+        "name": "Anti-static"
+      },
+      "intelligent_prevent_damp": {
+        "name": "Smart Anti-damp"
+      },
+      "flash_dry": {
+        "name": "Flash Dry"
       }
     },
     "text": {
