@@ -242,7 +242,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             normalized = value.lower()
             if normalized in ("yes", "on", "true"):
                 return True
-            if normalized in ("no", "off", "false"):
+            if normalized in ("no", "off", "false", "invalid", "unknown"):
                 return False
             try:
                 return float(normalized) != 0
@@ -325,7 +325,7 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                 if state_value is None:
                     match = False
                     break
-                if rationale is Rationale.EQUALLY and state_value != value:
+                if rationale is Rationale.EQUALLY and not self._values_equal_soft(state_value, value):
                     match = False
                     break
                 if rationale is Rationale.GREATER and state_value < value:
