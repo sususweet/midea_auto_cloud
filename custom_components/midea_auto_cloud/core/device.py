@@ -236,6 +236,16 @@ class MiedaDevice(threading.Thread):
             return tuple(sorted(query.items()))
         return (("__raw__", query),)
 
+    @staticmethod
+    def _normalize_status_query(device_type: int, query):
+        """T0xCF lua 不接受空 query，运行时补默认 query_type。"""
+        if device_type != 0xCF or not isinstance(query, dict):
+            return query
+        normalized = query.copy()
+        if not normalized.get("query_type"):
+            normalized["query_type"] = "0x11"
+        return normalized
+
     def set_centralized(self, centralized: list):
         self._centralized = centralized
 
@@ -568,6 +578,7 @@ class MiedaDevice(threading.Thread):
 
             # 针对T0xD9复式洗衣机，根据 db_position 动态调整 db_location
             actual_query = query.copy() if isinstance(query, dict) else query
+            actual_query = self._normalize_status_query(self._device_type, actual_query)
             if self._device_type == 0xD9 and isinstance(actual_query, dict):
                 # 根据 db_position 调整 db_location
                 calculated_location = self._adjust_t0xd9_db_location_based_on_position(actual_query)
@@ -578,47 +589,54 @@ class MiedaDevice(threading.Thread):
             cloud = self._cloud
             if cloud and hasattr(cloud, "get_device_status"):
                 attempted = True
-                if isinstance(cloud, MSmartHomeCloud):
-                    if status := await cloud.get_device_status(
-                        appliance_code=self._device_id,
-                        device_type=self.device_type,
-                        sn=self.sn,
-                        model_number=self.subtype,
-                        manufacturer_code=self._manufacturer_code,
-                        query=actual_query
-                    ):
-                        self._parse_cloud_message(status)
-                        any_success = True
-                    elif cloud.lua_status_analysis_error:
-                        self._skipped_queries.add(query_sig)
-                        MideaLogger.warning(
-                            f"Cloud lua analysis exception for query {query}, "
-                            f"skip further retries. msg={cloud.lua_status_analysis_msg}"
-                        )
-                    else:
-                        if self._lua_runtime is not None:
-                            if query_cmd := await self._lua_runtime.async_build_query(actual_query):
-                                if await self._build_send(query_cmd):
-                                    any_success = True
+                try:
+                    if isinstance(cloud, MSmartHomeCloud):
+                        if status := await cloud.get_device_status(
+                            appliance_code=self._device_id,
+                            device_type=self.device_type,
+                            sn=self.sn,
+                            model_number=self.subtype,
+                            manufacturer_code=self._manufacturer_code,
+                            query=actual_query
+                        ):
+                            self._parse_cloud_message(status)
+                            any_success = True
+                        elif cloud.lua_status_analysis_error:
+                            self._skipped_queries.add(query_sig)
+                            MideaLogger.warning(
+                                f"Cloud lua analysis exception for query {query}, "
+                                f"skip further retries. msg={cloud.lua_status_analysis_msg}"
+                            )
+                        else:
+                            if self._lua_runtime is not None:
+                                if query_cmd := await self._lua_runtime.async_build_query(actual_query):
+                                    if await self._build_send(query_cmd):
+                                        any_success = True
 
-                elif isinstance(cloud, MeijuCloud):
-                    if status := await cloud.get_device_status(
-                        appliance_code=self._device_id,
-                        query=actual_query
-                    ):
-                        self._parse_cloud_message(status)
-                        any_success = True
-                    elif cloud.lua_status_analysis_error:
-                        self._skipped_queries.add(query_sig)
-                        MideaLogger.warning(
-                            f"Cloud lua analysis exception for query {query}, "
-                            f"skip further retries. msg={cloud.lua_status_analysis_msg}"
-                        )
-                    else:
-                        if self._lua_runtime is not None:
-                            if query_cmd := await self._lua_runtime.async_build_query(actual_query):
-                                if await self._build_send(query_cmd):
-                                    any_success = True
+                    elif isinstance(cloud, MeijuCloud):
+                        if status := await cloud.get_device_status(
+                            appliance_code=self._device_id,
+                            query=actual_query
+                        ):
+                            self._parse_cloud_message(status)
+                            any_success = True
+                        elif cloud.lua_status_analysis_error:
+                            self._skipped_queries.add(query_sig)
+                            MideaLogger.warning(
+                                f"Cloud lua analysis exception for query {query}, "
+                                f"skip further retries. msg={cloud.lua_status_analysis_msg}"
+                            )
+                        else:
+                            if self._lua_runtime is not None:
+                                if query_cmd := await self._lua_runtime.async_build_query(actual_query):
+                                    if await self._build_send(query_cmd):
+                                        any_success = True
+                except Exception as e:
+                    self._skipped_queries.add(query_sig)
+                    MideaLogger.warning(
+                        f"Status query failed for {query}, skip further retries: {e}",
+                        self._device_id,
+                    )
 
         # 没有执行任何云端查询时（如查询全部被跳过）不算失败
         return any_success or not attempted

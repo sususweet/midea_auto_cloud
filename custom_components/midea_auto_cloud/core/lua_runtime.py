@@ -78,7 +78,7 @@ class MideaCodec(LuaRuntime):
         if self._sn is not None:
             device_info["deviceSN"] = self._sn
         if self._subtype is not None:
-            device_info["deviceSubType"] = self._subtype
+            device_info["deviceSubType"] = str(self._subtype)
         base_dict = {
             "deviceinfo": device_info
         }
@@ -87,11 +87,18 @@ class MideaCodec(LuaRuntime):
     def build_query(self, append=None):
         query_dict = self._build_base_dict()
         query_dict["query"] = {} if append is None else append
+        if self._device_type == "T0xCF":
+            query = query_dict["query"]
+            if not isinstance(query, dict):
+                query = {}
+                query_dict["query"] = query
+            if not query.get("query_type"):
+                query["query_type"] = "0x11"
         json_str = json.dumps(query_dict)
         try:
             result = self.json_to_data(json_str)
             return result
-        except lupa.LuaError as e:
+        except Exception as e:
             MideaLogger.error(f"LuaRuntimeError in build_query {json_str}: {repr(e)}")
         return None
 

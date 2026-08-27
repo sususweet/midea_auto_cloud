@@ -6,6 +6,7 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
+        # {} 会在运行时自动补 query_type "0x11"（CF lua 与 build_control 一致）
         "queries": [{}, {"query_type": "0x11"}, {"query_type": "0x12"}],
         "centralized": [
             "power_state", "run_mode", "temp_set", "heat_enable", "cool_enable"

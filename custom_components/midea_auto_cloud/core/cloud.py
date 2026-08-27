@@ -122,7 +122,12 @@ class MideaCloud:
         if code == 1014:
             return True
         msg = str(response.get("msg") or response.get("message") or "").lower()
-        return "lua analysis exception" in msg
+        if "lua analysis exception" in msg:
+            return True
+        # Some endpoints return the lua stack trace without code 1014.
+        if code != 0 and ".lua:" in msg:
+            return True
+        return False
 
     @staticmethod
     def _is_login_endpoint(endpoint: str) -> bool:
