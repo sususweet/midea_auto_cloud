@@ -38,6 +38,24 @@ DEVICE_MAPPING = {
                         "keep_warm": "on",
                     }
                 },
+                "quantify_21": {
+                    "min": 500,
+                    "max": 5000,
+                    "step": 500,
+                    "unit_of_measurement": "mL"
+                },
+                "quantify_22": {
+                    "min": 500,
+                    "max": 5000,
+                    "step": 500,
+                    "unit_of_measurement": "mL"
+                },
+                "quantify_23": {
+                    "min": 500,
+                    "max": 5000,
+                    "step": 500,
+                    "unit_of_measurement": "mL"
+                },
             },
             Platform.LOCK: {
                 "lock": {
