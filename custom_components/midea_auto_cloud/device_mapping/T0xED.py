@@ -16,7 +16,15 @@ DEVICE_MAPPING = {
                         "start": {"heat_start": 1},
                         "stop": {"heat_start": 0}
                     },
-                }
+                },
+                "cur_quantify": {
+                    "options": {
+                        "off_quantify": {"cur_quantify": 0},
+                        "small_amount": {"cur_quantify": 21},
+                        "normal_amount": {"cur_quantify": 22},
+                        "large_amount": {"cur_quantify": 23},
+                    }
+                },
             },
             Platform.NUMBER: {
                 "custom_temperature_1": {
