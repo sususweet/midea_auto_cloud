@@ -339,17 +339,23 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         return None
 
     def _values_equal_soft(self, state_value: Any, expected: Any) -> bool:
-        """Loose equality for wire formats (on/off aliases, numeric strings)."""
+        """Loose equality for wire formats (on/off aliases, numeric strings).
+
+        Numeric multi-level codes (e.g. T0x21 run_mode 1=fan / 2=cool / 3=heat)
+        must compare as numbers first. Coercing every nonzero value to "on" would
+        make cool/heat/dry all soft-match fan_only (#249).
+        """
         if state_value == expected:
             return True
+        try:
+            return float(state_value) == float(expected)
+        except (TypeError, ValueError):
+            pass
         state_on_off = self._coerce_on_off(state_value)
         expected_on_off = self._coerce_on_off(expected)
         if state_on_off is not None and expected_on_off is not None:
             return state_on_off == expected_on_off
-        try:
-            return float(state_value) == float(expected)
-        except (TypeError, ValueError):
-            return str(state_value) == str(expected)
+        return str(state_value) == str(expected)
 
     def _dict_get_selected(self, key_of_dict: dict, rationale: Rationale = Rationale.EQUALLY):
         for mode, status in key_of_dict.items():
