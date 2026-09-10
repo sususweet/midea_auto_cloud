@@ -138,6 +138,149 @@ DEVICE_MAPPING = {
     },
     # WQP8-W7634C-W (and similar): Lua accepts short codec names (auto/normal/eco…).
     # Hardware-verified in #229; must NOT use *_wash payloads or programs fall back to ECO.
+    # Comfee CDWI455i (built-in 45 cm dishwasher, EU market).
+    #
+    # Its Lua codec (T_0000_E1_10013080) only understands the short mode names,
+    # e.g. luaTable["mode"] == "90min" -> 0x06. The "default" mapping sends
+    # "90min_wash", which the codec does not recognise, so it falls back to
+    # mode = 0x00 and the programme never starts. The appliance also reports the
+    # short names back, e.g. mode = "90min".
+    #
+    # The programme list matches the ten programmes documented in the CDWI455i
+    # user manual. Three of them ("glass_wash", "self_clean", "hour_wash") have
+    # no button on the control panel and are cloud-only, so this integration is
+    # the only way to start them besides the vendor app.
+    #
+    # "additional", "wash_region" and "door_auto_open" are encoded in the very
+    # same packet as "mode" (bodyBytes[3], [4] and [13]), hence "centralized":
+    # without it, starting a programme resets the wash zone and the automatic
+    # door opening, which is enabled by default on this model.
+
+    #
+    # "mode" and "work_status" are also exposed as sensors: the selects only
+    # resolve to an option while work_status == "work", and automations need the
+    # raw value at any time (e.g. to tell "off" from "finished").
+    #
+    # Features the E1 protocol has but this model does not: uvswitch, waterswitch,
+    # airswitch/air_set_hour/air_left_hour (dish storage with airing),
+    # dryswitch/dry_step_switch and the diy_* group. They report constant or
+    # meaningless values here, so they are left out.
+    "7600016L": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": ["additional", "wash_region", "door_auto_open"],
+        "entities": {
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                # doorswitch == 1 means the door is CLOSED on this model, so no
+                # BinarySensorDeviceClass.DOOR here - it would render "open".
+                "doorswitch": {},
+                "door_auto_open": {},
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {},
+                "work_status": {},
+                "operator": {},
+                "additional": {},
+                "wash_region": {},
+                "wash_stage": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "remain_time"
+                },
+            },
+            Platform.SELECT: {
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"},
+                    }
+                },
+                # Programmes of the CDWI455i manual. Figures below are for
+                # a full load: duration, energy, water.
+                #   eco         50 C   198 min  0.674 kWh   9.4 L
+                #   auto       55-65C  150 min  0.850-1.375 9.3-15.3 L
+                #   intensive   72 C   178 min  1.326-1.356 13.9 L
+                #   90min       55 C    90 min  0.830-0.930 10.4 L
+                #   rapid       45 C    30 min  0.560 kWh   9.6 L
+                #   hygiene     75 C   159 min  1.323-1.353 13.3 L
+                #   quiet       55 C   240 min  0.890-0.970 9.9 L
+                #   glass       47 C   120 min  0.760-0.805 12.7 L, cloud only
+                #   self_clean  72 C   150 min  1.209-1.419 10.2 L, cloud only
+                #   1hour       60 C    58 min  0.840 kWh   9.6 L,  cloud only
+                #
+                # Half load is "additional" == 2. It shortens the cycle as well
+                # (hygiene 159 -> 125 min, 90min 90 -> 72), so the remaining
+                # time reported before the start is the only reliable source of
+                # the real cycle duration.
+                "wash_mode": {
+                    "options": {
+                        "eco_wash": {"work_status": "work", "mode": "eco"},
+                        "auto_wash": {"work_status": "work", "mode": "auto"},
+                        "strong_wash": {"work_status": "work", "mode": "intensive"},
+                        "90min_wash": {"work_status": "work", "mode": "90min"},
+                        "fast_wash": {"work_status": "work", "mode": "rapid"},
+                        "germ": {"work_status": "work", "mode": "hygiene"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quiet"},
+                        "glass_wash": {"work_status": "work", "mode": "glass"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "hour_wash": {"work_status": "work", "mode": "1hour"},
+                    }
+                },
+                # Water hardness H1..H6, factory setting H3.
+                "softwater": {
+                    "options": {
+                        "1": {"softwater": 1},
+                        "2": {"softwater": 2},
+                        "3": {"softwater": 3},
+                        "4": {"softwater": 4},
+                        "5": {"softwater": 5},
+                        "6": {"softwater": 6},
+                    }
+                },
+                # Rinse aid dosage d1..d5, factory setting d3.
+                "rinse_aid": {
+                    "attribute": "bright",
+                    "options": {
+                        "1": {"bright": 1},
+                        "2": {"bright": 2},
+                        "3": {"bright": 3},
+                        "4": {"bright": 4},
+                        "5": {"bright": 5},
+                    }
+                },
+            }
+        }
+    },
     "7600020L": {
         "rationale": [0, 1],
         "queries": [{}],

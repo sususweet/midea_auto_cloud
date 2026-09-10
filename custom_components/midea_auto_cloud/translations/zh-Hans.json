@@ -407,6 +407,9 @@
       },
       "water_box": {
         "name": "水盒"
+      },
+      "door_auto_open": {
+        "name": "自动开门"
       }
     },
     "climate": {
@@ -3299,6 +3302,15 @@
       },
       "keep_fresh_status": {
         "name": "保鲜状态"
+      },
+      "operator": {
+        "name": "操作"
+      },
+      "additional": {
+        "name": "附加功能"
+      },
+      "wash_region": {
+        "name": "洗涤区域"
       }
     },
     "light": {
