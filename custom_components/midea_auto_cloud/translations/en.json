@@ -387,6 +387,9 @@
       },
       "water_box": {
         "name": "Water Box"
+      },
+      "door_auto_open": {
+        "name": "Auto Door Open"
       }
     },
     "climate": {
@@ -2966,6 +2969,15 @@
       },
       "keep_fresh_status": {
         "name": "Keep Fresh Status"
+      },
+      "operator": {
+        "name": "Operator"
+      },
+      "additional": {
+        "name": "Additional Function"
+      },
+      "wash_region": {
+        "name": "Wash Region"
       }
     },
     "light": {
