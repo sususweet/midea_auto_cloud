@@ -407,6 +407,9 @@
       },
       "water_box": {
         "name": "水盒"
+      },
+      "body_induction": {
+        "name": "人体感应"
       }
     },
     "climate": {
@@ -3299,6 +3302,12 @@
       },
       "keep_fresh_status": {
         "name": "保鲜状态"
+      },
+      "current_height": {
+        "name": "下降高度"
+      },
+      "location_status": {
+        "name": "位置状态"
       }
     },
     "light": {
@@ -3316,6 +3325,9 @@
             }
           }
         }
+      },
+      "common_light": {
+        "name": "晾衣灯"
       }
     },
     "lock": {
@@ -3524,6 +3536,15 @@
       },
       "smell_time": {
         "name": "除味时间"
+      },
+      "custom_height": {
+        "name": "晾衣高度"
+      },
+      "timing_light_off": {
+        "name": "延时关灯"
+      },
+      "voice_set": {
+        "name": "语音音量"
       }
     },
     "fan": {
@@ -4768,6 +4789,30 @@
       },
       "flash_dry": {
         "name": "闪烘"
+      },
+      "set_light_off": {
+        "name": "延时关灯功能"
+      },
+      "mic_switch": {
+        "name": "麦克风"
+      },
+      "horn_switch": {
+        "name": "提示音"
+      },
+      "wakeup_free_switch": {
+        "name": "免唤醒"
+      },
+      "continuous_dialogue_switch": {
+        "name": "连续对话"
+      },
+      "remote_control_broadcast_switch": {
+        "name": "遥控播报"
+      },
+      "lift_up_switch": {
+        "name": "轻抬上升"
+      },
+      "wifi_light_switch": {
+        "name": "联网指示灯"
       }
     },
     "text": {

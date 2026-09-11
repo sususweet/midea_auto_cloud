@@ -387,6 +387,9 @@
       },
       "water_box": {
         "name": "Water Box"
+      },
+      "body_induction": {
+        "name": "Human Detection"
       }
     },
     "climate": {
@@ -2966,11 +2969,20 @@
       },
       "keep_fresh_status": {
         "name": "Keep Fresh Status"
+      },
+      "current_height": {
+        "name": "Drop Height"
+      },
+      "location_status": {
+        "name": "Position Status"
       }
     },
     "light": {
       "light": {
         "name": "Light"
+      },
+      "common_light": {
+        "name": "Ceiling Light"
       }
     },
     "lock": {
@@ -3173,6 +3185,15 @@
       },
       "smell_time": {
         "name": "Deodorize Time"
+      },
+      "custom_height": {
+        "name": "Drying Height"
+      },
+      "timing_light_off": {
+        "name": "Light-off Delay"
+      },
+      "voice_set": {
+        "name": "Voice Volume"
       }
     },
     "fan": {
@@ -4417,6 +4438,30 @@
       },
       "flash_dry": {
         "name": "Flash Dry"
+      },
+      "set_light_off": {
+        "name": "Light-off Delay Switch"
+      },
+      "mic_switch": {
+        "name": "Microphone"
+      },
+      "horn_switch": {
+        "name": "Prompt Tone"
+      },
+      "wakeup_free_switch": {
+        "name": "Wake-word Free"
+      },
+      "continuous_dialogue_switch": {
+        "name": "Continuous Dialogue"
+      },
+      "remote_control_broadcast_switch": {
+        "name": "Remote Broadcast"
+      },
+      "lift_up_switch": {
+        "name": "Lift-up to Rise"
+      },
+      "wifi_light_switch": {
+        "name": "Network Indicator"
       }
     },
     "text": {
