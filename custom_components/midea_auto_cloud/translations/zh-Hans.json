@@ -407,6 +407,18 @@
       },
       "water_box": {
         "name": "水盒"
+      },
+      "backflow": {
+        "name": "回流故障"
+      },
+      "stew_heat_status": {
+        "name": "炖加热状态"
+      },
+      "bubble_status": {
+        "name": "气泡检测"
+      },
+      "full": {
+        "name": "水箱水满"
       }
     },
     "climate": {
@@ -3299,6 +3311,15 @@
       },
       "keep_fresh_status": {
         "name": "保鲜状态"
+      },
+      "standby_status": {
+        "name": "待机状态"
+      },
+      "life_fcb": {
+        "name": "FCB滤芯剩余寿命"
+      },
+      "life_ro": {
+        "name": "RO滤芯剩余寿命"
       }
     },
     "light": {
@@ -3524,6 +3545,12 @@
       },
       "smell_time": {
         "name": "除味时间"
+      },
+      "timing_regeneration_hour": {
+        "name": "定时再生（小时）"
+      },
+      "timing_regeneration_min": {
+        "name": "定时再生（分钟）"
       }
     },
     "fan": {
@@ -4768,6 +4795,21 @@
       },
       "flash_dry": {
         "name": "闪烘"
+      },
+      "filter_self_cleaning": {
+        "name": "滤芯自清洁"
+      },
+      "extreme_mode": {
+        "name": "极限模式"
+      },
+      "auto_fill_water": {
+        "name": "自动注水"
+      },
+      "smart_ro_obsolete_water": {
+        "name": "智能废水比"
+      },
+      "gesture": {
+        "name": "手势控制"
       }
     },
     "text": {

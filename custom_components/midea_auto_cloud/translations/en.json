@@ -387,6 +387,18 @@
       },
       "water_box": {
         "name": "Water Box"
+      },
+      "backflow": {
+        "name": "Backflow"
+      },
+      "stew_heat_status": {
+        "name": "Stew heating"
+      },
+      "bubble_status": {
+        "name": "Bubble detected"
+      },
+      "full": {
+        "name": "Tank full"
       }
     },
     "climate": {
@@ -2966,6 +2978,15 @@
       },
       "keep_fresh_status": {
         "name": "Keep Fresh Status"
+      },
+      "standby_status": {
+        "name": "Standby status"
+      },
+      "life_fcb": {
+        "name": "FCB filter remaining life"
+      },
+      "life_ro": {
+        "name": "RO filter remaining life"
       }
     },
     "light": {
@@ -3173,6 +3194,12 @@
       },
       "smell_time": {
         "name": "Deodorize Time"
+      },
+      "timing_regeneration_hour": {
+        "name": "Scheduled regeneration (hour)"
+      },
+      "timing_regeneration_min": {
+        "name": "Scheduled regeneration (minute)"
       }
     },
     "fan": {
@@ -4417,6 +4444,21 @@
       },
       "flash_dry": {
         "name": "Flash Dry"
+      },
+      "filter_self_cleaning": {
+        "name": "Filter self-cleaning"
+      },
+      "extreme_mode": {
+        "name": "Extreme mode"
+      },
+      "auto_fill_water": {
+        "name": "Auto fill water"
+      },
+      "smart_ro_obsolete_water": {
+        "name": "Smart RO wastewater ratio"
+      },
+      "gesture": {
+        "name": "Gesture control"
       }
     },
     "text": {
