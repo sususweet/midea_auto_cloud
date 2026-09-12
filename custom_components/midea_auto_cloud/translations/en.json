@@ -645,7 +645,6 @@
         "name": "Heating"
       },
       "bath_heater": {
-        "name": null,
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -1101,7 +1100,13 @@
         "name": "Gesture"
       },
       "gesture_value": {
-        "name": "Gesture Value"
+        "name": "Gesture Action",
+        "state": {
+          "power_toggle": "Power Toggle",
+          "adjust_speed": "Adjust Speed",
+          "light_toggle": "Light Toggle",
+          "power_and_speed": "Power & Speed"
+        }
       },
       "gesture_sensitivity_value": {
         "name": "Gesture Sensitivity Value"
@@ -1644,7 +1649,14 @@
         }
       },
       "wind_pressure": {
-        "name": "Wind Pressure"
+        "name": "Wind Pressure",
+        "state": {
+          "off": "Off",
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
+          "extreme": "Extreme"
+        }
       },
       "hot_style": {
         "name": "Heating Style"

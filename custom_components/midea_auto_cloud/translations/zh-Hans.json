@@ -679,7 +679,6 @@
         "name": "采暖"
       },
       "bath_heater": {
-        "name": null,
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -1271,7 +1270,13 @@
         }
       },
       "gesture_value": {
-        "name": "手势操作"
+        "name": "手势操作",
+        "state": {
+          "power_toggle": "开关机",
+          "adjust_speed": "调风速",
+          "light_toggle": "开关灯",
+          "power_and_speed": "开关机并调风速"
+        }
       },
       "gesture_sensitivity_value": {
         "name": "手势灵敏度",
@@ -1919,7 +1924,14 @@
         }
       },
       "wind_pressure": {
-        "name": "风压"
+        "name": "风压",
+        "state": {
+          "off": "关闭",
+          "low": "低速",
+          "medium": "中速",
+          "high": "高速",
+          "extreme": "强劲"
+        }
       },
       "hot_style": {
         "name": "供热方式"
