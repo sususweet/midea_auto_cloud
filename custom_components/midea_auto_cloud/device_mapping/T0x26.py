@@ -495,11 +495,6 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.NUMBER: {
-                "smelly_threshold": {
-                    "min": 0,
-                    "max": 9,
-                    "step": 1,
-                },
                 "bath_temperature": {
                     "min": 30,
                     "max": 42,
@@ -555,6 +550,14 @@ DEVICE_MAPPING = {
                         "night_light": {"light_mode": "night_light"},
                         "main_light": {"light_mode": "main_light"}
                     }
+                },
+                "smelly_threshold": {
+                    "options": {
+                        "high": {"smelly_threshold": 1},
+                        "medium": {"smelly_threshold": 2},
+                        "low": {"smelly_threshold": 3}
+                    },
+                    "ignore_values": [255, "ff"]
                 }
             },
             Platform.SENSOR: {

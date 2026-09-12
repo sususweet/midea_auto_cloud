@@ -706,6 +706,14 @@
       }
     },
     "select": {
+      "smelly_threshold": {
+        "name": "Odor Threshold",
+        "state": {
+          "high": "High",
+          "medium": "Medium",
+          "low": "Low"
+        }
+      },
       "heating_capacity": {
         "name": "Heating Tank",
         "state": {
@@ -3228,9 +3236,6 @@
       },
       "smell_time": {
         "name": "Deodorize Time"
-      },
-      "smelly_threshold": {
-        "name": "Odor Threshold"
       },
       "bath_temperature": {
         "name": "Bath Temperature"

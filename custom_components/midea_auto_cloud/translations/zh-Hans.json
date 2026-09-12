@@ -750,6 +750,14 @@
       }
     },
     "select": {
+      "smelly_threshold": {
+        "name": "异味检测阈值",
+        "state": {
+          "high": "高",
+          "medium": "中",
+          "low": "低"
+        }
+      },
       "heating_capacity": {
         "name": "加热胆量",
         "state": {
@@ -3579,9 +3587,6 @@
       },
       "smell_time": {
         "name": "除味时间"
-      },
-      "smelly_threshold": {
-        "name": "异味检测阈值"
       }
     },
     "fan": {
