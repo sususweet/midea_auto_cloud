@@ -387,6 +387,15 @@
       },
       "water_box": {
         "name": "Water Box"
+      },
+      "smelly_trigger": {
+        "name": "Odor Detected"
+      },
+      "dehumidity_trigger": {
+        "name": "Dehumidifying"
+      },
+      "current_radar_status": {
+        "name": "Radar Occupancy"
       }
     },
     "climate": {
@@ -634,6 +643,39 @@
       },
       "heating": {
         "name": "Heating"
+      },
+      "bath_heater": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "close": "Off",
+              "heating": "Heating",
+              "bath": "Bath",
+              "ventilation": "Ventilation",
+              "drying": "Drying",
+              "blowing": "Blowing"
+            }
+          },
+          "preset_modes": {
+            "state": {
+              "close": "Off",
+              "heating": "Heating",
+              "bath": "Bath",
+              "ventilation": "Ventilation",
+              "drying": "Drying",
+              "blowing": "Blowing"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "swing": "Swing",
+              "heating": "Heating",
+              "bath": "Bath",
+              "ventilation": "Ventilation",
+              "drying": "Drying"
+            }
+          }
+        }
       }
     },
     "cover": {
@@ -663,6 +705,14 @@
       }
     },
     "select": {
+      "smelly_threshold": {
+        "name": "Odor Threshold",
+        "state": {
+          "high": "High",
+          "medium": "Medium",
+          "low": "Low"
+        }
+      },
       "heating_capacity": {
         "name": "Heating Tank",
         "state": {
@@ -1050,7 +1100,13 @@
         "name": "Gesture"
       },
       "gesture_value": {
-        "name": "Gesture Value"
+        "name": "Gesture Action",
+        "state": {
+          "power_toggle": "Power Toggle",
+          "adjust_speed": "Adjust Speed",
+          "light_toggle": "Light Toggle",
+          "power_and_speed": "Power & Speed"
+        }
       },
       "gesture_sensitivity_value": {
         "name": "Gesture Sensitivity Value"
@@ -1593,7 +1649,14 @@
         }
       },
       "wind_pressure": {
-        "name": "Wind Pressure"
+        "name": "Wind Pressure",
+        "state": {
+          "off": "Off",
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
+          "extreme": "Extreme"
+        }
       },
       "hot_style": {
         "name": "Heating Style"
@@ -2966,11 +3029,23 @@
       },
       "keep_fresh_status": {
         "name": "Keep Fresh Status"
+      },
+      "ventilation_speed": {
+        "name": "Ventilation Speed"
+      },
+      "smelly_level": {
+        "name": "Odor Level"
       }
     },
     "light": {
       "light": {
         "name": "Light"
+      },
+      "main_light": {
+        "name": "Ceiling Light"
+      },
+      "night_light": {
+        "name": "Night Light"
       }
     },
     "lock": {
@@ -3173,6 +3248,15 @@
       },
       "smell_time": {
         "name": "Deodorize Time"
+      },
+      "bath_temperature": {
+        "name": "Bath Temperature"
+      },
+      "heating_temperature": {
+        "name": "Heating Temperature"
+      },
+      "main_light_brightness": {
+        "name": "Main Light Brightness"
       }
     },
     "fan": {
@@ -4417,6 +4501,12 @@
       },
       "flash_dry": {
         "name": "Flash Dry"
+      },
+      "anion_enable": {
+        "name": "Anion"
+      },
+      "smelly_enable": {
+        "name": "Odor Detection"
       }
     },
     "text": {

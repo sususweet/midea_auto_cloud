@@ -407,6 +407,15 @@
       },
       "water_box": {
         "name": "水盒"
+      },
+      "smelly_trigger": {
+        "name": "异味超标"
+      },
+      "dehumidity_trigger": {
+        "name": "除湿运行中"
+      },
+      "current_radar_status": {
+        "name": "雷达感应"
       }
     },
     "climate": {
@@ -668,6 +677,39 @@
       },
       "heating": {
         "name": "采暖"
+      },
+      "bath_heater": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "close": "关闭",
+              "heating": "制热",
+              "bath": "沐浴",
+              "ventilation": "换气",
+              "drying": "烘干",
+              "blowing": "吹风"
+            }
+          },
+          "preset_modes": {
+            "state": {
+              "close": "关闭",
+              "heating": "制热",
+              "bath": "沐浴",
+              "ventilation": "换气",
+              "drying": "烘干",
+              "blowing": "吹风"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "swing": "摆风",
+              "heating": "制热",
+              "bath": "沐浴",
+              "ventilation": "换气",
+              "drying": "烘干"
+            }
+          }
+        }
       }
     },
     "cover": {
@@ -707,6 +749,14 @@
       }
     },
     "select": {
+      "smelly_threshold": {
+        "name": "异味检测阈值",
+        "state": {
+          "high": "高",
+          "medium": "中",
+          "low": "低"
+        }
+      },
       "heating_capacity": {
         "name": "加热胆量",
         "state": {
@@ -1220,7 +1270,13 @@
         }
       },
       "gesture_value": {
-        "name": "手势操作"
+        "name": "手势操作",
+        "state": {
+          "power_toggle": "开关机",
+          "adjust_speed": "调风速",
+          "light_toggle": "开关灯",
+          "power_and_speed": "开关机并调风速"
+        }
       },
       "gesture_sensitivity_value": {
         "name": "手势灵敏度",
@@ -1868,7 +1924,14 @@
         }
       },
       "wind_pressure": {
-        "name": "风压"
+        "name": "风压",
+        "state": {
+          "off": "关闭",
+          "low": "低速",
+          "medium": "中速",
+          "high": "高速",
+          "extreme": "强劲"
+        }
       },
       "hot_style": {
         "name": "供热方式"
@@ -3299,6 +3362,12 @@
       },
       "keep_fresh_status": {
         "name": "保鲜状态"
+      },
+      "ventilation_speed": {
+        "name": "换气风速"
+      },
+      "smelly_level": {
+        "name": "异味等级"
       }
     },
     "light": {
@@ -3316,6 +3385,12 @@
             }
           }
         }
+      },
+      "main_light": {
+        "name": "浴霸照明灯"
+      },
+      "night_light": {
+        "name": "起夜灯"
       }
     },
     "lock": {
@@ -4768,6 +4843,12 @@
       },
       "flash_dry": {
         "name": "闪烘"
+      },
+      "anion_enable": {
+        "name": "负离子"
+      },
+      "smelly_enable": {
+        "name": "异味检测"
       }
     },
     "text": {

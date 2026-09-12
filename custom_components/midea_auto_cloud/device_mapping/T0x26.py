@@ -396,5 +396,221 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    "M0100064": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "bath_heater": {
+                    "translation_key": "bath_heater",
+                    "power": "mode",
+                    "hvac_modes": {
+                        "off": {"mode": "close_all"}
+                    },
+                    "preset_modes": {
+                        "close": {"mode": "close_all"},
+                        "heating": {"mode": "heating"},
+                        "bath": {"mode": "bath"},
+                        "ventilation": {"mode": "ventilation"},
+                        "drying": {"mode": "drying"},
+                        "blowing": {"mode": "blowing"}
+                    },
+                    "target_temperature": {
+                        "heating": "heating_temperature",
+                        "bath": "bath_temperature"
+                    },
+                    "current_temperature": "current_temperature",
+                    "swing_modes": {
+                        "heating": {
+                            "key": "heating_direction",
+                            "options": {
+                                "60": {"heating_direction": "60"},
+                                "70": {"heating_direction": "70"},
+                                "80": {"heating_direction": "80"},
+                                "90": {"heating_direction": "90"},
+                                "100": {"heating_direction": "100"},
+                                "110": {"heating_direction": "110"},
+                                "120": {"heating_direction": "120"},
+                                "swing": {"heating_direction": "253"}
+                            }
+                        },
+                        "bath": {
+                            "key": "bath_direction",
+                            "options": {
+                                "60": {"bath_direction": "60"},
+                                "70": {"bath_direction": "70"},
+                                "80": {"bath_direction": "80"},
+                                "90": {"bath_direction": "90"},
+                                "100": {"bath_direction": "100"},
+                                "110": {"bath_direction": "110"},
+                                "120": {"bath_direction": "120"},
+                                "swing": {"bath_direction": "253"}
+                            }
+                        },
+                        "ventilation": {
+                            "key": "blowing_direction",
+                            "options": {
+                                "60": {"blowing_direction": "60"},
+                                "70": {"blowing_direction": "70"},
+                                "80": {"blowing_direction": "80"},
+                                "90": {"blowing_direction": "90"},
+                                "100": {"blowing_direction": "100"},
+                                "110": {"blowing_direction": "110"},
+                                "120": {"blowing_direction": "120"},
+                                "swing": {"blowing_direction": "253"}
+                            }
+                        },
+                        "drying": {
+                            "key": "drying_direction",
+                            "options": {
+                                "60": {"drying_direction": "60"},
+                                "70": {"drying_direction": "70"},
+                                "80": {"drying_direction": "80"},
+                                "90": {"drying_direction": "90"},
+                                "100": {"drying_direction": "100"},
+                                "110": {"drying_direction": "110"},
+                                "120": {"drying_direction": "120"},
+                                "swing": {"drying_direction": "253"}
+                            }
+                        }
+                    },
+                    "min_temp": 30,
+                    "max_temp": 42,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_WHOLE
+                }
+            },
+            Platform.LIGHT: {
+                "main_light": {
+                    "power": "light_mode",
+                    "brightness": {"main_light_brightness": [10, 100]},
+                    "rationale": ["close_all", "main_light"]
+                },
+                "night_light": {
+                    "power": "light_mode",
+                    "brightness": {"night_light_brightness": [5, 30]},
+                    "rationale": ["close_all", "night_light"]
+                }
+            },
+            Platform.NUMBER: {
+                "bath_temperature": {
+                    "min": 30,
+                    "max": 42,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS
+                },
+                "heating_temperature": {
+                    "min": 30,
+                    "max": 42,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS
+                },
+                "main_light_brightness": {
+                    "min": 10,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": PERCENTAGE
+                },
+                "radar_induction_closing_time": {
+                    "min": 1,
+                    "max": 5,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES
+                }
+            },
+            Platform.SWITCH: {
+                "anion_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "function_led_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "digit_led_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "delay_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "smelly_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "radar_induction_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "wifi_led_enable": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                }
+            },
+            Platform.SELECT: {
+                "light_mode": {
+                    "options": {
+                        "close_all": {"light_mode": "close_all"},
+                        "night_light": {"light_mode": "night_light"},
+                        "main_light": {"light_mode": "main_light"}
+                    }
+                },
+                "smelly_threshold": {
+                    "options": {
+                        "high": {"smelly_threshold": 1},
+                        "medium": {"smelly_threshold": 2},
+                        "low": {"smelly_threshold": 3}
+                    },
+                    "ignore_values": [255, "ff"]
+                }
+            },
+            Platform.SENSOR: {
+                "bath_heating_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "drying_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "delay_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "blowing_speed": {
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "ventilation_speed": {
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "smelly_level": {
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "night_light_brightness": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "main_light_brightness": {
+                    "unit_of_measurement": PERCENTAGE,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "current_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                }
+            },
+            Platform.BINARY_SENSOR: {
+                "smelly_trigger": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "dehumidity_trigger": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "current_radar_status": {
+                    "device_class": BinarySensorDeviceClass.OCCUPANCY
+                }
+            }
+        }
     }
 }
