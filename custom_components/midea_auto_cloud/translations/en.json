@@ -3173,6 +3173,9 @@
       },
       "smell_time": {
         "name": "Deodorize Time"
+      },
+      "dry_time_setting": {
+        "name": "Dry Time"
       }
     },
     "fan": {

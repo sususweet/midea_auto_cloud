@@ -88,6 +88,10 @@ _LUA_DRYER_PROGRAMS = {
 }
 
 
+# Programs in _LUA_DRYER_PROGRAMS that T_0000_DC_12851_2021040101.lua (sn8 38204893)
+# does not define in controlMapping.program; selecting them would encode an unknown value.
+_PROGRAMS_NOT_IN_12851 = ("dry_softnurse", "remove_electricity", "uniforms")
+
 def _level_options(attr: str, levels: range) -> dict:
     return {str(level): {attr: level} for level in levels}
 
@@ -329,6 +333,107 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENUM,
                 },
                 "keep_fresh_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+            },
+        },
+    },
+    # sn8-specific: MH90-H03Y (subtype 12851, T_0000_DC_12851_2021040101.lua).
+    # Same surface as "default", with two changes backed by this device's lua:
+    #   - dry_time is writable (commandSpec: offset 120, 16 bits) instead of a sensor;
+    #   - program options cover every program in its controlMapping
+    #     (adds e.g. time_drying_30/60/90, quick_dry_30, fixed_time_dry).
+    "38204893": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "control_status": {
+                    "rationale": ["pause", "start"],
+                },
+                "ai_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+                "light": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+                "sterilize": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+                "prevent_wrinkle_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "door_warn": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                    "translation_key": "door_opened",
+                },
+            },
+            Platform.SELECT: {
+                "program": {
+                    "options": {
+                        **_LEGACY_DRYER_PROGRAMS,
+                        **{k: v for k, v in _LUA_DRYER_PROGRAMS.items()
+                           if k not in _PROGRAMS_NOT_IN_12851},
+                    },
+                },
+                "intensity": {
+                    "options": {
+                        "off": {"intensity": "1"},
+                        "10": {"intensity": "2"},
+                        "20": {"intensity": "3"},
+                        "30": {"intensity": "4"},
+                        "40": {"intensity": "5"},
+                    },
+                },
+                "forget_no_worry_time": {
+                    "options": {
+                        "off": {"forget_no_worry_time": "off"},
+                        "2": {"forget_no_worry_time": 2},
+                        "4": {"forget_no_worry_time": 4},
+                        "6": {"forget_no_worry_time": 6},
+                        "8": {"forget_no_worry_time": 8},
+                    },
+                },
+            },
+            Platform.NUMBER: {
+                "dry_time": {
+                    # Own translation_key so the existing sn8 38211209 dry_time number
+                    # (no translation today) keeps its current name.
+                    "translation_key": "dry_time_setting",
+                    "min": 0,
+                    "max": 240,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                },
+            },
+            Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "appointment_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "remain_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "progress": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "error_code": {
                     "device_class": SensorDeviceClass.ENUM,
                 },
             },
