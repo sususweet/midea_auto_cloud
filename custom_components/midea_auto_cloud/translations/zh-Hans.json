@@ -3536,6 +3536,9 @@
       },
       "smell_time": {
         "name": "除味时间"
+      },
+      "dry_time_setting": {
+        "name": "烘干时间"
       }
     },
     "fan": {
