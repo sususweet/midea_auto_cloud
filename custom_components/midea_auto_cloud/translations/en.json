@@ -390,6 +390,9 @@
       },
       "body_induction": {
         "name": "Human Detection"
+      },
+      "door_auto_open": {
+        "name": "Auto Door Open"
       }
     },
     "climate": {
@@ -2975,6 +2978,15 @@
       },
       "location_status": {
         "name": "Position Status"
+      },
+      "operator": {
+        "name": "Operator"
+      },
+      "additional": {
+        "name": "Additional Function"
+      },
+      "wash_region": {
+        "name": "Wash Region"
       }
     },
     "light": {
