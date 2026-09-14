@@ -399,6 +399,9 @@
       },
       "full": {
         "name": "Tank full"
+      },
+      "door_auto_open": {
+        "name": "Auto Door Open"
       }
     },
     "climate": {
@@ -2987,6 +2990,15 @@
       },
       "life_ro": {
         "name": "RO filter remaining life"
+      },
+      "operator": {
+        "name": "Operator"
+      },
+      "additional": {
+        "name": "Additional Function"
+      },
+      "wash_region": {
+        "name": "Wash Region"
       }
     },
     "light": {

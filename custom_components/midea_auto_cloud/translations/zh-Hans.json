@@ -419,6 +419,9 @@
       },
       "full": {
         "name": "水箱水满"
+      },
+      "door_auto_open": {
+        "name": "自动开门"
       }
     },
     "climate": {
@@ -3320,6 +3323,15 @@
       },
       "life_ro": {
         "name": "RO滤芯剩余寿命"
+      },
+      "operator": {
+        "name": "操作"
+      },
+      "additional": {
+        "name": "附加功能"
+      },
+      "wash_region": {
+        "name": "洗涤区域"
       }
     },
     "light": {
