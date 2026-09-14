@@ -3212,6 +3212,9 @@
       },
       "timing_regeneration_min": {
         "name": "Scheduled regeneration (minute)"
+      },
+      "dry_time_setting": {
+        "name": "Dry Time"
       }
     },
     "fan": {

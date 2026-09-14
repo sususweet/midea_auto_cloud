@@ -3563,6 +3563,9 @@
       },
       "timing_regeneration_min": {
         "name": "定时再生（分钟）"
+      },
+      "dry_time_setting": {
+        "name": "烘干时间"
       }
     },
     "fan": {
