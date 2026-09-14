@@ -396,6 +396,24 @@
       },
       "current_radar_status": {
         "name": "Radar Occupancy"
+      },
+      "body_induction": {
+        "name": "Human Detection"
+      },
+      "backflow": {
+        "name": "Backflow"
+      },
+      "stew_heat_status": {
+        "name": "Stew heating"
+      },
+      "bubble_status": {
+        "name": "Bubble detected"
+      },
+      "full": {
+        "name": "Tank full"
+      },
+      "door_auto_open": {
+        "name": "Auto Door Open"
       }
     },
     "climate": {
@@ -3035,6 +3053,30 @@
       },
       "smelly_level": {
         "name": "Odor Level"
+      },
+      "current_height": {
+        "name": "Drop Height"
+      },
+      "location_status": {
+        "name": "Position Status"
+      },
+      "standby_status": {
+        "name": "Standby status"
+      },
+      "life_fcb": {
+        "name": "FCB filter remaining life"
+      },
+      "life_ro": {
+        "name": "RO filter remaining life"
+      },
+      "operator": {
+        "name": "Operator"
+      },
+      "additional": {
+        "name": "Additional Function"
+      },
+      "wash_region": {
+        "name": "Wash Region"
       }
     },
     "light": {
@@ -3046,6 +3088,9 @@
       },
       "night_light": {
         "name": "Night Light"
+      },
+      "common_light": {
+        "name": "Ceiling Light"
       }
     },
     "lock": {
@@ -3257,6 +3302,24 @@
       },
       "main_light_brightness": {
         "name": "Main Light Brightness"
+      },
+      "custom_height": {
+        "name": "Drying Height"
+      },
+      "timing_light_off": {
+        "name": "Light-off Delay"
+      },
+      "voice_set": {
+        "name": "Voice Volume"
+      },
+      "timing_regeneration_hour": {
+        "name": "Scheduled regeneration (hour)"
+      },
+      "timing_regeneration_min": {
+        "name": "Scheduled regeneration (minute)"
+      },
+      "dry_time_setting": {
+        "name": "Dry Time"
       }
     },
     "fan": {
@@ -4507,6 +4570,45 @@
       },
       "smelly_enable": {
         "name": "Odor Detection"
+      },
+      "set_light_off": {
+        "name": "Light-off Delay Switch"
+      },
+      "mic_switch": {
+        "name": "Microphone"
+      },
+      "horn_switch": {
+        "name": "Prompt Tone"
+      },
+      "wakeup_free_switch": {
+        "name": "Wake-word Free"
+      },
+      "continuous_dialogue_switch": {
+        "name": "Continuous Dialogue"
+      },
+      "remote_control_broadcast_switch": {
+        "name": "Remote Broadcast"
+      },
+      "lift_up_switch": {
+        "name": "Lift-up to Rise"
+      },
+      "wifi_light_switch": {
+        "name": "Network Indicator"
+      },
+      "filter_self_cleaning": {
+        "name": "Filter self-cleaning"
+      },
+      "extreme_mode": {
+        "name": "Extreme mode"
+      },
+      "auto_fill_water": {
+        "name": "Auto fill water"
+      },
+      "smart_ro_obsolete_water": {
+        "name": "Smart RO wastewater ratio"
+      },
+      "gesture": {
+        "name": "Gesture control"
       }
     },
     "text": {

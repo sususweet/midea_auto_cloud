@@ -253,11 +253,30 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if self._uses_temperature_range():
             return None
         if self._is_central_ac:
-            run_mode = self._get_nested_value(self._key_power) or "0"
-            if run_mode == "2":  # 制冷模式
-                return self._get_nested_value("cool_temp_set")
-            elif run_mode == "3":  # 制热模式
-                return self._get_nested_value("cool_temp_set")
+            run_mode = self._central_ac_run_mode()
+            if run_mode == 2:  # 制冷
+                return self._safe_convert_to_float(
+                    self._get_nested_value("cool_temp_set")
+                )
+            if run_mode == 3:  # 制热
+                heat = self._safe_convert_to_float(
+                    self._get_nested_value("heat_temp_set")
+                )
+                # 部分机型未写入 heat_temp_set 时回退到制冷设定，避免显示空
+                if heat is not None and heat > 0:
+                    return heat
+                return self._safe_convert_to_float(
+                    self._get_nested_value("cool_temp_set")
+                )
+            if run_mode == 4:  # 自动：优先制冷设定，否则制热设定
+                cool = self._safe_convert_to_float(
+                    self._get_nested_value("cool_temp_set")
+                )
+                if cool is not None and cool > 0:
+                    return cool
+                return self._safe_convert_to_float(
+                    self._get_nested_value("heat_temp_set")
+                )
             return None
         if isinstance(self._key_target_temperature, dict):
             if self.is_bath_heater:
@@ -471,6 +490,16 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                 return HVACAction.COOLING
         return HVACAction.COOLING
 
+    def _central_ac_run_mode(self) -> int:
+        """Parse T0x21 run_mode as int (cloud may report str or number)."""
+        raw = self._get_nested_value(self._key_power)
+        if raw is None:
+            return 0
+        try:
+            return int(float(raw))
+        except (TypeError, ValueError):
+            return 0
+
     @property
     def hvac_action(self):
         """What the equipment is actually doing (running vs idle)."""
@@ -482,6 +511,24 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return HVACAction.FAN
         elif current_mode == HVACMode.DRY:
             return HVACAction.DRYING
+
+        # T0x21 无压缩机/风机运行态属性，室温 vs 设定的猜测容易把制热/自动标成「空闲」；
+        # 按当前模式回报动作，与美居展示一致。
+        if self._is_central_ac:
+            if current_mode == HVACMode.HEAT:
+                return HVACAction.HEATING
+            if current_mode == HVACMode.COOL:
+                return HVACAction.COOLING
+            if current_mode == HVACMode.AUTO:
+                current_temp = self.current_temperature
+                target_temp = self.target_temperature
+                if current_temp is not None and target_temp is not None:
+                    if current_temp < target_temp - 0.5:
+                        return HVACAction.HEATING
+                    if current_temp > target_temp + 0.5:
+                        return HVACAction.COOLING
+                return HVACAction.IDLE
+            return HVACAction.IDLE
 
         if (self._key_action_compressor is None and self._key_action_fan is None
                 and self._key_action_direction is None):
@@ -564,12 +611,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             if ATTR_TEMPERATURE not in kwargs:
                 return
             temperature = kwargs.get(ATTR_TEMPERATURE)
-            run_mode = self._get_nested_value(self._key_power) or "0"
+            run_mode = self._central_ac_run_mode()
             control = {}
 
-            if run_mode == "2":  # 制冷模式
+            if run_mode == 2:  # 制冷模式
                 control["cooling_temp"] = str(temperature)
-            elif run_mode == "3":  # 制热模式
+            elif run_mode == 3:  # 制热模式
+                control["cooling_temp"] = str(temperature)
+                control["heating_temp"] = str(temperature)
+            elif run_mode == 4:  # 自动：同时写入冷热设定
                 control["cooling_temp"] = str(temperature)
                 control["heating_temp"] = str(temperature)
 
