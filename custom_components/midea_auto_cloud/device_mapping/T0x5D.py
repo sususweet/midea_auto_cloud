@@ -6,7 +6,8 @@
    - cleaning_switch          清洁
    - forced_deice_switch      强制除冰
    - uv_sterilization_switch  UV 杀菌
-   - ice_making_mode          制冰模式（只读展示，可选值未知）
+   - ice_making_mode          制冰模式（可选: 大冰 big / 小冰 small）
+     * 设备以字符串上报该属性; 关机时上报 "invalid" 占位, ignore_values 过滤
    - error_type / alarm_status_identifier  故障与告警（只读）
 
 安装: 放到 custom_components/midea_auto_cloud/device_mapping/T0x5D.py 并重启 HA。
@@ -50,11 +51,18 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
             },
-            Platform.SENSOR: {
+            Platform.SELECT: {
                 "ice_making_mode": {
                     "name": "制冰模式",
-                    "device_class": SensorDeviceClass.ENUM,
+                    "status_key": "ice_making_mode",
+                    "options": {
+                        "大冰": {"ice_making_mode": "big"},
+                        "小冰": {"ice_making_mode": "small"},
+                    },
+                    "ignore_values": ["invalid"],
                 },
+            },
+            Platform.SENSOR: {
                 "error_type": {
                     "name": "故障代码",
                     "device_class": SensorDeviceClass.ENUM,
