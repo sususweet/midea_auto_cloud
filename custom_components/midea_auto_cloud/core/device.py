@@ -723,8 +723,17 @@ class MiedaDevice(threading.Thread):
         return ParseMessageResult.SUCCESS
 
     async def _send_message(self, data) -> bool:
-        """经云端透传发送。返回设备是否给出了应答（用于失败上报）。"""
-        if reply := await self._cloud.send_cloud(self._device_id, data):
+        """经云端透传发送。返回设备是否给出了应答（用于失败上报）。
+
+        云端 1306（无异步应答）时 send_cloud 返回 True：指令很可能已送达，
+        只是设备关机后来不及回帧，不当作控制失败（#254）。
+        """
+        if self._cloud is None:
+            return False
+        reply = await self._cloud.send_cloud(self._device_id, data)
+        if reply is True:
+            return True
+        if reply:
             if self._lua_runtime is not None:
                 if reply_dec := await self._lua_runtime.async_decode_status(
                     dec_string_to_bytes(reply).hex()

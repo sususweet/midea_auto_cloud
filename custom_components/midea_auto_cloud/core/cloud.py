@@ -77,6 +77,8 @@ class MideaCloud:
         # 仅 /status/lua/get 可能返回 1014 lua analysis exception
         self._lua_status_analysis_error = False
         self._lua_status_analysis_msg: str | None = None
+        # transparent/send 可能返回 1306（设备关机后来不及回异步应答）
+        self._async_reply_missing = False
 
     def _make_general_data(self):
         return {}
@@ -233,6 +235,7 @@ class MideaCloud:
         if is_lua_status:
             self._lua_status_analysis_error = False
             self._lua_status_analysis_msg = None
+        self._async_reply_missing = False
         try:
             r = await self._session.request(
                 method, 
@@ -266,6 +269,20 @@ class MideaCloud:
             self._lua_status_analysis_error = True
             self._lua_status_analysis_msg = response.get("msg") or response.get("message")
             return None
+
+        # 透传控制：设备关机/断线后来不及回异步应答帧，云端返回 1306。
+        # 指令通常已经送达，交由 send_cloud 当作已下发处理（#254）。
+        try:
+            response_code = int(response.get("code", -1))
+        except Exception:
+            response_code = -1
+        if response_code == 1306 and "transparent/send" in endpoint:
+            self._async_reply_missing = True
+            MideaLogger.warning(
+                f"Midea cloud async reply missing (1306); command likely delivered. "
+                f"endpoint={endpoint}, msg={response.get('msg') or response.get('message')}"
+            )
+            return {"async_reply_missing": True}
 
         # 关闭自动重登时，不做 token 失效专项检测与日志记录，按普通失败返回
         if (
@@ -412,6 +429,29 @@ class MideaCloud:
         """Send control to switch device. Subclasses should implement if supported."""
         raise NotImplementedError()
 
+    async def send_cloud(self, appliance_id: int, data: bytearray):
+        """经云端透传发送二进制指令。子类必须实现。
+
+        返回设备应答字节；1306 无异步应答时返回 True（指令很可能已送达）。
+        """
+        raise NotImplementedError()
+
+    def _transparent_send_result(self, appliance_code: str, response: dict | None):
+        """解析 transparent/send 结果。1306 无应答时返回 True 表示指令很可能已送达。"""
+        if not response:
+            return None
+        if reply := response.get("reply"):
+            reply_data = self._security.aes_decrypt(bytes.fromhex(reply))
+            MideaLogger.debug(
+                f"[{appliance_code}] Cloud command response: "
+                f"{dec_string_to_bytes(reply_data).hex()}"
+            )
+            return reply_data
+        if response.get("async_reply_missing"):
+            return True
+        MideaLogger.warning(f"[{appliance_code}] Cloud command failed: {response}")
+        return None
+
 class MeijuCloud(MideaCloud):
     APP_ID = "900"
     APP_VERSION = "8.20.0.2"
@@ -537,18 +577,11 @@ class MeijuCloud(MideaCloud):
             "isFull": "false"
         }
 
-        if response := await self._api_request(
+        response = await self._api_request(
             endpoint='/v1/appliance/transparent/send',
             data=params
-        ):
-            if response and response.get('reply'):
-                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
-                MideaLogger.debug(f"[{appliance_code}] Cloud command response: {dec_string_to_bytes(reply_data).hex()}")
-                return reply_data
-            else:
-                MideaLogger.warning(f"[{appliance_code}] Cloud command failed: {response}")
-
-        return None
+        )
+        return self._transparent_send_result(appliance_code, response)
 
     async def _jykt_api_request(
         self,
@@ -1241,19 +1274,12 @@ class MSmartHomeCloud(MideaCloud):
             "isFull": "false"
         }
 
-        if response := await self._api_request(
+        response = await self._api_request(
             endpoint='/v1/appliance/transparent/send',
             data=params,
             print_log=True,
-        ):
-            if response and response.get('reply'):
-                MideaLogger.debug(f"[{appliance_code}] Cloud command response: {response}")
-                reply_data = self._security.aes_decrypt(bytes.fromhex(response['reply']))
-                return reply_data
-            else:
-                MideaLogger.warning(f"[{appliance_code}] Cloud command failed: {response}")
-
-        return None
+        )
+        return self._transparent_send_result(appliance_code, response)
 
     async def get_user_info(self):
         """获取用户信息"""
