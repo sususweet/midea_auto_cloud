@@ -117,7 +117,12 @@ class PowerIntegrationTest(unittest.IsolatedAsyncioTestCase):
         self.coordinator._last_cloud_poll.clear()
         with self.clock_patch:
             self.coordinator.data = await self.coordinator.poll_device_state()
-        self.assertIsNone(self.sensor().native_value)
+        sensor = self.sensor()
+        self.assertEqual(sensor.native_value, 0)
+        self.assertEqual(sensor.extra_state_attributes["power_source"], "held")
+        self.assertEqual(
+            sensor.extra_state_attributes["estimation_status"], "warming_up",
+        )
         self.now = 700
         self.cloud.query_electricity.return_value = {"totalValue": "10.1"}
         self.coordinator._last_cloud_poll.clear()

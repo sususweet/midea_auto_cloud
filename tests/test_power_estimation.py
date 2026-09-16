@@ -104,11 +104,19 @@ class PowerEstimatorTest(unittest.TestCase):
         self.estimator.observe_state(online=True, running="off")
         self.sample(0, 39.12)
         self.sample(300, 39.12)
+        self.assertEqual(self.result(300).value, 0)
         self.now = 600
         self.estimator.observe_state(online=True, running="on")
-        self.assertIsNone(self.result(600).value)
+        result = self.result(600)
+        self.assertEqual(result.value, 0)
+        self.assertEqual(result.source, "held")
+        self.assertEqual(result.status, "warming_up")
+        self.assertIsNone(result.window_seconds)
+        self.sample(800, 39.14)
+        self.assertEqual(self.result(800).value, 0)
+        self.assertEqual(self.result(800).source, "held")
         for seconds in (900, 1200):
-            self.sample(seconds, 39.12)
+            self.sample(seconds, 39.14)
         self.sample(1500, 39.27)
         result = self.result(1500)
         self.assertAlmostEqual(result.value, 600)
@@ -123,6 +131,12 @@ class PowerEstimatorTest(unittest.TestCase):
         self.estimator.observe_state(online=True, running="off")
         self.assertEqual(self.result(2400).value, 0)
 
+    def test_cold_start_does_not_invent_a_held_value(self):
+        result = self.result(0)
+        self.assertIsNone(result.value)
+        self.assertEqual(result.source, "unavailable")
+        self.assertEqual(result.status, "insufficient_samples")
+
     def test_minimum_window_and_short_window_growth(self):
         self.sample(0, 10)
         self.sample(120, 10.02)
@@ -136,9 +150,11 @@ class PowerEstimatorTest(unittest.TestCase):
     def test_stale_off_baseline_and_repeated_on_state(self):
         self.estimator.observe_state(online=True, running="off")
         self.sample(0, 10)
+        self.assertEqual(self.result(0).value, 0)
         self.now = 1000
         self.estimator.observe_state(online=True, running="on")
         self.sample(1000, 10.2)
+        # A stale baseline is reset rather than hidden by a held value.
         self.assertIsNone(self.result(1000).value)
         self.now = 1200
         self.estimator.observe_state(online=True, running="on")

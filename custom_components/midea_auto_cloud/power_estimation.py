@@ -74,10 +74,11 @@ class PowerReading:
 #              |         |         |         |         |
 # 状态        关机 ----- 开机 --------------------------
 # 电量 kWh   39.12     39.12     39.12     39.27     39.42
-# 功率 W         0      未知      未知       600       600
+# 功率 W         0       0         0        600       600
 #                        +---- 15 分钟估算 ---+
 #                        +-------- 30 分钟估算 ---------+
-# 开机时间与最近有效电量组成临时基线，首次增量至少间隔 5 分钟。
+# 开机时间与最近有效电量组成临时基线；等待期间维持上次已发布值。
+# 首次增量至少间隔 5 分钟，正常关机后再开机时维持值通常为 0 W。
 # 功率 W = 电量增量 kWh × 3_600_000 / 实际间隔秒数。
 # 窗口逐步扩展到约 30 分钟；重复电量不移动计算终点，过期则未知。
 # 关机的 0 W 是状态推定，不含待机耗电；实测值（包括 0 W）优先。
@@ -105,6 +106,8 @@ class PowerEstimator:
         self._last_energy: EnergySample | None = None
         self._baseline_available = False
         self._status = "insufficient_samples"
+        self._last_resolved_value: float | None = None
+        self._warmup_value: float | None = None
 
     def _reset(self, status: str) -> None:
         self._samples.clear()
@@ -126,15 +129,27 @@ class PowerEstimator:
         if not online:
             self._reset("device_unavailable")
             self._baseline_available = False
+            self._last_resolved_value = None
+            self._warmup_value = None
         elif state is None:
             self._reset("unknown_running_state")
             self._baseline_available = False
+            self._last_resolved_value = None
+            self._warmup_value = None
         elif not state:
             self._reset("assumed_off")
+            self._warmup_value = None
         elif not self._online or self._running is not True:
             self._reset("insufficient_samples")
             previous = self._last_energy
             now = self._clock()
+            # Keep the last published numeric value while the new run gathers
+            # enough energy samples. A normal off -> on transition therefore
+            # continues to publish 0 W instead of briefly becoming unknown.
+            self._warmup_value = (
+                self._last_resolved_value
+                if self._online and self._running is False else None
+            )
             # 只复用刚才在线关机期间的有效电量，不能跨断线补造基线。
             if (
                 self._online and self._running is False
@@ -214,14 +229,19 @@ class PowerEstimator:
             value: float | None, source: str, status: str,
             window: float | None = None,
         ) -> PowerReading:
-            return PowerReading(value, source, status, window, last_at)
+            result = PowerReading(value, source, status, window, last_at)
+            if value is not None:
+                self._last_resolved_value = value
+            return result
 
         if not self._online:
             return reading(None, "unavailable", "device_unavailable")
         measured = _number(measured_power_w)
         if measured is not None:
+            self._warmup_value = None
             return reading(measured, "measured", "ready")
         if self._running is False:
+            self._warmup_value = None
             return reading(0.0, "estimated", "assumed_off")
         if self._running is None:
             return reading(None, "unavailable", "unknown_running_state")
@@ -254,5 +274,13 @@ class PowerEstimator:
                     * 3_600_000 / duration
                 )
                 status = "warming_up" if duration < WINDOW_SECONDS else "ready"
+                self._warmup_value = None
                 return reading(watts, "estimated", status, duration)
+        if (
+            self._status == "insufficient_samples"
+            and self._warmup_value is not None
+        ):
+            return reading(
+                self._warmup_value, "held", "warming_up"
+            )
         return reading(None, "unavailable", self._status)
