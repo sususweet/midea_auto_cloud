@@ -1081,13 +1081,11 @@ DEVICE_MAPPING = {
                 },
                 "life_1": {
                     "translation_key": "life_fcb",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT,
                 },
                 "life_2": {
                     "translation_key": "life_ro",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT,
                 },
