@@ -167,6 +167,28 @@ DEVICE_MAPPING = {
                         "bath": "bath_temperature"
                     },
                     "current_temperature": "current_temperature",
+                    "fan_modes": {
+                        "ventilation": {
+                            "key": "ventilation_speed",
+                            "options": {
+                                "silent": {"ventilation_speed": "20"},
+                                "soft_wind": {"ventilation_speed": "40"},
+                                "standard": {"ventilation_speed": "60"},
+                                "strong": {"ventilation_speed": "80"},
+                                "storm": {"ventilation_speed": "100"}
+                            }
+                        },
+                        "blowing": {
+                            "key": "blowing_speed",
+                            "options": {
+                                "silent": {"blowing_speed": "20"},
+                                "soft_wind": {"blowing_speed": "40"},
+                                "standard": {"blowing_speed": "60"},
+                                "strong": {"blowing_speed": "80"},
+                                "storm": {"blowing_speed": "100"}
+                            }
+                        }
+                    },
                     "swing_modes": {
                         "heating": {
                             "key": "heating_direction",
@@ -422,6 +444,28 @@ DEVICE_MAPPING = {
                         "bath": "bath_temperature"
                     },
                     "current_temperature": "current_temperature",
+                    "fan_modes": {
+                        "ventilation": {
+                            "key": "ventilation_speed",
+                            "options": {
+                                "silent": {"ventilation_speed": "20"},
+                                "soft_wind": {"ventilation_speed": "40"},
+                                "standard": {"ventilation_speed": "60"},
+                                "strong": {"ventilation_speed": "80"},
+                                "storm": {"ventilation_speed": "100"}
+                            }
+                        },
+                        "blowing": {
+                            "key": "blowing_speed",
+                            "options": {
+                                "silent": {"blowing_speed": "20"},
+                                "soft_wind": {"blowing_speed": "40"},
+                                "standard": {"blowing_speed": "60"},
+                                "strong": {"blowing_speed": "80"},
+                                "storm": {"blowing_speed": "100"}
+                            }
+                        }
+                    },
                     "swing_modes": {
                         "heating": {
                             "key": "heating_direction",

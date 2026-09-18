@@ -727,6 +727,15 @@
               "ventilation": "换气",
               "drying": "烘干"
             }
+          },
+          "fan_mode": {
+            "state": {
+              "silent": "静音",
+              "soft_wind": "柔风",
+              "standard": "标准",
+              "strong": "强劲",
+              "storm": "暴风"
+            }
           }
         }
       }

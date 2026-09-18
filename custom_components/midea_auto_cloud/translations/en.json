@@ -693,6 +693,15 @@
               "ventilation": "Ventilation",
               "drying": "Drying"
             }
+          },
+          "fan_mode": {
+            "state": {
+              "silent": "Silent",
+              "soft_wind": "Soft Wind",
+              "standard": "Standard",
+              "strong": "Strong",
+              "storm": "Storm"
+            }
           }
         }
       }
