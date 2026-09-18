@@ -171,21 +171,21 @@ DEVICE_MAPPING = {
                         "ventilation": {
                             "key": "ventilation_speed",
                             "options": {
-                                "silent": {"ventilation_speed": "20"},
-                                "soft_wind": {"ventilation_speed": "40"},
-                                "standard": {"ventilation_speed": "60"},
-                                "strong": {"ventilation_speed": "80"},
-                                "storm": {"ventilation_speed": "100"}
+                                "silent": {"ventilation_speed": "29"},
+                                "soft_wind": {"ventilation_speed": "42"},
+                                "standard": {"ventilation_speed": "56"},
+                                "strong": {"ventilation_speed": "69"},
+                                "storm": {"ventilation_speed": "83"}
                             }
                         },
                         "blowing": {
                             "key": "blowing_speed",
                             "options": {
-                                "silent": {"blowing_speed": "20"},
-                                "soft_wind": {"blowing_speed": "40"},
-                                "standard": {"blowing_speed": "60"},
-                                "strong": {"blowing_speed": "80"},
-                                "storm": {"blowing_speed": "100"}
+                                "silent": {"blowing_speed": "29"},
+                                "soft_wind": {"blowing_speed": "38"},
+                                "standard": {"blowing_speed": "52"},
+                                "strong": {"blowing_speed": "60"},
+                                "storm": {"blowing_speed": "69"}
                             }
                         }
                     },
@@ -448,21 +448,21 @@ DEVICE_MAPPING = {
                         "ventilation": {
                             "key": "ventilation_speed",
                             "options": {
-                                "silent": {"ventilation_speed": "20"},
-                                "soft_wind": {"ventilation_speed": "40"},
-                                "standard": {"ventilation_speed": "60"},
-                                "strong": {"ventilation_speed": "80"},
-                                "storm": {"ventilation_speed": "100"}
+                                "silent": {"ventilation_speed": "29"},
+                                "soft_wind": {"ventilation_speed": "42"},
+                                "standard": {"ventilation_speed": "56"},
+                                "strong": {"ventilation_speed": "69"},
+                                "storm": {"ventilation_speed": "83"}
                             }
                         },
                         "blowing": {
                             "key": "blowing_speed",
                             "options": {
-                                "silent": {"blowing_speed": "20"},
-                                "soft_wind": {"blowing_speed": "40"},
-                                "standard": {"blowing_speed": "60"},
-                                "strong": {"blowing_speed": "80"},
-                                "storm": {"blowing_speed": "100"}
+                                "silent": {"blowing_speed": "29"},
+                                "soft_wind": {"blowing_speed": "38"},
+                                "standard": {"blowing_speed": "52"},
+                                "strong": {"blowing_speed": "60"},
+                                "storm": {"blowing_speed": "69"}
                             }
                         }
                     },
