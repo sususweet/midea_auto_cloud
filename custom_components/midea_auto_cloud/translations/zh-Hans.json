@@ -665,7 +665,8 @@
               "none": "无预设",
               "eco": "节能模式",
               "comfort": "舒适模式",
-              "boost": "强劲模式"
+              "boost": "强劲模式",
+              "sleep": "睡眠模式"
             }
           }
         },
@@ -3410,6 +3411,9 @@
       },
       "wash_region": {
         "name": "洗涤区域"
+      },
+      "wind_speed_real": {
+        "name": "实测风速"
       }
     },
     "light": {
@@ -3662,6 +3666,9 @@
       },
       "dry_time_setting": {
         "name": "烘干时间"
+      },
+      "quick_prepare_food_angle": {
+        "name": "备菜角度"
       }
     },
     "fan": {
@@ -4951,6 +4958,15 @@
       },
       "gesture": {
         "name": "手势控制"
+      },
+      "prepare_food": {
+        "name": "备菜"
+      },
+      "quick_fry": {
+        "name": "爆炒"
+      },
+      "fengguan_remove_odor": {
+        "name": "风管去味"
       }
     },
     "text": {

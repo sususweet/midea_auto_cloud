@@ -631,7 +631,8 @@
               "none": "none",
               "eco": "eco",
               "comfort": "comfort",
-              "boost": "boost"
+              "boost": "boost",
+              "sleep": "Sleep"
             }
           }
         },
@@ -3077,6 +3078,9 @@
       },
       "wash_region": {
         "name": "Wash Region"
+      },
+      "wind_speed_real": {
+        "name": "Real Wind Speed"
       }
     },
     "light": {
@@ -3320,6 +3324,9 @@
       },
       "dry_time_setting": {
         "name": "Dry Time"
+      },
+      "quick_prepare_food_angle": {
+        "name": "Prepare Food Angle"
       }
     },
     "fan": {
@@ -4609,6 +4616,15 @@
       },
       "gesture": {
         "name": "Gesture control"
+      },
+      "prepare_food": {
+        "name": "Prepare Food"
+      },
+      "quick_fry": {
+        "name": "Quick Fry"
+      },
+      "fengguan_remove_odor": {
+        "name": "Duct Odor Removal"
       }
     },
     "text": {

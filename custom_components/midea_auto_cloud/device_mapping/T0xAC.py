@@ -1913,9 +1913,17 @@ DEVICE_MAPPING = {
         }
     },
     # Colmo Turing Central AC indoor units, different cooling capacity models share the same config.
-    ("22396961", "22396963", "22396965", "22396969", "22396973","22397057","22397059","22397061","22397065","22397067"): {
+    ("22396961", "22396963", "22396965", "22396969", "22396973","22397057","22397059","22397061","22397063","22397065","22397067"): {
         "rationale": ["off", "on"],
         "queries": [{}, {"query_type":"run_status"}],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[total_elec_value]",
+                    "rvalue": "float([total_elec]) / 1000"
+                },
+            ],
+        },
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -1983,13 +1991,152 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.WIND_SPEED,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
+                },
+                "total_elec_value": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": "kWh",
+                    "state_class": SensorStateClass.TOTAL_INCREASING
                 }
             },
             Platform.SWITCH: {
                 "power": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
+                "follow_body_sense": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
+                },
             },
+        }
+    },
+    # Kitchen central AC (CAC36QN1E1, subtype '1', sn8 22397091).
+    # Shares the Colmo Turing thermostat with the other indoor units, and additionally exposes the
+    # kitchen-only cooking helpers: prepare_food (备菜), quick_fry (爆炒), quick_prepare_food_angle (备菜角度).
+    # The switches/sensors of default_central_air_conditioner are kept so the already-registered
+    # entities of this unit stay available after switching to this mapping.
+    "22397091": {
+        "rationale": ["off", "on"],
+        "queries": [
+            {},
+            {"query_type": "indoor_temperature"},
+            {"query_type": "indoor_humidity"},
+            {"query_type": "run_status"}
+        ],
+        "calculate": {
+            "get": [
+                {
+                    "lvalue": "[total_elec_value]",
+                    "rvalue": "float([total_elec]) / 1000"
+                },
+            ],
+        },
+        "centralized": [],
+        "entities": {
+            Platform.CLIMATE: {
+                "thermostat": {
+                    "translation_key": "colmo_turing_central_ac_climate",
+                    "power": "power",
+                    "hvac_modes": {
+                        "off": {"power": "off"},
+                        "heat": {"power": "on", "mode": "heat"},
+                        "cool": {"power": "on", "mode": "cool"},
+                        "fan_only": {"power": "on", "mode": "fan"},
+                        "dry": {"power": "on", "mode": "dryauto"},
+                        "auto": {"power": "on", "mode": "dryconstant"},
+                        # Same custom modes as the other Colmo Turing indoor units.
+                    },
+                    "preset_modes": {
+                        "none": {
+                            "energy_save": "off",
+                        },
+                        "sleep": {"energy_save": "on"}
+                    },
+                    "fan_modes": {
+                        "silent": {"wind_speed": 20},
+                        "low": {"wind_speed": 40},
+                        "medium": {"wind_speed": 60},
+                        "high": {"wind_speed": 80},
+                        "full": {"wind_speed": 100},
+                        "auto": {"wind_speed": 102}
+                    },
+                    "target_temperature": ["temperature", "small_temperature"],
+                    "current_temperature": "indoor_temperature",
+                    "target_humidity": "dehumidity",
+                    "current_humidity": "indoor_humidity",
+                    "pre_mode": "mode",
+                    "aux_heat": "ptc",
+                    "min_temp": 16,
+                    "max_temp": 30,
+                    "min_humidity": 45,
+                    "max_humidity": 65,
+                    "temperature_unit": UnitOfTemperature.CELSIUS,
+                    "precision": PRECISION_HALVES,
+                }
+            },
+            Platform.SWITCH: {
+                "fengguan_remove_odor": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["on", "off"],
+                },
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "prevent_super_cool": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "ptc": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "aux_heat",
+                },
+                "follow_body_sense": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "command": {"follow_body_sense_enable": 1},
+                    "rationale": ["off", "on"],
+                },
+                "prepare_food": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+                "quick_fry": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [0, 1],
+                },
+            },
+            Platform.NUMBER: {
+                "quick_prepare_food_angle": {
+                    "min": 0,
+                    "max": 100,
+                    "step": 1,
+                    "unit_of_measurement": "%",
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "indoor_temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                },
+                "indoor_humidity": {
+                    "device_class": SensorDeviceClass.HUMIDITY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "total_elec_value": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": "kWh",
+                    "state_class": SensorStateClass.TOTAL_INCREASING
+                },
+                "wind_speed_real": {
+                    "device_class": SensorDeviceClass.WIND_SPEED,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT
+                }
+            }
         }
     },
     "23096653": {
