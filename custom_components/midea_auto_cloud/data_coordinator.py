@@ -456,10 +456,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                         calculate = True
                         break
                 if calculate:
-                    calculate_str1 = \
-                        (f"{lvalue.replace('[', 'attributes[').replace("]", "\"]")} = "
-                         f"{rvalue.replace('[', 'attributes[').replace(']', "\"]")}") \
-                            .replace("[", "[\"")
+                    lval_str = lvalue.replace("[", 'attributes["').replace("]", '"]')
+                    rval_str = rvalue.replace("[", 'self.device._coerce_calc_val(attributes.get("').replace("]", '"))')
+                    calculate_str1 = f"{lval_str} = {rval_str}"
                     try:
                         exec(calculate_str1)
                     except Exception as e:
