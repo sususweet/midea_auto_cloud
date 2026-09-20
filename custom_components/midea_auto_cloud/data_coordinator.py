@@ -2,6 +2,7 @@
 
 import copy
 import logging
+import time
 import traceback
 from datetime import datetime, timedelta
 from typing import Any, NamedTuple
@@ -14,6 +15,12 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .core.device import MiedaDevice
 from .core.logger import MideaLogger
+from .power_estimation import (
+    POWER_ATTRIBUTE,
+    PowerEstimator,
+    PowerReading,
+    supports_power_estimation,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +33,7 @@ class MideaDeviceData(NamedTuple):
     attributes: dict
     available: bool
     connected: bool
+    power_reading: PowerReading | None = None
 
 
 class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
@@ -57,6 +65,11 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self.state_update_muted: CALLBACK_TYPE | None = None
         self._device_id = device.device_id
         self._cloud = cloud
+        self.power_estimator = (
+            PowerEstimator() if supports_power_estimation(
+                device.device_type, device._cloud_queries, device.attributes,
+            ) else None
+        )
         self._last_cloud_poll: dict[str, datetime | None] = {}
         # True while poll_device_state runs; avoid async_set_updated_data from
         # device callbacks mid-refresh (resets the poll timer and races the
@@ -97,6 +110,24 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 else:
                     attrs[dotted] = value
 
+    def _device_available(self) -> bool:
+        """Use poll failures for cloud-only devices, connection state otherwise."""
+        if self._is_cloud_only_device():
+            # 云端列表的在线标记可能过期；沿用连续失败次数判断可用性。
+            return (
+                self._consecutive_poll_failures < MAX_CONSECUTIVE_POLL_FAILURES
+            )
+        return self.device.connected
+
+    def _observe_power_state(self, available: bool | None = None) -> None:
+        """Observe power boundaries without copying or publishing device data."""
+        if self.power_estimator is not None:
+            if available is None:
+                available = self._device_available()
+            self.power_estimator.observe_state(
+                online=available, running=self.device.attributes.get("power"),
+            )
+
     def _snapshot(self, available: bool | None = None) -> MideaDeviceData:
         """Build a coordinator data payload from a deep copy of device attributes.
 
@@ -110,22 +141,22 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         """
         connected = self.device.connected
         if available is None:
-            if self._is_cloud_only_device():
-                # Cloud appliances remain controllable even when Midea reports
-                # them offline at list time (onlineStatus != 1) — but repeated
-                # poll failures (dead session, device offline) must surface as
-                # unavailable instead of freezing entities at stale values.
-                available = (
-                    self._consecutive_poll_failures < MAX_CONSECUTIVE_POLL_FAILURES
-                )
-            else:
-                available = connected
+            available = self._device_available()
         attrs = copy.deepcopy(self.device.attributes)
         self._flatten_nested_scalars(attrs)
+        power_reading = None
+        if self.power_estimator is not None:
+            self._observe_power_state(available)
+            # 估算结果单独进入快照，不污染设备的实测功率属性。
+            power_reading = self.power_estimator.resolve(
+                elapsed=time.monotonic(),
+                measured_power_w=attrs.get(POWER_ATTRIBUTE),
+            )
         return MideaDeviceData(
             attributes=attrs,
             available=available,
             connected=connected,
+            power_reading=power_reading,
         )
 
     def mute_state_update_for_a_while(self) -> None:
@@ -200,6 +231,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             self._polling = False
 
         self._track_poll_result(refresh_ok)
+        # 在电量采样前观察运行边界，不能把新样本加入旧运行区间。
+        self._observe_power_state()
 
         try:
             await self._poll_cloud_stats()
@@ -330,6 +363,13 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 self.device._attributes["cloud_electricity_month"] = float(
                     month_result["totalValue"]
                 )
+                if self.power_estimator is not None:
+                    self.power_estimator.observe_energy(
+                        elapsed=time.monotonic(),
+                        sampled_at=datetime.now().astimezone(),
+                        energy_kwh=month_result["totalValue"],
+                        period=today[:7],
+                    )
             elif month_result is None:
                 MideaLogger.debug(
                     f"Cloud electricity month query returned no data for {self._device_id}"

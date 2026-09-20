@@ -1,0 +1,7 @@
+# Match the Home Assistant version used for the device validation.
+homeassistant==2026.9.2
+# Existing integration imports, outside the pure estimator's standard library.
+lupa>=2.0
+aiofiles
+requests
+pycryptodome

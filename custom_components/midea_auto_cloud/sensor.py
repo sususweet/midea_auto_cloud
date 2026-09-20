@@ -6,6 +6,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
+from .power_estimation import POWER_ATTRIBUTE, PowerReading
 
 
 async def async_setup_entry(
@@ -67,8 +68,26 @@ class MideaSensorEntity(MideaEntity, SensorEntity):
         return super().native_unit_of_measurement
 
     @property
+    def _power_reading(self) -> PowerReading | None:
+        """Return the power result from the same snapshot as other attributes."""
+        if self._entity_key == POWER_ATTRIBUTE and self.coordinator.data:
+            return self.coordinator.data.power_reading
+        return None
+
+    @property
+    def extra_state_attributes(self):
+        """Preserve inherited attributes and add power provenance."""
+        attributes = super().extra_state_attributes
+        reading = self._power_reading
+        if reading is None:
+            return attributes
+        return {**(attributes or {}), **reading.as_attributes()}
+
+    @property
     def native_value(self):
         """Return the native value of the sensor."""
+        if self._power_reading is not None:
+            return self._power_reading.value
         # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
         value = self._get_nested_value(attribute)
