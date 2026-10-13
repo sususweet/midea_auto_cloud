@@ -434,6 +434,12 @@
       },
       "door_auto_open": {
         "name": "自动开门"
+      },
+      "camera_status": {
+        "name": "摄像头状态"
+      },
+      "live_video_status": {
+        "name": "实时视频状态"
       }
     },
     "climate": {
@@ -3423,6 +3429,24 @@
       },
       "wind_speed_real": {
         "name": "实测风速"
+      },
+      "temperature_above": {
+        "name": "上管温度"
+      },
+      "temperature_underside": {
+        "name": "下管温度"
+      },
+      "fire_power": {
+        "name": "火力"
+      },
+      "work_mode": {
+        "name": "工作模式"
+      },
+      "mouthfeel": {
+        "name": "口感"
+      },
+      "execute": {
+        "name": "执行状态"
       }
     },
     "light": {
