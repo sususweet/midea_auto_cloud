@@ -876,6 +876,7 @@
       "wind_swing_ud_angle": {
         "name": "上下摆动风向",
         "state": {
+          "on": "摆动",
           "off": "关闭",
           "top": "上",
           "upper": "斜上",
@@ -887,6 +888,7 @@
       "wind_swing_lr_angle": {
         "name": "左右摆动风向",
         "state": {
+          "on": "摆动",
           "off": "关闭",
           "leftmost": "左",
           "left": "偏左",
