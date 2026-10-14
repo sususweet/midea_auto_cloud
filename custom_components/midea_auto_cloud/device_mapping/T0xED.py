@@ -1093,3 +1093,30 @@ DEVICE_MAPPING = {
         },
     }
 }
+
+
+# sn8 632009BF（MRC2878-1000G，subtype 965）：协议上报的 water_consumption 是 mL，
+# 而 default_water_purifier 块按 L 声明 → 数值放大 1000 倍。
+# 同族机型 632009EN / 632009C6 的块本就用 mL，故此处单独收口，不动共用块：
+# 复用 default_water_purifier，仅派生一个以 L 为单位的属性供实体使用。
+DEVICE_MAPPING["632009BF"] = {
+    **DEVICE_MAPPING["default_water_purifier"],
+    "calculate": {
+        "get": [
+            {"lvalue": "[water_consumption_l]", "rvalue": "float([water_consumption]) / 1000"}
+        ],
+    },
+    "entities": {
+        **DEVICE_MAPPING["default_water_purifier"]["entities"],
+        Platform.SENSOR: {
+            **DEVICE_MAPPING["default_water_purifier"]["entities"][Platform.SENSOR],
+            "water_consumption": {
+                # 取换算后的 L 值（原始属性 water_consumption 仍保留 mL 原值）
+                "attribute": "water_consumption_l",
+                "device_class": SensorDeviceClass.VOLUME,
+                "unit_of_measurement": UnitOfVolume.LITERS,
+                "state_class": SensorStateClass.TOTAL_INCREASING,
+            },
+        },
+    },
+}
