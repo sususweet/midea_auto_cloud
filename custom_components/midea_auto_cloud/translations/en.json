@@ -828,6 +828,7 @@
       "wind_swing_ud_angle": {
         "name": "Vertical Wind Direction",
         "state": {
+          "on": "Wind",
           "off": "Off",
           "top": "Top",
           "upper": "Upper",
