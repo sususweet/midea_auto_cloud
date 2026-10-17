@@ -3114,6 +3114,29 @@
       },
       "execute": {
         "name": "Execution Status"
+      },
+      "dc_running_status": {
+        "name": "Dryer Running Status",
+        "state": {
+          "standby": "Standby",
+          "start": "Start",
+          "pause": "Pause",
+          "end": "End",
+          "fault": "Fault",
+          "delay_choosing": "Delay Choosing",
+          "delay": "Delay",
+          "delay_pause": "Delay Pause",
+          "end_prevent_wrinkle": "End (Anti-wrinkle)"
+        }
+      },
+      "dc_remain_time": {
+        "name": "Dryer Remain Time"
+      },
+      "dc_program": {
+        "name": "Dryer Program"
+      },
+      "dc_dry_status": {
+        "name": "Dryer Stage"
       }
     },
     "light": {
