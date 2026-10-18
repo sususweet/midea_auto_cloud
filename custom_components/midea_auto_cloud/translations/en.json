@@ -148,6 +148,9 @@
       },
       "find": {
         "name": "Locate Robot"
+      },
+      "cancel_appointment": {
+        "name": "Cancel Reservation"
       }
     },
     "binary_sensor": {
@@ -3383,6 +3386,9 @@
       },
       "quick_prepare_food_angle": {
         "name": "Prepare Food Angle"
+      },
+      "appointment_finish_in": {
+        "name": "Reserve: Finish In"
       }
     },
     "fan": {

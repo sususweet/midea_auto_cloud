@@ -199,5 +199,31 @@ DEVICE_MAPPING["38206322"] = {
                 "device_class": SensorDeviceClass.ENUM
             },
         },
+        Platform.NUMBER: {
+            # 预约：App 的 onReserve 发 {wash:1, appointment:"on", appointment_time:N}，
+            # N = 距「洗完」的分钟数（须大于当前程序剩余时间、≤1440）。
+            "db_appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "command": {
+                    "db_control_status": "start",
+                    "db_appointment": 1,
+                    "db_appointment_time": "{value}"
+                },
+                "translation_key": "appointment_finish_in"
+            },
+        },
+        Platform.BUTTON: {
+            # 取消预约：App 的 cancelReserve 发 {wash:0, appointment:"off", appointment_time:0}
+            "cancel_appointment": {
+                "command": {
+                    "db_control_status": "pause",
+                    "db_appointment": 0,
+                    "db_appointment_time": 0
+                }
+            },
+        },
     },
 }

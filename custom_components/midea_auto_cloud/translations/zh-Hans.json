@@ -148,6 +148,9 @@
       },
       "find": {
         "name": "寻找机器人"
+      },
+      "cancel_appointment": {
+        "name": "取消预约"
       }
     },
     "binary_sensor": {
@@ -3725,6 +3728,9 @@
       },
       "quick_prepare_food_angle": {
         "name": "备菜角度"
+      },
+      "appointment_finish_in": {
+        "name": "预约：多少分钟后洗完"
       }
     },
     "fan": {
