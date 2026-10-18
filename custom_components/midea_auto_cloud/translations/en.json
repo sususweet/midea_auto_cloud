@@ -3140,6 +3140,19 @@
       },
       "dc_dry_status": {
         "name": "Dryer Stage"
+      },
+      "db_stage": {
+        "name": "Wash Stage",
+        "state": {
+          "idle": "Idle",
+          "weighing": "Weighing",
+          "pre_wash": "Pre-wash",
+          "washing": "Washing",
+          "rinsing": "Rinsing",
+          "dehydrating": "Spinning",
+          "high_speed_dehydrating": "High-speed Spinning",
+          "drying": "Drying"
+        }
       }
     },
     "light": {

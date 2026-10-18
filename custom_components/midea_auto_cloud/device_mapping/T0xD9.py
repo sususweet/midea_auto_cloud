@@ -173,6 +173,20 @@ _D9_38206322_PROGRAMS = [
 DEVICE_MAPPING["38206322"] = {
     **DEVICE_MAPPING["default"],
     "queries": [{"query_type": "db"}, {"query_type": "dc", "dc_location": 1}],
+    "calculate": {
+        **DEVICE_MAPPING["default"]["calculate"],
+        "get": [
+            *DEVICE_MAPPING["default"]["calculate"]["get"],
+            # db_progress 不是百分比，是运行阶段位码（App mainpage.js：1 脱水/2 漂洗/4 洗涤/8 预洗/
+            # 16 烘干/32 称重/64 高速脱水；待机、结束时的 32、128 无意义）
+            {
+                "lvalue": "[db_stage]",
+                "rvalue": "{1: 'dehydrating', 2: 'rinsing', 4: 'washing', 8: 'pre_wash', 16: 'drying', "
+                          "32: 'weighing', 64: 'high_speed_dehydrating'}.get(int([db_progress]), 'idle') "
+                          "if [db_running_status] == 'start' else 'idle'"
+            },
+        ],
+    },
     "entities": {
         **DEVICE_MAPPING["default"]["entities"],
         Platform.SELECT: {
@@ -182,7 +196,14 @@ DEVICE_MAPPING["38206322"] = {
             },
         },
         Platform.SENSOR: {
-            **DEVICE_MAPPING["default"]["entities"][Platform.SENSOR],
+            **{k: v for k, v in DEVICE_MAPPING["default"]["entities"][Platform.SENSOR].items()
+               if k != "db_progress"},
+            "db_stage": {
+                "device_class": SensorDeviceClass.ENUM,
+                "options": ["idle", "weighing", "pre_wash", "washing", "rinsing",
+                            "dehydrating", "high_speed_dehydrating", "drying"],
+                "translation_key": "db_stage"
+            },
             "dc_running_status": {
                 "device_class": SensorDeviceClass.ENUM,
                 "translation_key": "dc_running_status"

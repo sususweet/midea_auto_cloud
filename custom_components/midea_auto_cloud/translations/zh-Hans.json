@@ -3473,6 +3473,19 @@
       },
       "dc_dry_status": {
         "name": "烘干阶段"
+      },
+      "db_stage": {
+        "name": "洗涤阶段",
+        "state": {
+          "idle": "未运行",
+          "weighing": "称重中",
+          "pre_wash": "预洗中",
+          "washing": "洗涤中",
+          "rinsing": "漂洗中",
+          "dehydrating": "脱水中",
+          "high_speed_dehydrating": "高速脱水中",
+          "drying": "烘干中"
+        }
       }
     },
     "light": {
