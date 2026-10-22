@@ -1517,6 +1517,14 @@
           "hot_air_3": "hot air 3"
         }
       },
+      "wash_region": {
+        "name": "Wash Region",
+        "state": {
+          "1": "Upper zone",
+          "2": "Lower zone",
+          "3": "Both zones"
+        }
+      },
       "func_select": {
         "name": "Func Select"
       },

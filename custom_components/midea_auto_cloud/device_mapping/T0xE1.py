@@ -191,7 +191,6 @@ DEVICE_MAPPING = {
                 "work_status": {},
                 "operator": {},
                 "additional": {},
-                "wash_region": {},
                 "wash_stage": {
                     "device_class": SensorDeviceClass.ENUM
                 },
@@ -270,6 +269,13 @@ DEVICE_MAPPING = {
                         "hot_air_1": {"work_status": "work", "mode": "hot_air_1"},
                         "hot_air_2": {"work_status": "work", "mode": "hot_air_2"},
                         "hot_air_3": {"work_status": "work", "mode": "hot_air_3"},
+                    }
+                },
+                "wash_region": {
+                    "options": {
+                        "1": {"wash_region": 1},
+                        "2": {"wash_region": 2},
+                        "3": {"wash_region": 3},
                     }
                 },
                 "softwater": {
