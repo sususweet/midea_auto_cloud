@@ -1496,7 +1496,25 @@
           "wash_dry": "wash dry",
           "auto_dry": "auto dry",
           "fire_disinfect": "fire disinfect",
-          "toy_wash": "toy wash"
+          "toy_wash": "toy wash",
+          "3in1": "3-in-1",
+          "auto_heavy": "auto heavy wash",
+          "party": "party wash",
+          "auto_daily": "auto daily wash",
+          "auto_glass": "auto glass wash",
+          "baby_care": "baby care",
+          "45min_wash": "45min wash",
+          "anion1": "anion 1",
+          "anion2": "anion 2",
+          "anion3": "anion 3",
+          "low_degree": "low temperature wash",
+          "dry_only": "dry only",
+          "dry_only_2h": "dry only 2h",
+          "dry_only_3h": "dry only 3h",
+          "dry_only_4h": "dry only 4h",
+          "hot_air_1": "hot air 1",
+          "hot_air_2": "hot air 2",
+          "hot_air_3": "hot air 3"
         }
       },
       "func_select": {
@@ -1937,6 +1955,9 @@
       "air_dry_left_time": {
         "name": "Air Dry Left Time"
       },
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
+      },
       "air_left_hour": {
         "name": "Drying Storage Remaining Time"
       },
@@ -2143,6 +2164,9 @@
       },
       "downstair_temp": {
         "name": "Down Stair Temperature"
+      },
+      "dry_set_min": {
+        "name": "Dry Set Time"
       },
       "dry_time": {
         "name": "Dry Time"
@@ -3449,6 +3473,9 @@
       },
       "auto_power_off": {
         "name": "Auto Power Off"
+      },
+      "auto_release_switch": {
+        "name": "Auto Release Switch"
       },
       "power_on_timer": {
         "name": "Power On Timer"
