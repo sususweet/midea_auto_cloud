@@ -5035,6 +5035,24 @@
       },
       "fengguan_remove_odor": {
         "name": "风管去味"
+      },
+      "ac_dry": {
+        "name": "干燥防霉"
+      },
+      "auto_comfort_fresh_air": {
+        "name": "自动舒适新风"
+      },
+      "exhaust": {
+        "name": "排风"
+      },
+      "dry_step_switch": {
+        "name": "烘干分步开关"
+      },
+      "dryswitch": {
+        "name": "晶焰烘干开关"
+      },
+      "voice_power": {
+        "name": "语音"
       }
     },
     "text": {

@@ -4693,6 +4693,24 @@
       },
       "fengguan_remove_odor": {
         "name": "Duct Odor Removal"
+      },
+      "ac_dry": {
+        "name": "Dry"
+      },
+      "auto_comfort_fresh_air": {
+        "name": "Auto Comfort Fresh Air"
+      },
+      "exhaust": {
+        "name": "Exhaust"
+      },
+      "dry_step_switch": {
+        "name": "Dry Step Switch"
+      },
+      "dryswitch": {
+        "name": "Dry Switch"
+      },
+      "voice_power": {
+        "name": "Voice"
       }
     },
     "text": {
