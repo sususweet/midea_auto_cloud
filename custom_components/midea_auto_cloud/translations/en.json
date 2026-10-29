@@ -148,6 +148,9 @@
       },
       "find": {
         "name": "Locate Robot"
+      },
+      "cancel_appointment": {
+        "name": "Cancel Reservation"
       }
     },
     "binary_sensor": {
@@ -3148,6 +3151,42 @@
       },
       "execute": {
         "name": "Execution Status"
+      },
+      "dc_running_status": {
+        "name": "Dryer Running Status",
+        "state": {
+          "standby": "Standby",
+          "start": "Start",
+          "pause": "Pause",
+          "end": "End",
+          "fault": "Fault",
+          "delay_choosing": "Delay Choosing",
+          "delay": "Delay",
+          "delay_pause": "Delay Pause",
+          "end_prevent_wrinkle": "End (Anti-wrinkle)"
+        }
+      },
+      "dc_remain_time": {
+        "name": "Dryer Remain Time"
+      },
+      "dc_program": {
+        "name": "Dryer Program"
+      },
+      "dc_dry_status": {
+        "name": "Dryer Stage"
+      },
+      "db_stage": {
+        "name": "Wash Stage",
+        "state": {
+          "idle": "Idle",
+          "weighing": "Weighing",
+          "pre_wash": "Pre-wash",
+          "washing": "Washing",
+          "rinsing": "Rinsing",
+          "dehydrating": "Spinning",
+          "high_speed_dehydrating": "High-speed Spinning",
+          "drying": "Drying"
+        }
       }
     },
     "light": {
@@ -3394,6 +3433,9 @@
       },
       "quick_prepare_food_angle": {
         "name": "Prepare Food Angle"
+      },
+      "appointment_finish_in": {
+        "name": "Reserve: Finish In"
       }
     },
     "fan": {

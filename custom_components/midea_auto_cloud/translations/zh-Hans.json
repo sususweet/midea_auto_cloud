@@ -148,6 +148,9 @@
       },
       "find": {
         "name": "寻找机器人"
+      },
+      "cancel_appointment": {
+        "name": "取消预约"
       }
     },
     "binary_sensor": {
@@ -3481,6 +3484,42 @@
       },
       "execute": {
         "name": "执行状态"
+      },
+      "dc_running_status": {
+        "name": "烘干机运行状态",
+        "state": {
+          "standby": "待机",
+          "start": "运行",
+          "pause": "暂停",
+          "end": "结束",
+          "fault": "故障",
+          "delay_choosing": "预约设置",
+          "delay": "延时",
+          "delay_pause": "延时暂停",
+          "end_prevent_wrinkle": "结束防皱"
+        }
+      },
+      "dc_remain_time": {
+        "name": "烘干机剩余时间"
+      },
+      "dc_program": {
+        "name": "烘干机程序"
+      },
+      "dc_dry_status": {
+        "name": "烘干阶段"
+      },
+      "db_stage": {
+        "name": "洗涤阶段",
+        "state": {
+          "idle": "未运行",
+          "weighing": "称重中",
+          "pre_wash": "预洗中",
+          "washing": "洗涤中",
+          "rinsing": "漂洗中",
+          "dehydrating": "脱水中",
+          "high_speed_dehydrating": "高速脱水中",
+          "drying": "烘干中"
+        }
       }
     },
     "light": {
@@ -3736,6 +3775,9 @@
       },
       "quick_prepare_food_angle": {
         "name": "备菜角度"
+      },
+      "appointment_finish_in": {
+        "name": "预约：多少分钟后洗完"
       }
     },
     "fan": {

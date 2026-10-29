@@ -151,3 +151,100 @@ DEVICE_MAPPING = {
         }
     }
 }
+
+
+# sn8 38206322（COLMO CLGHZ20DL 复式洗烘机，subtype 12856）：
+# 上筒是独立烘干机（lua bucket dc，location 1），下筒是洗衣机（bucket db，location 2）。
+# 1) default 只查 db，烘干机状态读不到 → 追加 dc 查询（lua: query_type=dc + dc_location=1 → upDCQueryTable）。
+# 2) 程序表按该型号官方配置 midea_json_new/D9/0000.d9.12856.json 下筒 paramData+cycleShop 共 26 个；
+#    lua 只接受字符串程序名（default 里 137/138/148… 等数字值会让 lua checkSum 报 nil）。
+#    default 里的 underwear(0x0D)/standard 等机器会接收但不加载（剩余时间停在 1），本机内衣是 water_underwear(0x22)。
+_D9_38206322_PROGRAMS = [
+    # 面板程序
+    "water_intelligent", "big", "silk", "water_shirt", "green_wool", "down_jacket",
+    "steam_sterilize_wash", "fast_wash_30", "single_dehytration", "ssp",
+    # 云程序
+    "water_mixed_wash", "fast_wash", "water_eco", "rinsing_dehydration", "water_steep",
+    "new_water_cotton", "water_baby_clothes", "water_underwear", "sport_clothes",
+    "remove_mite_wash", "color", "spring_autumn_wash", "summer_wash", "winter_wash",
+    "bath_towel", "new_clothes_wash",
+]
+
+DEVICE_MAPPING["38206322"] = {
+    **DEVICE_MAPPING["default"],
+    "queries": [{"query_type": "db"}, {"query_type": "dc", "dc_location": 1}],
+    "calculate": {
+        **DEVICE_MAPPING["default"]["calculate"],
+        "get": [
+            *DEVICE_MAPPING["default"]["calculate"]["get"],
+            # db_progress 不是百分比，是运行阶段位码（App mainpage.js：1 脱水/2 漂洗/4 洗涤/8 预洗/
+            # 16 烘干/32 称重/64 高速脱水；待机、结束时的 32、128 无意义）
+            {
+                "lvalue": "[db_stage]",
+                "rvalue": "{1: 'dehydrating', 2: 'rinsing', 4: 'washing', 8: 'pre_wash', 16: 'drying', "
+                          "32: 'weighing', 64: 'high_speed_dehydrating'}.get(int([db_progress]), 'idle') "
+                          "if [db_running_status] == 'start' else 'idle'"
+            },
+        ],
+    },
+    "entities": {
+        **DEVICE_MAPPING["default"]["entities"],
+        Platform.SELECT: {
+            **DEVICE_MAPPING["default"]["entities"][Platform.SELECT],
+            "db_program": {
+                "options": {p: {"db_program": p} for p in _D9_38206322_PROGRAMS}
+            },
+        },
+        Platform.SENSOR: {
+            **{k: v for k, v in DEVICE_MAPPING["default"]["entities"][Platform.SENSOR].items()
+               if k != "db_progress"},
+            "db_stage": {
+                "device_class": SensorDeviceClass.ENUM,
+                "options": ["idle", "weighing", "pre_wash", "washing", "rinsing",
+                            "dehydrating", "high_speed_dehydrating", "drying"],
+                "translation_key": "db_stage"
+            },
+            "dc_running_status": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "dc_running_status"
+            },
+            "dc_remain_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            "dc_program": {
+                "device_class": SensorDeviceClass.ENUM
+            },
+            "dc_dry_status": {
+                "device_class": SensorDeviceClass.ENUM
+            },
+        },
+        Platform.NUMBER: {
+            # 预约：App 的 onReserve 发 {wash:1, appointment:"on", appointment_time:N}，
+            # N = 距「洗完」的分钟数（须大于当前程序剩余时间、≤1440）。
+            "db_appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "command": {
+                    "db_control_status": "start",
+                    "db_appointment": 1,
+                    "db_appointment_time": "{value}"
+                },
+                "translation_key": "appointment_finish_in"
+            },
+        },
+        Platform.BUTTON: {
+            # 取消预约：App 的 cancelReserve 发 {wash:0, appointment:"off", appointment_time:0}
+            "cancel_appointment": {
+                "command": {
+                    "db_control_status": "pause",
+                    "db_appointment": 0,
+                    "db_appointment_time": 0
+                }
+            },
+        },
+    },
+}
