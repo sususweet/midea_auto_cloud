@@ -171,7 +171,12 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if self._key_swing_modes is not None:
             features |= ClimateEntityFeature.SWING_MODE
         if self._key_fan_modes is not None and not self._fan_mode_locked():
-            features |= ClimateEntityFeature.FAN_MODE
+            if self.is_bath_heater and isinstance(self._key_fan_modes, dict):
+                # 浴霸：风速选项按当前模式嵌套（换气/吹风才有），其它模式隐藏
+                if self._bath_heater_fan_config() is not None:
+                    features |= ClimateEntityFeature.FAN_MODE
+            else:
+                features |= ClimateEntityFeature.FAN_MODE
         return features
 
     @property
@@ -247,6 +252,20 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if current_value is None:
             return None
         return self._match_swing_option(options, str(current_value))
+
+    def _bath_heater_fan_config(self) -> dict | None:
+        """Return the per-preset fan config ({key, options}) for bath heaters.
+
+        fan_modes may be nested per preset mode (ventilation/blowing each map
+        to a different attribute key), mirroring the swing_modes structure.
+        Returns None when the current preset has no fan-speed options.
+        """
+        if not (self.is_bath_heater and isinstance(self._key_fan_modes, dict)):
+            return None
+        mode_config = self._key_fan_modes.get(self.preset_mode)
+        if mode_config and isinstance(mode_config, dict) and "options" in mode_config:
+            return mode_config
+        return None
 
     @property
     def target_temperature(self):
@@ -386,6 +405,11 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
     def fan_modes(self):
         if is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
             return NUMERIC_FAN_MODE_DISPLAY_ORDER
+        if self.is_bath_heater and isinstance(self._key_fan_modes, dict):
+            config = self._bath_heater_fan_config()
+            if config is not None:
+                return list(config["options"].keys())
+            return []
         return list(self._key_fan_modes.keys())
 
     @property
@@ -393,6 +417,14 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if is_numeric_six_key_fan_mode_mapping(self._key_fan_modes):
             selected = self._dict_get_selected(fan_mode_lookup_mapping(self._key_fan_modes))
             return selected
+        if self.is_bath_heater and isinstance(self._key_fan_modes, dict):
+            config = self._bath_heater_fan_config()
+            if config is None:
+                return None
+            current_value = self._get_nested_value(config.get("key"))
+            if current_value is None:
+                return None
+            return self._match_swing_option(config["options"], str(current_value))
         return self._dict_get_selected(self._key_fan_modes)
 
     @property
@@ -691,6 +723,14 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if self._fan_mode_locked():
             # Fan speed is device-managed in these hvac modes (e.g. auto); the
             # control is hidden, so ignore stray service calls rather than write.
+            return
+        if self.is_bath_heater and isinstance(self._key_fan_modes, dict):
+            config = self._bath_heater_fan_config()
+            if config is None:
+                return
+            new_status = (config.get("options") or {}).get(fan_mode)
+            if new_status:
+                await self.async_set_attributes(new_status)
             return
         fan_mode = normalize_fan_mode_input(self._key_fan_modes, fan_mode)
         fan_modes = fan_mode_lookup_mapping(self._key_fan_modes)

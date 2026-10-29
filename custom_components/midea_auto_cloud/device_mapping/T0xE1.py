@@ -136,6 +136,171 @@ DEVICE_MAPPING = {
             }
         }
     },
+    "760001EC": {
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": ["additional", "wash_region", "door_auto_open"],
+        "entities": {
+            Platform.SWITCH: {
+                "uvswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "airswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "auto_release_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "dry_step_switch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": [1, 0],
+                },
+                "dryswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "waterswitch": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+            },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {},
+                "door_auto_open": {},
+                "air_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "diy_flag": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+            },
+            Platform.SENSOR: {
+                "mode": {},
+                "work_status": {},
+                "operator": {},
+                "additional": {},
+                "wash_stage": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "cur_temperature"
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "remain_time"
+                },
+                "air_set_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "air_left_hour": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "dry_set_min": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+            },
+            Platform.SELECT: {
+                "work_status": {
+                    "options": {
+                        "power_off": {"work_status": "power_off"},
+                        "power_on": {"work_status": "power_on"},
+                        "cancel": {"work_status": "cancel"},
+                        "pause": {"operator": "pause"},
+                        "resume": {"operator": "start"},
+                    }
+                },
+                "wash_mode": {
+                    "options": {
+                        "neutral_gear": {"work_status": "cancel", "mode": "null"},
+                        "auto_wash": {"work_status": "work", "mode": "auto"},
+                        "strong_wash": {"work_status": "work", "mode": "intensive"},
+                        "standard_wash": {"work_status": "work", "mode": "normal"},
+                        "eco_wash": {"work_status": "work", "mode": "eco"},
+                        "glass_wash": {"work_status": "work", "mode": "glass"},
+                        "90min_wash": {"work_status": "work", "mode": "90min"},
+                        "fast_wash": {"work_status": "work", "mode": "rapid"},
+                        "soak_wash": {"work_status": "work", "mode": "soak"},
+                        "hour_wash": {"work_status": "work", "mode": "1hour"},
+                        "3in1": {"work_status": "work", "mode": "3in1"},
+                        "auto_heavy": {"work_status": "work", "mode": "auto_heavy"},
+                        "party": {"work_status": "work", "mode": "party"},
+                        "quietnight_wash": {"work_status": "work", "mode": "quiet"},
+                        "auto_daily": {"work_status": "work", "mode": "auto_daily"},
+                        "germ": {"work_status": "work", "mode": "hygiene"},
+                        "self_clean": {"work_status": "work", "mode": "self_clean"},
+                        "auto_glass": {"work_status": "work", "mode": "auto_glass"},
+                        "baby_care": {"work_status": "work", "mode": "baby_care"},
+                        "fruit_wash": {"work_status": "work", "mode": "fruit"},
+                        "45min_wash": {"work_status": "work", "mode": "45min"},
+                        "anion1": {"work_status": "work", "mode": "anion1"},
+                        "anion2": {"work_status": "work", "mode": "anion2"},
+                        "anion3": {"work_status": "work", "mode": "anion3"},
+                        "low_degree": {"work_status": "work", "mode": "low_degree"},
+                        "dry_only": {"work_status": "work", "mode": "dry_only"},
+                        "dry_only_2h": {"work_status": "work", "mode": "dry_only_2h"},
+                        "dry_only_3h": {"work_status": "work", "mode": "dry_only_3h"},
+                        "dry_only_4h": {"work_status": "work", "mode": "dry_only_4h"},
+                        "hot_air_1": {"work_status": "work", "mode": "hot_air_1"},
+                        "hot_air_2": {"work_status": "work", "mode": "hot_air_2"},
+                        "hot_air_3": {"work_status": "work", "mode": "hot_air_3"},
+                    }
+                },
+                "wash_region": {
+                    "options": {
+                        "1": {"wash_region": 1},
+                        "2": {"wash_region": 2},
+                        "3": {"wash_region": 3},
+                    }
+                },
+                "softwater": {
+                    "options": {
+                        "1": {"softwater": 1},
+                        "2": {"softwater": 2},
+                        "3": {"softwater": 3},
+                        "4": {"softwater": 4},
+                        "5": {"softwater": 5},
+                        "6": {"softwater": 6},
+                    }
+                },
+                "rinse_aid": {
+                    "attribute": "bright",
+                    "options": {
+                        "1": {"bright": 1},
+                        "2": {"bright": 2},
+                        "3": {"bright": 3},
+                        "4": {"bright": 4},
+                        "5": {"bright": 5},
+                    }
+                },
+            }
+        }
+    },
     # WQP8-W7634C-W (and similar): Lua accepts short codec names (auto/normal/eco…).
     # Hardware-verified in #229; must NOT use *_wash payloads or programs fall back to ECO.
     # Comfee CDWI455i (built-in 45 cm dishwasher, EU market).

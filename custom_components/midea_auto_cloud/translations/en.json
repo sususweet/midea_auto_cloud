@@ -148,6 +148,9 @@
       },
       "find": {
         "name": "Locate Robot"
+      },
+      "cancel_appointment": {
+        "name": "Cancel Reservation"
       }
     },
     "binary_sensor": {
@@ -414,6 +417,12 @@
       },
       "door_auto_open": {
         "name": "Auto Door Open"
+      },
+      "camera_status": {
+        "name": "Camera Status"
+      },
+      "live_video_status": {
+        "name": "Live Video Status"
       }
     },
     "climate": {
@@ -631,7 +640,8 @@
               "none": "none",
               "eco": "eco",
               "comfort": "comfort",
-              "boost": "boost"
+              "boost": "boost",
+              "sleep": "Sleep"
             }
           }
         },
@@ -691,6 +701,15 @@
               "bath": "Bath",
               "ventilation": "Ventilation",
               "drying": "Drying"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "silent": "Silent",
+              "soft_wind": "Soft Wind",
+              "standard": "Standard",
+              "strong": "Strong",
+              "storm": "Storm"
             }
           }
         }
@@ -818,6 +837,7 @@
       "wind_swing_ud_angle": {
         "name": "Vertical Wind Direction",
         "state": {
+          "on": "Wind",
           "off": "Off",
           "top": "Top",
           "upper": "Upper",
@@ -829,6 +849,7 @@
       "wind_swing_lr_angle": {
         "name": "Horizontal Wind Direction",
         "state": {
+          "on": "Wind",
           "off": "Off",
           "leftmost": "Leftmost",
           "left": "Left",
@@ -1480,7 +1501,33 @@
           "wash_dry": "wash dry",
           "auto_dry": "auto dry",
           "fire_disinfect": "fire disinfect",
-          "toy_wash": "toy wash"
+          "toy_wash": "toy wash",
+          "3in1": "3-in-1",
+          "auto_heavy": "auto heavy wash",
+          "party": "party wash",
+          "auto_daily": "auto daily wash",
+          "auto_glass": "auto glass wash",
+          "baby_care": "baby care",
+          "45min_wash": "45min wash",
+          "anion1": "anion 1",
+          "anion2": "anion 2",
+          "anion3": "anion 3",
+          "low_degree": "low temperature wash",
+          "dry_only": "dry only",
+          "dry_only_2h": "dry only 2h",
+          "dry_only_3h": "dry only 3h",
+          "dry_only_4h": "dry only 4h",
+          "hot_air_1": "hot air 1",
+          "hot_air_2": "hot air 2",
+          "hot_air_3": "hot air 3"
+        }
+      },
+      "wash_region": {
+        "name": "Wash Region",
+        "state": {
+          "1": "Upper zone",
+          "2": "Lower zone",
+          "3": "Both zones"
         }
       },
       "func_select": {
@@ -1921,6 +1968,9 @@
       "air_dry_left_time": {
         "name": "Air Dry Left Time"
       },
+      "air_set_hour": {
+        "name": "Drying Storage Set Time"
+      },
       "air_left_hour": {
         "name": "Drying Storage Remaining Time"
       },
@@ -2127,6 +2177,9 @@
       },
       "downstair_temp": {
         "name": "Down Stair Temperature"
+      },
+      "dry_set_min": {
+        "name": "Dry Set Time"
       },
       "dry_time": {
         "name": "Dry Time"
@@ -3077,6 +3130,63 @@
       },
       "wash_region": {
         "name": "Wash Region"
+      },
+      "wind_speed_real": {
+        "name": "Real Wind Speed"
+      },
+      "temperature_above": {
+        "name": "Upper Tube Temperature"
+      },
+      "temperature_underside": {
+        "name": "Lower Tube Temperature"
+      },
+      "fire_power": {
+        "name": "Fire Power"
+      },
+      "work_mode": {
+        "name": "Work Mode"
+      },
+      "mouthfeel": {
+        "name": "Mouthfeel"
+      },
+      "execute": {
+        "name": "Execution Status"
+      },
+      "dc_running_status": {
+        "name": "Dryer Running Status",
+        "state": {
+          "standby": "Standby",
+          "start": "Start",
+          "pause": "Pause",
+          "end": "End",
+          "fault": "Fault",
+          "delay_choosing": "Delay Choosing",
+          "delay": "Delay",
+          "delay_pause": "Delay Pause",
+          "end_prevent_wrinkle": "End (Anti-wrinkle)"
+        }
+      },
+      "dc_remain_time": {
+        "name": "Dryer Remain Time"
+      },
+      "dc_program": {
+        "name": "Dryer Program"
+      },
+      "dc_dry_status": {
+        "name": "Dryer Stage"
+      },
+      "db_stage": {
+        "name": "Wash Stage",
+        "state": {
+          "idle": "Idle",
+          "weighing": "Weighing",
+          "pre_wash": "Pre-wash",
+          "washing": "Washing",
+          "rinsing": "Rinsing",
+          "dehydrating": "Spinning",
+          "high_speed_dehydrating": "High-speed Spinning",
+          "drying": "Drying"
+        }
       }
     },
     "light": {
@@ -3320,6 +3430,12 @@
       },
       "dry_time_setting": {
         "name": "Dry Time"
+      },
+      "quick_prepare_food_angle": {
+        "name": "Prepare Food Angle"
+      },
+      "appointment_finish_in": {
+        "name": "Reserve: Finish In"
       }
     },
     "fan": {
@@ -3409,6 +3525,9 @@
       },
       "auto_power_off": {
         "name": "Auto Power Off"
+      },
+      "auto_release_switch": {
+        "name": "Auto Release Switch"
       },
       "power_on_timer": {
         "name": "Power On Timer"
@@ -4609,6 +4728,33 @@
       },
       "gesture": {
         "name": "Gesture control"
+      },
+      "prepare_food": {
+        "name": "Prepare Food"
+      },
+      "quick_fry": {
+        "name": "Quick Fry"
+      },
+      "fengguan_remove_odor": {
+        "name": "Duct Odor Removal"
+      },
+      "ac_dry": {
+        "name": "Dry"
+      },
+      "auto_comfort_fresh_air": {
+        "name": "Auto Comfort Fresh Air"
+      },
+      "exhaust": {
+        "name": "Exhaust"
+      },
+      "dry_step_switch": {
+        "name": "Dry Step Switch"
+      },
+      "dryswitch": {
+        "name": "Dry Switch"
+      },
+      "voice_power": {
+        "name": "Voice"
       }
     },
     "text": {

@@ -285,6 +285,18 @@ class MiedaDevice(threading.Thread):
             return inner
         return None
 
+    @staticmethod
+    def _coerce_calc_val(val: Any) -> Any:
+        if isinstance(val, str):
+            val_strip = val.strip()
+            try:
+                if "." in val_strip:
+                    return float(val_strip)
+                return int(val_strip)
+            except (ValueError, TypeError):
+                return val
+        return val
+
     def _apply_calculate_get(self, new_status: dict) -> None:
         for c in self._calculate_get:
             lvalue = c.get("lvalue")
@@ -293,10 +305,9 @@ class MiedaDevice(threading.Thread):
                 continue
             if not self._calculate_inputs_ready(rvalue):
                 continue
-            calculate_str1 = (
-                f"{lvalue.replace('[', 'self._attributes[').replace(']', '\"]')} = "
-                f"{rvalue.replace('[', 'self._attributes[').replace(']', '\"]')}"
-            ).replace("[", "[\"")
+            lval_str = lvalue.replace("[", 'self._attributes["').replace("]", '"]')
+            rval_str = rvalue.replace("[", 'self._coerce_calc_val(self._attributes.get("').replace("]", '"))')
+            calculate_str1 = f"{lval_str} = {rval_str}"
             try:
                 exec(calculate_str1)
             except Exception:

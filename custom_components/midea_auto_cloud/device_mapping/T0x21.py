@@ -42,6 +42,7 @@ DEVICE_MAPPING = {
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_1_name",
                     "attribute": "endpoint_1_OnOff",
+                    "translation_key": "endpoint_1_onoff",
                 },
             }
         }
@@ -59,12 +60,14 @@ DEVICE_MAPPING = {
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_1_name",
                     "attribute": "endpoint_1_OnOff",
+                    "translation_key": "endpoint_1_onoff",
                 },
                 "endpoint_2_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_2_name",
                     "attribute": "endpoint_2_OnOff",
+                    "translation_key": "endpoint_2_onoff",
                 },
             }
         }
@@ -82,18 +85,21 @@ DEVICE_MAPPING = {
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_1_name",
                     "attribute": "endpoint_1_OnOff",
+                    "translation_key": "endpoint_1_onoff",
                 },
                 "endpoint_2_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_2_name",
                     "attribute": "endpoint_2_OnOff",
+                    "translation_key": "endpoint_2_onoff",
                 },
                 "endpoint_3_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_3_name",
                     "attribute": "endpoint_3_OnOff",
+                    "translation_key": "endpoint_3_onoff",
                 },
             }
         }
@@ -111,24 +117,28 @@ DEVICE_MAPPING = {
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_1_name",
                     "attribute": "endpoint_1_OnOff",
+                    "translation_key": "endpoint_1_onoff",
                 },
                 "endpoint_2_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_2_name",
                     "attribute": "endpoint_2_OnOff",
+                    "translation_key": "endpoint_2_onoff",
                 },
                 "endpoint_3_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_3_name",
                     "attribute": "endpoint_3_OnOff",
+                    "translation_key": "endpoint_3_onoff",
                 },
                 "endpoint_4_OnOff": {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": ["0", "1"],
                     "name_attribute": "endpoint_4_name",
                     "attribute": "endpoint_4_OnOff",
+                    "translation_key": "endpoint_4_onoff",
                 },
             }
         }

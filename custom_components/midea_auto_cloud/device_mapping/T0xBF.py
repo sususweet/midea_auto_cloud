@@ -23,6 +23,38 @@ DEVICE_MAPPING = {
         },
         "entities": {
             Platform.BINARY_SENSOR: {
+                "clean_scale": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 1]
+                },
+                "clean_sink_ponding": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 1]
+                },
+                "lack_box": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 1]
+                },
+                "dissipate_heat": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "flip_side": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "rationale": [0, 1]
+                },
+                "high_temperature_work": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "rationale": [0, 1]
+                },
+                "pre_heat": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "camera_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
+                "live_video_status": {
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                },
                 "lack_water": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
                     "rationale": [0, 1]
@@ -36,6 +68,33 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.SENSOR: {
+                "error_code": {},
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature_above": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "temperature_underside": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT
+                },
+                "fire_power": {},
+                "work_mode": {},
+                "mouthfeel": {},
+                "execute": {},
+                "steam_quantity": {},
+                "stepnum": {},
+                "totalstep": {},
+                "people_number": {},
+                "weight": {},
+                "version": {},
+                "cbs_version": {},
                 "work_status": {
                     "device_class": SensorDeviceClass.ENUM
                 },
