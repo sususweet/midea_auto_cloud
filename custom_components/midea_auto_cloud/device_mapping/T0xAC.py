@@ -1826,10 +1826,10 @@ DEVICE_MAPPING = {
                         "nature": {"natural_wind": "on"}
                     },
                     "swing_modes": {
-                        "off": {"wind_swing_lr": "off", "wind_swing_lr_right": "off", "wind_swing_lr_left": "off", "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off", "left_lr_wind_angle": 50, "left_ud_wind_angle": 50, "wind_swing_lr_angle": 50, "wind_swing_ud_angle": 50},
-                        "both": {"wind_swing_lr": "on", "wind_swing_lr_right": "on", "wind_swing_lr_left": "on", "wind_swing_ud": "on", "wind_swing_ud_left": "on", "wind_swing_ud_right": "on", "left_lr_wind_angle": 0, "left_ud_wind_angle": 0, "wind_swing_lr_angle": 0, "wind_swing_ud_angle": 0},
-                        "horizontal": {"wind_swing_lr": "on", "wind_swing_lr_right": "on", "wind_swing_lr_left": "on", "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off", "left_lr_wind_angle": 0, "left_ud_wind_angle": 50, "wind_swing_lr_angle": 0, "wind_swing_ud_angle": 50},
-                        "vertical": {"wind_swing_lr": "off", "wind_swing_lr_right": "off", "wind_swing_lr_left": "off", "wind_swing_ud": "on", "wind_swing_ud_left": "on", "wind_swing_ud_right": "on", "left_lr_wind_angle": 50, "left_ud_wind_angle": 0, "wind_swing_lr_angle": 50, "wind_swing_ud_angle": 0},
+                        "off": {"wind_swing_ud_angle": 0, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off", "wind_swing_lr_angle": 0, "wind_swing_lr": "off", "wind_swing_lr_left": "off", "wind_swing_lr_right": "off", "wind_swing_lr_under": "off"},
+                        "both": {"wind_swing_ud_angle": 0, "wind_swing_ud": "on", "wind_swing_ud_left": "on", "wind_swing_ud_right": "on", "wind_swing_lr_angle": 0, "wind_swing_lr": "on", "wind_swing_lr_left": "on", "wind_swing_lr_right": "on", "wind_swing_lr_under": "on"},
+                        "horizontal": {"wind_swing_ud_angle": 0, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off", "wind_swing_lr_angle": 0, "wind_swing_lr": "on", "wind_swing_lr_left": "on", "wind_swing_lr_right": "on", "wind_swing_lr_under": "on"},
+                        "vertical": {"wind_swing_ud_angle": 0, "wind_swing_ud": "on", "wind_swing_ud_left": "on", "wind_swing_ud_right": "on", "wind_swing_lr_angle": 0, "wind_swing_lr": "off", "wind_swing_lr_left": "off", "wind_swing_lr_right": "off", "wind_swing_lr_under": "off"},
                     },
                     "fan_modes": {
                         "silent": {"wind_speed": 20},
@@ -1884,22 +1884,24 @@ DEVICE_MAPPING = {
                 },
                 "wind_swing_ud_angle": {
                     "options": {
-                        "off": {"wind_swing_ud_angle": 0, "left_ud_wind_angle": 0},
-                        "top": {"wind_swing_ud_angle": 1, "left_ud_wind_angle": 1},
-                        "upper": {"wind_swing_ud_angle": 25, "left_ud_wind_angle": 25},
-                        "middle": {"wind_swing_ud_angle": 50, "left_ud_wind_angle": 50},
-                        "lower": {"wind_swing_ud_angle": 75, "left_ud_wind_angle": 75},
-                        "bottom": {"wind_swing_ud_angle": 100, "left_ud_wind_angle": 100}
+                        "off": {"wind_swing_ud_angle": 0, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"},
+                        "on": {"wind_swing_ud_angle": 0, "wind_swing_ud": "on", "wind_swing_ud_left": "on", "wind_swing_ud_right": "on"},
+                        "top": {"wind_swing_ud_angle": 1, "left_ud_wind_angle": 1, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"},
+                        "upper": {"wind_swing_ud_angle": 25, "left_ud_wind_angle": 25, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"},
+                        "middle": {"wind_swing_ud_angle": 50, "left_ud_wind_angle": 50, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"},
+                        "lower": {"wind_swing_ud_angle": 75, "left_ud_wind_angle": 75, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"},
+                        "bottom": {"wind_swing_ud_angle": 100, "left_ud_wind_angle": 100, "wind_swing_ud": "off", "wind_swing_ud_left": "off", "wind_swing_ud_right": "off"}
                     }
                 },
                 "wind_swing_lr_angle": {
                     "options": {
-                        "off": {"wind_swing_lr_angle": 0, "left_lr_wind_angle": 0},
-                        "leftmost": {"wind_swing_lr_angle": 1, "left_lr_wind_angle": 1},
-                        "left": {"wind_swing_lr_angle": 25, "left_lr_wind_angle": 25},
-                        "middle": {"wind_swing_lr_angle": 50, "left_lr_wind_angle": 50},
-                        "right": {"wind_swing_lr_angle": 75, "left_lr_wind_angle": 75},
-                        "rightmost": {"wind_swing_lr_angle": 100, "left_lr_wind_angle": 100}
+                        "off": {"wind_swing_lr_angle": 0, "wind_swing_lr": "off", "wind_swing_lr_left": "off", "wind_swing_lr_right": "off", "wind_swing_lr_under": "off"},
+                        "on": {"wind_swing_lr_angle": 0, "wind_swing_lr": "on", "wind_swing_lr_left": "on", "wind_swing_lr_right": "on", "wind_swing_lr_under": "on"},
+                        "leftmost": {"wind_swing_lr_angle": 1, "left_lr_wind_angle": 1, "wind_swing_lr": "off"},
+                        "left": {"wind_swing_lr_angle": 25, "left_lr_wind_angle": 25, "wind_swing_lr": "off"},
+                        "middle": {"wind_swing_lr_angle": 50, "left_lr_wind_angle": 50, "wind_swing_lr": "off"},
+                        "right": {"wind_swing_lr_angle": 75, "left_lr_wind_angle": 75, "wind_swing_lr": "off"},
+                        "rightmost": {"wind_swing_lr_angle": 100, "left_lr_wind_angle": 100, "wind_swing_lr": "off"}
                     }
                 },
             },
