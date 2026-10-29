@@ -955,7 +955,16 @@
         }
       },
       "dehydration_speed": {
-        "name": "Dehydration Speed"
+        "name": "Dehydration Speed",
+        "state": {
+          "no_spin": "No Spin",
+          "400rpm": "400 rpm",
+          "600rpm": "600 rpm",
+          "800rpm": "800 rpm",
+          "1000rpm": "1000 rpm",
+          "1200rpm": "1200 rpm",
+          "1400rpm": "1400 rpm"
+        }
       },
       "soak_count": {
         "name": "Rinse Count"
@@ -964,7 +973,15 @@
         "name": "Detergent"
       },
       "temperature": {
-        "name": "Temperature"
+        "name": "Temperature",
+        "state": {
+          "cold": "Cold",
+          "20c": "20°C",
+          "30c": "30°C",
+          "40c": "40°C",
+          "60c": "60°C",
+          "90c": "90°C"
+        }
       },
       "water_status": {
         "name": "Water Status",
@@ -1105,7 +1122,12 @@
           "low": "low",
           "medium": "medium",
           "high": "high",
-          "auto": "auto"
+          "auto": "auto",
+          "l1": "L1",
+          "l2": "L2",
+          "l3": "L3",
+          "l4": "L4",
+          "off": "Off"
         }
       },
       "db_water_level": {
@@ -1244,7 +1266,7 @@
           "down_jacket": "down jacket",
           "color": "color clothes",
           "intelligent": "intelligent",
-          "quick_wash": "quick wash",
+          "quick_wash": "Rapid 45'",
           "shirt": "shirt",
           "fiber": "fiber",
           "enzyme": "enzyme",
@@ -1363,7 +1385,10 @@
           "time_drying_90": "Timed 90min",
           "dry_softnurse": "Soft Care Dry",
           "uniforms": "Uniforms",
-          "remove_electricity": "Anti-static"
+          "remove_electricity": "Anti-static",
+          "eco_40_60": "ECO 40-60",
+          "allergy_care": "Allergy Care",
+          "bulky": "Bulky"
         }
       },
       "query_type": {
@@ -3206,6 +3231,17 @@
       },
       "alarm_status_identifier": {
         "name": "Alarm Status"
+      },
+      "db_wash_progress": {
+        "name": "Wash Stage",
+        "state": {
+          "0": "Finished",
+          "1": "Spin",
+          "2": "Rinse",
+          "4": "Wash",
+          "8": "Standby",
+          "32": "Standby"
+        }
       }
     },
     "light": {
@@ -4786,6 +4822,9 @@
       },
       "uv_sterilization_switch": {
         "name": "UV Sterilization"
+      },
+      "turbo": {
+        "name": "Turbo"
       }
     },
     "text": {

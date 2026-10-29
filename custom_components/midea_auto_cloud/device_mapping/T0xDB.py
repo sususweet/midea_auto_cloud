@@ -754,5 +754,168 @@ DEVICE_MAPPING = {
                 }
             }
         }
-    }
+    },
 }
+
+# Issue #275: Midea MF200 front-load (10.5 kg, sn8 38124685, subtype 17969,
+# protocol T_0000_DB_41). Dial/options verified on hardware vs panel; no auto-dose
+# drawer, no UV/microbubble/eye_wash. quick_wash≈45 min, fast_wash≈15 min.
+_MF200_FRONT_LOAD = {
+    "rationale": ["off", "on"],
+    "queries": [{}],
+    "centralized": [],
+    "calculate": {
+        "get": [
+            {
+                "lvalue": "[remaining_time]",
+                "rvalue": "[remain_time]",
+            }
+        ],
+        "set": {},
+    },
+    "entities": {
+        Platform.LOCK: {
+            "lock": {
+                "translation_key": "child_lock",
+            },
+        },
+        Platform.SWITCH: {
+            "power": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+            "control_status": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["pause", "start"],
+            },
+            # Pre Wash
+            "beforehand_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+            # Extra Rinse (add_rinse stays 0 on this panel; super_clean_wash flips)
+            "super_clean_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+            # Turbo — Lua writes three separate bits; panel sets all three together
+            "speedy": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "also_set": ["old_speedy", "fast_clean_wash"],
+                "translation_key": "turbo",
+            },
+            "steam_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+            "appointment": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+            "nightly": {
+                "device_class": SwitchDeviceClass.SWITCH,
+            },
+        },
+        Platform.NUMBER: {
+            # Panel delay 0–24 h
+            "appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 30,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+            },
+        },
+        Platform.SELECT: {
+            "program": {
+                "options": {
+                    "cotton": {"program": "cotton"},
+                    "mixed_wash": {"program": "mixed_wash"},
+                    "fiber": {"program": "fiber"},
+                    "jean": {"program": "jean"},
+                    # Manual: Cold Wash / 20°C
+                    "color": {"program": "color"},
+                    "allergy_care": {"program": "allergy_care"},
+                    "steam_care": {"program": "steam_care"},
+                    # Rapid 45' (remain_time ≈ 45)
+                    "quick_wash": {"program": "quick_wash"},
+                    # Quick 15' (remain_time ≈ 15)
+                    "fast_wash": {"program": "fast_wash"},
+                    "eco_40_60": {"program": "eco_40_60"},
+                    "bulky": {"program": "bulky"},
+                    "wool": {"program": "wool"},
+                    "rinsing_dehydration": {"program": "rinsing_dehydration"},
+                    "single_dehytration": {"program": "single_dehytration"},
+                    # Drum Clean (button, not on dial)
+                    "ssp": {"program": "ssp"},
+                }
+            },
+            "temperature": {
+                "options": {
+                    "cold": {"temperature": "0"},
+                    "20c": {"temperature": "20"},
+                    "30c": {"temperature": "30"},
+                    "40c": {"temperature": "40"},
+                    "60c": {"temperature": "60"},
+                    "90c": {"temperature": "90"},
+                }
+            },
+            "dehydration_speed": {
+                "options": {
+                    "no_spin": {"dehydration_speed": "0"},
+                    "400rpm": {"dehydration_speed": "400"},
+                    "600rpm": {"dehydration_speed": "600"},
+                    "800rpm": {"dehydration_speed": "800"},
+                    "1000rpm": {"dehydration_speed": "1000"},
+                    "1200rpm": {"dehydration_speed": "1200"},
+                    "1400rpm": {"dehydration_speed": "1400"},
+                }
+            },
+            "water_level": {
+                "options": {
+                    "auto": {"water_level": "auto"},
+                    "l1": {"water_level": "low"},
+                    "l2": {"water_level": "mid"},
+                    "l3": {"water_level": "high"},
+                    # Lua accepts "4"→0x04; status else-branch tostring → "4"
+                    "l4": {"water_level": "4"},
+                    # Spin-only reports "0"; not settable (control else → 0xff)
+                }
+            },
+            "soak_count": {
+                "options": {
+                    "1": {"soak_count": "1"},
+                    "2": {"soak_count": "2"},
+                    "3": {"soak_count": "3"},
+                    "4": {"soak_count": "4"},
+                }
+            },
+        },
+        Platform.SENSOR: {
+            "running_status": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "remain_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+            },
+            # Stage index while running (not a percentage). Standby often 8/32.
+            "progress": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "db_wash_progress",
+            },
+            "error_code": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "wash_time_value": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+            },
+            "dehydration_time_value": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+            },
+        },
+    },
+}
+
+DEVICE_MAPPING["38124685"] = _MF200_FRONT_LOAD
+DEVICE_MAPPING[("subtype", 17969)] = _MF200_FRONT_LOAD
+

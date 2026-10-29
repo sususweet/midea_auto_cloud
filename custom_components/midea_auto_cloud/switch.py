@@ -90,15 +90,21 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
             await self.async_set_attributes(merged_command)
             return
         command = self._config.get("command")
+        # Companion attrs that should receive the same on/off wire value
+        # (e.g. T0xDB Turbo flips speedy + old_speedy + fast_clean_wash together).
+        also_set = self._config.get("also_set") or []
         merged_command = {}
         if command and isinstance(command, dict):
             merged_command.update(command)
-        merged_command[attribute] = self._on_off_wire_value(turn_on, attribute)
+        wire_value = self._on_off_wire_value(turn_on, attribute)
+        merged_command[attribute] = wire_value
+        for attr in also_set:
+            merged_command[attr] = wire_value
         for attr in self._include_current:
             current_value = self._get_nested_value(attr)
             if current_value is not None:
                 merged_command[attr] = current_value
-        if command or self._include_current:
+        if command or self._include_current or also_set:
             await self.async_set_attributes(merged_command)
         else:
             await self._async_set_status_on_off(attribute, turn_on)

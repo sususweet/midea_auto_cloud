@@ -1003,7 +1003,16 @@
         }
       },
       "dehydration_speed": {
-        "name": "转速"
+        "name": "转速",
+        "state": {
+          "no_spin": "不脱水",
+          "400rpm": "400转",
+          "600rpm": "600转",
+          "800rpm": "800转",
+          "1000rpm": "1000转",
+          "1200rpm": "1200转",
+          "1400rpm": "1400转"
+        }
       },
       "soak_count": {
         "name": "漂洗次数"
@@ -1012,7 +1021,15 @@
         "name": "洗衣液(智投)"
       },
       "temperature": {
-        "name": "温度"
+        "name": "温度",
+        "state": {
+          "cold": "冷水",
+          "20c": "20℃",
+          "30c": "30℃",
+          "40c": "40℃",
+          "60c": "60℃",
+          "90c": "90℃"
+        }
       },
       "water_status": {
         "name": "水位状态",
@@ -1268,7 +1285,12 @@
           "low": "低",
           "medium": "中",
           "high": "高",
-          "auto": "自动"
+          "auto": "自动",
+          "l1": "L1",
+          "l2": "L2",
+          "l3": "L3",
+          "l4": "L4",
+          "off": "关"
         }
       },
       "db_water_level": {
@@ -1437,7 +1459,7 @@
           "down_jacket": "羽绒服",
           "color": "彩色衣物",
           "intelligent": "智能洗",
-          "quick_wash": "快洗",
+          "quick_wash": "快洗45'",
           "shirt": "衬衫",
           "fiber": "化纤",
           "enzyme": "除菌洗",
@@ -1556,7 +1578,10 @@
           "time_drying_90": "定时90分",
           "dry_softnurse": "柔护烘干",
           "uniforms": "制服",
-          "remove_electricity": "除静电"
+          "remove_electricity": "除静电",
+          "eco_40_60": "ECO 40-60",
+          "allergy_care": "过敏护理",
+          "bulky": "大件"
         }
       },
       "query_type": {
@@ -3539,6 +3564,17 @@
       },
       "alarm_status_identifier": {
         "name": "告警状态"
+      },
+      "db_wash_progress": {
+        "name": "洗涤阶段",
+        "state": {
+          "0": "结束",
+          "1": "脱水",
+          "2": "漂洗",
+          "4": "洗涤",
+          "8": "待机",
+          "32": "待机"
+        }
       }
     },
     "light": {
@@ -5128,6 +5164,9 @@
       },
       "uv_sterilization_switch": {
         "name": "UV杀菌"
+      },
+      "turbo": {
+        "name": "加速"
       }
     },
     "text": {
