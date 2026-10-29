@@ -144,12 +144,24 @@ DEVICE_MAPPING = {
         }
     },
 
-    # SN8 为 00000000 的默认配置（当 subtype 不匹配时使用）
-    "00000000": {
+    # COLMO / Meiju electric curtains share device type T0x21 with central AC
+    # and often report placeholder sn8 00000000 (issue #271). Prefer this over
+    # the central-AC default so curtains are not mapped as climate.
+    # Open/close/position control needs Lua + protocol attribute keys from the
+    # device-status entity / plugin before a Cover mapping can be added.
+    "default_electric_curtain": {
         "rationale": ["0", "1"],
         "queries": [{}],
         "centralized": [],
-        "entities": {}
+        "entities": {},
+    },
+
+    # COLMO WSCMT curtain panel node (subtype 3043)
+    ("subtype", "3043"): {
+        "rationale": ["0", "1"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {},
     },
 
     # 中央空调默认配置

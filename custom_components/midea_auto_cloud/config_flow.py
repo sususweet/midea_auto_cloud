@@ -1,3 +1,4 @@
+import re
 import voluptuous as vol
 import logging
 import os
@@ -10,7 +11,12 @@ from homeassistant.core import callback
 from homeassistant.const import (
     CONF_TYPE,
 )
-import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.selector import (
+    SelectOptionDict,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
+)
 from .const import (
     CONF_ACCOUNT,
     CONF_PASSWORD,
@@ -50,10 +56,49 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry):
         return OptionsFlowHandler(config_entry)
 
+    @staticmethod
+    def _normalize_home_name(name: str | None, home_id) -> str:
+        """Normalize home names so spaces/NBSP don't break the config UI.
+
+        Issue #274: Meiju home names containing whitespace could make the
+        select_homes step fail hard (HA restart). Keep a readable label while
+        always using numeric home ids as option values.
+        """
+        if name is None:
+            return f"家庭 {home_id}"
+        normalized = re.sub(r"\s+", " ", str(name), flags=re.UNICODE).strip()
+        return normalized or f"家庭 {home_id}"
+
     def _get_home_name(self, home_info, home_id) -> str:
         if isinstance(home_info, dict):
-            return home_info.get("name", f"家庭 {home_id}")
-        return str(home_info) if home_info else f"家庭 {home_id}"
+            raw = home_info.get("name") or home_info.get("homeName")
+        else:
+            raw = home_info
+        return self._normalize_home_name(raw, home_id)
+
+    def _homes_select_schema(self, default_selected: list[str] | None = None):
+        """Build a multi-select schema keyed by home id (not display name)."""
+        options: list[SelectOptionDict] = []
+        for home_id, home_info in self._homes.items():
+            options.append(
+                SelectOptionDict(
+                    value=str(home_id),
+                    label=self._get_home_name(home_info, home_id),
+                )
+            )
+        if default_selected is None:
+            default_selected = [opt["value"] for opt in options]
+        return vol.Schema(
+            {
+                vol.Required(CONF_SELECTED_HOMES, default=default_selected): SelectSelector(
+                    SelectSelectorConfig(
+                        options=options,
+                        multiple=True,
+                        mode=SelectSelectorMode.LIST,
+                    )
+                )
+            }
+        )
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
@@ -140,7 +185,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_select_homes(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """家庭选择步骤"""
         errors: dict[str, str] = {}
-        
+
         if user_input is not None:
             selected_homes = user_input.get(CONF_SELECTED_HOMES, [])
             if not selected_homes:
@@ -148,8 +193,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 selected_home_ids = []
                 for home_id in selected_homes:
-                    for key in [home_id, str(home_id), int(home_id) if str(home_id).isdigit() else None]:
-                        if key is not None and key in self._homes and key not in selected_home_ids:
+                    for key in [
+                        home_id,
+                        str(home_id),
+                        int(home_id) if str(home_id).isdigit() else None,
+                    ]:
+                        if (
+                            key is not None
+                            and key in self._homes
+                            and key not in selected_home_ids
+                        ):
                             selected_home_ids.append(key)
                             break
 
@@ -162,72 +215,48 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         entry_homes = entry.data.get(CONF_SELECTED_HOMES, [])
                         for home_id in entry_homes:
                             configured_homes.add(str(home_id))
-                    
+
                     for home_id in selected_home_ids:
                         if str(home_id) in configured_homes:
                             errors["base"] = "home_already_configured"
                             break
-                    
-                    if errors.get("base"):
-                        home_options = {}
-                        for home_id, home_info in self._homes.items():
-                            home_options[str(home_id)] = self._get_home_name(home_info, home_id)
-                        default_selected = list(home_options.keys())
-                        return self.async_show_form(
-                            step_id="select_homes",
-                            data_schema=vol.Schema({
-                                vol.Required(CONF_SELECTED_HOMES, default=default_selected): vol.All(
-                                    cv.multi_select(home_options)
-                                )
-                            }),
-                            errors=errors,
+
+                    if not errors.get("base"):
+                        first_home_id = selected_home_ids[0]
+                        first_home_name = self._home_names.get(
+                            first_home_id, f"家庭 {first_home_id}"
                         )
-                    
-                    first_home_id = selected_home_ids[0]
-                    first_home_name = self._home_names.get(first_home_id, f"家庭 {first_home_id}")
 
-                    total_devices = 0
-                    appliances_info = {}
-                    for home_id in selected_home_ids:
-                        appliances = await self._cloud.list_appliances(home_id)
-                        if appliances:
-                            total_devices += len(appliances)
-                            for appliance_code, info in appliances.items():
-                                appliances_info[appliance_code] = info
+                        total_devices = 0
+                        appliances_info = {}
+                        for home_id in selected_home_ids:
+                            appliances = await self._cloud.list_appliances(home_id)
+                            if appliances:
+                                total_devices += len(appliances)
+                                for appliance_code, info in appliances.items():
+                                    appliances_info[appliance_code] = info
 
-                    self._config_data = {
-                        CONF_TYPE: CONF_ACCOUNT,
-                        CONF_ACCOUNT: self._user_input[CONF_ACCOUNT],
-                        CONF_PASSWORD: self._user_input[CONF_PASSWORD],
-                        CONF_SERVER: self._user_input[CONF_SERVER],
-                        CONF_SELECTED_HOMES: [first_home_id],
-                        "home_name": first_home_name,
-                        "all_selected_homes": selected_home_ids,
-                        "home_names": {str(hid): self._home_names.get(hid, f"家庭 {hid}") for hid in selected_home_ids}
-                    }
-                    self._total_devices = total_devices
-                    self._total_homes = len(selected_home_ids)
-                    self._appliances_info = appliances_info
-                    return await self.async_step_download()
+                        self._config_data = {
+                            CONF_TYPE: CONF_ACCOUNT,
+                            CONF_ACCOUNT: self._user_input[CONF_ACCOUNT],
+                            CONF_PASSWORD: self._user_input[CONF_PASSWORD],
+                            CONF_SERVER: self._user_input[CONF_SERVER],
+                            CONF_SELECTED_HOMES: [first_home_id],
+                            "home_name": first_home_name,
+                            "all_selected_homes": selected_home_ids,
+                            "home_names": {
+                                str(hid): self._home_names.get(hid, f"家庭 {hid}")
+                                for hid in selected_home_ids
+                            },
+                        }
+                        self._total_devices = total_devices
+                        self._total_homes = len(selected_home_ids)
+                        self._appliances_info = appliances_info
+                        return await self.async_step_download()
 
-        # 构建家庭选择选项
-        home_options = {}
-        for home_id, home_info in self._homes.items():
-            _LOGGER.debug(f"Processing home_id: {home_id}, home_info: {home_info}, type: {type(home_info)}")
-            home_options[str(home_id)] = self._get_home_name(home_info, home_id)
-
-        # 默认全选
-        default_selected = list(home_options.keys())
-        _LOGGER.debug(f"Home options: {home_options}")
-        _LOGGER.debug(f"Default selected: {default_selected}")
-        
         return self.async_show_form(
             step_id="select_homes",
-            data_schema=vol.Schema({
-                vol.Required(CONF_SELECTED_HOMES, default=default_selected): vol.All(
-                    cv.multi_select(home_options)
-                )
-            }),
+            data_schema=self._homes_select_schema(),
             errors=errors,
         )
 

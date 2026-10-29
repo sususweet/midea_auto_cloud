@@ -91,6 +91,12 @@ def remove_device_config(hass: HomeAssistant, sn8):
         pass
 
 
+# Cloud often fills blank SN8 for subdevices (panels, curtains, etc.).
+# Matching that placeholder as a real sn8 key would skip category defaults
+# (issue #271: T0x21 electric-curtain hit the empty "00000000" profile).
+_PLACEHOLDER_SN8 = frozenset({"", "0", "00000000"})
+
+
 def get_device_mapping(
         device_mappings: dict,
         device_type: int,
@@ -118,8 +124,8 @@ def get_device_mapping(
                 result = config
                 break
 
-    # 2. 如果还没匹配到，再按 sn8 规则匹配
-    if result is None and sn8:
+    # 2. 如果还没匹配到，再按 sn8 规则匹配（跳过占位 sn8）
+    if result is None and sn8 and str(sn8) not in _PLACEHOLDER_SN8:
         for key, config in device_mappings.items():
             # 直接等于 / tuple 包含 / 正则匹配
             if (
@@ -150,8 +156,14 @@ def get_device_mapping(
 
 def _home_display_name(home_info, home_id) -> str:
     if isinstance(home_info, dict):
-        return home_info.get("name") or home_info.get("homeName") or f"家庭 {home_id}"
-    return str(home_info) if home_info else f"家庭 {home_id}"
+        raw = home_info.get("name") or home_info.get("homeName")
+    else:
+        raw = home_info
+    if raw is None or raw == "":
+        return f"家庭 {home_id}"
+    # Match config_flow normalization so names with spaces/NBSP stay stable.
+    normalized = re.sub(r"\s+", " ", str(raw), flags=re.UNICODE).strip()
+    return normalized or f"家庭 {home_id}"
 
 
 def _match_home_ids(selected_homes: list, homes: dict) -> list:
