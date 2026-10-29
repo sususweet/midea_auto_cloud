@@ -151,6 +151,9 @@
       },
       "cancel_appointment": {
         "name": "取消预约"
+      },
+      "reset_filter": {
+        "name": "复位滤网提醒"
       }
     },
     "binary_sensor": {
@@ -446,6 +449,9 @@
       },
       "connected": {
         "name": "在线"
+      },
+      "filter_cleanup": {
+        "name": "滤网需清洁"
       }
     },
     "climate": {

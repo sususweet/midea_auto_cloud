@@ -151,6 +151,9 @@
       },
       "cancel_appointment": {
         "name": "Cancel Reservation"
+      },
+      "reset_filter": {
+        "name": "Reset Filter Reminder"
       }
     },
     "binary_sensor": {
@@ -426,6 +429,9 @@
       },
       "connected": {
         "name": "Online"
+      },
+      "filter_cleanup": {
+        "name": "Filter Needs Cleaning"
       }
     },
     "climate": {

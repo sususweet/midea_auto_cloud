@@ -4,6 +4,13 @@ from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
+# Lua T_0000_A1_*: filter_value on = needs cleaning; sending "off" clears the flag
+# (control must include filter_value so filter_flag=1, otherwise the bit is ignored).
+_RESET_FILTER_BUTTON = {
+    "command": {"filter_value": "off"},
+    "translation_key": "reset_filter",
+}
+
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
@@ -22,10 +29,6 @@ DEVICE_MAPPING = {
                 },
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
-                },
-                "filter_tip": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
                 },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
@@ -47,6 +50,9 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1],
                 },
+            },
+            Platform.BUTTON: {
+                "reset_filter": _RESET_FILTER_BUTTON,
             },
             Platform.HUMIDIFIER: {
                 "dehumidifier": {
@@ -72,6 +78,11 @@ DEVICE_MAPPING = {
             Platform.BINARY_SENSOR: {
                 "tank_status": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                # on = filter needs cleaning (Lua filter_value)
+                "filter_value": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "filter_cleanup",
                 },
             },
             Platform.TEXT: {
@@ -211,10 +222,6 @@ DEVICE_MAPPING = {
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "filter_tip": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -235,6 +242,9 @@ DEVICE_MAPPING = {
                     "device_class": SwitchDeviceClass.SWITCH,
                     "rationale": [0, 1],
                 },
+            },
+            Platform.BUTTON: {
+                "reset_filter": _RESET_FILTER_BUTTON,
             },
             Platform.HUMIDIFIER: {
                 "dehumidifier": {
@@ -260,6 +270,10 @@ DEVICE_MAPPING = {
             Platform.BINARY_SENSOR: {
                 "tank_status": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "filter_value": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "filter_cleanup",
                 },
             },
             Platform.TEXT: {
@@ -317,10 +331,6 @@ DEVICE_MAPPING = {
                 "wind_swing_ud": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
-                "filter_tip": {
-                    "device_class": SwitchDeviceClass.SWITCH,
-                    "rationale": [0, 1],
-                },
                 "purifier": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
@@ -337,6 +347,9 @@ DEVICE_MAPPING = {
                     "rationale": [0, 1],
                     "translation_key": "buzzer",
                 },
+            },
+            Platform.BUTTON: {
+                "reset_filter": _RESET_FILTER_BUTTON,
             },
             Platform.HUMIDIFIER: {
                 "dehumidifier": {
@@ -365,6 +378,7 @@ DEVICE_MAPPING = {
                 },
                 "filter_value": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "filter_cleanup",
                 },
                 "water_pump": {
                     "device_class": BinarySensorDeviceClass.RUNNING,
