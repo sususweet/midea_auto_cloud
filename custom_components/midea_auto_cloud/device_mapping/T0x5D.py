@@ -35,46 +35,38 @@ DEVICE_MAPPING = {
         "entities": {
             Platform.SWITCH: {
                 "power_switch": {
-                    "name": "电源",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "cleaning_switch": {
-                    "name": "清洁",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "forced_deice_switch": {
-                    "name": "强制除冰",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
                 "uv_sterilization_switch": {
-                    "name": "UV杀菌",
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
             },
             Platform.SELECT: {
                 "ice_making_mode": {
-                    "name": "制冰模式",
                     "status_key": "ice_making_mode",
                     "options": {
-                        "大冰": {"ice_making_mode": "big"},
-                        "小冰": {"ice_making_mode": "small"},
+                        "big": {"ice_making_mode": "big"},
+                        "small": {"ice_making_mode": "small"},
                     },
                     "ignore_values": ["invalid"],
                 },
             },
             Platform.SENSOR: {
                 "error_type": {
-                    "name": "故障代码",
                     "device_class": SensorDeviceClass.ENUM,
                 },
                 "alarm_status_identifier": {
-                    "name": "告警状态",
                     "device_class": SensorDeviceClass.ENUM,
                 },
             },
             Platform.BINARY_SENSOR: {
                 "connected": {
-                    "name": "在线",
                     "device_class": BinarySensorDeviceClass.CONNECTIVITY,
                 },
             },

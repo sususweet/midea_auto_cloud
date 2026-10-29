@@ -423,6 +423,9 @@
       },
       "live_video_status": {
         "name": "Live Video Status"
+      },
+      "connected": {
+        "name": "Online"
       }
     },
     "climate": {
@@ -1844,6 +1847,13 @@
       },
       "smell": {
         "name": "Deodorize"
+      },
+      "ice_making_mode": {
+        "name": "Ice Making Mode",
+        "state": {
+          "big": "Large Ice",
+          "small": "Small Ice"
+        }
       }
     },
     "sensor": {
@@ -3187,6 +3197,9 @@
           "high_speed_dehydrating": "High-speed Spinning",
           "drying": "Drying"
         }
+      },
+      "alarm_status_identifier": {
+        "name": "Alarm Status"
       }
     },
     "light": {
@@ -4755,6 +4768,18 @@
       },
       "voice_power": {
         "name": "Voice"
+      },
+      "power_switch": {
+        "name": "Power"
+      },
+      "cleaning_switch": {
+        "name": "Cleaning"
+      },
+      "forced_deice_switch": {
+        "name": "Forced De-ice"
+      },
+      "uv_sterilization_switch": {
+        "name": "UV Sterilization"
       }
     },
     "text": {

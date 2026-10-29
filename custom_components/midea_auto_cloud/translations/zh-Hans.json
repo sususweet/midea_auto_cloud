@@ -443,6 +443,9 @@
       },
       "live_video_status": {
         "name": "实时视频状态"
+      },
+      "connected": {
+        "name": "在线"
       }
     },
     "climate": {
@@ -2119,6 +2122,13 @@
       },
       "smell": {
         "name": "除味"
+      },
+      "ice_making_mode": {
+        "name": "制冰模式",
+        "state": {
+          "big": "大冰",
+          "small": "小冰"
+        }
       }
     },
     "sensor": {
@@ -3520,6 +3530,9 @@
           "high_speed_dehydrating": "高速脱水中",
           "drying": "烘干中"
         }
+      },
+      "alarm_status_identifier": {
+        "name": "告警状态"
       }
     },
     "light": {
@@ -5097,6 +5110,18 @@
       },
       "voice_power": {
         "name": "语音"
+      },
+      "power_switch": {
+        "name": "电源"
+      },
+      "cleaning_switch": {
+        "name": "清洁"
+      },
+      "forced_deice_switch": {
+        "name": "强制除冰"
+      },
+      "uv_sterilization_switch": {
+        "name": "UV杀菌"
       }
     },
     "text": {
