@@ -841,6 +841,7 @@
         "name": "Horizontal Wind Direction",
         "state": {
           "off": "Off",
+          "on": "On",
           "leftmost": "Leftmost",
           "left": "Left",
           "middle": "Middle",
