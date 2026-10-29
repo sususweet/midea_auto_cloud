@@ -840,8 +840,8 @@
       "wind_swing_lr_angle": {
         "name": "Horizontal Wind Direction",
         "state": {
+          "on": "Wind",
           "off": "Off",
-          "on": "On",
           "leftmost": "Leftmost",
           "left": "Left",
           "middle": "Middle",
