@@ -1720,7 +1720,33 @@
           "wash_dry": "洗烘",
           "auto_dry": "自动烘干",
           "fire_disinfect": "火焰消毒",
-          "toy_wash": "玩具洗"
+          "toy_wash": "玩具洗",
+          "3in1": "三合一",
+          "auto_heavy": "智能重污洗",
+          "party": "聚餐洗",
+          "auto_daily": "日常洗",
+          "auto_glass": "智能玻璃洗",
+          "baby_care": "婴儿护理",
+          "45min_wash": "45分钟洗",
+          "anion1": "负离子1",
+          "anion2": "负离子2",
+          "anion3": "负离子3",
+          "low_degree": "低温洗",
+          "dry_only": "仅烘干",
+          "dry_only_2h": "仅烘干2小时",
+          "dry_only_3h": "仅烘干3小时",
+          "dry_only_4h": "仅烘干4小时",
+          "hot_air_1": "热风1",
+          "hot_air_2": "热风2",
+          "hot_air_3": "热风3"
+        }
+      },
+      "wash_region": {
+        "name": "洗涤区域",
+        "state": {
+          "1": "上层",
+          "2": "下层",
+          "3": "上下层"
         }
       },
       "func_select": {
@@ -2266,6 +2292,9 @@
       "air_dry_left_time": {
         "name": "风干剩余时间"
       },
+      "air_set_hour": {
+        "name": "烘干存储设定时间"
+      },
       "air_left_hour": {
         "name": "烘干存储剩余时间"
       },
@@ -2472,6 +2501,9 @@
       },
       "downstair_temp": {
         "name": "下层温度"
+      },
+      "dry_set_min": {
+        "name": "烘干设定时间"
       },
       "dry_time": {
         "name": "烘干时间"
@@ -3794,6 +3826,9 @@
       "auto_power_off": {
         "name": "待机超时自动关机"
       },
+      "auto_release_switch": {
+        "name": "自动释放开关"
+      },
       "power_on_timer": {
         "name": "定时开机"
       },
@@ -5002,6 +5037,24 @@
       },
       "fengguan_remove_odor": {
         "name": "风管去味"
+      },
+      "ac_dry": {
+        "name": "干燥防霉"
+      },
+      "auto_comfort_fresh_air": {
+        "name": "自动舒适新风"
+      },
+      "exhaust": {
+        "name": "排风"
+      },
+      "dry_step_switch": {
+        "name": "烘干分步开关"
+      },
+      "dryswitch": {
+        "name": "晶焰烘干开关"
+      },
+      "voice_power": {
+        "name": "语音"
       }
     },
     "text": {
