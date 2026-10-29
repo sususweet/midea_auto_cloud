@@ -610,7 +610,8 @@ DEVICE_MAPPING = {
     # 新协议公共默认（56011CBE 等同系列）— 保持 1–12 档与原 preset，兼容已有机型
     "default": _SHAKE_FAN_MAPPING,
     "56011CBE": _SHAKE_FAN_MAPPING,
-    # GDI24GT（#237）等 100 档 / 完整 modeTab：拿到 sn8 后挂到此处，例如 "xxxxxxxx": _SHAKE_FAN_MAPPING_WIDE,
+    # GDI24GT（#237）：100 档 / 完整 modeTab
+    "56011CEN": _SHAKE_FAN_MAPPING_WIDE,
     # 56011CH9：左右摆风 Select=关闭/30/60/120（对齐美居 App）
     "56011CH9": {
         "rationale": ["off", "on"],
