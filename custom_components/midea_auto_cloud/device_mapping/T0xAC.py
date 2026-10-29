@@ -1,9 +1,19 @@
+from copy import deepcopy
+
 from homeassistant.const import Platform, UnitOfTemperature, UnitOfPower, PRECISION_HALVES, PRECISION_WHOLE, \
     PERCENTAGE
 from ..const import CONCENTRATION_PARTS_PER_MILLION, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 # from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
+
+# screen_display: Lua T_0000_AC_10006481 treats any non-nil value as LED toggle;
+# state is reported on screen_display_now (on/off).
+_SCREEN_DISPLAY_SWITCH = {
+    "device_class": SwitchDeviceClass.SWITCH,
+    "translation_key": "display_on_off",
+    "state_attribute": "screen_display_now",
+}
 
 DEVICE_MAPPING = {
     "default": {
@@ -227,6 +237,7 @@ DEVICE_MAPPING = {
                 "aux_heat": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
+                "screen_display": _SCREEN_DISPLAY_SWITCH,
             },
             Platform.SENSOR: {
                 "mode": {
@@ -2645,3 +2656,11 @@ DEVICE_MAPPING = {
         }
     }
 }
+
+# Issue #263: Midea Breezeless (subtype 8, smartProductId 10006481 /
+# T_0000_AC_10006481_*.lua). Same sn8 placeholder "00000Q1F" as subtype 524;
+# subtype is the reliable key. Based on default plus LED screen_display switch.
+_breezeless_subtype_8 = deepcopy(DEVICE_MAPPING["default"])
+_breezeless_subtype_8["entities"][Platform.SWITCH]["screen_display"] = _SCREEN_DISPLAY_SWITCH
+DEVICE_MAPPING[("subtype", 8)] = _breezeless_subtype_8
+
