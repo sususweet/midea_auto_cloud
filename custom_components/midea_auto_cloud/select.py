@@ -147,8 +147,7 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
         return self._dict_get_selected(self._key_options)
 
     async def async_select_option(self, option: str):
-        if self._config.get("requires_idle"):
-            self._require_idle()
+        self._require_command_condition()
         new_status = self._key_options.get(option)
         if not new_status:
             return
