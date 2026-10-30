@@ -802,20 +802,31 @@ DEVICE_MAPPING = {
                 "steam_wash": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
+                # Delay / appointment: Lua only writes appointment_time when
+                # appointment is "on" in the *same* control frame (#275 follow-up).
                 "appointment": {
                     "device_class": SwitchDeviceClass.SWITCH,
+                    "include_current": ["appointment_time"],
                 },
                 "nightly": {
                     "device_class": SwitchDeviceClass.SWITCH,
                 },
             },
             Platform.NUMBER: {
-                # Panel delay 0–24 h
+                # Panel delay 0–24 h — always pair with appointment on/off
                 "appointment_time": {
                     "min": 0,
                     "max": 1440,
                     "step": 30,
                     "unit_of_measurement": UnitOfTime.MINUTES,
+                    "command": {
+                        "appointment": "on",
+                        "appointment_time": "{value}",
+                    },
+                    "command_if_zero": {
+                        "appointment": "off",
+                        "appointment_time": "0",
+                    },
                 },
             },
             Platform.SELECT: {

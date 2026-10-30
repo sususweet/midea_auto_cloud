@@ -1,3 +1,5 @@
+import copy
+
 from homeassistant.components.number import NumberEntity
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
@@ -118,22 +120,27 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         # against them raises "'<' not supported between instances of 'float' and 'str'".
         value = max(self.native_min_value, min(self.native_max_value, value))
 
-        # 首先尝试使用command字段（如果存在）
-        command = self._config.get("command")
-        if command and isinstance(command, dict):
-            # 替换{value}模板
-            import copy
+        # Prefer command templates. command_if_zero is used when the value is 0
+        # (e.g. T0xDB delay: appointment must go "off" together with time 0).
+        command = None
+        if value == 0 and isinstance(self._config.get("command_if_zero"), dict):
+            command = self._config["command_if_zero"]
+        elif isinstance(self._config.get("command"), dict):
+            command = self._config["command"]
+
+        if command is not None:
             merged_command = copy.deepcopy(command)
             for key, val in merged_command.items():
                 if isinstance(val, str) and "{value}" in val:
                     merged_command[key] = val.replace("{value}", str(int(value)))
             await self.async_set_attributes(merged_command)
             return
-        
+
         # Use attribute from config if available, otherwise fall back to entity_key
         attribute = self._config.get("attribute", self._entity_key)
-        
+
         # 如果配置中指定了转换函数或映射，可以在这里处理
         # 否则直接设置属性值
         await self.async_set_attribute(attribute, str(int(value)))
+
 
