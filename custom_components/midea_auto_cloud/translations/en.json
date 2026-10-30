@@ -3328,7 +3328,9 @@
           "germ": "Germ",
           "glass_wash": "Glass wash",
           "fast_wash": "Fast wash",
-          "quietnight_wash": "Quietnight wash"
+          "quietnight_wash": "Quietnight wash",
+          "neutral_gear": "Not selected",
+          "cloud_wash": "Cloud program"
         }
       },
       "colmo_temperature": {
