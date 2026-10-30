@@ -425,6 +425,15 @@ class MideaCloud:
         """Get status of central AC devices. Subclasses should implement if supported."""
         raise NotImplementedError()
 
+    async def get_screen_switch_status(
+        self,
+        appliance_code: int,
+        smart_product_id: str | None = None,
+        gateway_id: str | int | None = None,
+    ) -> dict | list | None:
+        """Get T0x45 / screen-switch panel status. Subclasses may implement."""
+        return None
+
     async def send_switch_control(self, device_id: str, nodeid: str, switch_control: dict) -> bool:
         """Send control to switch device. Subclasses should implement if supported."""
         raise NotImplementedError()
@@ -833,6 +842,34 @@ class MeijuCloud(MideaCloud):
                 return reply_data
             else:
                 MideaLogger.warning(f"[{appliance_code}] Gateway command failed: {response}")
+
+    async def get_screen_switch_status(
+        self,
+        appliance_code: int,
+        smart_product_id: str | None = None,
+        gateway_id: str | int | None = None,
+    ) -> dict | list | None:
+        """Query COLMO/Meiju screen-switch (T0x45) panel button config/status.
+
+        Official plugin uses GET /v1/super-gateway/panel/switch/query with
+        appId, homeGroupId, applianceCode, gatewayId, spid. Lua for this type
+        is a stub, so status/lua/get must not be used (issue #271).
+        """
+        data = {
+            "appId": self.APP_ID,
+            "homeGroupId": self._homegroup_id,
+            "applianceCode": str(appliance_code),
+            "gatewayId": str(gateway_id if gateway_id is not None else appliance_code),
+        }
+        if smart_product_id not in (None, "", "0"):
+            data["spid"] = str(smart_product_id)
+        # Official plugin uses GET; the Meiju mas proxy accepts the same JSON
+        # body via POST (our client always sends a JSON body).
+        response = await self._api_request(
+            endpoint="/v1/super-gateway/panel/switch/query",
+            data=data,
+        )
+        return response
 
     async def get_central_ac_status(self, appliance_codes: list) -> dict | None:
         """Get status of central AC devices using the aggregator API."""

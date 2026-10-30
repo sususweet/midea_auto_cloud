@@ -1,32 +1,25 @@
 """T0x45 screen-switch / smart panel gateway mapping.
 
 COLMO smart panel gateways (e.g. CGZKS1, category screen-switch) report as
-T0x45. Without this module, setup logs
-`Can't load mapping file for type T0x45` (issue #271) and the device-status
-entity stays unavailable for further protocol analysis.
+T0x45. Official Lua (T_0000_45_40100001_*) is a stub — dataToJson/jsonToData
+are empty — so status/lua/get always fails and used to mark the device
+unavailable after 3 polls (issue #271). Keep queries empty; the coordinator
+polls /v1/super-gateway/panel/switch/query instead.
 
-Control entities are intentionally empty until Lua/plugin attribute keys are
-confirmed from a live device-status dump.
+Control entities stay empty until live panel/curtain attribute keys are known.
 """
 
+_EMPTY = {
+    "rationale": ["off", "on"],
+    # Do not hit status/lua/get — Lua codec is a no-op for this type.
+    "queries": [],
+    "centralized": [],
+    "entities": {},
+}
+
 DEVICE_MAPPING = {
-    "default": {
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [],
-        "entities": {},
-    },
-    "default_screen_switch": {
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [],
-        "entities": {},
-    },
-    # Observed on COLMO CGZKS1-style panel (sn8 40100001)
-    "40100001": {
-        "rationale": ["off", "on"],
-        "queries": [{}],
-        "centralized": [],
-        "entities": {},
-    },
+    "default": dict(_EMPTY),
+    "default_screen_switch": dict(_EMPTY),
+    # Observed on COLMO CGZKS1-style panel (sn8 40100001, plugin T0x45_10006371)
+    "40100001": dict(_EMPTY),
 }

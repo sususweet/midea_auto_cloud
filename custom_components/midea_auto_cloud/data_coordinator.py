@@ -190,6 +190,11 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             # 检查是否为中央空调设备（T0x21）
             if self.device.device_type == 0x21:
                 await self._poll_central_ac_state()
+            elif self.device.device_type == 0x45:
+                # Screen-switch / COLMO panel gateway: Lua is a stub; use
+                # super-gateway panel API. Soft-fail so a bad response does not
+                # flip the device unavailable (issue #271).
+                await self._poll_screen_switch_state()
             else:
                 refresh_ok = await self.device.refresh_status()
         except Exception as e:
@@ -217,6 +222,41 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             _LOGGER.error(f"Error building device snapshot: {e}")
             return self._snapshot(available=False)
     
+    async def _poll_screen_switch_state(self) -> None:
+        """Poll T0x45 screen-switch / smart panel via super-gateway API."""
+        cloud = self._cloud
+        if not cloud or not hasattr(cloud, "get_screen_switch_status"):
+            return
+        try:
+            attrs = self.device.attributes
+            status = await cloud.get_screen_switch_status(
+                appliance_code=self._device_id,
+                smart_product_id=attrs.get("smart_product_id") or attrs.get("spid"),
+                gateway_id=attrs.get("masterId") or attrs.get("gatewayId") or self._device_id,
+            )
+            if status is None:
+                MideaLogger.debug(
+                    f"Screen-switch status empty for {self.device.device_name} ({self._device_id})"
+                )
+                return
+            # API returns a list of switch/button configs, or a dict wrapper.
+            if isinstance(status, list):
+                self.device.attributes["panel_switches"] = status
+                for index, item in enumerate(status):
+                    if not isinstance(item, dict):
+                        continue
+                    switch_type = item.get("switchType", index)
+                    for key, value in item.items():
+                        self.device.attributes[f"switch_{switch_type}_{key}"] = value
+            elif isinstance(status, dict):
+                for key, value in status.items():
+                    self.device.attributes[key] = value
+            self.device._device_connected(True)
+        except Exception as e:
+            MideaLogger.warning(
+                f"Error polling screen-switch state for {self.device.device_name}: {e}"
+            )
+
     async def _poll_central_ac_state(self) -> None:
         """轮询中央空调状态"""
         try:

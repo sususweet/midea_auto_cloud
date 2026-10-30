@@ -562,6 +562,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 lua_file=file,
                                 cloud=cloud,
                             )
+                            # Needed by T0x45 super-gateway panel/switch/query (spid).
+                            if info.get(CONF_SMART_PRODUCT_ID) is not None:
+                                device.attributes["smart_product_id"] = info.get(
+                                    CONF_SMART_PRODUCT_ID
+                                )
                             # lupa dofile is blocking — load codec off the event loop
                             await device.async_init_lua_runtime()
                             # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
