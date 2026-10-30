@@ -478,16 +478,16 @@
         "name": "滤网需清洁"
       },
       "colmo_doorswitch": {
-        "name": "doorswitch"
+        "name": "舱门"
       },
       "colmo_softwater_lack": {
-        "name": "softwater lack"
+        "name": "缺盐"
       },
       "colmo_bright_lack": {
-        "name": "bright lack"
+        "name": "漂洗剂不足"
       },
       "colmo_water_lack": {
-        "name": "water lack"
+        "name": "缺水"
       },
       "colmo_ion_active": {
         "name": "离子热烘运行"
@@ -3664,7 +3664,7 @@
         }
       },
       "colmo_display_status": {
-        "name": "display status",
+        "name": "工作状态",
         "state": {
           "power_off": "关机",
           "power_on": "待机",
@@ -3677,7 +3677,7 @@
         }
       },
       "colmo_mode": {
-        "name": "mode",
+        "name": "当前程序",
         "state": {
           "auto_wash": "智能洗",
           "strong_wash": "超强洗",
@@ -3690,17 +3690,19 @@
           "fast_wash": "快速洗",
           "quietnight_wash": "静音洗",
           "single_disinfect": "单消毒",
-          "self_clean": "自清洁"
+          "self_clean": "自清洁",
+          "neutral_gear": "未选择",
+          "cloud_wash": "云洗涤"
         }
       },
       "colmo_temperature": {
-        "name": "temperature"
+        "name": "当前温度"
       },
       "colmo_left_time": {
         "name": "剩余时间"
       },
       "colmo_error_code": {
-        "name": "error code"
+        "name": "故障码"
       },
       "colmo_wash_stage": {
         "name": "洗涤阶段"
@@ -5333,7 +5335,7 @@
         "name": "加速"
       },
       "colmo_power": {
-        "name": "power"
+        "name": "电源"
       },
       "colmo_child_lock": {
         "name": "童锁"

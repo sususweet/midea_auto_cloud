@@ -3357,7 +3357,9 @@
           "fast_wash": "Fast wash",
           "quietnight_wash": "Quietnight wash",
           "single_disinfect": "Disinfection only",
-          "self_clean": "Self clean"
+          "self_clean": "Self clean",
+          "neutral_gear": "Not selected",
+          "cloud_wash": "Cloud program"
         }
       },
       "colmo_temperature": {
