@@ -3345,6 +3345,26 @@
       },
       "colmo_reservation_remaining": {
         "name": "Reservation time remaining"
+      },
+      "colmo_saved_water_month": {
+        "name": "Monthly estimated water saved"
+      },
+      "colmo_wash_count_month": {
+        "name": "Monthly wash count"
+      },
+      "colmo_saved_water_year": {
+        "name": "Yearly estimated water saved"
+      },
+      "colmo_wash_count_year": {
+        "name": "Yearly wash count"
+      },
+      "colmo_filter_quality": {
+        "name": "Filter cleanliness",
+        "state": {
+          "excellent": "Excellent",
+          "good": "Good",
+          "poor": "Poor"
+        }
       }
     },
     "light": {

@@ -641,6 +641,10 @@ class MeijuCloud(MideaCloud):
             traceback.print_exc()
             return None
 
+        # Dishwasher jykt endpoints use retCode/result, unlike washer APIs.
+        if str(response.get("retCode")) == "0":
+            self._token_invalid_retry_count = 0
+            return response.get("result")
         if str(response.get("errCode")) == "0":
             if _retried_after_login:
                 self._token_invalid_retry_count = 0
@@ -771,6 +775,19 @@ class MeijuCloud(MideaCloud):
             f"&deviceType={device_type_hex}"
         )
         return await self._jykt_api_request(endpoint, {})
+
+    async def query_dishwasher_statistics(self, appliance_code: int, period: str):
+        return await self._jykt_api_request("/cfhrs/e1/v1/api", {
+            "msg": "WaterDisherConsumptionV2",
+            "params": {"applianceId": str(appliance_code), "queryType": period},
+        })
+
+    async def query_dishwasher_filter(self, appliance_code: int):
+        return await self._jykt_api_request("/cfhrs/e1/v1/api", {
+            "msg": "selfCleanV2",
+            "params": {"applianceId": str(appliance_code), "action": "getCleanTimes",
+                       "diffWashTimes": 0, "totalWashTimes": 0},
+        })
 
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {

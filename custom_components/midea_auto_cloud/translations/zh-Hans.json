@@ -3678,6 +3678,26 @@
       },
       "colmo_reservation_remaining": {
         "name": "预约剩余时间"
+      },
+      "colmo_saved_water_month": {
+        "name": "本月节水估算"
+      },
+      "colmo_wash_count_month": {
+        "name": "本月洗涤次数"
+      },
+      "colmo_saved_water_year": {
+        "name": "本年节水估算"
+      },
+      "colmo_wash_count_year": {
+        "name": "本年洗涤次数"
+      },
+      "colmo_filter_quality": {
+        "name": "滤网清洁状态",
+        "state": {
+          "excellent": "优",
+          "good": "良",
+          "poor": "差"
+        }
       }
     },
     "light": {

@@ -352,10 +352,31 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             return
 
         now = datetime.now()
+        if (self.device.capabilities.get("dishwasher_stats")
+                and self._should_poll_cloud("dishwasher_stats", now)):
+            await self._poll_dishwasher_statistics(cloud, now)
         if cloud_queries.get("electricity") and self._should_poll_cloud("electricity", now):
             await self._poll_cloud_electricity(cloud, now)
         if cloud_queries.get("water_power") and self._should_poll_cloud("water_power", now):
             await self._poll_cloud_water_power(cloud, now, cloud_queries["water_power"])
+
+    async def _poll_dishwasher_statistics(self, cloud, now: datetime) -> None:
+        from .core.dishwasher import parse_usage, parse_filter_quality
+        for period in ("month", "year"):
+            payload = await cloud.query_dishwasher_statistics(self._device_id, period)
+            if payload is None:
+                continue
+            totals = parse_usage(payload)
+            self.device.attributes.update({
+                f"cloud_power_{period}": totals.energy_kwh,
+                f"cloud_water_{period}": totals.water_l,
+                f"cloud_saved_water_{period}": totals.saved_water_l,
+                f"cloud_wash_count_{period}": totals.washes,
+            })
+        payload = await cloud.query_dishwasher_filter(self._device_id)
+        if payload is not None:
+            self.device.attributes["filter_quality"] = parse_filter_quality(payload)
+        self._last_cloud_poll["dishwasher_stats"] = now
 
     async def _poll_cloud_electricity(self, cloud, now: datetime) -> None:
         """轮询空调云端电量（月 + 年）。"""

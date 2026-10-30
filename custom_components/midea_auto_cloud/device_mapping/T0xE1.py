@@ -1170,3 +1170,7 @@ DEVICE_MAPPING["76000029"] = {'manufacturer': 'COLMO',
                                                                    'cancel_order': ['cancel'],
                                                                    'order': ['order'],
                                                                    'work': ['work']}}}}
+
+# Independent cloud statistics, only enabled for the validated model.
+DEVICE_MAPPING["76000029"]["capabilities"]["dishwasher_stats"] = True
+DEVICE_MAPPING["76000029"]["cloud_queries"]["dishwasher_stats"] = {"interval": 3600}
