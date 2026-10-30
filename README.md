@@ -107,6 +107,22 @@ or safe operation.
 Start, pause, resume and early cancellation were field-tested at medium power
 with a 30-second setting. Other power levels and door-open blocking were not
 separately field-tested. Cloud connectivity is still required.
+The mapping-driven refactor is verified offline; it has not been redeployed
+for another appliance test.
+
+Controls are defined in the SN8 mapping, without a model-specific runtime
+adapter. Buttons support `include_current` as a list of attributes, or as a
+dictionary mapping outgoing attributes to local source attributes. Existing
+`calculate.set` rules split the duration into minutes and seconds.
+
+An optional button `control` dictionary opts into coordinator checks:
+`device` maps device property names to allowed strings; `parameters` defines
+numeric `min`/`max`/`step` or enumerated `values`; `require` maps fresh state
+attributes to allowed values; `confirm` maps read-back attributes to accepted
+values. Checked commands are serialized per device, bypass optimistic updates,
+and read back at most three times without resending the command. Required and
+confirmation fields are cleared before each read so cached values cannot
+satisfy a check. Buttons without `control` keep their existing behavior.
 
 In an existing Home Assistant Python environment, run the focused offline
 tests from the repository root with

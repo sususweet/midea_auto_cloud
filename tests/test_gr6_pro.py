@@ -1,12 +1,8 @@
-"""Run with unittest in a Home Assistant environment; no network calls.
+"""Offline mapping/control tests; optional real codec checks use GR6_LUA_PATH."""
 
-Set GR6_LUA_PATH to an already downloaded device Lua file to additionally
-exercise the real codec. The vendor file is intentionally not distributed.
-"""
-
-import importlib.util
+import asyncio
+from copy import deepcopy
 import os
-from pathlib import Path
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, Mock, patch
@@ -14,21 +10,20 @@ from unittest.mock import AsyncMock, Mock, patch
 from homeassistant.const import Platform
 from homeassistant.exceptions import HomeAssistantError
 
-SOURCE = (
-    Path(__file__).resolve().parents[1]
-    / "custom_components"
-    / "midea_auto_cloud"
-    / "gr6_pro.py"
+from custom_components.midea_auto_cloud import get_device_mapping
+from custom_components.midea_auto_cloud.button import MideaButtonEntity
+from custom_components.midea_auto_cloud.core.device import MiedaDevice
+from custom_components.midea_auto_cloud.data_coordinator import (
+    MideaDataUpdateCoordinator,
 )
-spec = importlib.util.spec_from_file_location("gr6_pro_tested", SOURCE)
-adapter = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(adapter)
+from custom_components.midea_auto_cloud.device_mapping.T0xBF import DEVICE_MAPPING
+from custom_components.midea_auto_cloud.number import MideaNumberEntity
+from custom_components.midea_auto_cloud.select import MideaSelectEntity
 
 
 def coordinator():
-    attributes = {
-        adapter.SECONDS: "30",
-        adapter.POWER: "fire_power_5",
+    config = deepcopy(DEVICE_MAPPING["700006DJ"])
+    firmware = {
         "work_status": "standby",
         "work_mode": "ff",
         "door_open": "off",
@@ -38,96 +33,209 @@ def coordinator():
     }
     device = SimpleNamespace(
         device_type=0xBF,
-        sn8="700006DJ",
         subtype="5",
-        attributes=attributes,
+        device_name="Test appliance",
+        connected=True,
+        _ip_address=None,
+        attributes={
+            **firmware,
+            "gr6_microwave_seconds": None,
+            "gr6_microwave_power": None,
+        },
         _skipped_queries=set(),
-        refresh_status=AsyncMock(return_value=True),
+        _calculate_set=config["calculate"]["set"],
+        _default_values={
+            key: entity["default_value"]
+            for platform in (Platform.NUMBER, Platform.SELECT)
+            for key, entity in config["entities"][platform].items()
+        },
+        _coerce_calc_val=MiedaDevice._coerce_calc_val,
     )
 
-    async def send(command):
-        attributes.update(command)
-        if "work_mode" in command:
-            attributes["work_status"] = "work"
+    async def refresh():
+        device.attributes.update(firmware)
         return True
 
+    async def send(command):
+        firmware.update(command)
+        if "work_mode" in command:
+            firmware["work_status"] = "work"
+        return True
+
+    device.refresh_status = AsyncMock(side_effect=refresh)
     device.set_attributes = AsyncMock(side_effect=send)
-    return SimpleNamespace(
-        device=device,
-        _track_poll_result=Mock(),
-        _snapshot=Mock(return_value=SimpleNamespace(attributes=attributes)),
-        async_set_updated_data=Mock(),
-    )
+    c = object.__new__(MideaDataUpdateCoordinator)
+    c.device = device
+    c._device_id = 1
+    c._cloud = None
+    c._consecutive_poll_failures = 0
+    c._control_lock = asyncio.Lock()
+    c.mute_state_update_for_a_while = Mock()
+
+    def publish(data):
+        c.data = data
+
+    c.async_set_updated_data = Mock(side_effect=publish)
+    c.data = c._snapshot()
+    c.firmware = firmware
+    c.mapping = config
+    return c
+
+
+def entity(c, platform, key):
+    cls = {
+        Platform.BUTTON: MideaButtonEntity,
+        Platform.NUMBER: MideaNumberEntity,
+        Platform.SELECT: MideaSelectEntity,
+    }[platform]
+    result = object.__new__(cls)
+    result.coordinator = c
+    result._config = deepcopy(c.mapping["entities"][platform][key])
+    result._entity_key = key
+    result._device = c.device
+    if platform == Platform.NUMBER:
+        result._min_value = result._config["min"]
+        result._max_value = result._config["max"]
+        result._step = result._config["step"]
+    elif platform == Platform.SELECT:
+        result._key_options = result._config["options"]
+        result._include_current = []
+        result._ignore_values = []
+        result._status_key = None
+        result._last_option = None
+    return result
+
+
+async def stage(c, seconds=30, power="medium"):
+    await entity(
+        c, Platform.NUMBER, "gr6_microwave_seconds"
+    ).async_set_native_value(seconds)
+    await entity(
+        c, Platform.SELECT, "gr6_microwave_power"
+    ).async_select_option(power)
+
+
+async def press(c, action):
+    await entity(c, Platform.BUTTON, f"gr6_{action}").async_press()
 
 
 class ControlsTest(unittest.IsolatedAsyncioTestCase):
-    async def test_start_sends_one_complete_microwave_command(self):
+    async def test_real_number_and_select_stage_without_sending_or_polling(self):
         c = coordinator()
-        await adapter.async_execute(c, "start_microwave")
-        c.device.set_attributes.assert_awaited_once_with({
-            "work_mode": "microwave_1",
-            "work_hour": 0,
-            "work_minute": 0,
-            "work_second": 30,
-            "fire_power": "fire_power_5",
-            "pre_heat": "off",
-        })
-
-    def test_duration_boundaries_and_medium_low_power(self):
-        for value, minute, second in ((5, 0, 5), (65, 1, 5), (1795, 29, 55)):
-            with self.subTest(seconds=value):
-                command = adapter.microwave_command({
-                    adapter.SECONDS: value,
-                    adapter.POWER: "fire_power_3",
-                })
-                self.assertEqual(command["work_minute"], minute)
-                self.assertEqual(command["work_second"], second)
-                self.assertEqual(command["fire_power"], "fire_power_3")
-
-    async def test_missing_invalid_or_out_of_range_settings_never_send(self):
-        for value in (None, True, 0, 4, 6, 1800, float("nan")):
-            with self.subTest(seconds=value):
-                c = coordinator()
-                c.device.attributes[adapter.SECONDS] = value
-                with self.assertRaises(HomeAssistantError):
-                    await adapter.async_execute(c, "start_microwave")
-                c.device.set_attributes.assert_not_awaited()
-        c = coordinator()
-        c.device.attributes[adapter.POWER] = None
-        with self.assertRaises(HomeAssistantError):
-            await adapter.async_execute(c, "start_microwave")
+        await stage(c, 65, "medium_low")
         c.device.set_attributes.assert_not_awaited()
+        c.device.refresh_status.assert_not_awaited()
+        self.assertEqual(c.data.attributes["gr6_microwave_seconds"], "65")
+        self.assertEqual(c.data.attributes["gr6_microwave_power"], "fire_power_3")
+        self.assertEqual(c.data.attributes["work_status"], "standby")
 
-    async def test_fresh_door_lock_fault_and_running_states_block_start(self):
+    async def test_start_uses_existing_calculations_for_duration_and_all_powers(self):
+        for seconds in (5, 65, 1795):
+            for power, code in (
+                ("low", 1), ("medium_low", 3), ("medium", 5),
+                ("medium_high", 8), ("high", 10),
+            ):
+                with self.subTest(seconds=seconds, power=power):
+                    c = coordinator()
+                    await stage(c, seconds, power)
+                    await press(c, "start_microwave")
+                    c.device.set_attributes.assert_awaited_once_with({
+                        "work_mode": "microwave_1",
+                        "work_hour": 0,
+                        "pre_heat": "off",
+                        "work_second": seconds % 60,
+                        "fire_power": f"fire_power_{code}",
+                        "work_minute": seconds // 60,
+                    })
+                    self.assertEqual(c.data.attributes["work_status"], "work")
+                    self.assertEqual(
+                        c.data.attributes["gr6_microwave_seconds"], str(seconds)
+                    )
+
+    async def test_missing_or_invalid_drafts_never_send(self):
         for key, value in (
-            ("door_open", "on"), ("door_open", None),
-            ("lock", "on"), ("lock", None),
-            ("error_code", 1), ("error_code", None),
-            ("work_status", "work"), ("work_status", "pause"),
+            ("gr6_microwave_seconds", None),
+            ("gr6_microwave_seconds", True),
+            ("gr6_microwave_seconds", 0),
+            ("gr6_microwave_seconds", 6),
+            ("gr6_microwave_seconds", 1800),
+            ("gr6_microwave_seconds", float("nan")),
+            ("gr6_microwave_power", None),
+            ("gr6_microwave_power", "unknown"),
         ):
             with self.subTest(key=key, value=value):
                 c = coordinator()
-
-                async def refresh():
-                    c.device.attributes[key] = value
-                    return True
-
-                c.device.refresh_status.side_effect = refresh
+                await stage(c)
+                c.device.attributes[key] = value
+                c.data = c._snapshot()
                 with self.assertRaises(HomeAssistantError):
-                    await adapter.async_execute(c, "start_microwave")
+                    await press(c, "start_microwave")
                 c.device.set_attributes.assert_not_awaited()
 
-    async def test_failed_or_skipped_refresh_blocks_control(self):
-        for skipped in (False, True):
-            c = coordinator()
-            c.device.refresh_status.return_value = False
-            if skipped:
-                c.device._skipped_queries.add(())
-            with self.assertRaises(HomeAssistantError):
-                await adapter.async_execute(c, "start_microwave")
-            c.device.set_attributes.assert_not_awaited()
+    async def test_reused_button_reads_new_drafts_without_mutating_its_template(self):
+        c = coordinator()
+        button = entity(c, Platform.BUTTON, "gr6_start_microwave")
+        original = deepcopy(button._config["command"])
+        await stage(c)
+        await button.async_press()
+        await press(c, "cancel")
+        await stage(c, 65, "high")
+        await button.async_press()
+        command = c.device.set_attributes.await_args.args[0]
+        self.assertEqual(command["work_minute"], 1)
+        self.assertEqual(command["work_second"], 5)
+        self.assertEqual(command["fire_power"], "fire_power_10")
+        self.assertEqual(button._config["command"], original)
 
-    async def test_pause_resume_cancel_never_include_cooking_parameters(self):
+    async def test_start_and_resume_check_fresh_door_lock_fault_and_work_state(self):
+        for action, before, wrong in (
+            ("start_microwave", "standby", "work"),
+            ("resume", "pause", "standby"),
+        ):
+            for key, value in (
+                ("door_open", "on"), ("door_open", None),
+                ("lock", "on"), ("lock", None),
+                ("error_code", 1), ("error_code", None),
+                ("work_status", wrong),
+            ):
+                with self.subTest(action=action, key=key, value=value):
+                    c = coordinator()
+                    await stage(c)
+                    c.firmware.update(work_status=before)
+                    c.firmware[key] = value
+                    with self.assertRaises(HomeAssistantError):
+                        await press(c, action)
+                    c.device.set_attributes.assert_not_awaited()
+
+    async def test_missing_fresh_field_cannot_reuse_old_safe_state(self):
+        c = coordinator()
+        await stage(c)
+        del c.firmware["door_open"]
+        with self.assertRaises(HomeAssistantError):
+            await press(c, "start_microwave")
+        c.device.set_attributes.assert_not_awaited()
+
+    async def test_failed_or_skipped_queries_block_control(self):
+        for kind in ("failed", "already_skipped", "newly_skipped"):
+            with self.subTest(kind=kind):
+                c = coordinator()
+                await stage(c)
+                if kind == "already_skipped":
+                    c.device._skipped_queries.add(())
+                else:
+                    async def refresh():
+                        c.device.attributes.update(c.firmware)
+                        if kind == "newly_skipped":
+                            c.device._skipped_queries.add(())
+                        return kind != "failed"
+
+                    c.device.refresh_status.side_effect = refresh
+                with self.assertRaises(HomeAssistantError):
+                    await press(c, "start_microwave")
+                c.device.set_attributes.assert_not_awaited()
+                self.assertFalse(c.data.available)
+
+    async def test_pause_resume_cancel_only_send_work_status(self):
         for action, before, after in (
             ("pause", "work", "pause"),
             ("resume", "pause", "work"),
@@ -135,124 +243,157 @@ class ControlsTest(unittest.IsolatedAsyncioTestCase):
         ):
             with self.subTest(action=action):
                 c = coordinator()
-                c.device.attributes["work_status"] = before
+                c.firmware["work_status"] = before
                 if action == "cancel":
-                    c.device.attributes["door_open"] = "on"
-                await adapter.async_execute(c, action)
+                    c.firmware["door_open"] = "on"
+                await press(c, action)
                 c.device.set_attributes.assert_awaited_once_with(
                     {"work_status": after}
                 )
+                self.assertEqual(c.data.attributes["work_status"], after)
 
-    async def test_rejection_or_unconfirmed_state_is_not_success_or_retried(self):
-        for kind in ("transport", "rejection", "unchanged"):
+    async def test_rejection_omitted_execute_or_unchanged_state_never_retries(self):
+        for kind in ("transport", "rejection", "missing_execute", "unchanged"):
             with self.subTest(kind=kind):
                 c = coordinator()
-                c.device.set_attributes.side_effect = None
-                c.device.set_attributes.return_value = kind != "transport"
-                if kind == "rejection":
-                    c.device.attributes["execute"] = "remote_control_closed"
-                with patch.object(adapter.asyncio, "sleep", new=AsyncMock()):
+                await stage(c)
+
+                async def send(command):
+                    if kind != "unchanged":
+                        c.firmware.update(command, work_status="work")
+                    if kind == "rejection":
+                        c.firmware["execute"] = "remote_control_closed"
+                    elif kind == "missing_execute":
+                        del c.firmware["execute"]
+                    return kind != "transport"
+
+                c.device.set_attributes.side_effect = send
+                with patch(
+                    "custom_components.midea_auto_cloud.data_coordinator.asyncio.sleep",
+                    new=AsyncMock(),
+                ):
                     with self.assertRaises(HomeAssistantError):
-                        await adapter.async_execute(c, "start_microwave")
+                        await press(c, "start_microwave")
                 c.device.set_attributes.assert_awaited_once()
+                if kind == "unchanged":
+                    self.assertEqual(
+                        c.data.attributes["work_status"], "standby"
+                    )
 
-    async def test_other_product_is_never_controlled(self):
-        for key, value in (
-            ("device_type", 0xB0), ("sn8", "other"), ("subtype", "other")
-        ):
-            with self.subTest(key=key):
-                c = coordinator()
-                setattr(c.device, key, value)
-                with self.assertRaises(HomeAssistantError):
-                    await adapter.async_execute(c, "start_microwave")
-                c.device.refresh_status.assert_not_awaited()
-                c.device.set_attributes.assert_not_awaited()
-
-    async def test_staged_settings_use_existing_local_only_coordinator_path(self):
-        from custom_components.midea_auto_cloud.data_coordinator import (
-            MideaDataUpdateCoordinator,
-        )
-
+    async def test_new_execution_result_replaces_cached_error(self):
         c = coordinator()
-        c.device._calculate_set = []
-        c.device._default_values = {adapter.SECONDS: None, adapter.POWER: None}
-        c.mute_state_update_for_a_while = Mock()
-        settings = {adapter.SECONDS: "45", adapter.POWER: "fire_power_3"}
-        await MideaDataUpdateCoordinator.async_set_attributes(c, settings)
+        await stage(c)
+        c.firmware["execute"] = "door_open"
+
+        async def send(command):
+            c.firmware.update(command, work_status="work", execute="ok")
+            return True
+
+        c.device.set_attributes.side_effect = send
+        await press(c, "start_microwave")
+        self.assertEqual(c.data.attributes["execute"], "ok")
+
+    async def test_unverified_subtype_never_sends_or_refreshes(self):
+        c = coordinator()
+        await stage(c)
+        c.device.subtype = "other"
+        with self.assertRaises(HomeAssistantError):
+            await press(c, "start_microwave")
+        c.device.refresh_status.assert_not_awaited()
         c.device.set_attributes.assert_not_awaited()
-        for key, value in settings.items():
-            self.assertEqual(c.device.attributes[key], value)
 
-
-class ButtonTest(unittest.IsolatedAsyncioTestCase):
-    async def test_gr6_button_dispatches_explicit_action(self):
-        from custom_components.midea_auto_cloud.button import MideaButtonEntity
-
-        entity = object.__new__(MideaButtonEntity)
-        entity._config = {"gr6_pro_action": "pause"}
-        entity.coordinator = coordinator()
-        with patch(
-            "custom_components.midea_auto_cloud.gr6_pro.async_execute",
-            new_callable=AsyncMock,
-        ) as execute:
-            await entity.async_press()
-            execute.assert_awaited_once_with(entity.coordinator, "pause")
-
-    async def test_other_buttons_keep_existing_command_path(self):
-        from custom_components.midea_auto_cloud.button import MideaButtonEntity
-
-        entity = object.__new__(MideaButtonEntity)
-        entity._config = {"command": {"power": "on"}}
-        entity._entity_key = "ordinary_button"
-        entity._device = None
-        entity.async_set_attributes = AsyncMock()
-        await entity.async_press()
-        entity.async_set_attributes.assert_awaited_once_with({"power": "on"})
-
-
-class MappingAndProtocolTest(unittest.TestCase):
-    def test_existing_mapping_is_preserved_and_default_is_not_mutated(self):
-        from custom_components.midea_auto_cloud.device_mapping.T0xBF import (
-            DEVICE_MAPPING,
+    async def test_concurrent_start_presses_do_not_send_two_heating_commands(self):
+        c = coordinator()
+        await stage(c)
+        results = await asyncio.gather(
+            press(c, "start_microwave"),
+            press(c, "start_microwave"),
+            return_exceptions=True,
         )
-
-        self.assertIn("700006DJ", DEVICE_MAPPING)
-        original = {
-            "entities": {Platform.SENSOR: {"work_status": {}}},
-            "centralized": [],
-        }
-        mappings = {"default": original}
-        adapter.add_gr6_pro_mapping(mappings)
-        self.assertNotIn(Platform.BUTTON, original["entities"])
+        self.assertEqual(sum(r is None for r in results), 1)
         self.assertEqual(
-            mappings["700006DJ"]["entities"][Platform.SENSOR],
-            original["entities"][Platform.SENSOR],
+            sum(isinstance(r, HomeAssistantError) for r in results), 1
         )
-        self.assertEqual(mappings["700006DJ"]["centralized"], [])
+        c.device.set_attributes.assert_awaited_once()
+
+    async def test_generic_control_is_not_tied_to_microwave_fields_or_model(self):
+        c = coordinator()
+        c.device.subtype = "unrelated"
+        c.firmware["power"] = "off"
+        await c.async_execute_control(
+            {"power": "on"},
+            {"require": {"power": ["off"]}, "confirm": {"power": ["on"]}},
+        )
+        c.device.set_attributes.assert_awaited_once_with({"power": "on"})
+        self.assertEqual(c.data.attributes["power"], "on")
+
+    async def test_unconfigured_button_retains_optimistic_command_path(self):
+        c = coordinator()
+        button = entity(c, Platform.BUTTON, "gr6_pause")
+        button._config = {"command": {"power": "on"}}
+        await button.async_press()
+        c.device.set_attributes.assert_awaited_once_with({"power": "on"})
+        c.device.refresh_status.assert_not_awaited()
+        c.mute_state_update_for_a_while.assert_called_once()
+        self.assertEqual(c.data.attributes["power"], "on")
+
+    async def test_include_current_list_preserves_explicit_command_values(self):
+        c = coordinator()
+        button = entity(c, Platform.BUTTON, "gr6_pause")
+        button._config = {
+            "command": {"work_status": "pause"},
+            "include_current": ["work_status", "lock"],
+        }
+        await button.async_press()
+        c.device.set_attributes.assert_awaited_once_with({
+            "work_status": "pause", "lock": "off",
+        })
+
+
+class MappingAndProtocolTest(unittest.IsolatedAsyncioTestCase):
+    def test_only_verified_sn8_has_controls_and_default_sensors_are_preserved(self):
+        other = get_device_mapping(DEVICE_MAPPING, 0xBF, "other", subtype="5")
+        verified = get_device_mapping(
+            DEVICE_MAPPING, 0xBF, "700006DJ", subtype="5"
+        )
+        self.assertNotIn(Platform.BUTTON, other["entities"])
+        self.assertEqual(
+            verified["entities"][Platform.SENSOR],
+            other["entities"][Platform.SENSOR],
+        )
+        self.assertEqual(verified["centralized"], [])
 
     @unittest.skipUnless(
         os.environ.get("GR6_LUA_PATH"), "Set GR6_LUA_PATH for real codec checks"
     )
-    def test_actual_lua_encodes_microwave_and_status_commands_separately(self):
+    async def test_actual_lua_encodes_commands_emitted_by_mapping_pipeline(self):
         from custom_components.midea_auto_cloud.core.lua_runtime import MideaCodec
 
         codec = MideaCodec(
             os.environ["GR6_LUA_PATH"], device_type="T0xBF", subtype="5"
         )
-        for value in (5, 65, 1795):
-            with self.subTest(seconds=value):
-                command = adapter.microwave_command({
-                    adapter.SECONDS: value,
-                    adapter.POWER: "fire_power_3",
-                })
-                frame = bytes.fromhex(codec.build_control(command))
-                self.assertEqual(frame[9:11], bytes([2, 1]))
-                self.assertEqual(
-                    frame[16:22],
-                    bytes([1, 1, 0, value // 60, value % 60, 3]),
-                )
-        for state, code in (("pause", 6), ("work", 3), ("standby", 2)):
-            frame = bytes.fromhex(codec.build_control({"work_status": state}))
+        context = {"work_mode": "microwave_1", "work_status": "work"}
+        for seconds in (5, 65, 1795):
+            c = coordinator()
+            await stage(c, seconds, "medium_low")
+            await press(c, "start_microwave")
+            command = c.device.set_attributes.await_args.args[0]
+            frame = bytes.fromhex(codec.build_control(command, status=context))
+            self.assertEqual(frame[9:11], bytes([2, 1]))
+            self.assertEqual(
+                frame[16:22],
+                bytes([1, 1, 0, seconds // 60, seconds % 60, 3]),
+            )
+        for action, before, code in (
+            ("pause", "work", 6),
+            ("resume", "pause", 3),
+            ("cancel", "work", 2),
+        ):
+            c = coordinator()
+            c.firmware["work_status"] = before
+            await press(c, action)
+            command = c.device.set_attributes.await_args.args[0]
+            frame = bytes.fromhex(codec.build_control(command, status=context))
             self.assertEqual(frame[9:12], bytes([2, 2, code]))
             self.assertEqual(len(frame), 19)
 

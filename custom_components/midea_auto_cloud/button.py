@@ -2,6 +2,7 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .core.logger import MideaLogger
@@ -47,11 +48,6 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        if action := self._config.get("gr6_pro_action"):
-            from .gr6_pro import async_execute
-
-            await async_execute(self.coordinator, action)
-            return
         # 从配置中获取要执行的命令或操作
         command = self._config.get("command")
         attribute = self._config.get("attribute", self._entity_key)
@@ -64,7 +60,26 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
             # 如果配置中指定了命令，执行该命令
             if isinstance(command, dict):
                 # 如果是字典，可能需要发送多个属性
-                await self.async_set_attributes(command)
+                command = dict(command)
+                include_current = self._config.get("include_current", [])
+                sources = (
+                    include_current.items()
+                    if isinstance(include_current, dict)
+                    else ((attr, attr) for attr in include_current)
+                )
+                for attr, source in sources:
+                    if attr in command:
+                        continue
+                    current = self._get_nested_value(source)
+                    if current is None:
+                        raise HomeAssistantError(
+                            f"Select a value for {source} before pressing this button"
+                        )
+                    command[attr] = current
+                if control := self._config.get("control"):
+                    await self.coordinator.async_execute_control(command, control)
+                else:
+                    await self.async_set_attributes(command)
             elif isinstance(command, str):
                 # 如果是字符串，可能是特殊命令类型
                 await self._async_execute_command(command)

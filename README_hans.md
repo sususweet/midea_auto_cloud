@@ -102,6 +102,18 @@ GR6 Pro（`T0xBF`、SN8 `700006DJ`、subtype `5`）支持微波时长
 
 已在现场用中火、30 秒设定验证开始、暂停、继续及提前取消。
 其他火力和开门拦截未单独做实机测试，仍依赖美的云连接。
+按 mapping 重构的版本目前仅做离线验证，没有重新部署到设备进行另一轮实机测试。
+
+控制能力直接定义在 SN8 mapping 中，不使用型号专用运行时适配器。
+按钮的 `include_current` 可为属性列表，或“输出属性 → 本地来源属性”的字典；
+时长拆分复用现有 `calculate.set`。
+
+按钮可选的 `control` 字典启用通用 coordinator 检查：
+`device` 配置设备属性及允许的字符串值，`parameters` 配置数值的
+`min`/`max`/`step` 或枚举 `values`，`require` 配置必须从设备新读取的属性及允许值，
+`confirm` 配置回读属性及接受值。此路径按设备串行执行，不做乐观状态更新；
+最多回读三次，不重发命令。每次读取前清除待检查字段，避免旧值满足校验。
+未配置 `control` 的按钮保持原有行为。
 
 在现有 Home Assistant Python 环境的仓库根目录执行
 `PYTHONPATH=. python -m unittest discover -s tests -p test_gr6_pro.py -v`

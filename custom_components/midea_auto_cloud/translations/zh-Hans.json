@@ -131,6 +131,18 @@
   },
   "entity": {
     "button": {
+      "start_microwave": {
+        "name": "开始微波"
+      },
+      "pause_cooking": {
+        "name": "暂停烹饪"
+      },
+      "resume_cooking": {
+        "name": "继续烹饪"
+      },
+      "cancel_cooking": {
+        "name": "取消烹饪"
+      },
       "light_off": {
         "name": "关闭灯光"
       },
@@ -795,6 +807,16 @@
       }
     },
     "select": {
+      "microwave_power": {
+        "name": "微波火力（待启动）",
+        "state": {
+          "low": "低",
+          "medium_low": "中低",
+          "medium": "中",
+          "medium_high": "中高",
+          "high": "高"
+        }
+      },
       "smelly_threshold": {
         "name": "异味检测阈值",
         "state": {
@@ -3612,6 +3634,9 @@
       }
     },
     "number": {
+      "microwave_duration": {
+        "name": "微波时长（待启动）"
+      },
       "voice_level": {
         "name": "语音音量"
       },

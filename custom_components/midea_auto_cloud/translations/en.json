@@ -131,6 +131,18 @@
   },
   "entity": {
     "button": {
+      "start_microwave": {
+        "name": "Start microwave"
+      },
+      "pause_cooking": {
+        "name": "Pause cooking"
+      },
+      "resume_cooking": {
+        "name": "Resume cooking"
+      },
+      "cancel_cooking": {
+        "name": "Cancel cooking"
+      },
       "light_off": {
         "name": "Light off"
       },
@@ -751,6 +763,16 @@
       }
     },
     "select": {
+      "microwave_power": {
+        "name": "Microwave power (staged)",
+        "state": {
+          "low": "Low",
+          "medium_low": "Medium low",
+          "medium": "Medium",
+          "medium_high": "Medium high",
+          "high": "High"
+        }
+      },
       "smelly_threshold": {
         "name": "Odor Threshold",
         "state": {
@@ -3267,6 +3289,9 @@
       }
     },
     "number": {
+      "microwave_duration": {
+        "name": "Microwave duration (staged)"
+      },
       "voice_level": {
         "name": "Voice Level"
       },

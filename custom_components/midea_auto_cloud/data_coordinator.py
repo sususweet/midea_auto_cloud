@@ -1,5 +1,6 @@
 """Data coordinator for Midea Auto Cloud integration."""
 
+import asyncio
 import copy
 import logging
 import traceback
@@ -64,6 +65,7 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         self._polling = False
         # 连续轮询失败计数：会话失效/设备离线时不再假装一切正常
         self._consecutive_poll_failures = 0
+        self._control_lock = asyncio.Lock()
 
     async def _async_setup(self) -> None:
         """Set up the coordinator."""
@@ -482,7 +484,81 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         attributes[attribute] = value
         await self.async_set_attributes(attributes)
 
-    async def async_set_attributes(self, attributes: dict) -> None:
+    async def _async_refresh_control_state(self, required: dict) -> None:
+        """Read required fields without accepting cached values or muted polls."""
+        for attr in required:
+            self.device.attributes.pop(attr, None)
+        success = (
+            not self.device._skipped_queries
+            and await self.device.refresh_status()
+            and not self.device._skipped_queries
+        )
+        self._track_poll_result(bool(success))
+        self.async_set_updated_data(
+            self._snapshot(available=None if success else False)
+        )
+        if not success:
+            raise HomeAssistantError(
+                "Cannot read fresh device state; check the appliance before retrying"
+            )
+
+    async def async_execute_control(self, attributes: dict, control: dict) -> None:
+        """Apply opt-in mapping guards and confirm one non-optimistic command."""
+        async with self._control_lock:
+            for name, allowed in control.get("device", {}).items():
+                if str(getattr(self.device, name, None)) not in allowed:
+                    raise HomeAssistantError(
+                        f"Device {name} is not supported by this control mapping"
+                    )
+            for attr, rule in control.get("parameters", {}).items():
+                value = attributes.get(attr)
+                if "values" in rule:
+                    if value not in rule["values"]:
+                        raise HomeAssistantError(f"Select a valid value for {attr}")
+                    continue
+                if isinstance(value, bool):
+                    raise HomeAssistantError(f"Invalid numeric value for {attr}")
+                try:
+                    number = float(value)
+                except (TypeError, ValueError) as err:
+                    raise HomeAssistantError(
+                        f"Select a numeric value for {attr}"
+                    ) from err
+                if (
+                    not rule["min"] <= number <= rule["max"]
+                    or (number - rule["min"]) % rule.get("step", 1)
+                ):
+                    raise HomeAssistantError(f"Value outside allowed range for {attr}")
+                attributes[attr] = int(number) if number.is_integer() else number
+
+            required = control.get("require", {})
+            await self._async_refresh_control_state(required)
+            for attr, allowed in required.items():
+                if self.device.attributes.get(attr) not in allowed:
+                    raise HomeAssistantError(
+                        f"Current {attr} does not allow this command"
+                    )
+            await self.async_set_attributes(dict(attributes), optimistic=False)
+
+            expected = control["confirm"]
+            for attempt in range(3):
+                # Clear response fields before every read: execute may be old.
+                await self._async_refresh_control_state(expected)
+                if all(
+                    self.device.attributes.get(attr) in allowed
+                    for attr, allowed in expected.items()
+                ):
+                    return
+                if attempt < 2:
+                    await asyncio.sleep(1)
+            raise HomeAssistantError(
+                "Device did not confirm the command; check the appliance, "
+                "do not repeatedly retry"
+            )
+
+    async def async_set_attributes(
+        self, attributes: dict, *, optimistic: bool = True
+    ) -> None:
         """Set multiple device attributes."""
         # 云端控制：构造 control 与 status（携带当前状态作为上下文）
         # 计算逻辑使用所有属性（包括有默认值的变量）
@@ -532,6 +608,8 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 )
             # 控制送达说明云端会话与设备均正常，清零失败计数
             self._track_poll_result(True)
+        if not optimistic:
+            return
         # 更新所有属性到本地状态（包括有默认值的变量）
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()
