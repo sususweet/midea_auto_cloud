@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from homeassistant.components.switch import SwitchDeviceClass
 from homeassistant.const import Platform, UnitOfTime, UnitOfArea
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
@@ -301,3 +303,12 @@ DEVICE_MAPPING = {
         }
     }
 }
+
+# i5C (sn8 530VR0Y0, plugin T_0000_B8_10006689): the Lua has no "switch" control,
+# suction and water level are set together in one frame via work_status "setup".
+_i5c = deepcopy(DEVICE_MAPPING["default"])
+_i5c["entities"][Platform.VACUUM]["vacuum"]["fan_speeds"]["command"] = {"work_status": "setup"}
+_i5c["entities"][Platform.VACUUM]["vacuum"]["fan_speeds"]["include_current"] = ["fan_level", "water_level"]
+for _key in ("fan_setting", "water_level"):
+    _i5c["entities"][Platform.SELECT][_key]["command"] = {"work_status": "setup"}
+DEVICE_MAPPING["530VR0Y0"] = _i5c
