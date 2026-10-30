@@ -48,12 +48,10 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        if self._config.get("requires_idle"):
-            self._require_idle()
-        if self._config.get("requires_power_on") and self._get_nested_value("work_status") == "power_off":
-            await self.async_set_attributes({"work_status": "power_on"})
-            if self._get_nested_value("work_status") not in ("power_on", "cancel"):
-                raise HomeAssistantError("Device did not enter standby; reservation was not sent")
+        self._require_command_condition()
+        prepare = self._config.get("prepare_command")
+        if prepare and self._check_condition(prepare["condition"]):
+            await self.async_set_attributes(prepare["command"])
         prepare = {}
         for wire_key, attribute in self._config.get("prepare_attributes", {}).items():
             value = self._get_nested_value(attribute)
@@ -82,12 +80,6 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
                     if value is None:
                         raise HomeAssistantError("Select the required settings before starting")
                     command[wire_key] = value
-                delay_attribute = self._config.get("delay_attribute")
-                if delay_attribute:
-                    delay = self._get_nested_value(delay_attribute)
-                    if delay is None:
-                        raise HomeAssistantError("Set the reservation delay first")
-                    command["order_set_hour"], command["order_set_min"] = divmod(int(delay), 60)
                 await self.async_set_attributes(command)
                 zero_attributes = self._config.get("verify_zero_attributes", [])
                 if zero_attributes and any(self._get_nested_value(key) != 0 for key in zero_attributes):
