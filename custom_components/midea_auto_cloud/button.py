@@ -2,6 +2,7 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .core.logger import MideaLogger
@@ -47,6 +48,12 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
+        if self._config.get("requires_idle"):
+            self._require_idle()
+        if self._config.get("requires_power_on") and self._get_nested_value("work_status") == "power_off":
+            await self.async_set_attributes({"work_status": "power_on"})
+            if self._get_nested_value("work_status") not in ("power_on", "cancel"):
+                raise HomeAssistantError("Device did not enter standby; reservation was not sent")
         # 从配置中获取要执行的命令或操作
         command = self._config.get("command")
         attribute = self._config.get("attribute", self._entity_key)
@@ -59,6 +66,18 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
             # 如果配置中指定了命令，执行该命令
             if isinstance(command, dict):
                 # 如果是字典，可能需要发送多个属性
+                command = dict(command)
+                for wire_key, attribute in self._config.get("include_attributes", {}).items():
+                    value = self._get_nested_value(attribute)
+                    if value is None:
+                        raise HomeAssistantError("Select the required settings before starting")
+                    command[wire_key] = value
+                delay_attribute = self._config.get("delay_attribute")
+                if delay_attribute:
+                    delay = self._get_nested_value(delay_attribute)
+                    if delay is None:
+                        raise HomeAssistantError("Set the reservation delay first")
+                    command["order_set_hour"], command["order_set_min"] = divmod(int(delay), 60)
                 await self.async_set_attributes(command)
             elif isinstance(command, str):
                 # 如果是字符串，可能是特殊命令类型

@@ -543,6 +543,18 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                             MideaLogger.warning(f"Failed to download plugin for {info.get(CONF_NAME)}: {e}")
 
                         try:
+                            # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
+                            try:
+                                mapping = await load_device_config(
+                                    hass,
+                                    info.get(CONF_TYPE) or info.get("type"),
+                                    info.get(CONF_SN8) or info.get("sn8"),
+                                    info.get(CONF_MODEL_NUMBER),
+                                    info.get(CONF_CATEGORY),
+                                ) or {}
+                            except Exception:
+                                mapping = {}
+
                             device = MiedaDevice(
                                 name=info.get(CONF_NAME),
                                 device_id=appliance_code,
@@ -559,7 +571,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 category=info.get(CONF_CATEGORY),
                                 sn=info.get(CONF_SN),
                                 sn8=info.get(CONF_SN8),
-                                lua_file=file,
+                                lua_file=None if mapping.get("capabilities", {}).get("prefer_cloud_lua") else file,
                                 cloud=cloud,
                             )
                             # Needed by T0x45 super-gateway panel/switch/query (spid).
@@ -567,20 +579,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                 device.attributes["smart_product_id"] = info.get(
                                     CONF_SMART_PRODUCT_ID
                                 )
+                            device.capabilities = mapping.get("capabilities", {})
+                            for attribute in mapping.get("write_attributes", []):
+                                device.attributes.setdefault(attribute, None)
                             # lupa dofile is blocking — load codec off the event loop
                             await device.async_init_lua_runtime()
-                            # 加载并应用设备映射（queries/centralized/calculate），并预置 attributes 键
-                            try:
-                                mapping = await load_device_config(
-                                    hass,
-                                    info.get(CONF_TYPE) or info.get("type"),
-                                    info.get(CONF_SN8) or info.get("sn8"),
-                                    device.subtype,
-                                    device.category,
-                                ) or {}
-                            except Exception:
-                                mapping = {}
-
                             try:
                                 device.set_queries(mapping.get("queries", [{}]))
                             except Exception:

@@ -1,6 +1,7 @@
 """Data coordinator for Midea Auto Cloud integration."""
 
 import copy
+import asyncio
 import logging
 import traceback
 from datetime import datetime, timedelta
@@ -532,6 +533,24 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                 )
             # 控制送达说明云端会话与设备均正常，清零失败计数
             self._track_poll_result(True)
+        confirmation = self.device.capabilities.get("confirm_status_after_control")
+        if attributes_to_send and confirmation:
+            # Draft values stay local; command words must never become states.
+            self.device.attributes.update({
+                key: value for key, value in attributes.items()
+                if key in self.device._default_values
+            })
+            expected = confirmation.get("work_status", {}).get(attributes_to_send.get("work_status"))
+            for attempt in range(confirmation["attempts"]):
+                if attempt:
+                    await asyncio.sleep(confirmation["interval"])
+                refreshed = await self.device.refresh_status()
+                self._track_poll_result(refreshed)
+                if refreshed and (expected is None or self.device.attributes.get("work_status") in expected):
+                    self.async_set_updated_data(self._snapshot())
+                    return
+            self.async_set_updated_data(self._snapshot())
+            raise HomeAssistantError("Command sent, but the device did not confirm its state")
         # 更新所有属性到本地状态（包括有默认值的变量）
         self.device.attributes.update(attributes)
         self.mute_state_update_for_a_while()

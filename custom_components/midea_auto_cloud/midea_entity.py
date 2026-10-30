@@ -6,6 +6,7 @@ import logging
 from enum import IntEnum
 from typing import Any
 
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
@@ -159,6 +160,11 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
         if not self.coordinator.data or not self.coordinator.data.available:
             return False
         return self._check_condition(self._condition)
+
+    def _require_idle(self) -> None:
+        """Reject program edits while the appliance has an active operation."""
+        if self._get_nested_value("work_status") not in ("power_off", "power_on", "cancel"):
+            raise HomeAssistantError("Stop the current operation before changing this setting")
 
     def _check_condition(self, condition: dict | None = None) -> bool:
         condition = condition or self._condition
