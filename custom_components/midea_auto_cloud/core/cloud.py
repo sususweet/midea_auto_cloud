@@ -789,6 +789,20 @@ class MeijuCloud(MideaCloud):
                        "diffWashTimes": 0, "totalWashTimes": 0},
         })
 
+    async def query_dishwasher_preferences(self, appliance_code: int, sn8: str):
+        from .dishwasher import parse_preferences
+        storage, season = await asyncio.gather(
+            self._jykt_api_request("/cfhrs/e1/v1/api", {"msg": "smartStoreSwitch", "params": {"applianceId": str(appliance_code), "action": "get"}}),
+            self._jykt_api_request("/cfhrs/e1/v3/api", {"msg": "getWinSumData", "params": {"applianceId": str(appliance_code), "sn8": sn8}}),
+        )
+        return parse_preferences(storage, season)
+
+    async def set_dishwasher_storage(self, appliance_code: int, enabled: int):
+        await self._jykt_api_request("/cfhrs/e1/v1/api", {"msg": "smartStoreSwitch", "params": {"applianceId": str(appliance_code), "action": "set", "switch": enabled}})
+
+    async def set_dishwasher_season(self, appliance_code: int, sn8: str, mode: str):
+        await self._jykt_api_request("/cfhrs/e1/v3/api", {"msg": "setWinSumData", "params": {"applianceId": str(appliance_code), "sn8": sn8, "mode": mode}})
+
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
             "applianceCode": str(appliance_code),

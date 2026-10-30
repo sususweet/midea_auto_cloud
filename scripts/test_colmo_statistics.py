@@ -52,6 +52,7 @@ class StatisticsTests(unittest.IsolatedAsyncioTestCase):
         coordinator._cloud = cloud
         coordinator._last_cloud_poll = {}
         coordinator._poll_dishwasher_statistics = AsyncMock()
+        coordinator._poll_dishwasher_preferences = AsyncMock()
         coordinator._poll_cloud_water_power = AsyncMock()
         await coordinator._poll_cloud_stats()
         coordinator._poll_dishwasher_statistics.assert_awaited_once()

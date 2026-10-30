@@ -37,3 +37,16 @@ def parse_filter_quality(payload: object) -> str:
         raise ValueError("Negative dishwasher filter usage")
     return "excellent" if minutes <= 600 else "good" if minutes <= 3000 else "poor"
 
+
+_STORAGE = vol.Schema({vol.Required("switch"): vol.In([0, 1])}, extra=vol.ALLOW_EXTRA)
+_SEASON = vol.Schema({vol.Required("mode"): vol.In(["auto", "win", "sum"])}, extra=vol.ALLOW_EXTRA)
+
+@dataclass(frozen=True)
+class Preferences:
+    smart_storage: int
+    seasonal_mode: str
+
+
+def parse_preferences(storage: object, season: object) -> Preferences:
+    """Validate vendor-owned preference payloads once at their boundary."""
+    return Preferences(int(_STORAGE(storage)["switch"]), _SEASON(season)["mode"])

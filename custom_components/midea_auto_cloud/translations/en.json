@@ -172,6 +172,12 @@
       },
       "colmo_cancel_reservation": {
         "name": "Cancel reservation"
+      },
+      "colmo_ion_start": {
+        "name": "Start ion drying"
+      },
+      "colmo_ion_stop": {
+        "name": "Stop ion drying"
       }
     },
     "binary_sensor": {
@@ -462,6 +468,9 @@
       },
       "colmo_water_lack": {
         "name": "Water lack"
+      },
+      "colmo_ion_active": {
+        "name": "Ion drying active"
       }
     },
     "climate": {
@@ -1928,7 +1937,9 @@
           "germ": "Germ",
           "glass_wash": "Glass wash",
           "fast_wash": "Fast wash",
-          "quietnight_wash": "Quietnight wash"
+          "quietnight_wash": "Quietnight wash",
+          "single_disinfect": "Disinfection only",
+          "self_clean": "Self clean"
         }
       },
       "colmo_region_selection": {
@@ -1945,6 +1956,21 @@
           "none": "None",
           "once": "Once",
           "twice": "Twice"
+        }
+      },
+      "colmo_seasonal_mode": {
+        "name": "Seasonal drying",
+        "state": {
+          "auto": "Automatic",
+          "win": "Winter",
+          "sum": "Summer"
+        }
+      },
+      "colmo_ion_duration": {
+        "name": "Ion drying duration",
+        "state": {
+          "1": "1 hour",
+          "2": "2 hours"
         }
       }
     },
@@ -3313,7 +3339,8 @@
           "work": "Running",
           "paused": "Paused",
           "order": "Scheduled",
-          "error": "Fault"
+          "error": "Fault",
+          "ion_drying": "Ion drying"
         }
       },
       "colmo_mode": {
@@ -3328,7 +3355,9 @@
           "germ": "Germ",
           "glass_wash": "Glass wash",
           "fast_wash": "Fast wash",
-          "quietnight_wash": "Quietnight wash"
+          "quietnight_wash": "Quietnight wash",
+          "single_disinfect": "Disinfection only",
+          "self_clean": "Self clean"
         }
       },
       "colmo_temperature": {
@@ -3365,6 +3394,9 @@
           "good": "Good",
           "poor": "Poor"
         }
+      },
+      "colmo_ion_remaining_hours": {
+        "name": "Ion drying time remaining"
       }
     },
     "light": {
@@ -4966,6 +4998,9 @@
       },
       "colmo_beep": {
         "name": "Sound"
+      },
+      "colmo_smart_storage": {
+        "name": "Smart storage"
       }
     },
     "text": {

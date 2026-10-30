@@ -51,7 +51,7 @@ class ConfirmationTests(unittest.IsolatedAsyncioTestCase):
         with patch('custom_components.midea_auto_cloud.data_coordinator.asyncio.sleep', new=AsyncMock()):
             with self.assertRaises(HomeAssistantError):
                 await coordinator.async_set_attributes({'work_status': 'work'})
-        self.assertEqual(coordinator.device.refresh_status.await_count, 4)
+        self.assertEqual(coordinator.device.refresh_status.await_count, MODEL["capabilities"]["confirm_status_after_control"]["attempts"])
         self.assertEqual(coordinator.device.attributes['work_status'], 'order')
         coordinator.device.set_attributes.reset_mock()
         coordinator.device.refresh_status.reset_mock()

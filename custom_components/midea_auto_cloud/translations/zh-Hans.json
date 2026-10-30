@@ -172,6 +172,12 @@
       },
       "colmo_cancel_reservation": {
         "name": "取消预约"
+      },
+      "colmo_ion_start": {
+        "name": "启动离子热烘"
+      },
+      "colmo_ion_stop": {
+        "name": "完全关闭离子热烘"
       }
     },
     "binary_sensor": {
@@ -482,6 +488,9 @@
       },
       "colmo_water_lack": {
         "name": "water lack"
+      },
+      "colmo_ion_active": {
+        "name": "离子热烘运行"
       }
     },
     "climate": {
@@ -2203,7 +2212,9 @@
           "germ": "除菌洗",
           "glass_wash": "轻柔洗",
           "fast_wash": "快速洗",
-          "quietnight_wash": "静音洗"
+          "quietnight_wash": "静音洗",
+          "single_disinfect": "单消毒",
+          "self_clean": "自清洁"
         }
       },
       "colmo_region_selection": {
@@ -2220,6 +2231,21 @@
           "none": "无",
           "once": "增加漂洗一次",
           "twice": "增加漂洗两次"
+        }
+      },
+      "colmo_seasonal_mode": {
+        "name": "四季随温干燥",
+        "state": {
+          "auto": "自动",
+          "win": "冬季",
+          "sum": "夏季"
+        }
+      },
+      "colmo_ion_duration": {
+        "name": "离子热烘时长",
+        "state": {
+          "1": "1小时",
+          "2": "2小时"
         }
       }
     },
@@ -3646,7 +3672,8 @@
           "work": "运行中",
           "paused": "已暂停",
           "order": "已预约",
-          "error": "故障"
+          "error": "故障",
+          "ion_drying": "离子热烘中"
         }
       },
       "colmo_mode": {
@@ -3661,7 +3688,9 @@
           "germ": "除菌洗",
           "glass_wash": "轻柔洗",
           "fast_wash": "快速洗",
-          "quietnight_wash": "静音洗"
+          "quietnight_wash": "静音洗",
+          "single_disinfect": "单消毒",
+          "self_clean": "自清洁"
         }
       },
       "colmo_temperature": {
@@ -3698,6 +3727,9 @@
           "good": "良",
           "poor": "差"
         }
+      },
+      "colmo_ion_remaining_hours": {
+        "name": "离子热烘剩余时间"
       }
     },
     "light": {
@@ -5308,6 +5340,9 @@
       },
       "colmo_beep": {
         "name": "提示音"
+      },
+      "colmo_smart_storage": {
+        "name": "智能存储"
       }
     },
     "text": {

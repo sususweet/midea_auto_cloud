@@ -1174,3 +1174,56 @@ DEVICE_MAPPING["76000029"] = {'manufacturer': 'COLMO',
 # Independent cloud statistics, only enabled for the validated model.
 DEVICE_MAPPING["76000029"]["capabilities"]["dishwasher_stats"] = True
 DEVICE_MAPPING["76000029"]["cloud_queries"]["dishwasher_stats"] = {"interval": 3600}
+
+# Independently queried preferences, not inferred from airswitch/win_sum_mode.
+DEVICE_MAPPING["76000029"]["capabilities"].update({'dishwasher_preferences': True,
+ 'idle_blockers': {'air_status': [1], 'dryswitch': [2]},
+ 'idle_positive_attributes': ['air_left_hour']})
+DEVICE_MAPPING["76000029"]["cloud_queries"]["dishwasher_preferences"] = {"interval": 3600}
+DEVICE_MAPPING["76000029"]["capabilities"]["confirm_status_after_control"].update({'attempts': 6,
+ 'interval': 1,
+ 'confirm_attributes': ['air_set_hour'],
+ 'positive_after_control': {'airswitch': {2: 'air_left_hour'}}})
+DEVICE_MAPPING["76000029"]["entities"]["binary_sensor"].update({'ion_active': {'rationale': [False, True],
+                'device_class': 'running',
+                'translation_key': 'colmo_ion_active'}})
+DEVICE_MAPPING["76000029"]["entities"]["sensor"].update({'ion_remaining_hours': {'device_class': 'duration',
+                         'unit_of_measurement': 'h',
+                         'translation_key': 'colmo_ion_remaining_hours'}})
+DEVICE_MAPPING["76000029"]["entities"]["switch"].update({'smart_storage': {'rationale': [0, 1], 'translation_key': 'colmo_smart_storage'}})
+DEVICE_MAPPING["76000029"]["entities"]["button"].update({'ion_start': {'requires_idle': True,
+               'requires_power_on': True,
+               'prepare_attributes': {'air_set_hour': 'selected_ion_hours'},
+               'command': {'airswitch': 2},
+               'verify_positive_attribute': 'air_left_hour',
+               'translation_key': 'colmo_ion_start'},
+ 'ion_stop': {'command': {'airswitch': 0},
+              'verify_zero_attributes': ['airswitch', 'air_left_hour', 'air_status'],
+              'translation_key': 'colmo_ion_stop'}})
+DEVICE_MAPPING["76000029"]["entities"]["select"].update({'seasonal_mode': {'attribute': 'seasonal_mode',
+                   'status_key': 'seasonal_mode',
+                   'options': {'auto': {'seasonal_mode': 'auto'},
+                               'win': {'seasonal_mode': 'win'},
+                               'sum': {'seasonal_mode': 'sum'}},
+                   'translation_key': 'colmo_seasonal_mode'},
+ 'ion_duration': {'attribute': 'selected_ion_hours',
+                  'status_key': 'selected_ion_hours',
+                  'default_value': 1,
+                  'requires_idle': True,
+                  'options': {'1': {'selected_ion_hours': 1}, '2': {'selected_ion_hours': 2}},
+                  'translation_key': 'colmo_ion_duration'}})
+DEVICE_MAPPING["76000029"]["entities"]["select"]["program_selection"]["options"].update({
+    "single_disinfect": {"selected_program": "single_disinfect"},
+    "self_clean": {"selected_program": "self_clean"},
+})
+DEVICE_MAPPING["76000029"]["calculate"]["get"].insert(0, {
+    "lvalue": "[ion_active]", "rvalue": "bool([airswitch] and [air_left_hour])",
+})
+DEVICE_MAPPING["76000029"]["calculate"]["get"].append({
+    "lvalue": "[ion_remaining_hours]", "rvalue": "[air_left_hour] if [ion_active] else None",
+})
+for calc in DEVICE_MAPPING["76000029"]["calculate"]["get"]:
+    if calc["lvalue"] == "[display_status]":
+        calc["rvalue"] = "'ion_drying' if [ion_active] else " + calc["rvalue"]
+DEVICE_MAPPING["76000029"]["entities"]["sensor"]["display_status"]["options"].append("ion_drying")
+DEVICE_MAPPING["76000029"]["entities"]["sensor"]["mode"]["options"].extend(["single_disinfect", "self_clean"])

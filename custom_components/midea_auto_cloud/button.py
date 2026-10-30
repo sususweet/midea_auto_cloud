@@ -54,6 +54,16 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
             await self.async_set_attributes({"work_status": "power_on"})
             if self._get_nested_value("work_status") not in ("power_on", "cancel"):
                 raise HomeAssistantError("Device did not enter standby; reservation was not sent")
+        prepare = {}
+        for wire_key, attribute in self._config.get("prepare_attributes", {}).items():
+            value = self._get_nested_value(attribute)
+            if value is None:
+                raise HomeAssistantError("Select the required duration before starting")
+            prepare[wire_key] = value
+        if prepare:
+            await self.async_set_attributes(prepare)
+            if any(self._get_nested_value(key) != value for key, value in prepare.items()):
+                raise HomeAssistantError("Duration was not confirmed; operation was not started")
         # 从配置中获取要执行的命令或操作
         command = self._config.get("command")
         attribute = self._config.get("attribute", self._entity_key)
@@ -79,6 +89,15 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
                         raise HomeAssistantError("Set the reservation delay first")
                     command["order_set_hour"], command["order_set_min"] = divmod(int(delay), 60)
                 await self.async_set_attributes(command)
+                zero_attributes = self._config.get("verify_zero_attributes", [])
+                if zero_attributes and any(self._get_nested_value(key) != 0 for key in zero_attributes):
+                    # This appliance sometimes needs a second stop to clear storage.
+                    await self.async_set_attributes(command)
+                    if any(self._get_nested_value(key) != 0 for key in zero_attributes):
+                        raise HomeAssistantError("Device did not confirm that the operation stopped")
+                positive_attribute = self._config.get("verify_positive_attribute")
+                if positive_attribute and not self._get_nested_value(positive_attribute):
+                    raise HomeAssistantError("Device did not confirm that the operation started")
             elif isinstance(command, str):
                 # 如果是字符串，可能是特殊命令类型
                 await self._async_execute_command(command)

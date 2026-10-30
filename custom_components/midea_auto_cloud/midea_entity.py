@@ -163,7 +163,15 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
 
     def _require_idle(self) -> None:
         """Reject program edits while the appliance has an active operation."""
-        if self._get_nested_value("work_status") not in ("power_off", "power_on", "cancel"):
+        capabilities = self._device.capabilities if self._device is not None else {}
+        blocked = any(
+            self._get_nested_value(key) in values
+            for key, values in capabilities.get("idle_blockers", {}).items()
+        ) or any(
+            (self._get_nested_value(key) or 0) > 0
+            for key in capabilities.get("idle_positive_attributes", [])
+        )
+        if blocked or self._get_nested_value("work_status") not in ("power_off", "power_on", "cancel"):
             raise HomeAssistantError("Stop the current operation before changing this setting")
 
     def _check_condition(self, condition: dict | None = None) -> bool:

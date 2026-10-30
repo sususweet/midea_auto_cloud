@@ -352,6 +352,9 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             return
 
         now = datetime.now()
+        if (self.device.capabilities.get("dishwasher_preferences")
+                and self._should_poll_cloud("dishwasher_preferences", now)):
+            await self._poll_dishwasher_preferences(cloud, now)
         if (self.device.capabilities.get("dishwasher_stats")
                 and self._should_poll_cloud("dishwasher_stats", now)):
             await self._poll_dishwasher_statistics(cloud, now)
@@ -359,6 +362,11 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
             await self._poll_cloud_electricity(cloud, now)
         if cloud_queries.get("water_power") and self._should_poll_cloud("water_power", now):
             await self._poll_cloud_water_power(cloud, now, cloud_queries["water_power"])
+
+    async def _poll_dishwasher_preferences(self, cloud, now: datetime) -> None:
+        preferences = await cloud.query_dishwasher_preferences(self._device_id, self.device.sn8)
+        self.device.attributes.update({"smart_storage": preferences.smart_storage, "seasonal_mode": preferences.seasonal_mode})
+        self._last_cloud_poll["dishwasher_preferences"] = now
 
     async def _poll_dishwasher_statistics(self, cloud, now: datetime) -> None:
         from .core.dishwasher import parse_usage, parse_filter_quality
@@ -506,6 +514,20 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
 
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
+        if self.device.capabilities.get("dishwasher_preferences"):
+            requested = {key: value for key, value in attributes.items() if key in ("smart_storage", "seasonal_mode")}
+            if requested:
+                if "smart_storage" in requested:
+                    await self._cloud.set_dishwasher_storage(self._device_id, requested["smart_storage"])
+                if "seasonal_mode" in requested:
+                    await self._cloud.set_dishwasher_season(self._device_id, self.device.sn8, requested["seasonal_mode"])
+                await self._poll_dishwasher_preferences(self._cloud, datetime.now())
+                self.async_set_updated_data(self._snapshot())
+                if any(self.device.attributes[key] != value for key, value in requested.items()):
+                    raise HomeAssistantError("Cloud preferences did not confirm the requested value")
+                attributes = {key: value for key, value in attributes.items() if key not in requested}
+                if not attributes:
+                    return
         # 云端控制：构造 control 与 status（携带当前状态作为上下文）
         # 计算逻辑使用所有属性（包括有默认值的变量）
         for c in self.device._calculate_set:
@@ -567,7 +589,18 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
                     await asyncio.sleep(confirmation["interval"])
                 refreshed = await self.device.refresh_status()
                 self._track_poll_result(refreshed)
-                if refreshed and (expected is None or self.device.attributes.get("work_status") in expected):
+                confirmed_parameters = all(
+                    self.device.attributes.get(key) == attributes_to_send[key]
+                    for key in confirmation.get("confirm_attributes", []) if key in attributes_to_send
+                )
+                positive = all(
+                    (self.device.attributes.get(values[value]) or 0) > 0
+                    for key, values in confirmation.get("positive_after_control", {}).items()
+                    if key in attributes_to_send
+                    for value in [attributes_to_send[key]] if value in values
+                )
+                if (refreshed and confirmed_parameters and positive
+                        and (expected is None or self.device.attributes.get("work_status") in expected)):
                     self.async_set_updated_data(self._snapshot())
                     return
             self.async_set_updated_data(self._snapshot())
