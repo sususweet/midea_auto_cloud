@@ -88,6 +88,32 @@ Mapping files are located under `device_mapping`, with one mapping file for each
 
 The example configuration `22012227` demonstrates how to map device attributes to various Home Assistant entities above.
 
+## GR6 Pro Microwave Controls
+
+GR6 Pro (`T0xBF`, SN8 `700006DJ`, subtype `5`) supports staged microwave
+duration (5–1795 seconds, in 5-second steps), five power levels, and explicit
+start, pause, resume and cancel buttons. Set both duration and power before
+pressing start. Changing either setting alone does not start cooking; settings
+are local to the current Home Assistant session and must be selected again
+after a restart. Steam, oven and recipe modes are not exposed.
+
+Start and resume require fresh readable door, child-lock and fault states.
+The adapter checks the appliance response and reported work state, never
+automatically retries a heating command, and does not unlock the appliance or
+enable remote control. If a command cannot be confirmed, check the appliance
+before retrying. These checks do not replace the appliance's own protections
+or safe operation.
+
+Start, pause, resume and early cancellation were field-tested at medium power
+with a 30-second setting. Other power levels and door-open blocking were not
+separately field-tested. Cloud connectivity is still required.
+
+In an existing Home Assistant Python environment, run the focused offline
+tests from the repository root with
+`PYTHONPATH=. python -m unittest discover -s tests -p test_gr6_pro.py -v`.
+Optionally set `GR6_LUA_PATH` to the device's already downloaded Lua file to
+include real codec checks; no vendor Lua or account configuration is bundled.
+
 ## Donation
 
 If you find the project interesting or helpful, you are welcome to make a donation to support it. Donations will be used for the daily maintenance of the plugin, making it easier to provide better services for everyone!

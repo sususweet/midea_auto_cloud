@@ -2,6 +2,8 @@ from homeassistant.const import Platform, UnitOfTime, UnitOfArea, UnitOfTemperat
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 
+from ..gr6_pro import add_gr6_pro_mapping
+
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
@@ -122,3 +124,5 @@ DEVICE_MAPPING = {
         }
     }
 }
+
+add_gr6_pro_mapping(DEVICE_MAPPING)

@@ -47,6 +47,11 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
+        if action := self._config.get("gr6_pro_action"):
+            from .gr6_pro import async_execute
+
+            await async_execute(self.coordinator, action)
+            return
         # 从配置中获取要执行的命令或操作
         command = self._config.get("command")
         attribute = self._config.get("attribute", self._entity_key)
@@ -82,4 +87,3 @@ class MideaButtonEntity(MideaEntity, ButtonEntity):
         else:
             # 对于其他命令，可以通过 coordinator 发送
             await self.coordinator.async_send_command(0, command)
-
