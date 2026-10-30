@@ -6,6 +6,7 @@ import logging
 from enum import IntEnum
 from typing import Any
 
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
@@ -160,6 +161,12 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
             return False
         return self._check_condition(self._condition)
 
+    def _require_command_condition(self) -> None:
+        """Check the mapping's precondition before changing a setting."""
+        condition = self._config.get("command_condition")
+        if condition and not self._check_condition(condition):
+            raise HomeAssistantError("The current device state does not allow this operation")
+
     def _check_condition(self, condition: dict | None = None) -> bool:
         condition = condition or self._condition
         if not condition:
@@ -170,6 +177,10 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
                 if self.device_attributes.get(attr):
                     return False
             return True
+
+        if "in" in condition:
+            attr, values = condition["in"]
+            return self._get_nested_value(attr) in values
 
         if "eq" in condition:
             attr, expected_value = condition["eq"]

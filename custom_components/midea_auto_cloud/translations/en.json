@@ -154,6 +154,24 @@
       },
       "reset_filter": {
         "name": "Reset Filter Reminder"
+      },
+      "colmo_pause": {
+        "name": "Pause washing"
+      },
+      "colmo_resume": {
+        "name": "Resume washing"
+      },
+      "colmo_cancel": {
+        "name": "Cancel washing"
+      },
+      "colmo_start": {
+        "name": "Start selected program"
+      },
+      "colmo_reserve": {
+        "name": "Schedule washing"
+      },
+      "colmo_cancel_reservation": {
+        "name": "Cancel reservation"
       }
     },
     "binary_sensor": {
@@ -432,6 +450,18 @@
       },
       "filter_cleanup": {
         "name": "Filter Needs Cleaning"
+      },
+      "colmo_doorswitch": {
+        "name": "Doorswitch"
+      },
+      "colmo_softwater_lack": {
+        "name": "Softwater lack"
+      },
+      "colmo_bright_lack": {
+        "name": "Bright lack"
+      },
+      "colmo_water_lack": {
+        "name": "Water lack"
       }
     },
     "climate": {
@@ -1885,6 +1915,37 @@
           "big": "Large Ice",
           "small": "Small Ice"
         }
+      },
+      "colmo_program_selection": {
+        "name": "Selected program",
+        "state": {
+          "auto_wash": "Auto wash",
+          "strong_wash": "Strong wash",
+          "standard_wash": "Standard wash",
+          "hour_wash": "Hour wash",
+          "soak_wash": "Soak wash",
+          "eco_wash": "Eco wash",
+          "germ": "Germ",
+          "glass_wash": "Glass wash",
+          "fast_wash": "Fast wash",
+          "quietnight_wash": "Quietnight wash"
+        }
+      },
+      "colmo_region_selection": {
+        "name": "Selected basket",
+        "state": {
+          "upper": "Upper",
+          "lower": "Lower",
+          "all": "All"
+        }
+      },
+      "colmo_additional_selection": {
+        "name": "Additional rinses",
+        "state": {
+          "none": "None",
+          "once": "Once",
+          "twice": "Twice"
+        }
       }
     },
     "sensor": {
@@ -3242,6 +3303,50 @@
           "8": "Standby",
           "32": "Standby"
         }
+      },
+      "colmo_display_status": {
+        "name": "Status",
+        "state": {
+          "power_off": "Off",
+          "power_on": "Standby",
+          "cancel": "Standby",
+          "work": "Running",
+          "paused": "Paused",
+          "order": "Scheduled",
+          "error": "Fault"
+        }
+      },
+      "colmo_mode": {
+        "name": "Program",
+        "state": {
+          "auto_wash": "Auto wash",
+          "strong_wash": "Strong wash",
+          "standard_wash": "Standard wash",
+          "hour_wash": "Hour wash",
+          "soak_wash": "Soak wash",
+          "eco_wash": "Eco wash",
+          "germ": "Germ",
+          "glass_wash": "Glass wash",
+          "fast_wash": "Fast wash",
+          "quietnight_wash": "Quietnight wash",
+          "neutral_gear": "Not selected",
+          "cloud_wash": "Cloud program"
+        }
+      },
+      "colmo_temperature": {
+        "name": "Temperature"
+      },
+      "colmo_left_time": {
+        "name": "Time remaining"
+      },
+      "colmo_error_code": {
+        "name": "Error code"
+      },
+      "colmo_wash_stage": {
+        "name": "Wash stage"
+      },
+      "colmo_reservation_remaining": {
+        "name": "Reservation time remaining"
       }
     },
     "light": {
@@ -3491,6 +3596,15 @@
       },
       "appointment_finish_in": {
         "name": "Reserve: Finish In"
+      },
+      "colmo_reservation_delay_minutes": {
+        "name": "Reservation delay"
+      },
+      "colmo_softwater": {
+        "name": "Water softener level"
+      },
+      "colmo_bright": {
+        "name": "Rinse aid level"
       }
     },
     "fan": {
@@ -4825,6 +4939,15 @@
       },
       "turbo": {
         "name": "Turbo"
+      },
+      "colmo_power": {
+        "name": "Power"
+      },
+      "colmo_child_lock": {
+        "name": "Child lock"
+      },
+      "colmo_beep": {
+        "name": "Sound"
       }
     },
     "text": {

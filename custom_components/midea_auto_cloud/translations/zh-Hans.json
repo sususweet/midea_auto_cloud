@@ -154,6 +154,24 @@
       },
       "reset_filter": {
         "name": "复位滤网提醒"
+      },
+      "colmo_pause": {
+        "name": "暂停洗涤"
+      },
+      "colmo_resume": {
+        "name": "继续洗涤"
+      },
+      "colmo_cancel": {
+        "name": "取消洗涤"
+      },
+      "colmo_start": {
+        "name": "启动当前程序"
+      },
+      "colmo_reserve": {
+        "name": "预约启动"
+      },
+      "colmo_cancel_reservation": {
+        "name": "取消预约"
       }
     },
     "binary_sensor": {
@@ -452,6 +470,18 @@
       },
       "filter_cleanup": {
         "name": "滤网需清洁"
+      },
+      "colmo_doorswitch": {
+        "name": "舱门"
+      },
+      "colmo_softwater_lack": {
+        "name": "缺盐"
+      },
+      "colmo_bright_lack": {
+        "name": "漂洗剂不足"
+      },
+      "colmo_water_lack": {
+        "name": "缺水"
       }
     },
     "climate": {
@@ -2160,6 +2190,37 @@
           "big": "大冰",
           "small": "小冰"
         }
+      },
+      "colmo_program_selection": {
+        "name": "待启动程序",
+        "state": {
+          "auto_wash": "智能洗",
+          "strong_wash": "超强洗",
+          "standard_wash": "标准洗",
+          "hour_wash": "60分钟洗",
+          "soak_wash": "预冲洗",
+          "eco_wash": "节能洗",
+          "germ": "除菌洗",
+          "glass_wash": "轻柔洗",
+          "fast_wash": "快速洗",
+          "quietnight_wash": "静音洗"
+        }
+      },
+      "colmo_region_selection": {
+        "name": "待启动分层",
+        "state": {
+          "upper": "上层",
+          "lower": "下层",
+          "all": "全层"
+        }
+      },
+      "colmo_additional_selection": {
+        "name": "待启动附加漂洗",
+        "state": {
+          "none": "无",
+          "once": "增加漂洗一次",
+          "twice": "增加漂洗两次"
+        }
       }
     },
     "sensor": {
@@ -3575,6 +3636,50 @@
           "8": "待机",
           "32": "待机"
         }
+      },
+      "colmo_display_status": {
+        "name": "工作状态",
+        "state": {
+          "power_off": "关机",
+          "power_on": "待机",
+          "cancel": "待机",
+          "work": "运行中",
+          "paused": "已暂停",
+          "order": "已预约",
+          "error": "故障"
+        }
+      },
+      "colmo_mode": {
+        "name": "当前程序",
+        "state": {
+          "auto_wash": "智能洗",
+          "strong_wash": "超强洗",
+          "standard_wash": "标准洗",
+          "hour_wash": "60分钟洗",
+          "soak_wash": "预冲洗",
+          "eco_wash": "节能洗",
+          "germ": "除菌洗",
+          "glass_wash": "轻柔洗",
+          "fast_wash": "快速洗",
+          "quietnight_wash": "静音洗",
+          "neutral_gear": "未选择",
+          "cloud_wash": "云洗涤"
+        }
+      },
+      "colmo_temperature": {
+        "name": "当前温度"
+      },
+      "colmo_left_time": {
+        "name": "剩余时间"
+      },
+      "colmo_error_code": {
+        "name": "故障码"
+      },
+      "colmo_wash_stage": {
+        "name": "洗涤阶段"
+      },
+      "colmo_reservation_remaining": {
+        "name": "预约剩余时间"
       }
     },
     "light": {
@@ -3833,6 +3938,15 @@
       },
       "appointment_finish_in": {
         "name": "预约：多少分钟后洗完"
+      },
+      "colmo_reservation_delay_minutes": {
+        "name": "预约延迟分钟"
+      },
+      "colmo_softwater": {
+        "name": "软水盐档位"
+      },
+      "colmo_bright": {
+        "name": "漂洗剂档位"
       }
     },
     "fan": {
@@ -5167,6 +5281,15 @@
       },
       "turbo": {
         "name": "加速"
+      },
+      "colmo_power": {
+        "name": "电源"
+      },
+      "colmo_child_lock": {
+        "name": "童锁"
+      },
+      "colmo_beep": {
+        "name": "提示音"
       }
     },
     "text": {
