@@ -1009,5 +1009,321 @@ DEVICE_MAPPING = {
                 }
             }
         }
+    },
+    # COLMO CDG18QHS1A; validated only for this SN8.
+    "76000029": {
+        "manufacturer": "COLMO",
+        "rationale": [0, 1],
+        "queries": [{}],
+        "centralized": [],
+        "calculate": {
+            "get": [
+                {"lvalue": "[ion_active]", "rvalue": "bool([airswitch] and [air_left_hour])"},
+                {
+                    "lvalue": "[power_state]",
+                    "rvalue": "'power_off' if [work_status] == 'power_off' else 'power_on'",
+                },
+                {
+                    "lvalue": "[display_status]",
+                    "rvalue": "'ion_drying' if [ion_active] else 'paused' if [work_status] == 'work' and [operator] == 'pause' else [work_status]",
+                },
+                {"lvalue": "[display_mode]", "rvalue": "[mode]"},
+                {
+                    "lvalue": "[runtime_left_time]",
+                    "rvalue": "[left_time] if [work_status] == 'work' else None",
+                },
+                {
+                    "lvalue": "[reservation_remaining]",
+                    "rvalue": "([order_left_hour] or 0) * 60 + ([order_left_min] or 0) if [work_status] == 'order' else None",
+                },
+                {
+                    "lvalue": "[ion_remaining_hours]",
+                    "rvalue": "[air_left_hour] if [ion_active] else None",
+                },
+            ],
+            "set": [
+                {"lvalue": "[order_set_hour]", "rvalue": "int([order_set_min]) // 60"},
+                {"lvalue": "[order_set_min]", "rvalue": "int([order_set_min]) % 60"},
+            ],
+        },
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "doorswitch": {
+                    "device_class": BinarySensorDeviceClass.DOOR,
+                    "rationale": [1, 0],
+                    "translation_key": "colmo_doorswitch",
+                },
+                "softwater_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "colmo_softwater_lack",
+                },
+                "bright_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "colmo_bright_lack",
+                },
+                "water_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "translation_key": "colmo_water_lack",
+                },
+                "ion_active": {
+                    "rationale": [False, True],
+                    "device_class": BinarySensorDeviceClass.RUNNING,
+                    "translation_key": "colmo_ion_active",
+                },
+            },
+            Platform.SENSOR: {
+                "display_status": {
+                    "translation_key": "colmo_display_status",
+                    "device_class": SensorDeviceClass.ENUM,
+                    "options": [
+                        "power_off",
+                        "power_on",
+                        "cancel",
+                        "work",
+                        "paused",
+                        "order",
+                        "error",
+                        "ion_drying",
+                    ],
+                },
+                "mode": {
+                    "translation_key": "colmo_mode",
+                    "device_class": SensorDeviceClass.ENUM,
+                    "options": [
+                        "auto_wash",
+                        "strong_wash",
+                        "standard_wash",
+                        "hour_wash",
+                        "soak_wash",
+                        "eco_wash",
+                        "germ",
+                        "glass_wash",
+                        "fast_wash",
+                        "quietnight_wash",
+                        "neutral_gear",
+                        "cloud_wash",
+                        "single_disinfect",
+                        "self_clean",
+                    ],
+                },
+                "temperature": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "colmo_temperature",
+                },
+                "left_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "attribute": "runtime_left_time",
+                    "translation_key": "colmo_left_time",
+                },
+                "error_code": {"translation_key": "colmo_error_code"},
+                "wash_stage": {"translation_key": "colmo_wash_stage"},
+                "reservation_remaining": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "translation_key": "colmo_reservation_remaining",
+                },
+                "ion_remaining_hours": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.HOURS,
+                    "translation_key": "colmo_ion_remaining_hours",
+                },
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "attribute": "work_status",
+                    "state_attribute": "power_state",
+                    "rationale": ["power_off", "power_on"],
+                    "translation_key": "colmo_power",
+                },
+                "child_lock": {
+                    "attribute": "lock",
+                    "rationale": ["off", "on"],
+                    "translation_key": "colmo_child_lock",
+                },
+                "beep": {
+                    "attribute": "switch",
+                    "state_attribute": "beep_control",
+                    "rationale": [0, 1],
+                    "command": {"common_down_type": 5},
+                    "translation_key": "colmo_beep",
+                },
+                "smart_storage": {"rationale": [0, 1], "translation_key": "colmo_smart_storage"},
+            },
+            Platform.BUTTON: {
+                "pause": {"command": {"operator": "pause"}, "translation_key": "colmo_pause"},
+                "resume": {"command": {"operator": "start"}, "translation_key": "colmo_resume"},
+                "cancel": {"command": {"work_status": "cancel"}, "translation_key": "colmo_cancel"},
+                "start": {
+                    "command": {"work_status": "work"},
+                    "include_attributes": {
+                        "mode": "selected_program",
+                        "wash_region": "selected_region",
+                        "additional": "selected_additional",
+                    },
+                    "translation_key": "colmo_start",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                },
+                "reserve": {
+                    "command": {"work_status": "order"},
+                    "include_attributes": {
+                        "mode": "selected_program",
+                        "wash_region": "selected_region",
+                        "additional": "selected_additional",
+                        "order_set_min": "reservation_delay_minutes",
+                    },
+                    "translation_key": "colmo_reserve",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                    "prepare_command": {
+                        "condition": {"eq": ["work_status", "power_off"]},
+                        "command": {"work_status": "power_on"},
+                    },
+                },
+                "cancel_reservation": {
+                    "condition": {"eq": ["work_status", "order"]},
+                    "command": {"work_status": "cancel_order"},
+                    "translation_key": "colmo_cancel_reservation",
+                },
+                "ion_start": {
+                    "prepare_attributes": {"air_set_hour": "selected_ion_hours"},
+                    "command": {"airswitch": 2},
+                    "verify_positive_attribute": "air_left_hour",
+                    "translation_key": "colmo_ion_start",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                    "prepare_command": {
+                        "condition": {"eq": ["work_status", "power_off"]},
+                        "command": {"work_status": "power_on"},
+                    },
+                },
+                "ion_stop": {
+                    "command": {"airswitch": 0},
+                    "verify_zero_attributes": ["airswitch", "air_left_hour", "air_status"],
+                    "translation_key": "colmo_ion_stop",
+                },
+            },
+            Platform.SELECT: {
+                "program_selection": {
+                    "attribute": "selected_program",
+                    "status_key": "selected_program",
+                    "default_value": "standard_wash",
+                    "options": {
+                        "auto_wash": {"selected_program": "auto_wash"},
+                        "strong_wash": {"selected_program": "strong_wash"},
+                        "standard_wash": {"selected_program": "standard_wash"},
+                        "hour_wash": {"selected_program": "hour_wash"},
+                        "soak_wash": {"selected_program": "soak_wash"},
+                        "eco_wash": {"selected_program": "eco_wash"},
+                        "germ": {"selected_program": "germ"},
+                        "glass_wash": {"selected_program": "glass_wash"},
+                        "fast_wash": {"selected_program": "fast_wash"},
+                        "quietnight_wash": {"selected_program": "quietnight_wash"},
+                        "single_disinfect": {"selected_program": "single_disinfect"},
+                        "self_clean": {"selected_program": "self_clean"},
+                    },
+                    "reset_draft_parameters": {"selected_region": 3, "selected_additional": 0},
+                    "translation_key": "colmo_program_selection",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                },
+                "region_selection": {
+                    "attribute": "selected_region",
+                    "status_key": "selected_region",
+                    "default_value": 3,
+                    "condition": {"eq": ["selected_program", "standard_wash"]},
+                    "options": {
+                        "upper": {"selected_region": 1},
+                        "lower": {"selected_region": 2},
+                        "all": {"selected_region": 3},
+                    },
+                    "translation_key": "colmo_region_selection",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                },
+                "additional_selection": {
+                    "attribute": "selected_additional",
+                    "status_key": "selected_additional",
+                    "default_value": 0,
+                    "condition": {"eq": ["selected_program", "standard_wash"]},
+                    "options": {
+                        "none": {"selected_additional": 0},
+                        "once": {"selected_additional": 9},
+                        "twice": {"selected_additional": 10},
+                    },
+                    "translation_key": "colmo_additional_selection",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                },
+                "seasonal_mode": {
+                    "attribute": "seasonal_mode",
+                    "status_key": "seasonal_mode",
+                    "options": {
+                        "auto": {"seasonal_mode": "auto"},
+                        "win": {"seasonal_mode": "win"},
+                        "sum": {"seasonal_mode": "sum"},
+                    },
+                    "translation_key": "colmo_seasonal_mode",
+                },
+                "ion_duration": {
+                    "attribute": "selected_ion_hours",
+                    "status_key": "selected_ion_hours",
+                    "default_value": 1,
+                    "options": {"1": {"selected_ion_hours": 1}, "2": {"selected_ion_hours": 2}},
+                    "translation_key": "colmo_ion_duration",
+                    "command_condition": {
+                        "in": ["work_status", ["power_off", "power_on", "cancel"]]
+                    },
+                },
+            },
+            Platform.NUMBER: {
+                "reservation_delay_minutes": {
+                    "default_value": 120,
+                    "min": 1,
+                    "max": 1440,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "translation_key": "colmo_reservation_delay_minutes",
+                },
+                "softwater": {"min": 1, "max": 6, "step": 1, "translation_key": "colmo_softwater"},
+                "bright": {"min": 1, "max": 5, "step": 1, "translation_key": "colmo_bright"},
+            },
+        },
+        "write_attributes": ["common_down_type", "switch", "order_set_hour", "order_set_min"],
+        "cloud_queries": {
+            "water_power": False,
+            "dishwasher_stats": {"interval": 3600},
+            "dishwasher_preferences": {"interval": 3600},
+        },
+        "capabilities": {
+            "prefer_cloud_lua": True,
+            "dishwasher_stats": True,
+            "confirm_status_after_control": {
+                "attempts": 6,
+                "interval": 1,
+                "work_status": {
+                    "power_on": ["power_on", "cancel"],
+                    "power_off": ["power_off"],
+                    "cancel": ["cancel"],
+                    "cancel_order": ["cancel"],
+                    "order": ["order"],
+                    "work": ["work"],
+                },
+                "confirm_attributes": ["air_set_hour"],
+                "positive_after_control": {"airswitch": {"2": "air_left_hour"}},
+            },
+            "dishwasher_preferences": True,
+            "idle_blockers": {"air_status": [1], "dryswitch": [2]},
+            "idle_positive_attributes": ["air_left_hour"],
+        },
     }
 }

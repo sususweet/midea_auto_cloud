@@ -147,6 +147,27 @@ _CLOUD_STATS_REGISTRY: dict[int, dict] = {
 
 def merge_cloud_stats_mapping(mapping: dict, device_type: int) -> dict:
     """按设备类型合并云端统计查询与传感器到 mapping。"""
+    if mapping.get("capabilities", {}).get("dishwasher_stats"):
+        sensors = {**_WATER_POWER_SENSORS}
+        for period in ("month", "year"):
+            sensors[f"cloud_saved_water_{period}"] = {
+                "device_class": SensorDeviceClass.WATER,
+                "unit_of_measurement": UnitOfVolume.LITERS,
+                "state_class": SensorStateClass.TOTAL_INCREASING,
+                "translation_key": f"colmo_saved_water_{period}",
+            }
+            sensors[f"cloud_wash_count_{period}"] = {
+                "state_class": SensorStateClass.TOTAL_INCREASING,
+                "translation_key": f"colmo_wash_count_{period}",
+            }
+        sensors["filter_quality"] = {
+            "device_class": SensorDeviceClass.ENUM,
+            "options": ["excellent", "good", "poor"],
+            "translation_key": "colmo_filter_quality",
+        }
+        entities = {**mapping.get("entities", {})}
+        entities[Platform.SENSOR] = {**sensors, **entities.get(Platform.SENSOR, {})}
+        return {**mapping, "entities": entities}
     stats = _CLOUD_STATS_REGISTRY.get(device_type)
     if not stats or not mapping:
         return mapping

@@ -103,6 +103,7 @@ class MiedaDevice(threading.Thread):
         self._calculate_get = []
         self._calculate_set = []
         self._default_values = {}
+        self.capabilities: dict = {}
         # lupa/Lua load is blocking; construct off the event loop via async_init_lua_runtime()
         self._lua_file = lua_file
         self._lua_runtime: MideaCodec | None = None
