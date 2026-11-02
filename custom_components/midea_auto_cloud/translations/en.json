@@ -77,14 +77,14 @@
       },
       "mapping_select_device": {
         "title": "Device mapping overlay",
-        "description": "Choose a device to assign an external mapping profile. Profiles are stored under .storage/midea_auto_cloud/mappings/ and survive upgrades.",
+        "description": "Choose a device to assign an external mapping profile. Profiles are stored under .storage/midea_auto_cloud/mappings/ and survive upgrades. Once your custom profile works, please consider opening a Pull Request to contribute reusable bits into device_mapping/.",
         "data": {
           "device_id": "Device"
         }
       },
       "mapping_action": {
         "title": "Mapping action",
-        "description": "Device {device_id}\nCurrent profile: {current_profile}",
+        "description": "Device {device_id}\nCurrent profile: {current_profile}\n\nTip: if your custom mapping works, please open a PR to contribute it back into device_mapping/.",
         "data": {
           "action": "Action"
         }
@@ -98,7 +98,7 @@
       },
       "mapping_paste_json": {
         "title": "Paste profile JSON",
-        "description": "Paste a profile JSON for device {device_id}. Required keys: profile, mode (extend|replace), mapping. Platform keys under entities use strings such as climate / switch.",
+        "description": "Paste a profile JSON for device {device_id}. Required keys: profile, mode (extend|replace), mapping. Platform keys under entities use strings such as climate / switch.\n\nOnce verified on your setup, please consider upstreaming reusable fragments into device_mapping/ (by device_type / sn8 / subtype) via a Pull Request.",
         "data": {
           "profile_json": "Profile JSON"
         }

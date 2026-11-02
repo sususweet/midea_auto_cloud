@@ -123,7 +123,9 @@ Example profile (`mode: extend` merges onto builtin mapping; `replace` replaces 
 }
 ```
 
-Platform keys under `entities` are strings (`climate` / `switch`, …). Set a key to `null` in an extend overlay to remove that builtin entry. Stable fragments are welcome as PRs back into `device_mapping/`.
+Platform keys under `entities` are strings (`climate` / `switch`, …). Set a key to `null` in an extend overlay to remove that builtin entry.
+
+Once your custom profile works on your setup, please consider upstreaming the reusable bits into `device_mapping/` (by `device_type` / `sn8` / `subtype`) via a Pull Request so others can benefit. External overlays are not guaranteed to stay aligned with builtin mappings forever.
 
 ## Donation
 

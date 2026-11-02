@@ -123,7 +123,9 @@ Profile 示例（`mode: extend` 在内置 mapping 上合并；`replace` 整表�
 }
 ```
 
-`entities` 下平台键使用字符串（`climate` / `switch` 等）。overlay 中某键设为 `null` 可删除内置对应项。稳定可用的片段欢迎 PR 回 `device_mapping/`。
+`entities` 下平台键使用字符串（`climate` / `switch` 等）。overlay 中某键设为 `null` 可删除内置对应项。
+
+自定义 profile 在你这边验证可用后，欢迎把可复用的片段整理进 `device_mapping/`（按 `device_type` / `sn8` / `subtype`）并发起 Pull Request，方便更多用户直接受益；外部 overlay 本身不保证与上游内置 mapping 长期一致。
 
 ## 捐赠
 

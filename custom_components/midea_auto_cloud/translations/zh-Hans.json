@@ -77,14 +77,14 @@
       },
       "mapping_select_device": {
         "title": "设备 Mapping 覆盖",
-        "description": "选择要指定外部 mapping profile 的设备。Profile 保存在 .storage/midea_auto_cloud/mappings/，升级不会丢失。",
+        "description": "选择要指定外部 mapping profile 的设备。Profile 保存在 .storage/midea_auto_cloud/mappings/，升级不会丢失。自定义验证可用后，欢迎把可复用片段整理进 device_mapping/ 并发起 Pull Request。",
         "data": {
           "device_id": "设备"
         }
       },
       "mapping_action": {
         "title": "Mapping 操作",
-        "description": "设备 {device_id}\n当前 profile: {current_profile}",
+        "description": "设备 {device_id}\n当前 profile: {current_profile}\n\n提示：自定义 mapping 在你这边验证可用后，欢迎发起 PR 回馈到 device_mapping/。",
         "data": {
           "action": "操作"
         }
@@ -98,7 +98,7 @@
       },
       "mapping_paste_json": {
         "title": "粘贴 Profile JSON",
-        "description": "为设备 {device_id} 粘贴 profile JSON。必填：profile、mode（extend|replace）、mapping。entities 下平台键用字符串，如 climate / switch。",
+        "description": "为设备 {device_id} 粘贴 profile JSON。必填：profile、mode（extend|replace）、mapping。entities 下平台键用字符串，如 climate / switch。\n\n验证可用后，欢迎把可复用片段整理进 device_mapping/（按 device_type / sn8 / subtype）并发起 Pull Request。",
         "data": {
           "profile_json": "Profile JSON"
         }
