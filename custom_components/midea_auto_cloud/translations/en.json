@@ -2524,7 +2524,7 @@
         "name": "Remind Maintenance Days"
       },
       "remote_control_flag": {
-        "name": "Remote Control Flag"
+        "name": "Remote control"
       },
       "return_water_tem": {
         "name": "Return Water Temperature"

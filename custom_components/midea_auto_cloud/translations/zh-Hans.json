@@ -2851,7 +2851,7 @@
         "name": "提醒维护天数"
       },
       "remote_control_flag": {
-        "name": "遥控标志"
+        "name": "远程控制"
       },
       "return_water_tem": {
         "name": "回水温度"

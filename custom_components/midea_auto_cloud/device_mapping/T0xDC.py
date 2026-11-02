@@ -98,6 +98,12 @@ def _level_options(attr: str, levels: range) -> dict:
 
 # Full dryer surface from midea_dryer.lua / T_0000_DC_27958_*.lua
 # (power + control_status start/pause + full program list).
+# Notes for sn8 38210622 / subtype 27958 (Little Swan 97Pro, issue #281):
+# - control_status alone is ignored while power is off; always include power=on
+#   in the same control frame when starting/pausing.
+# - power-on also re-sends the current program (firmware often expects it).
+# - remote_control_flag must be non-zero on the appliance panel, or cloud
+#   control is accepted for status but rejected for writes.
 _FULL_DRYER_MAPPING = {
     "rationale": ["off", "on"],
     "queries": [{}],
@@ -106,9 +112,12 @@ _FULL_DRYER_MAPPING = {
         Platform.SWITCH: {
             "power": {
                 "device_class": SwitchDeviceClass.SWITCH,
+                "include_current": ["program"],
             },
             "control_status": {
                 "rationale": ["pause", "start"],
+                # Same-frame power=on so 启停 works after a cold power-off.
+                "command": {"power": "on"},
             },
             "ai_switch": {
                 "device_class": SwitchDeviceClass.SWITCH,
@@ -247,6 +256,9 @@ _FULL_DRYER_MAPPING = {
                 "device_class": SensorDeviceClass.ENUM,
             },
             "keep_fresh_status": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "remote_control_flag": {
                 "device_class": SensorDeviceClass.ENUM,
             },
         },
