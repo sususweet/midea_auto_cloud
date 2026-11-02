@@ -3344,6 +3344,24 @@
       "total_kwh": {
         "name": "累计电量"
       },
+      "heat_energy_month": {
+        "name": "本月制热电量"
+      },
+      "dhw_energy_month": {
+        "name": "本月生活热水电量"
+      },
+      "cool_energy_month": {
+        "name": "本月制冷电量"
+      },
+      "heat_energy_year": {
+        "name": "本年制热电量"
+      },
+      "dhw_energy_year": {
+        "name": "本年生活热水电量"
+      },
+      "cool_energy_year": {
+        "name": "本年制冷电量"
+      },
       "lua_version": {
         "name": "Lua版本"
       },
