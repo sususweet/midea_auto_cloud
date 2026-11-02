@@ -258,15 +258,20 @@ async def _ensure_msmart_home_api_route(cloud) -> None:
         await re_route()
 
 
-async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None, category=None):
-    # def _ensure_dir_and_load(path_dir: str, path_file: str):
-    #     os.makedirs(path_dir, exist_ok=True)
-    #     return load_json(path_file, default={})
+async def load_device_config(
+    hass: HomeAssistant,
+    device_type,
+    sn8,
+    subtype=None,
+    category=None,
+    device_id=None,
+):
+    """Load builtin mapping, apply optional per-device overlay, then cloud stats.
 
-    # config_dir = hass.config.path(CONFIG_PATH)
-    # config_file = hass.config.path(f"{CONFIG_PATH}/{sn8}.json")
-    # raw = await hass.async_add_executor_job(_ensure_dir_and_load, config_dir, config_file)
-
+    External overlays live under ``.storage/midea_auto_cloud/mappings/``
+    (see ``mapping_overlay``); they are keyed by appliance ``device_id`` and
+    survive HACS upgrades of this integration package.
+    """
     json_data = {}
 
     device_path = f".device_mapping.{'T0x%02X' % device_type}"
@@ -287,9 +292,12 @@ async def load_device_config(hass: HomeAssistant, device_type, sn8, subtype=None
             f"sn8: {sn8}, subtype: {subtype}, category: {category}. "
         )
 
-    # save_data = {sn8: json_data}
-    # offload save_json as well
-    # await hass.async_add_executor_job(save_json, config_file, save_data)
+    from .mapping_overlay import apply_device_overlay
+
+    json_data = await hass.async_add_executor_job(
+        apply_device_overlay, hass, json_data, device_id
+    )
+
     try:
         from .device_mapping._cloud_stats import merge_cloud_stats_mapping
     except ImportError:
@@ -577,6 +585,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                                     info.get(CONF_SN8) or info.get("sn8"),
                                     device.subtype,
                                     device.category,
+                                    device_id=appliance_code,
                                 ) or {}
                             except Exception:
                                 mapping = {}

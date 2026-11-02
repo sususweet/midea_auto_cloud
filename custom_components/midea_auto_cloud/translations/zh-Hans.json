@@ -75,6 +75,41 @@
           "server": "服务器"
         }
       },
+      "mapping_select_device": {
+        "title": "设备 Mapping 覆盖",
+        "description": "选择要指定外部 mapping profile 的设备。Profile 保存在 .storage/midea_auto_cloud/mappings/，升级不会丢失。",
+        "data": {
+          "device_id": "设备"
+        }
+      },
+      "mapping_action": {
+        "title": "Mapping 操作",
+        "description": "设备 {device_id}\n当前 profile: {current_profile}",
+        "data": {
+          "action": "操作"
+        }
+      },
+      "mapping_pick_profile": {
+        "title": "选用已有 profile",
+        "description": "为设备 {device_id} 指定已有 profile，保存后将重载本集成条目。",
+        "data": {
+          "profile_id": "Profile"
+        }
+      },
+      "mapping_paste_json": {
+        "title": "粘贴 Profile JSON",
+        "description": "为设备 {device_id} 粘贴 profile JSON。必填：profile、mode（extend|replace）、mapping。entities 下平台键用字符串，如 climate / switch。",
+        "data": {
+          "profile_json": "Profile JSON"
+        }
+      },
+      "mapping_clear": {
+        "title": "清除 Mapping 覆盖",
+        "description": "清除设备 {device_id} 的覆盖绑定；profile 文件本身会保留。",
+        "data": {
+          "confirm": "确认清除"
+        }
+      },
       "reset": {
         "title": "重置配置文件",
         "description": "移除已有的设备配置，并使用标准模板重新生成设备配置\n如果你的设备配置json文件进行过修改，重置之后修改将丢失\n如果标准模板中没有该设备类型，则不会生成设备配置",
@@ -90,9 +125,20 @@
         "title": "配置"
       }
     },
+    "error": {
+      "login_failed": "无法登录到选择的美的云服务器，请检查用户名或密码",
+      "invalid_profile_json": "JSON 无效",
+      "invalid_profile_id": "profile id 无效（仅字母数字与 _ -）",
+      "invalid_profile_mode": "mode 必须是 extend 或 replace",
+      "invalid_profile_mapping": "mapping 必须是 JSON 对象",
+      "invalid_device_id": "设备 id 无效",
+      "profile_not_found": "找不到对应的 profile 文件"
+    },
     "abort": {
       "reset_success": "重置完成，已尝试生成新的配置",
-      "account_unsupport_config": "账户配置不支持该操作"
+      "account_unsupport_config": "账户配置不支持该操作",
+      "no_devices_loaded": "该条目尚未加载设备列表，请先确保集成已启动后再试。",
+      "no_profiles": "还没有 profile，请先粘贴 JSON 创建。"
     }
   },
   "services": {

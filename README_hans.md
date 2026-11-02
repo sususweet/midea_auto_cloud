@@ -88,6 +88,43 @@
 
 示例配置`22012227`演示了如何将设备属性映射成以上各种HomeAssistant中的实体。
 
+### 外部 Mapping 覆盖（按设备）
+
+同一 `device_type` / `sn8` / `subtype` 的多台设备若需要不同实体映射（例如 Clivet 不同形态内机），可在集成 **配置 → 选项 → 设备 Mapping 覆盖** 中：
+
+1. 选择设备（按名称 / 类型 / device_id）
+2. **粘贴 JSON** 新建/更新 profile，或 **选用已有 profile**
+3. 保存后自动重载该配置条目
+
+数据保存在 `.storage/midea_auto_cloud/mappings/`（升级集成不会覆盖）：
+
+```text
+.storage/midea_auto_cloud/mappings/
+  overrides.json          # device_id -> profile_id
+  <profile_id>.json
+```
+
+Profile 示例（`mode: extend` 在内置 mapping 上合并；`replace` 整表替换）：
+
+```json
+{
+  "profile": "clivet_cassette",
+  "device_type": "T0xCC",
+  "mode": "extend",
+  "mapping": {
+    "entities": {
+      "climate": {
+        "thermostat": {
+          "fan_modes": { "1": {"wind_speed_level": "1"} }
+        }
+      }
+    }
+  }
+}
+```
+
+`entities` 下平台键使用字符串（`climate` / `switch` 等）。overlay 中某键设为 `null` 可删除内置对应项。稳定可用的片段欢迎 PR 回 `device_mapping/`。
+
 ## 捐赠
 
 如果认为项目有趣或对你有帮助，欢迎捐赠支持。捐赠金额将用于日常插件维护，方便为大家提供更好的服务！

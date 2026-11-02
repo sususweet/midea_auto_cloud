@@ -75,6 +75,41 @@
           "server": "Server"
         }
       },
+      "mapping_select_device": {
+        "title": "Device mapping overlay",
+        "description": "Choose a device to assign an external mapping profile. Profiles are stored under .storage/midea_auto_cloud/mappings/ and survive upgrades.",
+        "data": {
+          "device_id": "Device"
+        }
+      },
+      "mapping_action": {
+        "title": "Mapping action",
+        "description": "Device {device_id}\nCurrent profile: {current_profile}",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "mapping_pick_profile": {
+        "title": "Select profile",
+        "description": "Assign an existing profile to device {device_id}. The entry will reload after save.",
+        "data": {
+          "profile_id": "Profile"
+        }
+      },
+      "mapping_paste_json": {
+        "title": "Paste profile JSON",
+        "description": "Paste a profile JSON for device {device_id}. Required keys: profile, mode (extend|replace), mapping. Platform keys under entities use strings such as climate / switch.",
+        "data": {
+          "profile_json": "Profile JSON"
+        }
+      },
+      "mapping_clear": {
+        "title": "Clear mapping overlay",
+        "description": "Remove the overlay for device {device_id}. The profile file itself is kept.",
+        "data": {
+          "confirm": "Confirm clear"
+        }
+      },
       "reset": {
         "title": "Reset the configuration of appliance",
         "description": "Remove the old configuration and make a new configuration use template\nIf your configuration was modified, the changes will lost\nIf your appliance type or model not in template, then the new configuration won't be made",
@@ -90,9 +125,20 @@
         "title": "Option"
       }
     },
+    "error": {
+      "login_failed": "Failed to login, wrong account or password",
+      "invalid_profile_json": "Invalid JSON",
+      "invalid_profile_id": "Invalid profile id (use letters, digits, _ or -)",
+      "invalid_profile_mode": "mode must be extend or replace",
+      "invalid_profile_mapping": "mapping must be a JSON object",
+      "invalid_device_id": "Invalid device id",
+      "profile_not_found": "Profile file not found"
+    },
     "abort": {
       "reset_success": "Reset done",
-      "account_unsupport_config": "Doesn't support this operation"
+      "account_unsupport_config": "Doesn't support this operation",
+      "no_devices_loaded": "No devices loaded for this entry yet. Open the integration once, then try again.",
+      "no_profiles": "No profiles found. Paste JSON first to create one."
     }
   },
   "services": {

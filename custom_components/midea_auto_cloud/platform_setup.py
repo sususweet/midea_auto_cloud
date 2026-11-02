@@ -46,7 +46,9 @@ async def async_setup_platform_entities(
         subtype = device.subtype if device else None
         category = device.category if device else None
 
-        config = await load_device_config(hass, device_type, sn8, subtype, category) or {}
+        config = await load_device_config(
+            hass, device_type, sn8, subtype, category, device_id=device_id
+        ) or {}
         entities_cfg = (config.get("entities") or {}).get(platform, {}) or {}
         manufacturer = config.get("manufacturer")
         rationale = config.get("rationale")

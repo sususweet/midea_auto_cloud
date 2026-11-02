@@ -88,6 +88,43 @@ Mapping files are located under `device_mapping`, with one mapping file for each
 
 The example configuration `22012227` demonstrates how to map device attributes to various Home Assistant entities above.
 
+### External mapping overlay (per device)
+
+When multiple appliances share the same `device_type` / `sn8` / `subtype` but need different entity mappings (e.g. Clivet indoor units), open **Configure → Options → Device mapping overlay**:
+
+1. Select a device (name / type / device_id)
+2. **Paste JSON** to create/update a profile, or **use an existing profile**
+3. Save; the config entry reloads automatically
+
+Data lives under `.storage/midea_auto_cloud/mappings/` (survives integration upgrades):
+
+```text
+.storage/midea_auto_cloud/mappings/
+  overrides.json          # device_id -> profile_id
+  <profile_id>.json
+```
+
+Example profile (`mode: extend` merges onto builtin mapping; `replace` replaces it):
+
+```json
+{
+  "profile": "clivet_cassette",
+  "device_type": "T0xCC",
+  "mode": "extend",
+  "mapping": {
+    "entities": {
+      "climate": {
+        "thermostat": {
+          "fan_modes": { "1": {"wind_speed_level": "1"} }
+        }
+      }
+    }
+  }
+}
+```
+
+Platform keys under `entities` are strings (`climate` / `switch`, …). Set a key to `null` in an extend overlay to remove that builtin entry. Stable fragments are welcome as PRs back into `device_mapping/`.
+
 ## Donation
 
 If you find the project interesting or helpful, you are welcome to make a donation to support it. Donations will be used for the daily maintenance of the plugin, making it easier to provide better services for everyone!
