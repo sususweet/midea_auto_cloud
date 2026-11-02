@@ -1,3 +1,5 @@
+import copy
+
 from homeassistant.const import Platform, UnitOfElectricPotential, UnitOfTemperature, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -925,4 +927,60 @@ DEVICE_MAPPING = {
         },
     }
 }
+
+# sn8 38132344 / subtype 12610: front-load washer that resets its selected
+# program when powered on. Keep the delay locally, then power on, restore the
+# program and arm the appointment in a separate frame.
+_washer_38132344 = copy.deepcopy(DEVICE_MAPPING["default_front_load_washer"])
+_washer_38132344["entities"][Platform.SELECT]["program"]["options"].update({
+    "water_cotton": {"program": "water_cotton"},
+    "water_mixed_wash": {"program": "water_mixed_wash"},
+    "water_fiber": {"program": "water_fiber"},
+    "water_kids": {"program": "water_kids"},
+    "water_underwear": {"program": "water_underwear"},
+    "water_intelligent": {"program": "water_intelligent"},
+    "water_steep": {"program": "water_steep"},
+    "water_fast_wash_30": {"program": "water_fast_wash_30"},
+    "new_water_cotton": {"program": "new_water_cotton"},
+    "water_eco": {"program": "water_eco"},
+    "water_intense_wash": {"program": "water_intense_wash"},
+    "water_outdoor": {"program": "water_outdoor"},
+    "water_cold_wash": {"program": "water_cold_wash"},
+    "water_prevent_allergy": {"program": "water_prevent_allergy"},
+    "water_remove_mite_wash": {"program": "water_remove_mite_wash"},
+    "water_ssp": {"program": "water_ssp"},
+})
+_washer_38132344["entities"][Platform.SWITCH]["appointment"] = {
+    "device_class": SwitchDeviceClass.SWITCH,
+    "translation_key": "appointment",
+    "command_on": {
+        "control_status": "start",
+        "appointment": "on",
+        "appointment_time": "{appointment_delay}",
+    },
+    "command_off": {
+        "control_status": "pause",
+        "appointment": "off",
+        "appointment_time": "0",
+    },
+    "pre_commands_on": [
+        {"power": "on"},
+        {"program": "{program}"},
+    ],
+    "pre_command": {"power": "on"},
+    "pre_command_wait": 2.0,
+    "require_positive": ["appointment_delay"],
+}
+_washer_38132344["entities"][Platform.NUMBER] = {
+    "appointment_delay": {
+        "translation_key": "appointment_delay",
+        "min": 0,
+        "max": 1440,
+        "step": 1,
+        "unit_of_measurement": UnitOfTime.MINUTES,
+        "default_value": 0,
+        "restore": True,
+    },
+}
+DEVICE_MAPPING["38132344"] = _washer_38132344
 
