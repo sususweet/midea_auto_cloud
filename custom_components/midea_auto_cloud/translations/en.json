@@ -3537,6 +3537,9 @@
       },
       "appointment_finish_in": {
         "name": "Reserve: Finish In"
+      },
+      "appointment_delay": {
+        "name": "Appointment Delay"
       }
     },
     "fan": {

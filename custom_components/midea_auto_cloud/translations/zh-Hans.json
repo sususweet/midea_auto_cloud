@@ -3879,6 +3879,9 @@
       },
       "appointment_finish_in": {
         "name": "预约：多少分钟后洗完"
+      },
+      "appointment_delay": {
+        "name": "预约延时"
       }
     },
     "fan": {
