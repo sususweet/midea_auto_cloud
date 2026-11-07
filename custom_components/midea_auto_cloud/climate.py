@@ -32,6 +32,8 @@ from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
+NATIVE_TEMPERATURE = hasattr(ClimateEntity, "native_current_temperature")
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -101,11 +103,15 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         self._key_target_humidity = self._config.get("target_humidity")
         self._key_temperature_unit = self._config.get("temperature_unit")
         self._device_type = device.device_type
-        self._attr_temperature_unit = (
+        temperature_unit = (
             self._key_temperature_unit
             if not isinstance(self._key_temperature_unit, str)
             else UnitOfTemperature.CELSIUS
         )
+        if NATIVE_TEMPERATURE:
+            self._attr_native_temperature_unit = temperature_unit
+        else:
+            self._attr_temperature_unit = temperature_unit
         self._attr_precision = self._config.get("precision")
         self._attr_target_temperature_step = self._config.get("precision")
         # 短暂回读抖动时保留上次有效模式，避免调温后误显示 off (#211)
@@ -125,7 +131,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return None
 
     @property
-    def temperature_unit(self):
+    def native_temperature_unit(self):
         """Return the temperature unit (static or device attribute driven).
 
         If mapping provides a string key (e.g. "temperature_unit"), it is read from device attributes:
@@ -139,7 +145,11 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             except (TypeError, ValueError):
                 value = 0
             return UnitOfTemperature.FAHRENHEIT if value == 1 else UnitOfTemperature.CELSIUS
-        return self._attr_temperature_unit
+        return (
+            self._attr_native_temperature_unit
+            if NATIVE_TEMPERATURE
+            else self._attr_temperature_unit
+        )
 
     def _uses_temperature_range(self) -> bool:
         """The current hvac mode controls a low/high range, not a single setpoint."""
@@ -180,7 +190,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         return features
 
     @property
-    def current_temperature(self):
+    def native_current_temperature(self):
         if isinstance(self._key_current_temperature, list):
             temp_int = self._get_nested_value(self._key_current_temperature[0])
             tem_dec = self._get_nested_value(self._key_current_temperature[1])
@@ -268,7 +278,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         return None
 
     @property
-    def target_temperature(self):
+    def native_target_temperature(self):
         if self._uses_temperature_range():
             return None
         if self._is_central_ac:
@@ -362,7 +372,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             return float(self._key_max_humidity)
 
     @property
-    def target_temperature_low(self):
+    def native_target_temperature_low(self):
         if self._uses_temperature_range():
             value = self._get_nested_value(self._key_target_temperature_low)
             if value is not None:
@@ -374,7 +384,7 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         return self.min_temp
 
     @property
-    def target_temperature_high(self):
+    def native_target_temperature_high(self):
         if self._uses_temperature_range():
             value = self._get_nested_value(self._key_target_temperature_high)
             if value is not None:
@@ -384,6 +394,13 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                     return None
             return None
         return self.max_temp
+
+    if not NATIVE_TEMPERATURE:
+        temperature_unit = native_temperature_unit
+        current_temperature = native_current_temperature
+        target_temperature = native_target_temperature
+        target_temperature_low = native_target_temperature_low
+        target_temperature_high = native_target_temperature_high
 
     @property
     def target_humidity_low(self):
@@ -512,10 +529,10 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
                 return HVACAction.COOLING
             if d in (2, "2"):
                 return HVACAction.HEATING
-        cur = self.current_temperature
+        cur = self.native_current_temperature
         if cur is not None and self._uses_temperature_range():
-            hi = self.target_temperature_high
-            lo = self.target_temperature_low
+            hi = self.native_target_temperature_high
+            lo = self.native_target_temperature_low
             if lo is not None and cur <= lo:
                 return HVACAction.HEATING
             if hi is not None and cur >= hi:
@@ -552,8 +569,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
             if current_mode == HVACMode.COOL:
                 return HVACAction.COOLING
             if current_mode == HVACMode.AUTO:
-                current_temp = self.current_temperature
-                target_temp = self.target_temperature
+                current_temp = self.native_current_temperature
+                target_temp = self.native_target_temperature
                 if current_temp is not None and target_temp is not None:
                     if current_temp < target_temp - 0.5:
                         return HVACAction.HEATING
@@ -565,8 +582,8 @@ class MideaClimateEntity(MideaEntity, ClimateEntity):
         if (self._key_action_compressor is None and self._key_action_fan is None
                 and self._key_action_direction is None):
             # Get current and target temperatures
-            current_temp = self.current_temperature
-            target_temp = self.target_temperature
+            current_temp = self.native_current_temperature
+            target_temp = self.native_target_temperature
 
             # If we have both temperatures, use them to determine action
             if current_temp is not None and target_temp is not None:
