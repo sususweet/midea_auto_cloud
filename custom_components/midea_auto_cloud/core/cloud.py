@@ -1221,13 +1221,30 @@ class MSmartHomeCloud(MideaCloud):
             return homes if homes else None
 
     async def list_appliances(self, home_id=None) -> dict | None:
+        """List the appliances of one MSmartHome home (homegroup).
+
+        Without ``homegroupId``, /v1/appliance/user/list/get only returns the
+        appliances of the account's default home, so devices in any other
+        home never show up. Pass the requested home and also filter on the
+        returned ``homegroupId`` so a home never picks up another home's
+        appliances.
+        """
         data = self._make_general_data()
+        if home_id is not None:
+            data["homegroupId"] = str(home_id)
         if response := await self._api_request(
             endpoint="/v1/appliance/user/list/get",
             data=data
         ):
             appliances = {}
-            for appliance in response["list"]:
+            for appliance in response.get("list") or []:
+                appliance_home = appliance.get("homegroupId")
+                if (
+                    home_id is not None
+                    and appliance_home is not None
+                    and str(appliance_home) != str(home_id)
+                ):
+                    continue
                 device_info = {
                     "name": appliance.get("name"),
                     "type": int(appliance.get("type"), 16),
