@@ -76,8 +76,11 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.BINARY_SENSOR: {
+                # Lua: tank_status is the tank level 0-100 (low 7 bits of body byte 10),
+                # 100 = full. Without a rationale only 1/"on" would turn this on.
                 "tank_status": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 100],
                 },
                 # on = filter needs cleaning (Lua filter_value)
                 "filter_value": {
@@ -268,8 +271,11 @@ DEVICE_MAPPING = {
                 }
             },
             Platform.BINARY_SENSOR: {
+                # Lua: tank_status is the tank level 0-100 (low 7 bits of body byte 10),
+                # 100 = full. Without a rationale only 1/"on" would turn this on.
                 "tank_status": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 100],
                 },
                 "filter_value": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
@@ -373,8 +379,11 @@ DEVICE_MAPPING = {
                 "external_humidity_sensor": {}
             },
             Platform.BINARY_SENSOR: {
+                # Lua: tank_status is the tank level 0-100 (low 7 bits of body byte 10),
+                # 100 = full. Without a rationale only 1/"on" would turn this on.
                 "tank_status": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,
+                    "rationale": [0, 100],
                 },
                 "filter_value": {
                     "device_class": BinarySensorDeviceClass.PROBLEM,

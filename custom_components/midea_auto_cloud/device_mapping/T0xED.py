@@ -256,13 +256,13 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                 },
+                # TDS is concentration (mg/L), not water volume — do not use
+                # SensorDeviceClass.WATER (HA expects L/m³/gal + total*). Fix #293.
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
@@ -684,13 +684,11 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "in_tds"
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "out_tds"
@@ -870,13 +868,11 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "in_tds",
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "out_tds",
@@ -1120,3 +1116,8 @@ DEVICE_MAPPING["632009BF"] = {
         },
     },
 }
+
+# category tea-bar-machine (e.g. YD1619S-X, sn8 6300062A / subtype 395) falls
+# through to default_{category}. Protocol fields match sn8 63000629 (subtype 845),
+# so reuse that profile. Fix #289.
+DEVICE_MAPPING["default_tea_bar_machine"] = DEVICE_MAPPING["63000629"]
