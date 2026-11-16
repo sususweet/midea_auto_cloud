@@ -4353,8 +4353,35 @@
       "db_nightly_wash": {
         "name": "夜间洗涤"
       },
+      "da_power": {
+        "name": "小筒电源"
+      },
+      "da_control_status": {
+        "name": "小筒启停"
+      },
+      "da_program": {
+        "name": "小筒程序"
+      },
+      "da_running_status": {
+        "name": "小筒运行状态"
+      },
+      "da_remain_time": {
+        "name": "小筒剩余时间"
+      },
       "db_power": {
-        "name": "洗衣机电源"
+        "name": "主洗筒电源"
+      },
+      "db_control_status": {
+        "name": "主洗筒启停"
+      },
+      "db_program": {
+        "name": "主洗筒程序"
+      },
+      "dc_power": {
+        "name": "干衣筒电源"
+      },
+      "dc_control_status": {
+        "name": "干衣筒启停"
       },
       "db_softener_needed": {
         "name": "需要柔顺剂"

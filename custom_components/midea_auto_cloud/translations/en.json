@@ -4005,8 +4005,35 @@
       "db_nightly_wash": {
         "name": "DB Nightly Wash"
       },
+      "da_power": {
+        "name": "Small tub power"
+      },
+      "da_control_status": {
+        "name": "Small tub start/pause"
+      },
+      "da_program": {
+        "name": "Small tub program"
+      },
+      "da_running_status": {
+        "name": "Small tub running status"
+      },
+      "da_remain_time": {
+        "name": "Small tub remaining time"
+      },
       "db_power": {
-        "name": "DB Power"
+        "name": "Main wash power"
+      },
+      "db_control_status": {
+        "name": "Main wash start/pause"
+      },
+      "db_program": {
+        "name": "Main wash program"
+      },
+      "dc_power": {
+        "name": "Dryer power"
+      },
+      "dc_control_status": {
+        "name": "Dryer start/pause"
       },
       "db_softener_needed": {
         "name": "DB Softener Needed"
