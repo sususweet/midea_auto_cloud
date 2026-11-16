@@ -1,5 +1,3 @@
-import copy
-
 from homeassistant.const import Platform, UnitOfElectricPotential, UnitOfTemperature, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -925,62 +923,234 @@ DEVICE_MAPPING = {
                 },
             },
         },
-    }
-}
-
-# sn8 38132344 / subtype 12610: front-load washer that resets its selected
-# program when powered on. Keep the delay locally, then power on, restore the
-# program and arm the appointment in a separate frame.
-_washer_38132344 = copy.deepcopy(DEVICE_MAPPING["default_front_load_washer"])
-_washer_38132344["entities"][Platform.SELECT]["program"]["options"].update({
-    "water_cotton": {"program": "water_cotton"},
-    "water_mixed_wash": {"program": "water_mixed_wash"},
-    "water_fiber": {"program": "water_fiber"},
-    "water_kids": {"program": "water_kids"},
-    "water_underwear": {"program": "water_underwear"},
-    "water_intelligent": {"program": "water_intelligent"},
-    "water_steep": {"program": "water_steep"},
-    "water_fast_wash_30": {"program": "water_fast_wash_30"},
-    "new_water_cotton": {"program": "new_water_cotton"},
-    "water_eco": {"program": "water_eco"},
-    "water_intense_wash": {"program": "water_intense_wash"},
-    "water_outdoor": {"program": "water_outdoor"},
-    "water_cold_wash": {"program": "water_cold_wash"},
-    "water_prevent_allergy": {"program": "water_prevent_allergy"},
-    "water_remove_mite_wash": {"program": "water_remove_mite_wash"},
-    "water_ssp": {"program": "water_ssp"},
-})
-_washer_38132344["entities"][Platform.SWITCH]["appointment"] = {
-    "device_class": SwitchDeviceClass.SWITCH,
-    "translation_key": "appointment",
-    "command_on": {
-        "control_status": "start",
-        "appointment": "on",
-        "appointment_time": "{appointment_delay}",
     },
-    "command_off": {
-        "control_status": "pause",
-        "appointment": "off",
-        "appointment_time": "0",
+    # sn8 38132344 / subtype 12610: front-load washer that resets its selected
+    # program when powered on, so the selected program has to be replayed before
+    # the appointment frame. The delay is kept locally (number `restore`) and
+    # only written when the appointment switch is turned on.
+    "38132344": {
+        "rationale": ["off", "on"],
+        "queries": [{}],
+        "centralized": [],
+        "entities": {
+            Platform.BINARY_SENSOR: {
+                "door_status": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
+                "door_opened": {
+                    "device_class": BinarySensorDeviceClass.OPENING,
+                },
+                "detergent_lack": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+                "bucket_water_overheating": {
+                    "device_class": BinarySensorDeviceClass.PROBLEM,
+                },
+            },
+            Platform.LOCK: {
+                "lock": {
+                    "translation_key": "child_lock",
+                },
+            },
+            Platform.SWITCH: {
+                "power": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "control_status": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["pause", "start"],
+                },
+                "nightly": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
+                "wind_dispel": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "rationale": ["0", "1"],
+                },
+                # Delay / appointment: the frame is rejected while the unit is
+                # off and the program is cleared on power-on, so power on and
+                # replay the program in separate frames first.
+                "appointment": {
+                    "device_class": SwitchDeviceClass.SWITCH,
+                    "translation_key": "appointment",
+                    "command_on": {
+                        "control_status": "start",
+                        "appointment": "on",
+                        "appointment_time": "{appointment_delay}",
+                    },
+                    "command_off": {
+                        "control_status": "pause",
+                        "appointment": "off",
+                        "appointment_time": "0",
+                    },
+                    "pre_commands_on": [
+                        {"power": "on"},
+                        {"program": "{program}"},
+                    ],
+                    "pre_command": {"power": "on"},
+                    "pre_command_wait": 2.0,
+                    "require_positive": ["appointment_delay"],
+                },
+            },
+            Platform.NUMBER: {
+                "appointment_delay": {
+                    "translation_key": "appointment_delay",
+                    "min": 0,
+                    "max": 1440,
+                    "step": 1,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "default_value": 0,
+                    "restore": True,
+                },
+            },
+            Platform.SELECT: {
+                "mode": {
+                    "options": {
+                        "normal": {"mode": "normal"},
+                        "factory_test": {"mode": "factory_test"},
+                        "service": {"mode": "service"},
+                        "normal_continus": {"mode": "normal_continus"},
+                    }
+                },
+                "program": {
+                    "options": {
+                        "baby_clothes": {"program": "baby_clothes"},
+                        "big": {"program": "big"},
+                        "clean_stains": {"program": "clean_stains"},
+                        "cold_wash": {"program": "cold_wash"},
+                        "cotton": {"program": "cotton"},
+                        "deep_ssp": {"program": "deep_ssp"},
+                        "down_jacket": {"program": "down_jacket"},
+                        "enzyme": {"program": "enzyme"},
+                        "fast_wash": {"program": "fast_wash"},
+                        "fast_wash_30": {"program": "fast_wash_30"},
+                        "fiber": {"program": "fiber"},
+                        "intelligent": {"program": "intelligent"},
+                        "jacket": {"program": "jacket"},
+                        "jean": {"program": "jean"},
+                        "mixed_wash": {"program": "mixed_wash"},
+                        "new_clothes_wash": {"program": "new_clothes_wash"},
+                        "outdoor": {"program": "outdoor"},
+                        "remove_mite_wash": {"program": "remove_mite_wash"},
+                        "rinsing_dehydration": {"program": "rinsing_dehydration"},
+                        "shirt": {"program": "shirt"},
+                        "silk": {"program": "silk"},
+                        "single_dehytration": {"program": "single_dehytration"},
+                        "single_drying": {"program": "single_drying"},
+                        "sport_clothes": {"program": "sport_clothes"},
+                        "spring_autumn_wash": {"program": "spring_autumn_wash"},
+                        "ssp": {"program": "ssp"},
+                        "steam_sterilize_wash": {"program": "steam_sterilize_wash"},
+                        "steep": {"program": "steep"},
+                        "summer_wash": {"program": "summer_wash"},
+                        "underwear": {"program": "underwear"},
+                        "winter_wash": {"program": "wash"},
+                        "wool": {"program": "wool"},
+                        # Water-assisted programs exposed by this subtype
+                        "water_cotton": {"program": "water_cotton"},
+                        "water_mixed_wash": {"program": "water_mixed_wash"},
+                        "water_fiber": {"program": "water_fiber"},
+                        "water_kids": {"program": "water_kids"},
+                        "water_underwear": {"program": "water_underwear"},
+                        "water_intelligent": {"program": "water_intelligent"},
+                        "water_steep": {"program": "water_steep"},
+                        "water_fast_wash_30": {"program": "water_fast_wash_30"},
+                        "new_water_cotton": {"program": "new_water_cotton"},
+                        "water_eco": {"program": "water_eco"},
+                        "water_intense_wash": {"program": "water_intense_wash"},
+                        "water_outdoor": {"program": "water_outdoor"},
+                        "water_cold_wash": {"program": "water_cold_wash"},
+                        "water_prevent_allergy": {"program": "water_prevent_allergy"},
+                        "water_remove_mite_wash": {"program": "water_remove_mite_wash"},
+                        "water_ssp": {"program": "water_ssp"},
+                    }
+                },
+                "dehydration_speed": {
+                    "options": {
+                        "no_spin": {"dehydration_speed": "0"},
+                        "400rpm": {"dehydration_speed": "400"},
+                        "600rpm": {"dehydration_speed": "600"},
+                        "800rpm": {"dehydration_speed": "800"},
+                        "1000rpm": {"dehydration_speed": "1000"},
+                        "1200rpm": {"dehydration_speed": "1200"},
+                        "1400rpm": {"dehydration_speed": "1400"},
+                    }
+                },
+                "soak_count": {
+                    "options": {
+                        "1_time": {"soak_count": "1"},
+                        "2_times": {"soak_count": "2"},
+                        "3_times": {"soak_count": "3"},
+                        "4_times": {"soak_count": "4"},
+                    }
+                },
+                "water_level": {
+                    "options": {
+                        "auto": {"water_level": "auto"},
+                        "l1": {"water_level": "low"},
+                        "l2": {"water_level": "mid"},
+                        "l3": {"water_level": "high"},
+                        "l4": {"water_level": "4"},
+                    }
+                },
+                "detergent": {
+                    "options": {
+                        "smart": {"detergent": "4"},
+                        "off": {"detergent": "0"},
+                        "l1": {"detergent": "1"},
+                        "l2": {"detergent": "2"},
+                        "l3": {"detergent": "3"},
+                        "l4": {"detergent": "5"},
+                    }
+                },
+                "temperature": {
+                    "options": {
+                        "cold_water": {"temperature": "0"},
+                        "20c": {"temperature": "20"},
+                        "30c": {"temperature": "30"},
+                        "40c": {"temperature": "40"},
+                        "60c": {"temperature": "60"},
+                        "95c": {"temperature": "95"},
+                    }
+                },
+                "stains": {
+                    "options": {
+                        "off": {"stains": "0"},
+                        "sauce": {"stains": "83"},
+                        "fruit": {"stains": "85"},
+                        "makeup": {"stains": "84"},
+                    }
+                },
+            },
+            Platform.SENSOR: {
+                "running_status": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "remain_time": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "progress": {
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "unit_of_measurement": "%",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "error_code": {
+                    "device_class": SensorDeviceClass.ENUM,
+                },
+                "wash_time_value": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "dehydration_time_value": {
+                    "device_class": SensorDeviceClass.DURATION,
+                    "unit_of_measurement": UnitOfTime.MINUTES,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+            },
+        },
     },
-    "pre_commands_on": [
-        {"power": "on"},
-        {"program": "{program}"},
-    ],
-    "pre_command": {"power": "on"},
-    "pre_command_wait": 2.0,
-    "require_positive": ["appointment_delay"],
 }
-_washer_38132344["entities"][Platform.NUMBER] = {
-    "appointment_delay": {
-        "translation_key": "appointment_delay",
-        "min": 0,
-        "max": 1440,
-        "step": 1,
-        "unit_of_measurement": UnitOfTime.MINUTES,
-        "default_value": 0,
-        "restore": True,
-    },
-}
-DEVICE_MAPPING["38132344"] = _washer_38132344
 
