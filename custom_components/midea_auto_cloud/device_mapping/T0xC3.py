@@ -178,7 +178,7 @@ DEVICE_MAPPING = {
     # Dual-zone heat pump (17100003, subtype 8).
     "17100003": {
         "rationale": ["off", "on"],
-        "queries": _ATW_ENERGY_QUERIES,
+        "queries": _ATW_ENERGY_QUERIES + [{"query_type": 0x10}],
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -277,7 +277,49 @@ DEVICE_MAPPING = {
                     "translation_key": "cur_temperature",
                 },
                 **_ATW_ENERGY_SENSORS,
-            }
+                "tempTwout": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "outlet_water_temperature",
+                },
+                "tempTwin": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                    "translation_key": "inlet_water_temperature",
+                },
+                "tempT1": {
+                    "device_class": SensorDeviceClass.TEMPERATURE,
+                    "unit_of_measurement": UnitOfTemperature.CELSIUS,
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "compRunFreq": {
+                    "device_class": SensorDeviceClass.FREQUENCY,
+                    "unit_of_measurement": "Hz",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "instantPower0": {
+                    "device_class": SensorDeviceClass.POWER,
+                    "unit_of_measurement": "kW",
+                    "state_class": SensorStateClass.MEASUREMENT,
+                },
+                "totalelectricity0": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                },
+                "totalthermal0": {
+                    "device_class": SensorDeviceClass.ENERGY,
+                    "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+                    "state_class": SensorStateClass.TOTAL_INCREASING,
+                },
+            },
+            Platform.BINARY_SENSOR: {
+                "fgHeatRun": {},
+                "fgDefrost": {},
+                "fgPumpIOutput": {},
+            },
         },
     }
 }
