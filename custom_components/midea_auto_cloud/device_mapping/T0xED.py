@@ -256,13 +256,13 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                 },
+                # TDS is concentration (mg/L), not water volume — do not use
+                # SensorDeviceClass.WATER (HA expects L/m³/gal + total*). Fix #293.
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
@@ -684,13 +684,11 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "in_tds"
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "out_tds"
@@ -870,13 +868,11 @@ DEVICE_MAPPING = {
             },
             Platform.SENSOR: {
                 "in_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "in_tds",
                 },
                 "out_tds": {
-                    "device_class": SensorDeviceClass.WATER,
                     "unit_of_measurement": "mg/L",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "out_tds",
