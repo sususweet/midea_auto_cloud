@@ -1116,3 +1116,8 @@ DEVICE_MAPPING["632009BF"] = {
         },
     },
 }
+
+# category tea-bar-machine (e.g. YD1619S-X, sn8 6300062A / subtype 395) falls
+# through to default_{category}. Protocol fields match sn8 63000629 (subtype 845),
+# so reuse that profile. Fix #289.
+DEVICE_MAPPING["default_tea_bar_machine"] = DEVICE_MAPPING["63000629"]
