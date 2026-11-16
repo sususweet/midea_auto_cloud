@@ -3008,6 +3008,24 @@
       "total_kwh": {
         "name": "Total Energy"
       },
+      "heat_energy_month": {
+        "name": "Heating energy this month"
+      },
+      "dhw_energy_month": {
+        "name": "Hot water energy this month"
+      },
+      "cool_energy_month": {
+        "name": "Cooling energy this month"
+      },
+      "heat_energy_year": {
+        "name": "Heating energy this year"
+      },
+      "dhw_energy_year": {
+        "name": "Hot water energy this year"
+      },
+      "cool_energy_year": {
+        "name": "Cooling energy this year"
+      },
       "lua_version": {
         "name": "Lua Version"
       },

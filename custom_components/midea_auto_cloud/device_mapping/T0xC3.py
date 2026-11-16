@@ -3,6 +3,31 @@ from ..const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, CONCENTRATION_PART
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 
+# Air-to-water energy. 0x2F11 is heating and cooling, 0x2F12 is domestic hot water.
+# The cloud already returns these as kWh.
+_ATW_ENERGY_QUERIES = [{}, {"query_type": 0x2F11}, {"query_type": 0x2F12}]
+
+
+def _atw_energy(attribute: str, translation_key: str) -> dict:
+    return {
+        "attribute": attribute,
+        "device_class": SensorDeviceClass.ENERGY,
+        "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+        "state_class": SensorStateClass.TOTAL_INCREASING,
+        "translation_key": translation_key,
+    }
+
+
+# Month and year electricity. Cooling shares the heating table.
+_ATW_ENERGY_SENSORS = {
+    "heat_energy_month": _atw_energy("SysHeatMonthElecConsum", "heat_energy_month"),
+    "dhw_energy_month": _atw_energy("SysDhwMonthElecConsum", "dhw_energy_month"),
+    "cool_energy_month": _atw_energy("SysCoolMonthElecConsum", "cool_energy_month"),
+    "heat_energy_year": _atw_energy("SysHeatYearElecConsum", "heat_energy_year"),
+    "dhw_energy_year": _atw_energy("SysDhwYearElecConsum", "dhw_energy_year"),
+    "cool_energy_year": _atw_energy("SysCoolYearElecConsum", "cool_energy_year"),
+}
+
 # MSC-200D 2N8 pool / spa heat pump (171000AU, subtype 513).
 _POOL_HEAT_PUMP_MAPPING = {
     "rationale": ["off", "on"],
@@ -79,7 +104,7 @@ _POOL_HEAT_PUMP_MAPPING = {
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": _ATW_ENERGY_QUERIES,
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -143,7 +168,8 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "cur_temperature",
-                }
+                },
+                **_ATW_ENERGY_SENSORS,
             }
         }
     },
@@ -152,7 +178,7 @@ DEVICE_MAPPING = {
     # Dual-zone heat pump (17100003, subtype 8).
     "17100003": {
         "rationale": ["off", "on"],
-        "queries": [{}],
+        "queries": _ATW_ENERGY_QUERIES,
         "centralized": [],
         "entities": {
             Platform.CLIMATE: {
@@ -249,7 +275,8 @@ DEVICE_MAPPING = {
                     "unit_of_measurement": UnitOfTemperature.CELSIUS,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "cur_temperature",
-                }
+                },
+                **_ATW_ENERGY_SENSORS,
             }
         },
     }
