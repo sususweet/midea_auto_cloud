@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import re
 from enum import IntEnum
 from typing import Any
 
@@ -391,6 +393,42 @@ class MideaEntity(CoordinatorEntity[MideaDataUpdateCoordinator], Entity):
     async def async_set_attributes(self, attributes: dict) -> None:
         """Set multiple device attributes."""
         await self.coordinator.async_set_attributes(attributes)
+
+    async def _async_send_pre_command(self) -> None:
+        """Send an optional prerequisite command before the real one.
+
+        Some devices ignore delayed-start/cancel frames while powered off.
+        A mapping can set ``pre_command`` (e.g. ``{"power": "on"}``) and
+        ``pre_command_wait`` so the entity powers the unit on first.
+        """
+        pre_command = self._config.get("pre_command")
+        if not isinstance(pre_command, dict) or not pre_command:
+            return
+        # Always send the prerequisite command: the local optimistic power
+        # state can be stale, and devices ignore appointment frames while off.
+        # Callers that need a stable value must snapshot it before this await.
+        await self.async_set_attributes(pre_command)
+        await asyncio.sleep(float(self._config.get("pre_command_wait", 1.0)))
+
+    def _resolve_command_templates(
+        self, command: dict, values: dict | None = None
+    ) -> dict:
+        """Resolve ``{attribute}`` placeholders from captured or current values."""
+        captured = values if values is not None else {}
+        resolved = {}
+        for key, value in command.items():
+            if isinstance(value, str):
+                for attribute in re.findall(r"\{([A-Za-z0-9_]+)\}", value):
+                    if attribute in captured:
+                        replacement = captured[attribute]
+                    else:
+                        replacement = self._get_nested_value(attribute)
+                    if replacement is not None:
+                        value = value.replace(
+                            "{" + attribute + "}", str(replacement)
+                        )
+            resolved[key] = value
+        return resolved
 
     async def async_send_command(self, cmd_type: int, cmd_body: str) -> None:
         """Send a command to the device."""

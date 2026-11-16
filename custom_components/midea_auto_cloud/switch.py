@@ -1,7 +1,10 @@
+import asyncio
+
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .core.logger import MideaLogger
@@ -81,6 +84,38 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
         """Set switch status, merging fixed command parameters if configured."""
         if attribute is None:
             return
+        if turn_on:
+            for required in self._config.get("require_positive") or []:
+                value = self._get_nested_value(required)
+                try:
+                    valid = value is not None and float(value) > 0
+                except (TypeError, ValueError):
+                    valid = False
+                if not valid:
+                    raise HomeAssistantError(
+                        f"Switch '{self._entity_key}' requires "
+                        f"'{required}' to be greater than 0"
+                    )
+        # Snapshot companion values before the optional pre-command wait;
+        # polling can otherwise replace them with stale device values while
+        # we are powering the unit on, which previously sent a 0 delay.
+        include_current = {
+            attr: self._get_nested_value(attr) for attr in self._include_current
+        }
+        captured = {"program": self._get_nested_value("program")}
+        pre_commands_on = self._config.get("pre_commands_on") or []
+        if turn_on and pre_commands_on:
+            for pre_command in pre_commands_on:
+                if not isinstance(pre_command, dict) or not pre_command:
+                    continue
+                await self.async_set_attributes(
+                    self._resolve_command_templates(pre_command, captured)
+                )
+                await asyncio.sleep(
+                    float(self._config.get("pre_command_wait", 1.0))
+                )
+        else:
+            await self._async_send_pre_command()
         merge_attributes = self._config.get("merge_attributes")
         if merge_attributes:
             merged_command = {attribute: self._on_off_wire_value(turn_on, attribute)}
@@ -89,19 +124,22 @@ class MideaSwitchEntity(MideaEntity, SwitchEntity):
                 merged_command[attr] = value if value is not None else self._rationale[0]
             await self.async_set_attributes(merged_command)
             return
-        command = self._config.get("command")
+        # Allow direction-specific companion fields while keeping the plain
+        # "command" fallback for every existing mapping.
+        command = self._config.get("command_on" if turn_on else "command_off")
+        if command is None:
+            command = self._config.get("command")
         # Companion attrs that should receive the same on/off wire value
         # (e.g. T0xDB Turbo flips speedy + old_speedy + fast_clean_wash together).
         also_set = self._config.get("also_set") or []
         merged_command = {}
         if command and isinstance(command, dict):
-            merged_command.update(command)
+            merged_command.update(self._resolve_command_templates(command))
         wire_value = self._on_off_wire_value(turn_on, attribute)
         merged_command[attribute] = wire_value
         for attr in also_set:
             merged_command[attr] = wire_value
-        for attr in self._include_current:
-            current_value = self._get_nested_value(attr)
+        for attr, current_value in include_current.items():
             if current_value is not None:
                 merged_command[attr] = current_value
         if command or self._include_current or also_set:
