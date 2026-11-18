@@ -1,3 +1,4 @@
+from copy import deepcopy
 from homeassistant.const import Platform, UnitOfElectricPotential, UnitOfTemperature, UnitOfTime
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -1154,3 +1155,22 @@ DEVICE_MAPPING = {
     },
 }
 
+# 型号映射：TD100V88WMUIADY5（SN8 38118574，subtype 24881）
+#
+# 该机型的 T0xDB 协议原生支持 dryer，但通用滚筒洗衣机映射没有生成
+# 可控制的实体。以下档位均已在“美的美居”中逐项选择并从云端原始状态实测。
+# 使用独立的型号映射，避免把该机型专属档位应用到其他滚筒洗衣机。
+DEVICE_MAPPING["38118574"] = deepcopy(DEVICE_MAPPING["default_front_load_washer"])
+DEVICE_MAPPING["38118574"]["entities"][Platform.SELECT]["dryer"] = {
+    "name": "烘干",
+    "icon": "mdi:tumble-dryer",
+    "options": {
+        "关闭": {"dryer": "0"},
+        "标准": {"dryer": "1"},
+        "强烘": {"dryer": "2"},
+        "弱烘": {"dryer": "3"},
+        "30 分钟": {"dryer": "4"},
+        "60 分钟": {"dryer": "5"},
+        "90 分钟": {"dryer": "6"},
+    },
+}
