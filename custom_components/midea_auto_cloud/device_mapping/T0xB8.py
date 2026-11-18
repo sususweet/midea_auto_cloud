@@ -57,6 +57,7 @@ DEVICE_MAPPING = {
             Platform.SELECT: {
                 "set_status": {
                     "command": {"work_status": "disturb"},
+                    "status_key": "set_status",
                     "options": {
                         "on": {
                             "disturb_switch": "on",
@@ -109,6 +110,7 @@ DEVICE_MAPPING = {
                 "work_mode": {
                     "command": {"work_status": "work"},
                     "options": {
+                        "none": {"work_mode": "none"},
                         "sweep_and_mop": {"work_mode": "sweep_and_mop"},
                         "sweep": {"work_mode": "sweep"},
                         "mop": {"work_mode": "mop"},
