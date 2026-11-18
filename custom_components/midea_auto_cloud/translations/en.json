@@ -467,12 +467,6 @@
       "door_auto_open": {
         "name": "Auto Door Open"
       },
-      "camera_status": {
-        "name": "Camera Status"
-      },
-      "live_video_status": {
-        "name": "Live Video Status"
-      },
       "connected": {
         "name": "Online"
       },
@@ -3238,24 +3232,6 @@
       },
       "wind_speed_real": {
         "name": "Real Wind Speed"
-      },
-      "temperature_above": {
-        "name": "Upper Tube Temperature"
-      },
-      "temperature_underside": {
-        "name": "Lower Tube Temperature"
-      },
-      "fire_power": {
-        "name": "Fire Power"
-      },
-      "work_mode": {
-        "name": "Work Mode"
-      },
-      "mouthfeel": {
-        "name": "Mouthfeel"
-      },
-      "execute": {
-        "name": "Execution Status"
       },
       "dc_running_status": {
         "name": "Dryer Running Status",
