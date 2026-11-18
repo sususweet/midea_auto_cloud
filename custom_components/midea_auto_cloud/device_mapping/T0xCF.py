@@ -6,7 +6,10 @@ from homeassistant.components.switch import SwitchDeviceClass
 DEVICE_MAPPING = {
     "default": {
         "rationale": ["off", "on"],
-        # {} 会在运行时自动补 query_type "0x11"（CF lua 与 build_control 一致）
+        # 云端 status/lua/get 必须原样发空 query：T_0000_CF_.lua 对 query_type=0x11/0x12
+        # 会抛 arithmetic on nil value（code 9999）导致查询被永久跳过；
+        # 本地 lua 构建路径由 lua_runtime 补 query_type
+
         "queries": [{}, {"query_type": "0x11"}, {"query_type": "0x12"}],
         "centralized": [
             "power_state", "run_mode", "temp_set", "heat_enable", "cool_enable"
