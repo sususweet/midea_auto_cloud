@@ -243,9 +243,8 @@ DEVICE_MAPPING = {
                     "device_class": SensorDeviceClass.ENUM
                 },
                 "progress": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "db_wash_progress"
                 },
                 "customize_machine_cycle": {
                     "device_class": SensorDeviceClass.ENUM
@@ -449,9 +448,8 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "progress": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "db_wash_progress"
                 },
                 "error_code": {
                     "device_class": SensorDeviceClass.ENUM
@@ -624,9 +622,8 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "progress": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "db_wash_progress"
                 },
                 "error_code": {
                     "device_class": SensorDeviceClass.ENUM
@@ -735,9 +732,8 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "progress": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "db_wash_progress"
                 },
                 "error_code": {
                     "device_class": SensorDeviceClass.ENUM
@@ -1132,9 +1128,8 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT,
                 },
                 "progress": {
-                    "device_class": SensorDeviceClass.BATTERY,
-                    "unit_of_measurement": "%",
-                    "state_class": SensorStateClass.MEASUREMENT,
+                    "device_class": SensorDeviceClass.ENUM,
+                    "translation_key": "db_wash_progress"
                 },
                 "error_code": {
                     "device_class": SensorDeviceClass.ENUM,
