@@ -203,7 +203,6 @@ DEVICE_MAPPING = {
                     "state_class": SensorStateClass.MEASUREMENT
                 },
                 "left_salt": {
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT
                 },
@@ -248,12 +247,10 @@ DEVICE_MAPPING = {
                 },
                 "life_1": {
                     "translation_key": "life_fcb",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                 },
                 "life_2": {
                     "translation_key": "life_ro",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                 },
                 # TDS is concentration (mg/L), not water volume — do not use
@@ -695,14 +692,12 @@ DEVICE_MAPPING = {
                 },
                 "life_1": {
                     "translation_key": "life_fcb",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "life_1"
                 },
                 "life_2": {
                     "translation_key": "life_ro",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": "%",
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "life_2_pcb"
@@ -879,14 +874,12 @@ DEVICE_MAPPING = {
                 },
                 "life_1": {
                     "translation_key": "life_fcb",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "life_ro",
                 },
                 "life_2": {
                     "translation_key": "life_ro",
-                    "device_class": SensorDeviceClass.BATTERY,
                     "unit_of_measurement": PERCENTAGE,
                     "state_class": SensorStateClass.MEASUREMENT,
                     "translation_key": "life_pcb",
