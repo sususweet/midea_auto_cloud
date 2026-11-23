@@ -770,7 +770,42 @@ class MeijuCloud(MideaCloud):
             f"&expendType={expend_type}"
             f"&deviceType={device_type_hex}"
         )
-        return await self._jykt_api_request(endpoint, {})
+        return await self._wash_get_request(endpoint)
+
+    async def _wash_get_request(self, endpoint: str) -> dict | None:
+        """WashSessions/getWaterPower 只接受 GET。
+
+        走 POST（_jykt_api_request）时云端返回
+        {"code":40405,"msg":"调用业务系统异常(请求方法不允许(POST,GET))"}，
+        导致洗衣机水电统计实体一直是 unknown。GET 时签名对空 body 计算。
+        """
+        if self._access_token is None:
+            await self._ensure_logged_in()
+        random = str(int(time.time() * 1000))
+        header = {
+            "content-type": "application/json",
+            "secretVersion": "1",
+            "sign": self._security.sign("", random),
+            "random": random,
+        }
+        if self._access_token is not None:
+            header["accesstoken"] = self._access_token
+        try:
+            r = await self._session.request(
+                "GET", self._api_url + endpoint, headers=header,
+                timeout=30, proxy=self._proxy,
+            )
+            raw = await r.read()
+            MideaLogger.debug(f"Midea wash GET url: {self._api_url + endpoint}, response: {raw[:2000]}")
+            response = json.loads(raw)
+        except Exception as e:
+            MideaLogger.debug(f"Midea wash GET failed: {e}")
+            return None
+        if str(response.get("code")) == "0":
+            return response.get("data")
+        if str(response.get("errCode")) == "0":
+            return response.get("result")
+        return None
 
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
