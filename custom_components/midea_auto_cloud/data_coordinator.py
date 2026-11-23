@@ -405,6 +405,22 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         if not cloud or not result:
             return
 
+        # 单筒机（如 TD100V88WMUIADY5，T0xDB）返回顶层 water/power 列表，不分 da/db：
+        # {"water":[{"time":..,"amount":466},..],"power":[{"time":..,"amount":444},..]}
+        # 与美的美居 App「使用日志」逐日核对：water 单位 0.1 L，power 单位 Wh。
+        if not dual_drum and isinstance(result.get("water"), list):
+            def _sum(key):
+                total = 0.0
+                for entry in result.get(key) or []:
+                    try:
+                        total += float(entry.get("amount") or 0)
+                    except (TypeError, ValueError, AttributeError):
+                        continue
+                return total
+            self.device._attributes[f"cloud_water_{period}"] = round(_sum("water") / 10.0, 1)
+            self.device._attributes[f"cloud_power_{period}"] = round(_sum("power") / 1000.0, 3)
+            return
+
         drums = ("da", "db") if dual_drum else ("da", "db")
         if dual_drum:
             for drum in drums:

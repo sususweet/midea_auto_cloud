@@ -770,7 +770,42 @@ class MeijuCloud(MideaCloud):
             f"&expendType={expend_type}"
             f"&deviceType={device_type_hex}"
         )
-        return await self._jykt_api_request(endpoint, {})
+        return await self._wash_get_request(endpoint)
+
+    async def _wash_get_request(self, endpoint: str) -> dict | None:
+        """WashSessions/getWaterPower 只接受 GET。
+
+        走 POST（_jykt_api_request）时云端返回
+        {"code":40405,"msg":"调用业务系统异常(请求方法不允许(POST,GET))"}，
+        导致洗衣机水电统计实体一直是 unknown。GET 时签名对空 body 计算。
+        """
+        if self._access_token is None:
+            await self._ensure_logged_in()
+        random = str(int(time.time() * 1000))
+        header = {
+            "content-type": "application/json",
+            "secretVersion": "1",
+            "sign": self._security.sign("", random),
+            "random": random,
+        }
+        if self._access_token is not None:
+            header["accesstoken"] = self._access_token
+        try:
+            r = await self._session.request(
+                "GET", self._api_url + endpoint, headers=header,
+                timeout=30, proxy=self._proxy,
+            )
+            raw = await r.read()
+            MideaLogger.debug(f"Midea wash GET url: {self._api_url + endpoint}, response: {raw[:2000]}")
+            response = json.loads(raw)
+        except Exception as e:
+            MideaLogger.debug(f"Midea wash GET failed: {e}")
+            return None
+        if str(response.get("code")) == "0":
+            return response.get("data")
+        if str(response.get("errCode")) == "0":
+            return response.get("result")
+        return None
 
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {
@@ -1221,13 +1256,30 @@ class MSmartHomeCloud(MideaCloud):
             return homes if homes else None
 
     async def list_appliances(self, home_id=None) -> dict | None:
+        """List the appliances of one MSmartHome home (homegroup).
+
+        Without ``homegroupId``, /v1/appliance/user/list/get only returns the
+        appliances of the account's default home, so devices in any other
+        home never show up. Pass the requested home and also filter on the
+        returned ``homegroupId`` so a home never picks up another home's
+        appliances.
+        """
         data = self._make_general_data()
+        if home_id is not None:
+            data["homegroupId"] = str(home_id)
         if response := await self._api_request(
             endpoint="/v1/appliance/user/list/get",
             data=data
         ):
             appliances = {}
-            for appliance in response["list"]:
+            for appliance in response.get("list") or []:
+                appliance_home = appliance.get("homegroupId")
+                if (
+                    home_id is not None
+                    and appliance_home is not None
+                    and str(appliance_home) != str(home_id)
+                ):
+                    continue
                 device_info = {
                     "name": appliance.get("name"),
                     "type": int(appliance.get("type"), 16),

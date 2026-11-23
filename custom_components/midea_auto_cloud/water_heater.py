@@ -11,6 +11,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .midea_entity import MideaEntity
 from .platform_setup import async_setup_platform_entities
 
+NATIVE_TEMPERATURE = hasattr(WaterHeaterEntity, "native_current_temperature")
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -50,7 +52,11 @@ class MideaWaterHeaterEntity(MideaEntity, WaterHeaterEntity):
         self._key_max_temp = self._config.get("max_temp", 75)
         self._key_current_temperature = self._config.get("current_temperature")
         self._key_target_temperature = self._config.get("target_temperature")
-        self._attr_temperature_unit = self._config.get("temperature_unit", UnitOfTemperature.CELSIUS)
+        temperature_unit = self._config.get("temperature_unit", UnitOfTemperature.CELSIUS)
+        if NATIVE_TEMPERATURE:
+            self._attr_native_temperature_unit = temperature_unit
+        else:
+            self._attr_temperature_unit = temperature_unit
         self._attr_precision = self._config.get("precision", 1.0)
         self._attr_target_temperature_step = self._config.get("precision", 1.0)
 
@@ -78,7 +84,7 @@ class MideaWaterHeaterEntity(MideaEntity, WaterHeaterEntity):
         return None
 
     @property
-    def current_temperature(self):
+    def native_current_temperature(self):
         if self._key_current_temperature is None:
             return None
         value = self._get_nested_value(self._key_current_temperature)
@@ -90,7 +96,7 @@ class MideaWaterHeaterEntity(MideaEntity, WaterHeaterEntity):
             return None
 
     @property
-    def target_temperature(self):
+    def native_target_temperature(self):
         if self._key_target_temperature is None:
             return None
         if isinstance(self._key_target_temperature, list):
@@ -139,12 +145,18 @@ class MideaWaterHeaterEntity(MideaEntity, WaterHeaterEntity):
             return None
 
     @property
-    def target_temperature_low(self):
+    def native_target_temperature_low(self):
         return self.min_temp
 
     @property
-    def target_temperature_high(self):
+    def native_target_temperature_high(self):
         return self.max_temp
+
+    if not NATIVE_TEMPERATURE:
+        current_temperature = native_current_temperature
+        target_temperature = native_target_temperature
+        target_temperature_low = native_target_temperature_low
+        target_temperature_high = native_target_temperature_high
 
     @property
     def is_on(self) -> bool:

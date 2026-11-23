@@ -61,9 +61,11 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
         fan_speeds_config = self._config.get("fan_speeds", {})
         if isinstance(fan_speeds_config, dict) and "options" in fan_speeds_config:
             self._fan_speed_command = fan_speeds_config.get("command")
+            self._fan_speed_include_current = fan_speeds_config.get("include_current") or []
             self._key_fan_speeds = fan_speeds_config.get("options", {})
         else:
             self._fan_speed_command = None
+            self._fan_speed_include_current = []
             self._key_fan_speeds = fan_speeds_config
         self._control_actions = self._config.get("control_actions", {})
         #self._key_locate = self._config.get("locate")
@@ -164,9 +166,15 @@ class MideaVacuumEntity(MideaEntity, StateVacuumEntity):
             command = self._fan_speed_command
             if command and isinstance(command, dict):
                 merged_command = {**command, **new_status}
-                await self.async_set_attributes(merged_command)
             else:
-                await self.async_set_attributes(new_status)
+                merged_command = dict(new_status)
+            for attr in self._fan_speed_include_current:
+                if attr in merged_command:
+                    continue
+                current_value = self._get_nested_value(attr)
+                if current_value is not None:
+                    merged_command[attr] = current_value
+            await self.async_set_attributes(merged_command)
 
     #async def async_locate(self):
         #"""Locate the vacuum cleaner."""

@@ -75,6 +75,41 @@
           "server": "Server"
         }
       },
+      "mapping_select_device": {
+        "title": "Device mapping overlay",
+        "description": "Choose a device to assign an external mapping profile. Profiles are stored under .storage/midea_auto_cloud/mappings/ and survive upgrades. Once your custom profile works, please consider opening a Pull Request to contribute reusable bits into device_mapping/.",
+        "data": {
+          "device_id": "Device"
+        }
+      },
+      "mapping_action": {
+        "title": "Mapping action",
+        "description": "Device {device_id}\nCurrent profile: {current_profile}\n\nTip: if your custom mapping works, please open a PR to contribute it back into device_mapping/.",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "mapping_pick_profile": {
+        "title": "Select profile",
+        "description": "Assign an existing profile to device {device_id}. The entry will reload after save.",
+        "data": {
+          "profile_id": "Profile"
+        }
+      },
+      "mapping_paste_json": {
+        "title": "Paste profile JSON",
+        "description": "Paste a profile JSON for device {device_id}. Required keys: profile, mode (extend|replace), mapping. Platform keys under entities use strings such as climate / switch.\n\nOnce verified on your setup, please consider upstreaming reusable fragments into device_mapping/ (by device_type / sn8 / subtype) via a Pull Request.",
+        "data": {
+          "profile_json": "Profile JSON"
+        }
+      },
+      "mapping_clear": {
+        "title": "Clear mapping overlay",
+        "description": "Remove the overlay for device {device_id}. The profile file itself is kept.",
+        "data": {
+          "confirm": "Confirm clear"
+        }
+      },
       "reset": {
         "title": "Reset the configuration of appliance",
         "description": "Remove the old configuration and make a new configuration use template\nIf your configuration was modified, the changes will lost\nIf your appliance type or model not in template, then the new configuration won't be made",
@@ -90,9 +125,20 @@
         "title": "Option"
       }
     },
+    "error": {
+      "login_failed": "Failed to login, wrong account or password",
+      "invalid_profile_json": "Invalid JSON",
+      "invalid_profile_id": "Invalid profile id (use letters, digits, _ or -)",
+      "invalid_profile_mode": "mode must be extend or replace",
+      "invalid_profile_mapping": "mapping must be a JSON object",
+      "invalid_device_id": "Invalid device id",
+      "profile_not_found": "Profile file not found"
+    },
     "abort": {
       "reset_success": "Reset done",
-      "account_unsupport_config": "Doesn't support this operation"
+      "account_unsupport_config": "Doesn't support this operation",
+      "no_devices_loaded": "No devices loaded for this entry yet. Open the integration once, then try again.",
+      "no_profiles": "No profiles found. Paste JSON first to create one."
     }
   },
   "services": {
@@ -2539,7 +2585,7 @@
         "name": "Remind Maintenance Days"
       },
       "remote_control_flag": {
-        "name": "Remote Control Flag"
+        "name": "Remote control"
       },
       "return_water_tem": {
         "name": "Return Water Temperature"
@@ -3022,6 +3068,24 @@
       },
       "total_kwh": {
         "name": "Total Energy"
+      },
+      "heat_energy_month": {
+        "name": "Heating energy this month"
+      },
+      "dhw_energy_month": {
+        "name": "Hot water energy this month"
+      },
+      "cool_energy_month": {
+        "name": "Cooling energy this month"
+      },
+      "heat_energy_year": {
+        "name": "Heating energy this year"
+      },
+      "dhw_energy_year": {
+        "name": "Hot water energy this year"
+      },
+      "cool_energy_year": {
+        "name": "Cooling energy this year"
       },
       "lua_version": {
         "name": "Lua Version"
@@ -3605,6 +3669,9 @@
       },
       "colmo_bright": {
         "name": "Rinse aid level"
+      },
+      "appointment_delay": {
+        "name": "Appointment Delay"
       }
     },
     "fan": {
@@ -4052,8 +4119,35 @@
       "db_nightly_wash": {
         "name": "DB Nightly Wash"
       },
+      "da_power": {
+        "name": "Small tub power"
+      },
+      "da_control_status": {
+        "name": "Small tub start/pause"
+      },
+      "da_program": {
+        "name": "Small tub program"
+      },
+      "da_running_status": {
+        "name": "Small tub running status"
+      },
+      "da_remain_time": {
+        "name": "Small tub remaining time"
+      },
       "db_power": {
-        "name": "DB Power"
+        "name": "Main wash power"
+      },
+      "db_control_status": {
+        "name": "Main wash start/pause"
+      },
+      "db_program": {
+        "name": "Main wash program"
+      },
+      "dc_power": {
+        "name": "Dryer power"
+      },
+      "dc_control_status": {
+        "name": "Dryer start/pause"
       },
       "db_softener_needed": {
         "name": "DB Softener Needed"

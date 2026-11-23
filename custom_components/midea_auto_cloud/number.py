@@ -5,6 +5,7 @@ from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from .core.logger import MideaLogger
 from .midea_entity import MideaEntity
@@ -28,7 +29,7 @@ async def async_setup_entry(
     )
 
 
-class MideaNumberEntity(MideaEntity, NumberEntity):
+class MideaNumberEntity(MideaEntity, NumberEntity, RestoreEntity):
     """Midea number entity."""
 
     def __init__(self, coordinator, device, manufacturer, rationale, entity_key, config):
@@ -53,6 +54,24 @@ class MideaNumberEntity(MideaEntity, NumberEntity):
         self._mode = self._config.get("mode", "auto")
         if "device_class" in self._config:
             self._attr_device_class = self._config["device_class"]
+
+    async def async_added_to_hass(self) -> None:
+        """Restore local-only number values (e.g. a reservation delay)."""
+        await super().async_added_to_hass()
+        if not self._config.get("restore"):
+            return
+        last_state = await self.async_get_last_state()
+        if last_state is None or last_state.state in ("unknown", "unavailable", ""):
+            return
+        try:
+            value = float(last_state.state)
+        except (TypeError, ValueError):
+            return
+        if value.is_integer():
+            value = int(value)
+        attribute = self._config.get("attribute", self._entity_key)
+        self._device.attributes[attribute] = value
+        self.coordinator.async_set_updated_data(self.coordinator._snapshot())
 
     @property
     def native_value(self) -> float | None:

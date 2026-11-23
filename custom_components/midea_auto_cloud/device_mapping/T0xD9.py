@@ -248,3 +248,435 @@ DEVICE_MAPPING["38206322"] = {
         },
     },
 }
+
+
+# sn8 38135636（美的可爱多三桶 MD11DDEX，subtype 13363，issue #295）：
+# Lua T_0000_D9_13363_*.lua 有三套 bucket：
+#   da = 波轮/小筒洗衣机，db = 滚筒洗衣机，dc = 干衣机。
+# default 只查 db，所以 HA 只看到「两筒」；这里轮询 da+db+dc。
+# 实测 Attributes：db_location=2；da/dc 的 location 按查询默认字节取 1
+# （与 COLMO 上筒 dc_location=1 一致）。控制 da 时 Lua 不会自动填 bucket，
+# 必须显式带 bucket="da"。
+_D9_38135636_DA_PROGRAMS = [
+    "standard", "fast", "blanket", "wool", "embathe", "memory", "child",
+    "strong_wash", "down_jacket", "stir", "mute", "bucket_self_clean", "air_dry",
+    "cycle", "remain_water", "summer", "big", "home", "cowboy", "soft",
+    "hand_wash", "water_flow", "fog", "bucket_dry", "fast_clean_wash",
+    "dehydration", "under_wear", "rinse_dehydration", "one_minute_self_clean",
+    "degerm", "in_15", "in_25", "love_baby", "outdoor", "silk", "shirt",
+    "cook_wash", "towel",
+]
+
+_D9_38135636_DB_PROGRAMS = [
+    "cotton", "eco", "fast_wash", "mixed_wash", "fiber", "wool", "enzyme", "ssp",
+    "sport_clothes", "single_dehytration", "rinsing_dehydration", "big",
+    "baby_clothes", "underwear", "outdoor", "down_jacket", "color", "intelligent",
+    "quick_wash", "kids", "water_baby_clothes", "air_wash", "single_drying",
+    "fast_wash_30", "water_shirt", "water_intelligent", "water_steep",
+    "water_fast_wash_30", "shirt", "steep", "new_water_cotton", "water_mixed_wash",
+    "water_fiber", "water_kids", "water_underwear", "specialist", "water_eco",
+    "wash_drying_60", "self_wash_5", "fast_wash_min", "mixed_wash_min",
+    "dehydration_min", "self_wash_min", "baby_clothes_min", "prevent_allergy",
+    "cold_wash", "soft_wash", "remove_mite_wash", "water_intense_wash", "fast_dry",
+    "water_outdoor", "spring_autumn_wash", "summer_wash", "winter_wash", "jean",
+    "new_clothes_wash", "silk", "insight_wash", "fitness_clothes", "mink",
+    "fresh_air", "bucket_dry", "jacket", "bath_towel", "night_fresh_wash",
+    "degerm", "heart_wash", "water_cold_wash", "water_prevent_allergy",
+    "water_remove_mite_wash", "water_ssp", "silk_wash", "standard", "green_wool",
+    "cook_wash", "fresh_remove_wrinkle", "steam_sterilize_wash", "sterilize_wash",
+    "white_clothes_clean", "clean_stains", "prevent_cross_color",
+    "quick_dry_clothes", "yoga_clothes", "love",
+]
+
+_D9_38135636_DC_PROGRAMS = [
+    "cotton", "fiber", "mixed_wash", "jean", "bedsheet", "outdoor", "down_jacket",
+    "plush", "wool", "dehumidify", "cold_air_fresh_air", "hot_air_dry",
+    "sport_clothes", "underwear", "baby_clothes", "shirt", "standard", "quick_dry",
+    "fresh_air", "low_temp_dry", "eco_dry", "intelligent_dry", "steam_care", "big",
+    "fixed_time_dry", "night_dry", "bracket_dry", "western_trouser",
+    "dehumidification", "silk", "bucket_self_clean", "ion_degerm",
+    "ai_intelligent_dry", "small", "jacket", "air_wash", "towel", "four_piece_suit",
+    "light_dry", "degerm", "wool_care", "sun_quilt", "uniforms", "light_dry_wool",
+    "light_dry_shirt", "light_dry_down_jacket", "light_dry_silk", "light_dry_big",
+    "light_dry_cotton", "light_dry_mink_skin", "light_dry_towel", "light_dry_suit",
+    "light_dry_pajamas", "light_dry_baby_warm_clothe", "light_dry_seasonal_dispel",
+    "light_dry_plush_toy", "light_dry_leather_clothe_care", "light_dry_wool_coat",
+    "light_dry_silk_quilt", "light_dry_pizex", "light_dry_chiffon",
+    "quick_dry_clothes", "yoga_clothes",
+]
+
+_D9_38135636_DA_BUCKET = {"bucket": "da"}
+
+DEVICE_MAPPING["38135636"] = {
+    "rationale": ["off", "on"],
+    "queries": [
+        {"query_type": "da", "da_location": 1},
+        {"query_type": "db", "db_location": 2},
+        {"query_type": "dc", "dc_location": 1},
+    ],
+    "calculate": {
+        "get": [
+            {
+                "lvalue": "[da_remaining_time]",
+                "rvalue": "[da_remain_time]",
+            },
+            {
+                "lvalue": "[remaining_time]",
+                "rvalue": "[db_remain_time]",
+            },
+            {
+                "lvalue": "[dc_remaining_time]",
+                "rvalue": "[dc_remain_time]",
+            },
+            {
+                "lvalue": "[db_stage]",
+                "rvalue": "{1: 'dehydrating', 2: 'rinsing', 4: 'washing', 8: 'pre_wash', "
+                          "16: 'drying', 32: 'weighing', 64: 'high_speed_dehydrating'}"
+                          ".get(int([db_progress]), 'idle') "
+                          "if [db_running_status] == 'start' else 'idle'",
+            },
+        ],
+        "set": {},
+    },
+    "entities": {
+        Platform.BINARY_SENSOR: {
+            "da_softener_needed": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "softener_lack",
+            },
+            "da_detergent_needed": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "detergent_lack",
+            },
+            "db_door_opened": {
+                "device_class": BinarySensorDeviceClass.OPENING,
+                "translation_key": "door_opened",
+            },
+            "db_bucket_water_overheating": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "bucket_water_overheating",
+            },
+            "db_drying_tunnel_overheating": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "drying_tunnel_overheating",
+            },
+            "db_detergent_needed": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "detergent_lack",
+            },
+            "db_softener_needed": {
+                "device_class": BinarySensorDeviceClass.PROBLEM,
+                "translation_key": "softener_lack",
+            },
+        },
+        Platform.LOCK: {
+            "da_baby_lock": {
+                "rationale": [0, 1],
+                "translation_key": "child_lock",
+                "command": _D9_38135636_DA_BUCKET,
+            },
+            "db_baby_lock": {
+                "rationale": [0, 1],
+                "translation_key": "child_lock",
+            },
+            "dc_baby_lock": {
+                "rationale": [0, 1],
+                "translation_key": "child_lock",
+            },
+        },
+        Platform.SWITCH: {
+            # --- da 小筒 ---
+            "da_power": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "translation_key": "da_power",
+                "command": _D9_38135636_DA_BUCKET,
+            },
+            "da_control_status": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["pause", "start"],
+                "translation_key": "da_control_status",
+                "command": {**_D9_38135636_DA_BUCKET, "da_power": "on"},
+            },
+            "da_light": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+                "command": _D9_38135636_DA_BUCKET,
+            },
+            # --- db 主洗筒 ---
+            "db_power": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "translation_key": "db_power",
+            },
+            "db_control_status": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["pause", "start"],
+                "translation_key": "db_control_status",
+                "command": {"db_power": "on"},
+            },
+            "db_nightly_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "db_steam_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "db_fast_clean_wash": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "db_light": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            # --- dc 干衣筒 ---
+            "dc_power": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "translation_key": "dc_power",
+            },
+            "dc_control_status": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": ["pause", "start"],
+                "translation_key": "dc_control_status",
+                "command": {"dc_power": "on"},
+            },
+            "dc_light": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "dc_sterilize": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "dc_appointment": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+            "dc_flash_dry": {
+                "device_class": SwitchDeviceClass.SWITCH,
+                "rationale": [0, 1],
+            },
+        },
+        Platform.SELECT: {
+            "da_program": {
+                "translation_key": "da_program",
+                "command": _D9_38135636_DA_BUCKET,
+                "options": {
+                    p: {"da_program": p} for p in _D9_38135636_DA_PROGRAMS
+                },
+            },
+            "da_water_level": {
+                "translation_key": "water_level",
+                "command": _D9_38135636_DA_BUCKET,
+                "options": {
+                    str(i): {"da_water_level": i} for i in range(0, 9)
+                },
+            },
+            "da_temperature": {
+                "translation_key": "temperature",
+                "command": _D9_38135636_DA_BUCKET,
+                "options": {
+                    str(i): {"da_temperature": i} for i in range(0, 7)
+                },
+            },
+            "da_dehydration_speed": {
+                "translation_key": "dehydration_speed",
+                "command": _D9_38135636_DA_BUCKET,
+                "options": {
+                    str(i): {"da_dehydration_speed": i} for i in range(0, 6)
+                },
+            },
+            "da_rinse_count": {
+                "translation_key": "soak_count",
+                "command": _D9_38135636_DA_BUCKET,
+                "options": {
+                    str(i): {"da_rinse_count": i} for i in range(0, 6)
+                },
+            },
+            "db_program": {
+                "translation_key": "db_program",
+                "options": {
+                    p: {"db_program": p} for p in _D9_38135636_DB_PROGRAMS
+                },
+            },
+            "db_temperature": {
+                "translation_key": "temperature",
+                "options": {
+                    str(i): {"db_temperature": i} for i in range(0, 7)
+                },
+            },
+            "db_water_level": {
+                "translation_key": "water_level",
+                "options": {
+                    str(i): {"db_water_level": i} for i in range(0, 9)
+                },
+            },
+            "db_dehydration_speed": {
+                "translation_key": "dehydration_speed",
+                "options": {
+                    str(i): {"db_dehydration_speed": i} for i in range(0, 6)
+                },
+            },
+            "db_rinse_count": {
+                "translation_key": "soak_count",
+                "options": {
+                    str(i): {"db_rinse_count": i} for i in range(0, 6)
+                },
+            },
+            "db_dry": {
+                "options": {
+                    str(i): {"db_dry": i} for i in range(0, 13)
+                },
+            },
+            "db_detergent": {
+                "translation_key": "detergent",
+                "options": {
+                    str(i): {"db_detergent": i} for i in range(0, 4)
+                },
+            },
+            "db_softener": {
+                "translation_key": "softener",
+                "options": {
+                    str(i): {"db_softener": i} for i in range(0, 4)
+                },
+            },
+            "dc_program": {
+                "translation_key": "dc_program",
+                "options": {
+                    p: {"dc_program": p} for p in _D9_38135636_DC_PROGRAMS
+                },
+            },
+            "dc_intensity": {
+                "options": {
+                    str(i): {"dc_intensity": i} for i in range(0, 6)
+                },
+            },
+            "dc_dry_time": {
+                "options": {
+                    str(i): {"dc_dry_time": i} for i in range(0, 241)
+                },
+            },
+            "dc_wind_level": {
+                "options": {
+                    str(i): {"dc_wind_level": i} for i in range(0, 6)
+                },
+            },
+        },
+        Platform.NUMBER: {
+            "da_wash_time": {
+                "min": 0,
+                "max": 90,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "command": {
+                    **_D9_38135636_DA_BUCKET,
+                    "da_wash_time": "{value}",
+                },
+            },
+            "da_appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "command": {
+                    **_D9_38135636_DA_BUCKET,
+                    "da_appointment_time": "{value}",
+                },
+            },
+            "db_wash_time": {
+                "min": 0,
+                "max": 90,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+            },
+            "db_appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "translation_key": "appointment_finish_in",
+            },
+            "dc_appointment_time": {
+                "min": 0,
+                "max": 1440,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+            },
+            "dc_smell_time": {
+                "min": 0,
+                "max": 60,
+                "step": 1,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+            },
+        },
+        Platform.SENSOR: {
+            "da_running_status": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "da_running_status",
+            },
+            "da_remain_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+                "translation_key": "da_remain_time",
+            },
+            "da_error_code": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "db_running_status": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "running_status",
+            },
+            "db_remain_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+            },
+            "db_stage": {
+                "device_class": SensorDeviceClass.ENUM,
+                "options": [
+                    "idle",
+                    "weighing",
+                    "pre_wash",
+                    "washing",
+                    "rinsing",
+                    "dehydrating",
+                    "high_speed_dehydrating",
+                    "drying",
+                ],
+                "translation_key": "db_stage",
+            },
+            "db_error_code": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "db_remote_control_flag": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "remote_control_flag",
+            },
+            "dc_running_status": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "dc_running_status",
+            },
+            "dc_remain_time": {
+                "device_class": SensorDeviceClass.DURATION,
+                "unit_of_measurement": UnitOfTime.MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT,
+                "translation_key": "dc_remain_time",
+            },
+            "dc_dry_status": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "dc_dry_status",
+            },
+            "dc_error_code": {
+                "device_class": SensorDeviceClass.ENUM,
+            },
+            "dc_remote_control_flag": {
+                "device_class": SensorDeviceClass.ENUM,
+                "translation_key": "remote_control_flag",
+            },
+        },
+    },
+}
+
+# subtype fallback for the same cute-duo three-tub protocol.
+DEVICE_MAPPING[("subtype", "13363")] = DEVICE_MAPPING["38135636"]
