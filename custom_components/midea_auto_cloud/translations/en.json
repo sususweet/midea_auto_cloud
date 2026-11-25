@@ -3155,6 +3155,24 @@
       "cloud_electricity_year": {
         "name": "Yearly Electricity"
       },
+      "cloud_water_today": {
+        "name": "Today's water usage"
+      },
+      "cloud_power_today": {
+        "name": "Today's power consumption"
+      },
+      "cloud_water_today_da": {
+        "name": "Drum A today's water"
+      },
+      "cloud_water_today_db": {
+        "name": "Drum B today's water"
+      },
+      "cloud_power_today_da": {
+        "name": "Drum A today's power"
+      },
+      "cloud_power_today_db": {
+        "name": "Drum B today's power"
+      },
       "cloud_water_month": {
         "name": "Monthly Water Usage"
       },
