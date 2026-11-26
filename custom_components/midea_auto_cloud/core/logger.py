@@ -1,30 +1,30 @@
-import inspect
 import logging
+import sys
 from enum import IntEnum
 
 
 class MideaLogType(IntEnum):
-    DEBUG = 1
-    WARN = 2
-    ERROR = 3
-    INFO = 4
+    DEBUG = logging.DEBUG
+    INFO = logging.INFO
+    WARN = logging.WARNING
+    ERROR = logging.ERROR
 
 
 class MideaLogger:
     @staticmethod
     def _log(log_type, log, device_id):
-        frm = inspect.stack()[2]
-        mod = inspect.getmodule(frm[0])
+        # Resolve caller module with a single frame; avoid inspect.stack().
+        try:
+            module_name = sys._getframe(2).f_globals.get("__name__", __name__)
+        except ValueError:
+            module_name = __name__
+        logger = logging.getLogger(module_name)
+        if not logger.isEnabledFor(log_type):
+            return
         if device_id is not None:
             log = f"[{device_id}] {log}"
-        if log_type == MideaLogType.DEBUG:
-            logging.getLogger(mod.__name__).debug(log)
-        elif log_type == MideaLogType.INFO:
-            logging.getLogger(mod.__name__).info(log)
-        elif log_type == MideaLogType.WARN:
-            logging.getLogger(mod.__name__).warning(log)
-        elif log_type == MideaLogType.ERROR:
-            logging.getLogger(mod.__name__).error(log)
+        # stacklevel: _log -> debug/info/... -> real caller
+        logger.log(log_type, log, stacklevel=3)
 
     @staticmethod
     def debug(log, device_id=None):
