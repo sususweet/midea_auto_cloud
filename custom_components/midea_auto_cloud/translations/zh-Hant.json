@@ -1,0 +1,4945 @@
+{
+  "config": {
+    "error": {
+      "no_home": "沒有可用的住家",
+      "no_homes": "沒有可用的住家",
+      "no_homes_selected": "請至少選擇一個住家",
+      "account_invalid": "Midea 雲端驗證失敗，密碼可能已變更",
+      "invalid_input": "輸入不合法，需輸入 IP 位址或「auto」",
+      "login_failed": "登入失敗，帳號或密碼錯誤",
+      "offline_error": "僅能設定線上的家電",
+      "download_lua_failed": "下載家電的 Lua 腳本失敗",
+      "discover_failed": "在區域網路中找不到該家電",
+      "no_new_devices": "在您的住家中找不到任何新的可用家電",
+      "connect_error": "無法連線至家電",
+      "home_already_configured": "所選住家已有本地整合項目，請手動移除，或選擇其他住家後再試一次"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "account": "帳號",
+          "password": "密碼"
+        },
+        "description": "登入並儲存您的 Midea 帳號",
+        "title": "登入"
+      },
+      "home": {
+        "title": "住家",
+        "data": {
+          "home": "選擇家電所在的位置"
+        }
+      },
+      "device": {
+        "title": "家電",
+        "data": {
+          "device_id": "選擇要新增的家電"
+        }
+      },
+      "discover": {
+        "description": "探索家電，家電必須在區域網路內運作",
+        "title": "家電資訊",
+        "data": {
+          "ip_address": "IP 位址（輸入「auto」可自動探索）"
+        }
+      },
+      "select_homes": {
+        "title": "選擇住家",
+        "description": "選擇要新增裝置的住家，預設全選",
+        "data": {
+          "selected_homes": "選擇住家"
+        }
+      },
+      "download": {
+        "title": "下載資源"
+      },
+      "confirm": {
+        "title": "確認設定",
+        "description": "**設定摘要：**\n\n🏠 已選擇 {homes_count} 個住家\n📱 找到 {devices_count} 個裝置\n\n**設定結果：**\n\n{download_summary}\n\n**提示：**\n\n💡 點選「提交」會為每個住家建立各自獨立的設定項目。由於多個設定項目會同時載入，裝置的「區域」與「名稱」設定頁面只會顯示目前住家的裝置。之後您可以在「整合項目」中設定各住家的裝置。"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "option": "選項"
+        },
+        "title": "設定"
+      },
+      "change_credentials": {
+        "title": "變更憑證",
+        "description": "變更 Midea 雲端帳號的使用者名稱與密碼",
+        "data": {
+          "account": "使用者名稱",
+          "password": "密碼",
+          "server": "伺服器"
+        }
+      },
+      "mapping_select_device": {
+        "title": "裝置對應覆寫",
+        "description": "選擇要指派外部對應設定檔的裝置。設定檔儲存在 .storage/midea_auto_cloud/mappings/ 下，升級後仍會保留。自訂設定檔可正常運作後，歡迎考慮開啟 Pull Request，將可重複使用的部分貢獻至 device_mapping/。",
+        "data": {
+          "device_id": "裝置"
+        }
+      },
+      "mapping_action": {
+        "title": "對應動作",
+        "description": "裝置 {device_id}\n目前的設定檔：{current_profile}\n\n提示：若您的自訂對應可正常運作，歡迎開啟 PR 將其貢獻回 device_mapping/。",
+        "data": {
+          "action": "動作"
+        }
+      },
+      "mapping_pick_profile": {
+        "title": "選擇設定檔",
+        "description": "將現有的設定檔指派給裝置 {device_id}。儲存後此項目會重新載入。",
+        "data": {
+          "profile_id": "設定檔"
+        }
+      },
+      "mapping_paste_json": {
+        "title": "貼上設定檔 JSON",
+        "description": "貼上裝置 {device_id} 的設定檔 JSON。必要的鍵：profile、mode（extend|replace）、mapping。entities 底下的平台鍵使用 climate / switch 等字串。\n\n在您的環境驗證可用後，歡迎考慮透過 Pull Request，將可重複使用的片段（依 device_type / sn8 / subtype）貢獻至 device_mapping/。",
+        "data": {
+          "profile_json": "設定檔 JSON"
+        }
+      },
+      "mapping_clear": {
+        "title": "清除對應覆寫",
+        "description": "移除裝置 {device_id} 的覆寫。設定檔本身會保留。",
+        "data": {
+          "confirm": "確認清除"
+        }
+      },
+      "reset": {
+        "title": "重設家電的設定",
+        "description": "移除舊的設定，並使用範本建立新的設定\n若您修改過設定，變更將會遺失\n若您的家電類型或型號不在範本中，則不會建立新的設定",
+        "data": {
+          "check": "我了解，請執行"
+        }
+      },
+      "configure": {
+        "data": {
+          "ip_address": "IP 位址",
+          "refresh_interval": "更新間隔（0 表示不主動更新）"
+        },
+        "title": "選項"
+      }
+    },
+    "error": {
+      "login_failed": "登入失敗，帳號或密碼錯誤",
+      "invalid_profile_json": "無效的 JSON",
+      "invalid_profile_id": "無效的設定檔 ID（請使用字母、數字、_ 或 -）",
+      "invalid_profile_mode": "mode 必須是 extend 或 replace",
+      "invalid_profile_mapping": "mapping 必須是 JSON 物件",
+      "invalid_device_id": "無效的裝置 ID",
+      "profile_not_found": "找不到設定檔"
+    },
+    "abort": {
+      "reset_success": "重設完成",
+      "account_unsupport_config": "不支援此操作",
+      "no_devices_loaded": "此項目尚未載入任何裝置。請先開啟一次整合，再重試。",
+      "no_profiles": "找不到設定檔。請先貼上 JSON 以建立一個。"
+    }
+  },
+  "services": {
+    "set_attribute": {
+      "name": "設定屬性",
+      "description": "以字典設定家電的屬性",
+      "fields": {
+        "device_id": {
+          "name": "家電代碼",
+          "description": "家電代碼（裝置 ID）"
+        },
+        "attributes": {
+          "name": "屬性",
+          "description": "要設定的屬性"
+        }
+      }
+    },
+    "send_command": {
+      "name": "自訂指令",
+      "description": "傳送自訂指令給家電",
+      "fields": {
+        "device_id": {
+          "name": "家電代碼",
+          "description": "家電代碼（裝置 ID）"
+        },
+        "cmd_type": {
+          "name": "指令類型",
+          "description": "可為 2（查詢）或 3（控制）"
+        },
+        "cmd_body": {
+          "name": "指令內容",
+          "description": "指令的內容，不含 MSmart 通訊協定標頭與結尾的檢查碼"
+        }
+      }
+    }
+  },
+  "entity": {
+    "button": {
+      "light_off": {
+        "name": "燈已關閉"
+      },
+      "light_on": {
+        "name": "燈已開啟"
+      },
+      "left_stove_off": {
+        "name": "左爐關閉"
+      },
+      "right_stove_off": {
+        "name": "右爐關閉"
+      },
+      "middle_stove_off": {
+        "name": "中爐關閉"
+      },
+      "find": {
+        "name": "尋找掃地機器人"
+      },
+      "cancel_appointment": {
+        "name": "取消預約"
+      },
+      "reset_filter": {
+        "name": "重設濾網提醒"
+      }
+    },
+    "binary_sensor": {
+      "device_status": {
+        "name": "裝置狀態"
+      },
+      "probo_on": {
+        "name": "探針已開啟"
+      },
+      "heating_work": {
+        "name": "加熱工作狀態"
+      },
+      "bathing_work": {
+        "name": "洗浴工作狀態"
+      },
+      "doorswitch": {
+        "name": "門鎖解鎖開關"
+      },
+      "softener_lack": {
+        "name": "柔軟精不足"
+      },
+      "detergent_lack": {
+        "name": "洗衣精不足"
+      },
+      "door_opened": {
+        "name": "門已開啟"
+      },
+      "bucket_water_overheating": {
+        "name": "水桶水溫過高"
+      },
+      "drying_tunnel_overheating": {
+        "name": "烘乾通道過熱"
+      },
+      "air_status": {
+        "name": "空氣運轉中"
+      },
+      "bar_door_state": {
+        "name": "吧台門狀態"
+      },
+      "bottom_hot": {
+        "name": "下層加熱"
+      },
+      "bright_lack": {
+        "name": "光亮劑不足"
+      },
+      "chlorine_sterilization_error": {
+        "name": "氯消毒異常"
+      },
+      "diy_flag": {
+        "name": "DIY 旗標"
+      },
+      "diy_main_wash": {
+        "name": "DIY 主洗"
+      },
+      "diy_piao_wash": {
+        "name": "DIY 沖洗"
+      },
+      "diy_times": {
+        "name": "DIY 次數"
+      },
+      "disturb": {
+        "name": "勿擾"
+      },
+      "flank_hot": {
+        "name": "側面加熱"
+      },
+      "flexzone_door_state": {
+        "name": "變溫室門狀態"
+      },
+      "freezer_door_state": {
+        "name": "冷凍室門狀態"
+      },
+      "have_reserve_task": {
+        "name": "有預約任務"
+      },
+      "is_error": {
+        "name": "是否異常"
+      },
+      "maintenance_remind": {
+        "name": "保養提醒"
+      },
+      "low_salt": {
+        "name": "鹽量偏低"
+      },
+      "no_salt": {
+        "name": "無鹽"
+      },
+      "low_battery": {
+        "name": "電量低"
+      },
+      "flowmeter_error": {
+        "name": "流量計異常"
+      },
+      "salt_level_sensor_error": {
+        "name": "鹽量感測器異常"
+      },
+      "leak_water": {
+        "name": "漏水"
+      },
+      "micro_leak": {
+        "name": "微量漏水"
+      },
+      "rtc_error": {
+        "name": "RTC 異常"
+      },
+      "softwater_lack": {
+        "name": "軟水鹽不足"
+      },
+      "storage_door_state": {
+        "name": "儲藏室門狀態"
+      },
+      "storage_ice_home_door_state": {
+        "name": "儲冰室門狀態"
+      },
+      "ice_machine_full": {
+        "name": "製冰機已滿"
+      },
+      "storage_ice_full_tips": {
+        "name": "儲冰已滿"
+      },
+      "is_have_freezing_ice": {
+        "name": "有結冰"
+      },
+      "top_hot": {
+        "name": "上層加熱"
+      },
+      "wash_stage": {
+        "name": "洗滌階段"
+      },
+      "water_lack": {
+        "name": "缺水"
+      },
+      "communication_error": {
+        "name": "通訊錯誤"
+      },
+      "communication_exception": {
+        "name": "通訊異常"
+      },
+      "door_status": {
+        "name": "門狀態"
+      },
+      "ele_exception": {
+        "name": "電氣異常"
+      },
+      "mains_power_exception": {
+        "name": "市電異常"
+      },
+      "elec_warning": {
+        "name": "電氣警告"
+      },
+      "electrical_warning": {
+        "name": "電氣警告"
+      },
+      "limit_error": {
+        "name": "限位錯誤"
+      },
+      "limit_exception": {
+        "name": "限位異常"
+      },
+      "sensor_error": {
+        "name": "感測器錯誤"
+      },
+      "sensor_exception": {
+        "name": "感測器異常"
+      },
+      "lock": {
+        "name": "鎖定"
+      },
+      "furnace_light": {
+        "name": "爐燈"
+      },
+      "dissipate_heat": {
+        "name": "散熱"
+      },
+      "pre_heat": {
+        "name": "預熱"
+      },
+      "door_open": {
+        "name": "門開啟"
+      },
+      "lack_water": {
+        "name": "缺水"
+      },
+      "high_temperature_work": {
+        "name": "高溫作業"
+      },
+      "lack_box": {
+        "name": "缺少盒子"
+      },
+      "clean_sink_ponding": {
+        "name": "清潔水槽積水"
+      },
+      "clean_scale": {
+        "name": "清除水垢"
+      },
+      "flip_side": {
+        "name": "翻面"
+      },
+      "reaction": {
+        "name": "反應"
+      },
+      "ramadan": {
+        "name": "齋戒月"
+      },
+      "change_water": {
+        "name": "換水"
+      },
+      "execute": {
+        "name": "執行"
+      },
+      "heat_status": {
+        "name": "加熱狀態"
+      },
+      "standby_status": {
+        "name": "待機狀態"
+      },
+      "out_water": {
+        "name": "出水"
+      },
+      "out_hot_water": {
+        "name": "出熱水"
+      },
+      "on_seat": {
+        "name": "就座"
+      },
+      "filter_value": {
+        "name": "濾網狀態"
+      },
+      "water_pump": {
+        "name": "水泵"
+      },
+      "water_pump_enable": {
+        "name": "水泵已啟用"
+      },
+      "tank_status": {
+        "name": "水箱狀態"
+      },
+      "water_box": {
+        "name": "水盒"
+      },
+      "smelly_trigger": {
+        "name": "偵測到異味"
+      },
+      "dehumidity_trigger": {
+        "name": "除濕中"
+      },
+      "current_radar_status": {
+        "name": "雷達佔用"
+      },
+      "body_induction": {
+        "name": "人體偵測"
+      },
+      "backflow": {
+        "name": "回流"
+      },
+      "stew_heat_status": {
+        "name": "燉煮加熱"
+      },
+      "bubble_status": {
+        "name": "偵測到氣泡"
+      },
+      "full": {
+        "name": "水箱已滿"
+      },
+      "door_auto_open": {
+        "name": "自動開門"
+      },
+      "camera_status": {
+        "name": "攝影機狀態"
+      },
+      "live_video_status": {
+        "name": "即時影像狀態"
+      },
+      "connected": {
+        "name": "線上"
+      },
+      "filter_cleanup": {
+        "name": "濾網需要清潔"
+      }
+    },
+    "climate": {
+      "freezing_zone": {
+        "name": "冷凍區"
+      },
+      "left_flexzone": {
+        "name": "左側變溫區"
+      },
+      "right_flexzone": {
+        "name": "右側變溫區"
+      },
+      "storage_zone": {
+        "name": "儲藏區"
+      },
+      "thermostat": {
+        "name": "溫控器",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "link": "連動",
+              "manual": "手動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "silent": "靜音",
+              "full": "全速",
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "horizontal_upper_only": "水平擺動（上）",
+              "horizontal_under_only": "水平擺動（下）",
+              "horizontal_upper_under": "水平擺動（上下）",
+              "horizontal_upper_vertical": "水平擺動（上）與垂直",
+              "horizontal_under_vertical": "水平擺動（下）與垂直",
+              "vertical_only": "垂直擺動"
+            }
+          }
+        },
+        "state": {
+          "off": "關閉",
+          "auto": "自動"
+        }
+      },
+      "thermostat_1": {
+        "name": "溫控器 1",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          }
+        }
+      },
+      "thermostat_2": {
+        "name": "溫控器 2",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          }
+        }
+      },
+      "thermostat_3": {
+        "name": "溫控器 3",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          }
+        }
+      },
+      "thermostat_4": {
+        "name": "溫控器 4",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          }
+        }
+      },
+      "thermostat_5": {
+        "name": "溫控器 5",
+        "state_attributes": {
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "auto": "自動",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "fan_only": "僅送風",
+              "ground": "地暖",
+              "heat_ground": "暖氣＋地暖"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "自動",
+              "low": "低",
+              "medium": "中",
+              "high": "高"
+            }
+          }
+        }
+      },
+      "zone1": {
+        "name": "區域 1"
+      },
+      "zone2": {
+        "name": "區域 2"
+      },
+      "dhw": {
+        "name": "DHW（生活熱水）"
+      },
+      "water": {
+        "name": "水",
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "關閉",
+              "heat": "暖氣",
+              "cool": "冷氣",
+              "pump": "泵浦"
+            }
+          }
+        }
+      },
+      "colmo_turing_central_ac_climate": {
+        "name": "溫控器",
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "silent": "靜音",
+              "low": "低",
+              "medium": "中",
+              "high": "高",
+              "full": "全速",
+              "auto": "自動"
+            }
+          },
+          "preset_modes": {
+            "state": {
+              "none": "無",
+              "eco": "節能",
+              "comfort": "舒適",
+              "boost": "增強",
+              "sleep": "睡眠"
+            }
+          }
+        },
+        "state": {
+          "off": "關閉",
+          "heat": "暖氣",
+          "cool": "冷氣",
+          "auto": "自動",
+          "dry": "除濕",
+          "fan_only": "僅送風"
+        }
+      },
+      "water_heater": {
+        "name": "熱水器"
+      },
+      "electric_heater": {
+        "name": "電暖器",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "left_warm": "左側保溫",
+              "right_warm": "右側保溫",
+              "full_on": "全開"
+            }
+          }
+        }
+      },
+      "heating": {
+        "name": "加熱中"
+      },
+      "bath_heater": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "close": "關閉",
+              "heating": "加熱中",
+              "bath": "沐浴",
+              "ventilation": "通風",
+              "drying": "烘乾",
+              "blowing": "吹風"
+            }
+          },
+          "preset_modes": {
+            "state": {
+              "close": "關閉",
+              "heating": "加熱中",
+              "bath": "沐浴",
+              "ventilation": "通風",
+              "drying": "烘乾",
+              "blowing": "吹風"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "swing": "擺動",
+              "heating": "加熱中",
+              "bath": "沐浴",
+              "ventilation": "通風",
+              "drying": "烘乾"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "silent": "靜音",
+              "soft_wind": "柔風",
+              "standard": "標準",
+              "strong": "強力",
+              "storm": "風暴"
+            }
+          }
+        }
+      }
+    },
+    "cover": {
+      "updown": {
+        "name": "晾衣架"
+      }
+    },
+    "humidifier": {
+      "humidifier": {
+        "name": "加濕器"
+      },
+      "dehumidifier": {
+        "name": "除濕機",
+        "state_attributes": {
+          "mode": {
+            "state": {
+              "set": "設定",
+              "continuity": "連續",
+              "eco": "節能",
+              "dry_clothes": "烘衣",
+              "auto": "自動",
+              "fan": "風扇",
+              "dry_shoes": "烘鞋"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "smelly_threshold": {
+        "name": "異味閾值",
+        "state": {
+          "high": "高",
+          "medium": "中",
+          "low": "低"
+        }
+      },
+      "heating_capacity": {
+        "name": "加熱水箱",
+        "state": {
+          "half": "半水箱加熱",
+          "whole": "全水箱加熱"
+        }
+      },
+      "aidry": {
+        "name": "Aidry"
+      },
+      "softwater": {
+        "name": "軟水等級",
+        "state": {
+          "1": "等級 1",
+          "2": "等級 2",
+          "3": "等級 3",
+          "4": "等級 4",
+          "5": "等級 5",
+          "6": "等級 6"
+        }
+      },
+      "airswitch": {
+        "name": "烘乾儲存開關",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待機",
+          "running": "運轉中"
+        }
+      },
+      "dry_step_switch": {
+        "name": "烘乾步驟開關",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待機",
+          "running": "運轉中"
+        }
+      },
+      "dryswitch": {
+        "name": "烘乾開關",
+        "state": {
+          "cancel": "取消",
+          "waiting": "待機",
+          "running": "運轉中"
+        }
+      },
+      "disturb": {
+        "name": "勿擾",
+        "state": {
+          "on": "開啟",
+          "off": "關閉"
+        }
+      },
+      "dry_time_interval": {
+        "name": "烘乾時間間隔",
+        "state": {
+          "15min": "15 分鐘",
+          "30min": "30 分鐘",
+          "45min": "45 分鐘",
+          "60min": "60 分鐘"
+        }
+      },
+      "rinse_aid": {
+        "name": "亮碟劑等級",
+        "state": {
+          "1": "等級 1",
+          "2": "等級 2",
+          "3": "等級 3",
+          "4": "等級 4",
+          "5": "等級 5"
+        }
+      },
+      "additional": {
+        "name": "附加功能",
+        "state": {
+          "none": "無",
+          "extra_rinse_1": "額外沖洗 1",
+          "extra_rinse_2": "額外沖洗 2",
+          "few_dishes_extra_rinse_1": "少量餐具額外沖洗 1",
+          "few_dishes_extra_rinse_2": "少量餐具額外沖洗 2"
+        }
+      },
+      "no_wind_sense": {
+        "name": "無風感"
+      },
+      "wind_swing_ud_angle": {
+        "name": "垂直風向",
+        "state": {
+          "on": "風",
+          "off": "關閉",
+          "top": "頂部",
+          "upper": "上",
+          "middle": "中",
+          "lower": "下",
+          "bottom": "底部"
+        }
+      },
+      "wind_swing_lr_angle": {
+        "name": "水平風向",
+        "state": {
+          "on": "風",
+          "off": "關閉",
+          "leftmost": "最左",
+          "left": "左",
+          "middle": "中",
+          "right": "右",
+          "rightmost": "最右"
+        }
+      },
+      "light_sensitive": {
+        "name": "光敏感度",
+        "state": {
+          "off": "關閉",
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
+      "custom_temperature": {
+        "name": "自訂溫度"
+      },
+      "keep_warm_time": {
+        "name": "保溫時間"
+      },
+      "cur_quantify": {
+        "name": "定量模式",
+        "state": {
+          "off_quantify": "關閉",
+          "small_amount": "小",
+          "normal_amount": "一般",
+          "large_amount": "大"
+        }
+      },
+      "no_obsolete_water_mode": {
+        "name": "用水模式",
+        "state": {
+          "water_saving": "節水",
+          "water_quality": "水質"
+        }
+      },
+      "quantify_1": {
+        "name": "定量 1",
+        "state": {
+          "50": "50",
+          "100": "100",
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300"
+        }
+      },
+      "quantify_2": {
+        "name": "定量 2",
+        "state": {
+          "150": "150",
+          "200": "200",
+          "250": "250",
+          "300": "300",
+          "400": "400",
+          "500": "500"
+        }
+      },
+      "quantify_3": {
+        "name": "定量 3",
+        "state": {
+          "300": "300",
+          "400": "400",
+          "500": "500",
+          "600": "600",
+          "700": "700"
+        }
+      },
+      "screenout_time": {
+        "name": "螢幕逾時",
+        "state": {
+          "10": "10 秒",
+          "30": "30 秒",
+          "60": "60 秒",
+          "120": "120 秒",
+          "180": "180 秒",
+          "300": "300 秒"
+        }
+      },
+      "fresh_air_mode_select": {
+        "name": "模式",
+        "state": {
+          "normal": "一般",
+          "smart": "智慧",
+          "manual_recirculation": "手動循環",
+          "auto_recirculation": "自動循環",
+          "supply_air_gentle": "柔和送風",
+          "supply_air_fast": "快速送風",
+          "exhaust_air_gentle": "柔和排風",
+          "exhaust_air_fast": "快速排風"
+        }
+      },
+      "dehydration_speed": {
+        "name": "脫水轉速",
+        "state": {
+          "no_spin": "不脫水",
+          "400rpm": "400 rpm",
+          "600rpm": "600 rpm",
+          "800rpm": "800 rpm",
+          "1000rpm": "1000 rpm",
+          "1200rpm": "1200 rpm",
+          "1400rpm": "1400 rpm"
+        }
+      },
+      "soak_count": {
+        "name": "沖洗次數"
+      },
+      "detergent": {
+        "name": "洗衣精"
+      },
+      "temperature": {
+        "name": "溫度",
+        "state": {
+          "cold": "冷水",
+          "20c": "20°C",
+          "30c": "30°C",
+          "40c": "40°C",
+          "60c": "60°C",
+          "90c": "90°C"
+        }
+      },
+      "water_status": {
+        "name": "水狀態",
+        "state": {
+          "normal": "一般",
+          "lack_box": "缺少盒子",
+          "lack_water": "缺水",
+          "change_water": "換水"
+        }
+      },
+      "heat_start": {
+        "name": "煮沸",
+        "state": {
+          "start": "開始",
+          "stop": "停止"
+        }
+      },
+      "new_wind_model_intake_enable": {
+        "name": "進風",
+        "state": {
+          "off": "關閉",
+          "low": "低速",
+          "medium": "中速",
+          "high": "高速",
+          "full": "渦輪"
+        }
+      },
+      "new_wind_model_exhaust_enable": {
+        "name": "排風",
+        "state": {
+          "off": "關閉",
+          "silent": "靜音",
+          "high": "高速",
+          "full": "渦輪"
+        }
+      },
+      "updown": {
+        "name": "運轉狀態"
+      },
+      "ud_swing_angle": {
+        "name": "上下擺動角度"
+      },
+      "lr_swing_angle": {
+        "name": "左右擺動角度"
+      },
+      "ptc_default_rule": {
+        "name": "PTC 預設規則",
+        "state": {
+          "auto_mode_one": "自動模式一（依室外溫度自動開關）",
+          "auto_mode_two": "自動模式二（加熱模式下由使用者控制）"
+        }
+      },
+      "follow_body_sense": {
+        "name": "跟隨體感"
+      },
+      "bright": {
+        "name": "亮度"
+      },
+      "bias_gear": {
+        "name": "偏置檔位"
+      },
+      "humidity": {
+        "name": "濕度"
+      },
+      "b3_function_control": {
+        "name": "消毒櫃控制"
+      },
+      "b6_power": {
+        "name": "抽油煙機電源"
+      },
+      "b6_power_on_light": {
+        "name": "抽油煙機電源指示燈"
+      },
+      "b6_lock": {
+        "name": "抽油煙機鎖定"
+      },
+      "b6_gear": {
+        "name": "抽油煙機檔位"
+      },
+      "b6_smoke_stove_linkage_gear": {
+        "name": "煙爐連動檔位"
+      },
+      "b6_delay_gear_linkage_gear": {
+        "name": "抽油煙機延遲檔位連動檔位"
+      },
+      "b6_delay_time_value": {
+        "name": "抽油煙機延遲時間（分鐘）"
+      },
+      "warm_target_temp": {
+        "name": "保溫目標溫度"
+      },
+      "boil_target_temp": {
+        "name": "煮沸目標溫度"
+      },
+      "add_rinse": {
+        "name": "加強沖洗"
+      },
+      "bright_led": {
+        "name": "明亮 LED"
+      },
+      "capacity": {
+        "name": "容量"
+      },
+      "control_type": {
+        "name": "控制類型"
+      },
+      "db_detergent": {
+        "name": "DB 洗衣精"
+      },
+      "db_location_selection": {
+        "name": "水桶選擇",
+        "state": {
+          "left": "左桶",
+          "right": "右桶"
+        }
+      },
+      "db_position": {
+        "name": "DB 位置"
+      },
+      "db_program": {
+        "name": "DB 程式"
+      },
+      "db_running_status": {
+        "name": "DB 運轉狀態"
+      },
+      "db_softener": {
+        "name": "DB 柔軟精"
+      },
+      "db_temperature": {
+        "name": "DB 溫度"
+      },
+      "db_dry": {
+        "name": "DB 烘乾"
+      },
+      "water_level": {
+        "name": "水位",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "auto": "自動",
+          "l1": "L1",
+          "l2": "L2",
+          "l3": "L3",
+          "l4": "L4",
+          "off": "關閉"
+        }
+      },
+      "db_water_level": {
+        "name": "DB 水位"
+      },
+      "detergent_density": {
+        "name": "洗衣精濃度"
+      },
+      "disinfectant": {
+        "name": "消毒劑"
+      },
+      "downstair_mode": {
+        "name": "下層模式"
+      },
+      "downstair_work_status": {
+        "name": "下層工作狀態"
+      },
+      "dry_temp": {
+        "name": "烘乾溫度"
+      },
+      "dryness_level": {
+        "name": "乾燥程度"
+      },
+      "error_type": {
+        "name": "錯誤類型"
+      },
+      "fan_setting": {
+        "name": "風量等級"
+      },
+      "fan_set": {
+        "name": "風扇設定"
+      },
+      "food_site": {
+        "name": "食物位置"
+      },
+      "gesture_function_type": {
+        "name": "手勢功能類型"
+      },
+      "gesture": {
+        "name": "手勢"
+      },
+      "gesture_value": {
+        "name": "手勢動作",
+        "state": {
+          "power_toggle": "電源切換",
+          "adjust_speed": "調整速度",
+          "light_toggle": "燈光切換",
+          "power_and_speed": "電源與速度"
+        }
+      },
+      "gesture_sensitivity_value": {
+        "name": "手勢靈敏度"
+      },
+      "inverter": {
+        "name": "變頻"
+      },
+      "light": {
+        "name": "燈"
+      },
+      "humidity_mode": {
+        "name": "濕度模式",
+        "state": {
+          "auto": "自動",
+          "manual": "手動",
+          "moist_skin": "潤膚",
+          "sleep": "睡眠"
+        }
+      },
+      "icea_bar_function_switch": {
+        "name": "冰吧功能開關"
+      },
+      "intensity": {
+        "name": "強度"
+      },
+      "forget_no_worry_time": {
+        "name": "遺忘無憂時間"
+      },
+      "light_color": {
+        "name": "燈光顏色"
+      },
+      "material": {
+        "name": "材質"
+      },
+      "middlestair_mode": {
+        "name": "中層模式"
+      },
+      "middlestair_work_status": {
+        "name": "中層工作狀態"
+      },
+      "mode": {
+        "name": "模式",
+        "state": {
+          "air_dry": "風乾模式",
+          "auto": "自動模式",
+          "manual": "手動模式",
+          "normal": "一般",
+          "factory_test": "工廠測試",
+          "fast": "快速模式",
+          "service": "維修",
+          "sleep": "睡眠模式",
+          "normal_continus": "一般連續",
+          "off": "關閉",
+          "heat": "加熱",
+          "cool": "製冷",
+          "waterpump": "泵浦",
+          "dhw": "DHW（生活熱水）"
+        }
+      },
+      "mode_state": {
+        "name": "模式狀態"
+      },
+      "mop_status": {
+        "name": "拖地狀態"
+      },
+      "power_level": {
+        "name": "功率等級"
+      },
+      "prevent_wrinkle": {
+        "name": "防皺"
+      },
+      "program": {
+        "name": "程式",
+        "state": {
+          "cotton": "棉質",
+          "eco": "節能",
+          "fast_wash": "快洗 15 分鐘",
+          "mixed_wash": "混合洗",
+          "wool": "羊毛",
+          "ssp": "自清潔模式",
+          "deep_ssp": "深層自清潔",
+          "sport_clothes": "運動衣物",
+          "single_dehytration": "單脫水",
+          "rinsing_dehydration": "沖洗並脫水",
+          "big": "大件衣物",
+          "baby_clothes": "嬰兒衣物",
+          "down_jacket": "羽絨衣",
+          "color": "彩色衣物",
+          "intelligent": "智慧",
+          "quick_wash": "快速 45 分鐘",
+          "shirt": "襯衫",
+          "fiber": "化纖",
+          "enzyme": "酵素",
+          "underwear": "內衣",
+          "outdoor": "戶外",
+          "air_wash": "空氣洗",
+          "single_drying": "單烘乾",
+          "steep": "浸泡",
+          "kids": "兒童",
+          "water_cotton": "水洗棉質",
+          "fast_wash_30": "快洗 30 分鐘",
+          "fast_wash_60": "快洗 60 分鐘",
+          "water_mixed_wash": "水洗混合",
+          "water_fiber": "水洗化纖",
+          "water_kids": "水洗兒童",
+          "water_underwear": "水洗內衣",
+          "specialist": "專業洗",
+          "love": "愛心洗",
+          "water_intelligent": "水洗智慧",
+          "water_steep": "水洗浸泡",
+          "water_fast_wash_30": "水洗快洗 30 分鐘",
+          "new_water_cotton": "新水洗棉質",
+          "water_eco": "水洗節能",
+          "wash_drying_60": "洗烘 60 分鐘",
+          "self_wash_5": "自清洗 5 分鐘",
+          "fast_wash_min": "快洗（分鐘）",
+          "mixed_wash_min": "混合洗（分鐘）",
+          "dehydration_min": "脫水（分鐘）",
+          "self_wash_min": "自清洗（分鐘）",
+          "baby_clothes_min": "嬰兒衣物（分鐘）",
+          "diy0": "自訂 0",
+          "diy1": "自訂 1",
+          "diy2": "自訂 2",
+          "silk_wash": "絲質洗",
+          "prevent_allergy": "防過敏",
+          "cold_wash": "冷洗",
+          "soft_wash": "柔洗",
+          "remove_mite_wash": "除蟎洗",
+          "water_intense_wash": "水洗強力洗",
+          "fast_dry": "快速烘乾",
+          "water_outdoor": "水洗戶外",
+          "spring_autumn_wash": "春秋洗",
+          "summer_wash": "夏季洗",
+          "winter_wash": "冬季洗",
+          "jean": "牛仔",
+          "new_clothes_wash": "新衣洗",
+          "silk": "絲質",
+          "insight_wash": "洞察洗",
+          "fitness_clothes": "健身衣物",
+          "mink": "貂毛",
+          "fresh_air": "清新空氣",
+          "bucket_dry": "桶烘乾",
+          "jacket": "外套",
+          "bath_towel": "浴巾",
+          "night_fresh_wash": "夜間清新洗",
+          "heart_wash": "心洗",
+          "water_cold_wash": "水洗冷洗",
+          "water_prevent_allergy": "水洗防過敏",
+          "water_remove_mite_wash": "水洗除蟎",
+          "water_ssp": "水洗自清潔模式",
+          "standard": "標準",
+          "green_wool": "綠色羊毛",
+          "cook_wash": "煮洗",
+          "fresh_remove_wrinkle": "清新除皺",
+          "steam_sterilize_wash": "蒸氣殺菌洗",
+          "aromatherapy": "香氛",
+          "sterilize_wash": "殺菌洗",
+          "white_clothes_clean": "白色衣物清潔",
+          "clean_stains": "去汙",
+          "tube_clean_all": "全筒清潔",
+          "no_channeling_color": "防串色",
+          "scald_wash": "燙洗",
+          "hanfu_spring_summer": "漢服春夏",
+          "hanfu_autumn_winter": "漢服秋冬",
+          "skin_care_wash": "護膚洗",
+          "hanfu_wash": "漢服洗",
+          "bedsheet": "床單",
+          "plush": "毛絨",
+          "dehumidify": "除濕",
+          "cold_air_fresh_air": "冷風清新",
+          "hot_air_dry": "熱風烘乾",
+          "quick_dry": "快速烘乾",
+          "low_temp_dry": "低溫烘乾",
+          "eco_dry": "節能烘乾",
+          "quick_dry_30": "快速烘乾 30 分鐘",
+          "towel": "毛巾",
+          "intelligent_dry": "智慧烘乾",
+          "steam_care": "蒸氣護理",
+          "fixed_time_dry": "定時烘乾",
+          "night_dry": "夜間烘乾",
+          "bracket_dry": "支架烘乾",
+          "western_trouser": "褲子",
+          "dehumidification": "除濕",
+          "smart_dry": "智慧烘乾",
+          "four_piece_suit": "四件組",
+          "warm_clothes": "保暖衣物",
+          "quick_dry_20": "快速烘乾 20 分鐘",
+          "steam_sterilize": "蒸氣殺菌",
+          "big_60": "大件 60 分鐘",
+          "steam_no_iron": "蒸氣免燙",
+          "bed_clothes": "寢具",
+          "little_fast_dry": "小快烘",
+          "small_piece_dry": "小件烘乾",
+          "big_dry": "大件烘乾",
+          "wool_nurse": "羊毛護理",
+          "sun_quilt": "曬被",
+          "fresh_remove_smell": "清新除臭",
+          "bucket_self_clean": "滾筒自清潔",
+          "sterilize": "殺菌",
+          "heavy_duty": "強力洗",
+          "towel_warmer": "毛巾加熱架",
+          "air_fluff": "蓬鬆",
+          "delicates": "精緻衣物",
+          "time_drying_30": "定時 30 分鐘",
+          "time_drying_60": "定時 60 分鐘",
+          "time_drying_90": "定時 90 分鐘",
+          "dry_softnurse": "柔護烘乾",
+          "uniforms": "制服",
+          "remove_electricity": "抗靜電",
+          "eco_40_60": "ECO 40-60",
+          "allergy_care": "過敏護理",
+          "bulky": "大件"
+        }
+      },
+      "query_type": {
+        "name": "查詢類型"
+      },
+      "rice_type": {
+        "name": "米種"
+      },
+      "run_mode": {
+        "name": "運轉模式"
+      },
+      "running_status": {
+        "name": "運轉狀態"
+      },
+      "season": {
+        "name": "季節"
+      },
+      "softener_density": {
+        "name": "柔軟精濃度"
+      },
+      "stains": {
+        "name": "汙漬"
+      },
+      "sterilize": {
+        "name": "殺菌"
+      },
+      "tank_status": {
+        "name": "水箱狀態"
+      },
+      "temp_type": {
+        "name": "溫度類型"
+      },
+      "temperature_unit": {
+        "name": "溫度單位"
+      },
+      "type_machine": {
+        "name": "機器類型"
+      },
+      "upstair_mode": {
+        "name": "上層模式"
+      },
+      "upstair_work_status": {
+        "name": "上層工作狀態"
+      },
+      "variable_mode": {
+        "name": "變化模式"
+      },
+      "water_tank_setting": {
+        "name": "水箱設定"
+      },
+      "wind_gear": {
+        "name": "風速檔位",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "auto": "自動",
+          "invalid": "無效"
+        }
+      },
+      "wind_speed": {
+        "name": "風速",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "middle": "中",
+          "high": "高",
+          "auto": "自動",
+          "invalid": "無效",
+          "silent": "靜音",
+          "comfortable": "舒適",
+          "turbo": "渦輪",
+          "comfort": "舒適",
+          "strong": "強力"
+        }
+      },
+      "work_mode": {
+        "name": "工作模式",
+        "state": {
+          "start": "開始",
+          "stop": "停止",
+          "pause": "暫停",
+          "steam_fish": "蒸魚",
+          "steam_ribs": "蒸排骨",
+          "steam_vegetables": "蒸蔬菜",
+          "steam_rice": "蒸飯",
+          "keep_warm": "保溫",
+          "steam_clean": "蒸氣清潔",
+          "sweep_and_mop": "掃拖",
+          "sweep": "僅掃地",
+          "mop": "僅拖地",
+          "sweep_then_mop": "先掃後拖",
+          "error": "錯誤",
+          "random": "隨機",
+          "arc": "弧形",
+          "edge": "沿邊",
+          "emphases": "局部清掃",
+          "screw": "螺旋",
+          "bed": "床底",
+          "wide_screw": "寬螺旋",
+          "auto": "自動清掃",
+          "area": "區域清掃",
+          "zone_index": "區域索引",
+          "zone_rect": "區域矩形",
+          "path": "路徑清掃"
+        }
+      },
+      "speed": {
+        "name": "速度"
+      },
+      "wash_mode": {
+        "name": "洗滌模式",
+        "state": {
+          "neutral_gear": "空檔",
+          "auto_wash": "自動洗",
+          "strong_wash": "強力洗",
+          "standard_wash": "標準洗",
+          "eco_wash": "節能洗",
+          "glass_wash": "玻璃洗",
+          "soft_wash": "柔洗",
+          "hour_wash": "1 小時洗",
+          "fast_wash": "快洗",
+          "soak_wash": "浸泡洗",
+          "90min_wash": "90 分鐘洗",
+          "self_clean": "自清潔",
+          "fruit_wash": "水果洗",
+          "self_define": "自訂",
+          "germ": "除菌",
+          "bowl_wash": "碗洗",
+          "kill_germ": "殺菌",
+          "seafood_wash": "海鮮洗",
+          "hotpot_wash": "火鍋洗",
+          "quietnight_wash": "靜夜洗",
+          "less_wash": "少量洗",
+          "oilnet_wash": "油網洗",
+          "max_rapid_wash": "極速洗",
+          "hot_bowl_wash": "熱碗洗",
+          "cloud_wash": "雲洗",
+          "baby_wash": "嬰兒洗",
+          "single_dry": "單烘乾",
+          "single_disinfect": "單消毒",
+          "wahin_wash_dry": "洗烘一體",
+          "high_temp_wash": "高溫洗",
+          "wash_dry": "洗烘",
+          "auto_dry": "自動烘乾",
+          "fire_disinfect": "高溫消毒",
+          "toy_wash": "玩具洗",
+          "3in1": "三合一",
+          "auto_heavy": "自動強力洗",
+          "party": "聚會洗",
+          "auto_daily": "自動日常洗",
+          "auto_glass": "自動玻璃洗",
+          "baby_care": "嬰兒護理",
+          "45min_wash": "45 分鐘洗",
+          "anion1": "負離子 1",
+          "anion2": "負離子 2",
+          "anion3": "負離子 3",
+          "low_degree": "低溫洗",
+          "dry_only": "僅烘乾",
+          "dry_only_2h": "僅烘乾 2 小時",
+          "dry_only_3h": "僅烘乾 3 小時",
+          "dry_only_4h": "僅烘乾 4 小時",
+          "hot_air_1": "熱風 1",
+          "hot_air_2": "熱風 2",
+          "hot_air_3": "熱風 3"
+        }
+      },
+      "wash_region": {
+        "name": "洗滌區域",
+        "state": {
+          "1": "上層區域",
+          "2": "下層區域",
+          "3": "雙層區域"
+        }
+      },
+      "func_select": {
+        "name": "功能選擇"
+      },
+      "machine": {
+        "name": "機器"
+      },
+      "type_select": {
+        "name": "類型選擇"
+      },
+      "work_status": {
+        "name": "工作狀態",
+        "state": {
+          "power_off": "關機",
+          "power_on": "開機",
+          "cancel": "取消",
+          "pause": "暫停",
+          "resume": "繼續"
+        }
+      },
+      "voice": {
+        "name": "語音"
+      },
+      "swing_angle": {
+        "name": "擺動角度"
+      },
+      "swing_direction": {
+        "name": "擺動方向"
+      },
+      "lr_shake_switch": {
+        "name": "左右擺動",
+        "state": {
+          "off": "關閉",
+          "default": "預設",
+          "normal": "一般",
+          "diy": "DIY"
+        }
+      },
+      "ud_shake_switch": {
+        "name": "上下擺動",
+        "state": {
+          "off": "關閉",
+          "default": "預設",
+          "normal": "一般",
+          "diy": "DIY"
+        }
+      },
+      "scene": {
+        "name": "場景"
+      },
+      "sleep_sensor": {
+        "name": "睡眠感測器"
+      },
+      "gear": {
+        "name": "檔位",
+        "state": {
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
+      "ptc": {
+        "name": "PTC"
+      },
+      "wind_feeling_mode": {
+        "name": "風感模式"
+      },
+      "swing_louver": {
+        "name": "擺動導風板"
+      },
+      "swing_horizontal": {
+        "name": "水平擺動"
+      },
+      "swing_vertical": {
+        "name": "垂直擺動"
+      },
+      "left_cookmode": {
+        "name": "左爐烹飪模式"
+      },
+      "left_gear": {
+        "name": "左爐檔位"
+      },
+      "blowing_direction": {
+        "name": "吹風方向"
+      },
+      "heating_direction": {
+        "name": "加熱方向"
+      },
+      "light_mode": {
+        "name": "燈光模式"
+      },
+      "bath_direction": {
+        "name": "沐浴方向"
+      },
+      "drying_direction": {
+        "name": "烘乾方向"
+      },
+      "air_set_hour": {
+        "name": "烘乾儲存設定時間"
+      },
+      "power_on_time": {
+        "name": "開機時間",
+        "state": {
+          "off": "關閉",
+          "15": "15 分鐘",
+          "30": "30 分鐘",
+          "45": "45 分鐘",
+          "60": "1 小時",
+          "90": "90 分鐘",
+          "120": "2 小時",
+          "150": "150 分鐘",
+          "180": "3 小時",
+          "210": "210 分鐘",
+          "240": "4 小時",
+          "270": "270 分鐘",
+          "300": "5 小時",
+          "330": "330 分鐘",
+          "360": "6 小時",
+          "390": "390 分鐘",
+          "420": "7 小時",
+          "450": "450 分鐘",
+          "480": "8 小時",
+          "510": "510 分鐘",
+          "540": "9 小時",
+          "570": "570 分鐘",
+          "600": "10 小時",
+          "660": "11 小時",
+          "720": "12 小時",
+          "780": "13 小時",
+          "840": "14 小時",
+          "900": "15 小時",
+          "960": "16 小時",
+          "1020": "17 小時",
+          "1080": "18 小時",
+          "1140": "19 小時",
+          "1200": "20 小時",
+          "1260": "21 小時",
+          "1320": "22 小時",
+          "1380": "23 小時",
+          "1440": "24 小時"
+        }
+      },
+      "power_off_time": {
+        "name": "關機時間",
+        "state": {
+          "off": "關閉",
+          "15": "15 分鐘",
+          "30": "30 分鐘",
+          "45": "45 分鐘",
+          "60": "1 小時",
+          "90": "90 分鐘",
+          "120": "2 小時",
+          "150": "150 分鐘",
+          "180": "3 小時",
+          "210": "210 分鐘",
+          "240": "4 小時",
+          "270": "270 分鐘",
+          "300": "5 小時",
+          "330": "330 分鐘",
+          "360": "6 小時",
+          "390": "390 分鐘",
+          "420": "7 小時",
+          "450": "450 分鐘",
+          "480": "8 小時",
+          "510": "510 分鐘",
+          "540": "9 小時",
+          "570": "570 分鐘",
+          "600": "10 小時",
+          "660": "11 小時",
+          "720": "12 小時",
+          "780": "13 小時",
+          "840": "14 小時",
+          "900": "15 小時",
+          "960": "16 小時",
+          "1020": "17 小時",
+          "1080": "18 小時",
+          "1140": "19 小時",
+          "1200": "20 小時",
+          "1260": "21 小時",
+          "1320": "22 小時",
+          "1380": "23 小時",
+          "1440": "24 小時"
+        }
+      },
+      "wind_pressure": {
+        "name": "風壓",
+        "state": {
+          "off": "關閉",
+          "low": "低",
+          "medium": "中",
+          "high": "高",
+          "extreme": "極強"
+        }
+      },
+      "hot_style": {
+        "name": "加熱方式"
+      },
+      "bash_mode": {
+        "name": "沐浴模式"
+      },
+      "heating_mode": {
+        "name": "加熱模式"
+      },
+      "three_way_mode": {
+        "name": "三通閥模式"
+      },
+      "heating_unit_type": {
+        "name": "加熱單元類型"
+      },
+      "clean_mode": {
+        "name": "清潔模式",
+        "state": {
+          "invalid": "無",
+          "normal": "臀部清洗",
+          "woman": "婦洗",
+          "maintain": "噴嘴清潔"
+        }
+      },
+      "dry_gear": {
+        "name": "烘乾檔位",
+        "state": {
+          "0": "關閉",
+          "1": "低",
+          "2": "中",
+          "3": "高"
+        }
+      },
+      "water_gear": {
+        "name": "水量檔位",
+        "state": {
+          "0": "關閉",
+          "1": "低",
+          "2": "中低",
+          "3": "中",
+          "4": "中高",
+          "5": "高"
+        }
+      },
+      "seat_gear": {
+        "name": "座圈檔位",
+        "state": {
+          "0": "關閉",
+          "1": "低",
+          "2": "中低",
+          "3": "中",
+          "4": "中高",
+          "5": "高"
+        }
+      },
+      "rinse_volume": {
+        "name": "沖水量",
+        "state": {
+          "full": "全沖",
+          "half": "半沖",
+          "invalid": "無"
+        }
+      },
+      "injector_position_normal": {
+        "name": "臀洗噴嘴位置",
+        "state": {
+          "0": "關閉",
+          "1": "後",
+          "2": "中後",
+          "3": "中",
+          "4": "中前",
+          "5": "前"
+        }
+      },
+      "injector_position_woman": {
+        "name": "婦洗噴嘴位置",
+        "state": {
+          "0": "關閉",
+          "1": "後",
+          "2": "中後",
+          "3": "中",
+          "4": "中前",
+          "5": "前"
+        }
+      },
+      "water_pressure_normal": {
+        "name": "臀洗水壓",
+        "state": {
+          "0": "關閉",
+          "1": "低",
+          "2": "中低",
+          "3": "中",
+          "4": "中高",
+          "5": "高"
+        }
+      },
+      "clean_interval": {
+        "name": "清潔間隔",
+        "state": {
+          "0": "關閉",
+          "7": "7 天",
+          "15": "15 天",
+          "30": "30 天"
+        }
+      },
+      "water_pressure_woman": {
+        "name": "婦洗水壓",
+        "state": {
+          "0": "關閉",
+          "1": "低",
+          "2": "中低",
+          "3": "中",
+          "4": "中高",
+          "5": "高"
+        }
+      },
+      "temperature_level": {
+        "name": "溫度等級"
+      },
+      "smell": {
+        "name": "除臭"
+      },
+      "ice_making_mode": {
+        "name": "製冰模式",
+        "state": {
+          "big": "大冰",
+          "small": "小冰"
+        }
+      }
+    },
+    "sensor": {
+      "current_water_temperature": {
+        "name": "目前水溫"
+      },
+      "target_water_temperature": {
+        "name": "目標水溫"
+      },
+      "hot_water_amount": {
+        "name": "熱水量"
+      },
+      "heating_remaining_time": {
+        "name": "加熱剩餘時間"
+      },
+      "water_quality_score": {
+        "name": "水質評分"
+      },
+      "fault_code": {
+        "name": "故障代碼"
+      },
+      "wash_stage": {
+        "name": "洗滌階段",
+        "state": {
+          "0": "閒置",
+          "1": "預洗",
+          "2": "主洗",
+          "3": "沖洗",
+          "4": "烘乾",
+          "5": "洗滌完成"
+        }
+      },
+      "lr_current_angle": {
+        "name": "目前左右擺動角度"
+      },
+      "ud_current_angle": {
+        "name": "目前上下擺動角度"
+      },
+      "dry_remain_time": {
+        "name": "烘乾剩餘時間"
+      },
+      "ice_gall_status": {
+        "name": "冰膽狀態",
+        "state": {
+          "0": "停止",
+          "1": "運轉中"
+        }
+      },
+      "total_working_time": {
+        "name": "總工作時間"
+      },
+      "wind_pressure": {
+        "name": "風壓"
+      },
+      "new_wind_humidity": {
+        "name": "新風濕度"
+      },
+      "new_wind_outdoor_temperature": {
+        "name": "新風室外溫度"
+      },
+      "fresh_filter_time": {
+        "name": "濾網剩餘壽命"
+      },
+      "tips_code": {
+        "name": "提示代碼"
+      },
+      "version": {
+        "name": "版本"
+      },
+      "deep_filter_percent": {
+        "name": "濾網剩餘壽命"
+      },
+      "fresh_air_temp": {
+        "name": "新風溫度"
+      },
+      "running_status": {
+        "name": "運轉狀態",
+        "state": {
+          "end": "結束",
+          "standby": "待機",
+          "start": "開始",
+          "pause": "暫停",
+          "idle": "閒置",
+          "fault": "故障",
+          "delay": "延遲",
+          "delay_pause": "延遲暫停"
+        }
+      },
+      "tank_status": {
+        "name": "水箱狀態"
+      },
+      "water_status": {
+        "name": "水狀態",
+        "state": {
+          "normal": "一般",
+          "lack_box": "缺少盒子",
+          "lack_water": "缺水",
+          "change_water": "換水"
+        }
+      },
+      "fan_level": {
+        "name": "風量等級"
+      },
+      "mop": {
+        "name": "拖地模式"
+      },
+      "move_direction": {
+        "name": "移動方向"
+      },
+      "work_status": {
+        "name": "工作狀態"
+      },
+      "sub_work_status": {
+        "name": "子工作狀態"
+      },
+      "mode": {
+        "name": "運轉模式"
+      },
+      "active_oxygen": {
+        "name": "活性氧"
+      },
+      "air_dry_left_time": {
+        "name": "風乾剩餘時間"
+      },
+      "air_set_hour": {
+        "name": "烘乾儲存設定時間"
+      },
+      "air_left_hour": {
+        "name": "烘乾儲存剩餘時間"
+      },
+      "appointment_time": {
+        "name": "預約時間"
+      },
+      "area": {
+        "name": "面積"
+      },
+      "auto_max_set_temp": {
+        "name": "自動最高設定溫度"
+      },
+      "auto_min_set_temp": {
+        "name": "自動最低設定溫度"
+      },
+      "b3_upstair_status": {
+        "name": "消毒櫃狀態"
+      },
+      "b7_left_status": {
+        "name": "左爐狀態",
+        "state": {
+          "initial": "初始",
+          "power_off": "關機",
+          "working": "工作中",
+          "power_off_delay": "延遲關機"
+        }
+      },
+      "b7_left_gear": {
+        "name": "左爐檔位"
+      },
+      "b7_right_status": {
+        "name": "右爐狀態",
+        "state": {
+          "initial": "初始",
+          "power_off": "關機",
+          "working": "工作中",
+          "power_off_delay": "延遲關機"
+        }
+      },
+      "b7_right_gear": {
+        "name": "左爐檔位"
+      },
+      "bath_out_volume": {
+        "name": "出水量（沐浴）"
+      },
+      "bathtub_water_level": {
+        "name": "浴缸水位"
+      },
+      "battery_percent": {
+        "name": "電池電量百分比"
+      },
+      "battery_voltage": {
+        "name": "電池電壓"
+      },
+      "bottom_temperature": {
+        "name": "底部溫度"
+      },
+      "bright": {
+        "name": "光亮劑等級"
+      },
+      "category": {
+        "name": "類別"
+      },
+      "change_litre": {
+        "name": "換水公升數"
+      },
+      "change_net_set_time": {
+        "name": "換網設定時間"
+      },
+      "change_net_used_time": {
+        "name": "換網已使用時間"
+      },
+      "change_set_real_time": {
+        "name": "換網實際設定時間"
+      },
+      "clean_net_set_time": {
+        "name": "清網設定時間"
+      },
+      "clean_net_used_time": {
+        "name": "清網已使用時間"
+      },
+      "clean_set_real_time": {
+        "name": "清網實際設定時間"
+      },
+      "cloud_cycle_high": {
+        "name": "雲端循環高"
+      },
+      "cloud_cycle_jiepai1": {
+        "name": "雲端循環節拍 1"
+      },
+      "cloud_cycle_jiepai2": {
+        "name": "雲端循環節拍 2"
+      },
+      "cloud_cycle_jiepai3": {
+        "name": "雲端循環節拍 3"
+      },
+      "cloud_cycle_jiepai4": {
+        "name": "雲端循環節拍 4"
+      },
+      "cloud_cycle_jiepai_time1": {
+        "name": "雲端循環節拍時間 1"
+      },
+      "cloud_cycle_jiepai_time2": {
+        "name": "雲端循環節拍時間 2"
+      },
+      "cloud_cycle_jiepai_time3": {
+        "name": "雲端循環節拍時間 3"
+      },
+      "cloud_cycle_jiepai_time4": {
+        "name": "雲端循環節拍時間 4"
+      },
+      "cloud_cycle_low": {
+        "name": "雲端循環低"
+      },
+      "co2_value": {
+        "name": "CO2 數值"
+      },
+      "cool_max_set_temp": {
+        "name": "製冷最高設定溫度"
+      },
+      "cool_min_set_temp": {
+        "name": "製冷最低設定溫度"
+      },
+      "cur_humidity": {
+        "name": "目前濕度"
+      },
+      "cur_temp": {
+        "name": "目前溫度"
+      },
+      "cur_temperature": {
+        "name": "目前溫度"
+      },
+      "customize_machine_cycle": {
+        "name": "自訂機器週期"
+      },
+      "days_since_last_regeneration": {
+        "name": "距上次再生天數"
+      },
+      "days_since_last_two_regeneration": {
+        "name": "距上上次再生天數"
+      },
+      "db_appointment": {
+        "name": "DB 預約"
+      },
+      "db_appointment_time": {
+        "name": "DB 預約時間"
+      },
+      "db_cycle_memory": {
+        "name": "DB 週期記憶"
+      },
+      "db_dehydration_time": {
+        "name": "DB 脫水時間"
+      },
+      "db_device_software_version": {
+        "name": "DB 裝置軟體版本"
+      },
+      "db_error_code": {
+        "name": "DB 錯誤代碼"
+      },
+      "db_progress": {
+        "name": "DB 進度"
+      },
+      "db_project_no": {
+        "name": "DB 專案編號"
+      },
+      "db_remain_time": {
+        "name": "DB 剩餘時間"
+      },
+      "db_rinse_count": {
+        "name": "DB 沖洗次數"
+      },
+      "db_set_dewater_time": {
+        "name": "DB 設定脫水時間"
+      },
+      "db_set_wash_time": {
+        "name": "DB 設定洗滌時間"
+      },
+      "db_wash_time": {
+        "name": "DB 洗滌時間"
+      },
+      "dehydration_time": {
+        "name": "脫水時間"
+      },
+      "dehydration_time_value": {
+        "name": "脫水時間數值"
+      },
+      "detergent_density_global": {
+        "name": "全域洗衣精濃度"
+      },
+      "detergent_global": {
+        "name": "全域洗衣精"
+      },
+      "device_software_version": {
+        "name": "裝置軟體版本"
+      },
+      "downstair_hour": {
+        "name": "下層（時）"
+      },
+      "downstair_min": {
+        "name": "下層（分）"
+      },
+      "downstair_sec": {
+        "name": "下層（秒）"
+      },
+      "downstair_temp": {
+        "name": "下層溫度"
+      },
+      "dry_set_min": {
+        "name": "烘乾設定時間"
+      },
+      "dry_time": {
+        "name": "烘乾時間"
+      },
+      "dryer": {
+        "name": "烘乾機"
+      },
+      "dust_count": {
+        "name": "灰塵計數"
+      },
+      "error": {
+        "name": "錯誤"
+      },
+      "error_code": {
+        "name": "錯誤代碼"
+      },
+      "current_temp": {
+        "name": "目前溫度"
+      },
+      "current_time": {
+        "name": "目前持續時間"
+      },
+      "step_status": {
+        "name": "步驟狀態"
+      },
+      "cup_status": {
+        "name": "杯子狀態"
+      },
+      "lid_status": {
+        "name": "杯蓋狀態"
+      },
+      "response_type": {
+        "name": "回應類型"
+      },
+      "power_on_flag": {
+        "name": "開機旗標"
+      },
+      "appoint_time": {
+        "name": "預約時長"
+      },
+      "set_work_time": {
+        "name": "設定工作時間"
+      },
+      "set_keep_warm_time": {
+        "name": "設定保溫時間"
+      },
+      "set_work_temp": {
+        "name": "設定工作溫度"
+      },
+      "set_keep_warm_temp": {
+        "name": "設定保溫溫度"
+      },
+      "error_desc": {
+        "name": "錯誤說明"
+      },
+      "expert_step": {
+        "name": "專家步驟"
+      },
+      "fast_cold_minute": {
+        "name": "快速冷卻分鐘數"
+      },
+      "fast_freeze_minute": {
+        "name": "快速冷凍分鐘數"
+      },
+      "flocks_remind_period": {
+        "name": "絮狀物提醒週期"
+      },
+      "flocks_wash_count": {
+        "name": "絮狀物清洗次數"
+      },
+      "flushing_days": {
+        "name": "沖洗天數"
+      },
+      "freeze_fahrenheit_level": {
+        "name": "冷凍華氏等級"
+      },
+      "freezing_real_temperature": {
+        "name": "冷凍實際溫度"
+      },
+      "freezing_temperature": {
+        "name": "冷凍溫度"
+      },
+      "fresh_air_time": {
+        "name": "新風時間"
+      },
+      "function_zone_level": {
+        "name": "功能區等級"
+      },
+      "gas_lift_percent": {
+        "name": "氣舉百分比"
+      },
+      "hcho_value": {
+        "name": "HCHO 數值"
+      },
+      "heat_max_set_temp": {
+        "name": "加熱最高設定溫度"
+      },
+      "heat_min_set_temp": {
+        "name": "加熱最低設定溫度"
+      },
+      "humidity": {
+        "name": "濕度"
+      },
+      "humidity_set": {
+        "name": "濕度設定"
+      },
+      "humidity_value": {
+        "name": "濕度數值"
+      },
+      "in_water_tem": {
+        "name": "進水溫度"
+      },
+      "indoor_temperature": {
+        "name": "室內溫度"
+      },
+      "interval_room_humidity_level": {
+        "name": "間隔房間濕度等級"
+      },
+      "leach_expire_day": {
+        "name": "濾芯到期天數"
+      },
+      "leak_water_protection_value": {
+        "name": "漏水保護值"
+      },
+      "left_flexzone_temperature": {
+        "name": "左側變溫室溫度"
+      },
+      "left_time": {
+        "name": "剩餘時間"
+      },
+      "left_variable_real_temperature": {
+        "name": "左側變溫實際溫度"
+      },
+      "machine_type": {
+        "name": "機器類型"
+      },
+      "maintenance_reminder_setting": {
+        "name": "保養提醒設定"
+      },
+      "micro_leak_protection_value": {
+        "name": "微漏保護值"
+      },
+      "middlestair_hour": {
+        "name": "中層（時）"
+      },
+      "middlestair_min": {
+        "name": "中層（分）"
+      },
+      "middlestair_sec": {
+        "name": "中層（秒）"
+      },
+      "middlestair_temp": {
+        "name": "中層溫度"
+      },
+      "mixed_water_gear": {
+        "name": "混水檔位"
+      },
+      "normal_zone_level": {
+        "name": "一般區等級"
+      },
+      "order_hour": {
+        "name": "預約（時）"
+      },
+      "order_min": {
+        "name": "預約（分）"
+      },
+      "order_sec": {
+        "name": "預約（秒）"
+      },
+      "out_water_tem": {
+        "name": "出水溫度"
+      },
+      "outdoor_temperature": {
+        "name": "室外溫度"
+      },
+      "person_tem_one": {
+        "name": "人員溫度一"
+      },
+      "person_tem_three": {
+        "name": "人員溫度三"
+      },
+      "person_tem_two": {
+        "name": "人員溫度二"
+      },
+      "planner_status": {
+        "name": "計畫狀態"
+      },
+      "pm25_value": {
+        "name": "PM2.5 數值"
+      },
+      "power_consumption_high": {
+        "name": "耗電量（高位）"
+      },
+      "power_consumption_low": {
+        "name": "耗電量（低位）"
+      },
+      "pre_regeneration_days": {
+        "name": "距再生天數"
+      },
+      "preheat_max_set_temp": {
+        "name": "預熱最高設定溫度"
+      },
+      "preheat_min_set_temp": {
+        "name": "預熱最低設定溫度"
+      },
+      "preheat_on_set_temp": {
+        "name": "預熱開啟設定溫度"
+      },
+      "progress": {
+        "name": "進度"
+      },
+      "real_date_setting_day": {
+        "name": "即時日期設定（日）"
+      },
+      "real_date_setting_month": {
+        "name": "即時日期設定（月）"
+      },
+      "real_date_setting_year": {
+        "name": "即時日期設定（年）"
+      },
+      "real_time_setting_hour": {
+        "name": "即時時間設定（時）"
+      },
+      "real_time_setting_min": {
+        "name": "即時時間設定（分）"
+      },
+      "real_time_power": {
+        "name": "即時功率"
+      },
+      "refrigeration_fahrenheit_level": {
+        "name": "冷藏華氏等級"
+      },
+      "refrigeration_real_temperature": {
+        "name": "冷藏實際溫度"
+      },
+      "regeneration_count": {
+        "name": "再生次數"
+      },
+      "regeneration_current_stages": {
+        "name": "目前再生階段"
+      },
+      "regeneration_left_seconds": {
+        "name": "再生剩餘秒數"
+      },
+      "regeneration_stages": {
+        "name": "再生階段"
+      },
+      "remain_time": {
+        "name": "剩餘時間"
+      },
+      "remaining_time": {
+        "name": "剩餘時間"
+      },
+      "remind_maintenance_days": {
+        "name": "提醒保養天數"
+      },
+      "remote_control_flag": {
+        "name": "遠端控制"
+      },
+      "return_water_tem": {
+        "name": "回水溫度"
+      },
+      "right_flexzone_temperature": {
+        "name": "右側變溫室溫度"
+      },
+      "right_variable_real_temperature": {
+        "name": "右側變溫實際溫度"
+      },
+      "room_aqi_value": {
+        "name": "房間 AQI 數值"
+      },
+      "room_temp_value": {
+        "name": "房間溫度數值"
+      },
+      "running_percent": {
+        "name": "運轉百分比"
+      },
+      "salt_alarm_threshold": {
+        "name": "鹽量警報閾值"
+      },
+      "salt_setting": {
+        "name": "鹽量設定"
+      },
+      "sensor_battery": {
+        "name": "感測器電量"
+      },
+      "sensor_humidify": {
+        "name": "感測器濕度"
+      },
+      "sensor_temperature": {
+        "name": "感測器溫度"
+      },
+      "sn8": {
+        "name": "SN8"
+      },
+      "soft_available_big": {
+        "name": "可用軟水（大）"
+      },
+      "softener_density_global": {
+        "name": "全域柔軟精濃度"
+      },
+      "softener_global": {
+        "name": "全域柔軟精"
+      },
+      "softwater": {
+        "name": "軟水等級"
+      },
+      "station_error_desc": {
+        "name": "基座錯誤說明"
+      },
+      "storage_temperature": {
+        "name": "儲藏溫度"
+      },
+      "supply_voltage": {
+        "name": "供電電壓"
+      },
+      "sweep_then_mop_mode_progress": {
+        "name": "先掃後拖模式進度"
+      },
+      "switch_status": {
+        "name": "開關狀態"
+      },
+      "temp_set": {
+        "name": "溫度設定"
+      },
+      "temperature": {
+        "name": "溫度"
+      },
+      "time_off": {
+        "name": "關閉時間"
+      },
+      "time_on": {
+        "name": "開啟時間"
+      },
+      "timing_regeneration_hour": {
+        "name": "定時再生（時）"
+      },
+      "timing_regeneration_min": {
+        "name": "定時再生（分）"
+      },
+      "top_temperature": {
+        "name": "頂部溫度"
+      },
+      "tvoc_value": {
+        "name": "TVOC 數值"
+      },
+      "upstair_hour": {
+        "name": "上層（時）"
+      },
+      "upstair_min": {
+        "name": "上層（分）"
+      },
+      "upstair_sec": {
+        "name": "上層（秒）"
+      },
+      "upstair_temp": {
+        "name": "上層溫度"
+      },
+      "use_days": {
+        "name": "使用天數"
+      },
+      "velocity": {
+        "name": "流速"
+      },
+      "voltage": {
+        "name": "電壓"
+      },
+      "warming_time": {
+        "name": "保溫時間"
+      },
+      "wash_time": {
+        "name": "洗滌時間"
+      },
+      "wash_time_value": {
+        "name": "洗滌時間數值"
+      },
+      "water_consumption_average": {
+        "name": "平均用水量"
+      },
+      "water_consumption_big": {
+        "name": "用水量（大）"
+      },
+      "water_consumption_today": {
+        "name": "今日用水量"
+      },
+      "water_hardness": {
+        "name": "水硬度"
+      },
+      "water_station_status": {
+        "name": "水站狀態"
+      },
+      "water_volume": {
+        "name": "水量"
+      },
+      "work_stage": {
+        "name": "工作階段"
+      },
+      "work_time": {
+        "name": "工作時間"
+      },
+      "set_time": {
+        "name": "設定時間"
+      },
+      "zero_cold_tem": {
+        "name": "零冷水溫度"
+      },
+      "bottom_temp": {
+        "name": "底部溫度"
+      },
+      "cur_rate": {
+        "name": "目前速率"
+      },
+      "discharge_left_time": {
+        "name": "排放剩餘時間"
+      },
+      "discharge_status": {
+        "name": "排放狀態"
+      },
+      "end_time_hour": {
+        "name": "結束時間（時）"
+      },
+      "end_time_minute": {
+        "name": "結束時間（分）"
+      },
+      "end_time": {
+        "name": "加熱結束時間"
+      },
+      "flow": {
+        "name": "流量"
+      },
+      "heat_water_level": {
+        "name": "加熱水位"
+      },
+      "in_temperature": {
+        "name": "進水溫度"
+      },
+      "out_temperature": {
+        "name": "出水溫度"
+      },
+      "bash_temperature": {
+        "name": "沐浴溫度"
+      },
+      "bash_target_temperature": {
+        "name": "沐浴目標溫度"
+      },
+      "heating_temperature": {
+        "name": "加熱溫度"
+      },
+      "heating_target_temperature": {
+        "name": "加熱目標溫度"
+      },
+      "heating_gap_temperature": {
+        "name": "加熱溫差"
+      },
+      "user_mode_target_temperature": {
+        "name": "使用者模式目標溫度"
+      },
+      "activity_mode_target_temperature": {
+        "name": "活動模式目標溫度"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "睡眠模式目標溫度"
+      },
+      "rated_power": {
+        "name": "額定功率"
+      },
+      "current_power": {
+        "name": "目前功率"
+      },
+      "flow_volume": {
+        "name": "流量"
+      },
+      "bash_mode": {
+        "name": "沐浴模式"
+      },
+      "heating_mode": {
+        "name": "加熱模式"
+      },
+      "hot_style": {
+        "name": "加熱方式"
+      },
+      "bash_function": {
+        "name": "沐浴功能"
+      },
+      "three_way_mode": {
+        "name": "三通閥模式"
+      },
+      "heating_unit_type": {
+        "name": "加熱單元類型"
+      },
+      "light_gear": {
+        "name": "螢幕亮度"
+      },
+      "mg_remain": {
+        "name": "鎂剩餘量"
+      },
+      "morning_night_bash": {
+        "name": "早晚沐浴"
+      },
+      "passwater_highbyte": {
+        "name": "過水量高位元組"
+      },
+      "passwater_lowbyte": {
+        "name": "過水量低位元組"
+      },
+      "rate": {
+        "name": "速率"
+      },
+      "scene_id": {
+        "name": "場景 ID"
+      },
+      "screen_light": {
+        "name": "螢幕燈光"
+      },
+      "sterilize_cycle_index": {
+        "name": "殺菌週期索引"
+      },
+      "sterilize_left_days": {
+        "name": "殺菌剩餘天數"
+      },
+      "tds_value": {
+        "name": "TDS 數值"
+      },
+      "top_temp": {
+        "name": "頂部溫度"
+      },
+      "uv_sterilize_minute": {
+        "name": "紫外線殺菌（分）"
+      },
+      "uv_sterilize_second": {
+        "name": "紫外線殺菌（秒）"
+      },
+      "volume": {
+        "name": "音量"
+      },
+      "wash_temperature": {
+        "name": "洗滌溫度"
+      },
+      "water_system": {
+        "name": "水系統"
+      },
+      "waterday_highbyte": {
+        "name": "用水天數高位元組"
+      },
+      "waterday_lowbyte": {
+        "name": "用水天數低位元組"
+      },
+      "work_hour": {
+        "name": "工作（時）"
+      },
+      "work_minute": {
+        "name": "工作（分）"
+      },
+      "work_second": {
+        "name": "工作（秒）"
+      },
+      "cur_temperature_above": {
+        "name": "目前上層溫度"
+      },
+      "cur_temperature_underside": {
+        "name": "目前下層溫度"
+      },
+      "weight": {
+        "name": "重量"
+      },
+      "people_number": {
+        "name": "人數"
+      },
+      "steam_quantity": {
+        "name": "蒸氣量"
+      },
+      "totalstep": {
+        "name": "總步驟"
+      },
+      "stepnum": {
+        "name": "步驟編號"
+      },
+      "hour_set": {
+        "name": "設定（時）"
+      },
+      "minute_set": {
+        "name": "設定（分）"
+      },
+      "second_set": {
+        "name": "設定（秒）"
+      },
+      "ota": {
+        "name": "OTA"
+      },
+      "cbs_version": {
+        "name": "CBS 版本"
+      },
+      "cloudmenuid": {
+        "name": "雲端選單 ID"
+      },
+      "real_gear": {
+        "name": "實際檔位"
+      },
+      "dust_life_time": {
+        "name": "集塵壽命"
+      },
+      "filter_life_time": {
+        "name": "濾網壽命"
+      },
+      "battery_status": {
+        "name": "電池狀態"
+      },
+      "battery_level": {
+        "name": "電池電量"
+      },
+      "temperature_feedback": {
+        "name": "溫度回饋"
+      },
+      "water_feedback": {
+        "name": "水量回饋"
+      },
+      "timer_off_hour": {
+        "name": "定時關閉（時）"
+      },
+      "timer_off_minute": {
+        "name": "定時關閉（分）"
+      },
+      "timer_on_hour": {
+        "name": "定時開啟（時）"
+      },
+      "timer_on_minute": {
+        "name": "定時開啟（分）"
+      },
+      "pm25": {
+        "name": "PM2.5"
+      },
+      "ud_swing_angle": {
+        "name": "上下擺動角度",
+        "state": {
+          "off": "關閉",
+          "on": "開啟",
+          "30": "30°",
+          "60": "60°",
+          "135": "135°"
+        }
+      },
+      "lr_swing_angle": {
+        "name": "左右擺動角度",
+        "state": {
+          "off": "關閉",
+          "30": "30°",
+          "60": "60°",
+          "120": "120°",
+          "default": "全速",
+          "diy": "DIY",
+          "normal": "固定角度",
+          "on": "開啟"
+        }
+      },
+      "lr_diy_down_percent": {
+        "name": "左右 DIY 下百分比"
+      },
+      "lr_diy_up_percent": {
+        "name": "左右 DIY 上百分比"
+      },
+      "ud_diy_down_percent": {
+        "name": "上下 DIY 下百分比"
+      },
+      "ud_diy_up_percent": {
+        "name": "上下 DIY 上百分比"
+      },
+      "heat_exchanger": {
+        "name": "熱交換器模式"
+      },
+      "fan_type": {
+        "name": "風扇類型"
+      },
+      "ignitor_output": {
+        "name": "點火器輸出"
+      },
+      "fan_output": {
+        "name": "風扇輸出"
+      },
+      "current_heat_set_temperature": {
+        "name": "目前加熱設定溫度"
+      },
+      "current_bath_set_temperature": {
+        "name": "目前沐浴設定溫度"
+      },
+      "heat_out_water_temperature": {
+        "name": "加熱出水溫度"
+      },
+      "bath_out_water_temperature": {
+        "name": "沐浴出水溫度"
+      },
+      "water_gage": {
+        "name": "水量計"
+      },
+      "in_tds": {
+        "name": "進水 TDS"
+      },
+      "out_tds": {
+        "name": "出水 TDS"
+      },
+      "life_1": {
+        "name": "RO 濾芯壽命"
+      },
+      "life_2": {
+        "name": "MPC 濾芯壽命"
+      },
+      "life_2_pcb": {
+        "name": "Life2_PCB"
+      },
+      "water_consumption": {
+        "name": "用水量"
+      },
+      "water_consumption_ml": {
+        "name": "用水量（毫升）"
+      },
+      "cool_target_temperature": {
+        "name": "製冷目標溫度"
+      },
+      "keep_warm_time": {
+        "name": "保溫時間"
+      },
+      "warm_left_time": {
+        "name": "保溫剩餘時間"
+      },
+      "room_temperature": {
+        "name": "室溫"
+      },
+      "outside_temperature": {
+        "name": "室外溫度"
+      },
+      "inlet_water_temperature": {
+        "name": "進水溫度"
+      },
+      "outlet_water_temperature": {
+        "name": "出水溫度"
+      },
+      "set_temperature": {
+        "name": "設定溫度"
+      },
+      "total_kwh": {
+        "name": "總能耗"
+      },
+      "heat_energy_month": {
+        "name": "本月暖氣能耗"
+      },
+      "dhw_energy_month": {
+        "name": "本月熱水能耗"
+      },
+      "cool_energy_month": {
+        "name": "本月冷氣能耗"
+      },
+      "heat_energy_year": {
+        "name": "今年暖氣能耗"
+      },
+      "dhw_energy_year": {
+        "name": "今年熱水能耗"
+      },
+      "cool_energy_year": {
+        "name": "今年冷氣能耗"
+      },
+      "lua_version": {
+        "name": "Lua 版本"
+      },
+      "wind_speed_level": {
+        "name": "風速等級"
+      },
+      "timer_on_timeout": {
+        "name": "定時開啟逾時"
+      },
+      "timer_off_timeout": {
+        "name": "定時關閉逾時"
+      },
+      "selfclean_time_left": {
+        "name": "自清潔剩餘時間"
+      },
+      "backup_time": {
+        "name": "備份時間"
+      },
+      "cur_fault_code": {
+        "name": "目前故障代碼"
+      },
+      "left_recipe_current_step_action": {
+        "name": "左側食譜目前步驟動作"
+      },
+      "left_recipe_id": {
+        "name": "左側食譜 ID"
+      },
+      "left_recipe_rest_time": {
+        "name": "左側食譜剩餘時間"
+      },
+      "left_current_temperature": {
+        "name": "左側目前溫度"
+      },
+      "left_status": {
+        "name": "左側狀態"
+      },
+      "right_status": {
+        "name": "右側狀態"
+      },
+      "eq_recipe_action": {
+        "name": "Eq 食譜動作"
+      },
+      "gas_leakage_code": {
+        "name": "瓦斯洩漏代碼"
+      },
+      "left_work_time": {
+        "name": "左側工作時間"
+      },
+      "left_recipe_current_step": {
+        "name": "左側食譜目前步驟"
+      },
+      "left_recipe_target_steps": {
+        "name": "左側食譜目標步驟"
+      },
+      "left_recipe_target_time": {
+        "name": "左側食譜目標時間"
+      },
+      "error_type": {
+        "name": "錯誤類型"
+      },
+      "drying_time": {
+        "name": "烘乾時間"
+      },
+      "bath_heating_time": {
+        "name": "沐浴加熱時間"
+      },
+      "current_temperature": {
+        "name": "目前溫度"
+      },
+      "germicidal_left_time": {
+        "name": "殺菌剩餘時間"
+      },
+      "germicidal_countdown": {
+        "name": "殺菌倒數"
+      },
+      "bath_temperature": {
+        "name": "沐浴溫度"
+      },
+      "main_light_brightness": {
+        "name": "主燈亮度"
+      },
+      "night_light_brightness": {
+        "name": "夜燈亮度"
+      },
+      "blowing_speed": {
+        "name": "送風速度"
+      },
+      "delay_time": {
+        "name": "延遲時間"
+      },
+      "input_temperature_sensing": {
+        "name": "輸入溫度感測"
+      },
+      "hot_pot_temperature": {
+        "name": "火鍋溫度"
+      },
+      "water_full_time": {
+        "name": "滿水時間"
+      },
+      "water_full_level": {
+        "name": "滿水位"
+      },
+      "room_temp": {
+        "name": "室溫"
+      },
+      "cool_temp_set": {
+        "name": "製冷溫度設定"
+      },
+      "heat_temp_set": {
+        "name": "加熱溫度設定"
+      },
+      "tw1_in_water_temp": {
+        "name": "進水溫度"
+      },
+      "tw1_out_water_temp": {
+        "name": "出水溫度"
+      },
+      "tw_out_water_temp": {
+        "name": "出水溫度"
+      },
+      "total_elec_value": {
+        "name": "總用電量"
+      },
+      "cloud_electricity_month": {
+        "name": "每月用電量"
+      },
+      "cloud_electricity_year": {
+        "name": "每年用電量"
+      },
+      "cloud_water_month": {
+        "name": "每月用水量"
+      },
+      "cloud_water_year": {
+        "name": "每年用水量"
+      },
+      "cloud_power_month": {
+        "name": "每月用電量"
+      },
+      "cloud_power_year": {
+        "name": "每年用電量"
+      },
+      "cloud_water_month_da": {
+        "name": "上滾筒每月用水量"
+      },
+      "cloud_water_month_db": {
+        "name": "下滾筒每月用水量"
+      },
+      "cloud_water_year_da": {
+        "name": "上滾筒每年用水量"
+      },
+      "cloud_water_year_db": {
+        "name": "下滾筒每年用水量"
+      },
+      "cloud_power_month_da": {
+        "name": "上滾筒每月用電量"
+      },
+      "cloud_power_month_db": {
+        "name": "下滾筒每月用電量"
+      },
+      "cloud_power_year_da": {
+        "name": "上滾筒每年用電量"
+      },
+      "cloud_power_year_db": {
+        "name": "下滾筒每年用電量"
+      },
+      "clean_water_consumption_next_remaining": {
+        "name": "下次清潔剩餘用水量"
+      },
+      "clean_interval_next_days_remaining": {
+        "name": "下次清潔剩餘天數"
+      },
+      "filter_use_per": {
+        "name": "濾網使用百分比"
+      },
+      "indoor_humidity": {
+        "name": "室內濕度"
+      },
+      "keep_fresh_status": {
+        "name": "保鮮狀態"
+      },
+      "ventilation_speed": {
+        "name": "通風速度"
+      },
+      "smelly_level": {
+        "name": "異味等級"
+      },
+      "current_height": {
+        "name": "落差高度"
+      },
+      "location_status": {
+        "name": "位置狀態"
+      },
+      "standby_status": {
+        "name": "待機狀態"
+      },
+      "life_fcb": {
+        "name": "FCB 濾芯剩餘壽命"
+      },
+      "life_ro": {
+        "name": "RO 濾芯剩餘壽命"
+      },
+      "operator": {
+        "name": "操作員"
+      },
+      "additional": {
+        "name": "附加功能"
+      },
+      "wash_region": {
+        "name": "洗滌區域"
+      },
+      "wind_speed_real": {
+        "name": "實際風速"
+      },
+      "temperature_above": {
+        "name": "上管溫度"
+      },
+      "temperature_underside": {
+        "name": "下管溫度"
+      },
+      "fire_power": {
+        "name": "火力"
+      },
+      "work_mode": {
+        "name": "工作模式"
+      },
+      "mouthfeel": {
+        "name": "口感"
+      },
+      "execute": {
+        "name": "執行狀態"
+      },
+      "dc_running_status": {
+        "name": "烘乾機運轉狀態",
+        "state": {
+          "standby": "待機",
+          "start": "開始",
+          "pause": "暫停",
+          "end": "結束",
+          "fault": "故障",
+          "delay_choosing": "延遲選擇",
+          "delay": "延遲",
+          "delay_pause": "延遲暫停",
+          "end_prevent_wrinkle": "結束（防皺）"
+        }
+      },
+      "dc_remain_time": {
+        "name": "烘乾機剩餘時間"
+      },
+      "dc_program": {
+        "name": "烘乾機程式"
+      },
+      "dc_dry_status": {
+        "name": "烘乾機階段"
+      },
+      "db_stage": {
+        "name": "洗滌階段",
+        "state": {
+          "idle": "閒置",
+          "weighing": "秤重中",
+          "pre_wash": "預洗",
+          "washing": "洗滌中",
+          "rinsing": "沖洗中",
+          "dehydrating": "脫水中",
+          "high_speed_dehydrating": "高速脫水中",
+          "drying": "烘乾"
+        }
+      },
+      "alarm_status_identifier": {
+        "name": "警報狀態"
+      },
+      "db_wash_progress": {
+        "name": "洗滌階段",
+        "state": {
+          "0": "已完成",
+          "1": "脫水",
+          "2": "沖洗",
+          "4": "洗滌",
+          "8": "待機",
+          "32": "待機"
+        }
+      }
+    },
+    "light": {
+      "light": {
+        "name": "燈"
+      },
+      "main_light": {
+        "name": "吸頂燈"
+      },
+      "night_light": {
+        "name": "夜燈"
+      },
+      "common_light": {
+        "name": "吸頂燈"
+      }
+    },
+    "lock": {
+      "child_lock": {
+        "name": "兒童鎖"
+      },
+      "lock": {
+        "name": "鎖定"
+      }
+    },
+    "number": {
+      "voice_level": {
+        "name": "語音等級"
+      },
+      "auto_temperature_lower_limit": {
+        "name": "自動溫度下限"
+      },
+      "auto_temperature_upper_limit": {
+        "name": "自動溫度上限"
+      },
+      "air_set_hour": {
+        "name": "烘乾儲存設定時間"
+      },
+      "delay_light_off": {
+        "name": "延遲關燈"
+      },
+      "hosting_upper": {
+        "name": "PM2.5 上限（自動淨化）"
+      },
+      "hosting_lower": {
+        "name": "PM2.5 下限（停止淨化）"
+      },
+      "fresh_air_fan_speed": {
+        "name": "新風風扇速度"
+      },
+      "steam_quantity": {
+        "name": "蒸氣量"
+      },
+      "work_hour": {
+        "name": "工作（時）"
+      },
+      "work_minute": {
+        "name": "工作（分）"
+      },
+      "work_second": {
+        "name": "工作（秒）"
+      },
+      "lightness": {
+        "name": "明度"
+      },
+      "custom_timing": {
+        "name": "關燈計時器"
+      },
+      "radar_induction_closing_time": {
+        "name": "夜燈計時器"
+      },
+      "keep_warm_time": {
+        "name": "保溫時間"
+      },
+      "target_temperature": {
+        "name": "目標溫度"
+      },
+      "light_brightness": {
+        "name": "燈光亮度"
+      },
+      "bash_target_temperature": {
+        "name": "沐浴目標溫度"
+      },
+      "bash_gap_temperature": {
+        "name": "沐浴溫差"
+      },
+      "heating_target_temperature": {
+        "name": "加熱目標溫度"
+      },
+      "zone1_cooling_temperature": {
+        "name": "區域 1 製冷溫度"
+      },
+      "zone2_cooling_temperature": {
+        "name": "區域 2 製冷溫度"
+      },
+      "heating_gap_temperature": {
+        "name": "加熱溫差"
+      },
+      "last_time": {
+        "name": "持續加熱時間"
+      },
+      "user_mode_target_temperature": {
+        "name": "使用者模式目標溫度"
+      },
+      "activity_mode_target_temperature": {
+        "name": "活動模式目標溫度"
+      },
+      "sleep_mode_target_temperature": {
+        "name": "睡眠模式目標溫度"
+      },
+      "light_gear": {
+        "name": "螢幕亮度"
+      },
+      "laundry_height": {
+        "name": "衣物高度"
+      },
+      "water_quality": {
+        "name": "水質"
+      },
+      "b6_lightness": {
+        "name": "抽油煙機亮度"
+      },
+      "dehydration_speed": {
+        "name": "脫水轉速"
+      },
+      "db_dehydration_speed": {
+        "name": "DB 脫水轉速"
+      },
+      "detergent": {
+        "name": "洗衣精"
+      },
+      "softener": {
+        "name": "柔軟精"
+      },
+      "steam_set": {
+        "name": "蒸氣設定"
+      },
+      "temperature": {
+        "name": "溫度"
+      },
+      "soak_count": {
+        "name": "浸泡次數"
+      },
+      "dirty_degree": {
+        "name": "髒汙程度"
+      },
+      "soak_time": {
+        "name": "浸泡時間"
+      },
+      "wash_time": {
+        "name": "洗滌時間"
+      },
+      "rinse_count": {
+        "name": "沖洗次數"
+      },
+      "dehydration_time": {
+        "name": "脫水時間"
+      },
+      "wash_level": {
+        "name": "洗滌等級"
+      },
+      "rinse_level": {
+        "name": "沖洗等級"
+      },
+      "clean_water_consumption": {
+        "name": "清潔用水量"
+      },
+      "quantify_21": {
+        "name": "定量 1"
+      },
+      "quantify_22": {
+        "name": "定量 2"
+      },
+      "quantify_23": {
+        "name": "定量 3"
+      },
+      "wash_strength": {
+        "name": "水流強度"
+      },
+      "pmv": {
+        "name": "PMV"
+      },
+      "custom_temperature_1": {
+        "name": "自訂溫度 1"
+      },
+      "lr_target_angle": {
+        "name": "左右擺動角度"
+      },
+      "ud_target_angle": {
+        "name": "上下擺動角度"
+      },
+      "lr_diy_angle_down": {
+        "name": "左右 DIY 起始角度（左）"
+      },
+      "lr_diy_angle_up": {
+        "name": "左右 DIY 結束角度（右）"
+      },
+      "ud_diy_angle_down": {
+        "name": "上下 DIY 起始角度（下）"
+      },
+      "ud_diy_angle_up": {
+        "name": "上下 DIY 結束角度（上）"
+      },
+      "area1_time": {
+        "name": "雙區 區域 1 時長"
+      },
+      "area2_time": {
+        "name": "雙區 區域 2 時長"
+      },
+      "area1_gear": {
+        "name": "雙區 區域 1 檔位"
+      },
+      "area2_gear": {
+        "name": "雙區 區域 2 檔位"
+      },
+      "smell_time": {
+        "name": "除臭時間"
+      },
+      "bath_temperature": {
+        "name": "沐浴溫度"
+      },
+      "heating_temperature": {
+        "name": "加熱溫度"
+      },
+      "main_light_brightness": {
+        "name": "主燈亮度"
+      },
+      "custom_height": {
+        "name": "烘乾高度"
+      },
+      "timing_light_off": {
+        "name": "延遲關燈"
+      },
+      "voice_set": {
+        "name": "語音音量"
+      },
+      "timing_regeneration_hour": {
+        "name": "定時再生（時）"
+      },
+      "timing_regeneration_min": {
+        "name": "定時再生（分）"
+      },
+      "dry_time_setting": {
+        "name": "烘乾時間"
+      },
+      "quick_prepare_food_angle": {
+        "name": "備餐角度"
+      },
+      "appointment_finish_in": {
+        "name": "預約：完成時間"
+      },
+      "appointment_delay": {
+        "name": "預約延遲"
+      }
+    },
+    "fan": {
+      "fan": {
+        "name": "風扇",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "baby": "嬰兒風",
+              "normal": "一般風",
+              "natural": "自然風",
+              "sleep": "睡眠風",
+              "comfort": "舒適風",
+              "mute": "靜音",
+              "feel": "感應",
+              "storm": "循環",
+              "strong": "強力",
+              "soft": "柔和",
+              "customize": "自訂",
+              "warm": "溫暖",
+              "smart": "智慧",
+              "ecology": "生態",
+              "self_selection": "自選",
+              "sleeping_wind": "睡眠風",
+              "ai_smart": "生態風",
+              "double_area": "雙區風"
+            }
+          }
+        }
+      },
+      "fan_only_fan": {
+        "name": "僅送風",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "auto": "自動",
+              "manual": "手動"
+            }
+          }
+        }
+      },
+      "fresh_air_fan": {
+        "name": "新風",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "heat_exchange": "熱交換",
+              "rough_in": "強力送風",
+              "smooth_in": "送風",
+              "rough_out": "強力排風",
+              "smooth_out": "排風"
+            }
+          }
+        }
+      }
+    },
+    "switch": {
+      "efficient": {
+        "name": "低功率保溫"
+      },
+      "low_energy_save": {
+        "name": "低能耗節能"
+      },
+      "prevent_super_cool": {
+        "name": "防過冷"
+      },
+      "cool_power_saving": {
+        "name": "製冷省電"
+      },
+      "light_sensitive": {
+        "name": "光敏感度"
+      },
+      "buzzer_all": {
+        "name": "聲音"
+      },
+      "buzzer_off_status": {
+        "name": "靜音控制"
+      },
+      "new_wind_machine": {
+        "name": "新風開關"
+      },
+      "anion_status": {
+        "name": "殺菌"
+      },
+      "radar_induction_enable": {
+        "name": "雷達感應"
+      },
+      "auto_power_off": {
+        "name": "自動關機"
+      },
+      "auto_release_switch": {
+        "name": "自動釋放開關"
+      },
+      "power_on_timer": {
+        "name": "定時開機"
+      },
+      "power_off_timer": {
+        "name": "定時關機"
+      },
+      "voice": {
+        "name": "聲音"
+      },
+      "laundry": {
+        "name": "一鍵洗衣"
+      },
+      "offline_voice_function": {
+        "name": "離線語音"
+      },
+      "winter_mode": {
+        "name": "冬季模式"
+      },
+      "summer_mode": {
+        "name": "夏季模式"
+      },
+      "waterions": {
+        "name": "消毒"
+      },
+      "mute": {
+        "name": "靜音"
+      },
+      "b6_light": {
+        "name": "抽油煙機燈"
+      },
+      "temp_wind_switch": {
+        "name": "風隨溫度變化"
+      },
+      "screen_close": {
+        "name": "螢幕顯示"
+      },
+      "anion": {
+        "name": "負離子"
+      },
+      "child_lock": {
+        "name": "兒童鎖"
+      },
+      "airswitch": {
+        "name": "烘乾儲存開關"
+      },
+      "swing": {
+        "name": "擺動"
+      },
+      "wind_swing_ud": {
+        "name": "上下擺風"
+      },
+      "filter_tip": {
+        "name": "濾網提示"
+      },
+      "control_status": {
+        "name": "開始／暫停"
+      },
+      "add_water_flag": {
+        "name": "加水旗標"
+      },
+      "ali_manager": {
+        "name": "Ali 管家"
+      },
+      "appoint_power": {
+        "name": "預約開機"
+      },
+      "appoint_wash": {
+        "name": "預約洗滌"
+      },
+      "auto_off": {
+        "name": "自動關閉"
+      },
+      "baby_wash": {
+        "name": "嬰兒洗"
+      },
+      "bath": {
+        "name": "沐浴"
+      },
+      "bath_person": {
+        "name": "沐浴人數"
+      },
+      "big_water": {
+        "name": "大水量"
+      },
+      "bottom_heat": {
+        "name": "底部加熱"
+      },
+      "clean": {
+        "name": "清潔"
+      },
+      "cloud": {
+        "name": "雲端"
+      },
+      "cloud_appoint": {
+        "name": "雲端預約"
+      },
+      "dad_wash": {
+        "name": "爸爸洗"
+      },
+      "eplus": {
+        "name": "Eplus"
+      },
+      "e_capacity": {
+        "name": "E+ 容量"
+      },
+      "fast_hot_power": {
+        "name": "快速加熱功率"
+      },
+      "fast_wash": {
+        "name": "快洗"
+      },
+      "frequency_hot": {
+        "name": "變頻加熱"
+      },
+      "get_temp": {
+        "name": "取得溫度"
+      },
+      "get_time": {
+        "name": "取得時間"
+      },
+      "half_heat": {
+        "name": "半加熱"
+      },
+      "heat": {
+        "name": "加熱"
+      },
+      "hot_power": {
+        "name": "加熱功率"
+      },
+      "heat_function": {
+        "name": "加熱功能"
+      },
+      "midea_manager": {
+        "name": "美的管家"
+      },
+      "mom_wash": {
+        "name": "媽媽洗"
+      },
+      "music": {
+        "name": "音樂"
+      },
+      "negative_ions": {
+        "name": "負離子"
+      },
+      "need_discharge": {
+        "name": "需要排放"
+      },
+      "night": {
+        "name": "夜間"
+      },
+      "night_electricity_cloud": {
+        "name": "離峰夜間加熱"
+      },
+      "now_wash": {
+        "name": "立即洗"
+      },
+      "one_egg": {
+        "name": "一顆蛋"
+      },
+      "people_wash": {
+        "name": "多人洗"
+      },
+      "protect": {
+        "name": "保護"
+      },
+      "protect_show": {
+        "name": "保護顯示"
+      },
+      "scene": {
+        "name": "場景"
+      },
+      "screen_off": {
+        "name": "螢幕關閉"
+      },
+      "scroll_hot": {
+        "name": "循環加熱"
+      },
+      "shower": {
+        "name": "淋浴"
+      },
+      "single_wash": {
+        "name": "單人洗"
+      },
+      "sleep": {
+        "name": "睡眠"
+      },
+      "smart_sterilize": {
+        "name": "智慧殺菌"
+      },
+      "sound_dad": {
+        "name": "聲音爸爸"
+      },
+      "sterilization": {
+        "name": "殺菌"
+      },
+      "sterilize_high_temp": {
+        "name": "高溫殺菌"
+      },
+      "summer": {
+        "name": "夏季"
+      },
+      "t_hot": {
+        "name": "T 加熱"
+      },
+      "tech_water": {
+        "name": "科技水"
+      },
+      "ti_protect": {
+        "name": "Ti 保護"
+      },
+      "top_heat": {
+        "name": "頂部加熱"
+      },
+      "two_egg": {
+        "name": "兩顆蛋"
+      },
+      "uv_sterilize": {
+        "name": "紫外線殺菌"
+      },
+      "warm_power": {
+        "name": "保溫功率"
+      },
+      "wash": {
+        "name": "洗滌"
+      },
+      "wash_with_temp": {
+        "name": "隨溫度洗滌"
+      },
+      "water_cyclic": {
+        "name": "水循環"
+      },
+      "water_flow": {
+        "name": "水流"
+      },
+      "whole_heat": {
+        "name": "整體加熱"
+      },
+      "winter": {
+        "name": "冬季"
+      },
+      "ai_flag": {
+        "name": "AI 旗標"
+      },
+      "ai_switch": {
+        "name": "AI 開關"
+      },
+      "airdry_on_off": {
+        "name": "風乾開關"
+      },
+      "appointment": {
+        "name": "預約"
+      },
+      "aux_heat": {
+        "name": "輔助加熱"
+      },
+      "baby_lock": {
+        "name": "兒童鎖"
+      },
+      "bathtub": {
+        "name": "浴缸"
+      },
+      "beforehand_wash": {
+        "name": "預先洗滌"
+      },
+      "bubble": {
+        "name": "氣泡"
+      },
+      "bucket_clean_switch": {
+        "name": "水桶清潔開關"
+      },
+      "buzzer": {
+        "name": "蜂鳴器"
+      },
+      "pump": {
+        "name": "泵浦"
+      },
+      "wait_power": {
+        "name": "待機"
+      },
+      "cold_power": {
+        "name": "防凍"
+      },
+      "sleep_power": {
+        "name": "睡眠"
+      },
+      "change_litre_switch": {
+        "name": "換水公升開關"
+      },
+      "change_net_change_flg": {
+        "name": "換網更換旗標"
+      },
+      "cl_sterilization": {
+        "name": "氯殺菌"
+      },
+      "clean_net_clean_flg": {
+        "name": "清網清潔旗標"
+      },
+      "co2_check_enable": {
+        "name": "CO2 檢測啟用"
+      },
+      "cold_water": {
+        "name": "冷水單循環"
+      },
+      "cold_water_ai": {
+        "name": "冷水 AI"
+      },
+      "cold_water_dot": {
+        "name": "冷水點動"
+      },
+      "cold_water_pressure": {
+        "name": "冷水水壓"
+      },
+      "lamp_control2_power": {
+        "name": "燈 2"
+      },
+      "lamp_control3_power": {
+        "name": "燈 3"
+      },
+      "comp_state": {
+        "name": "壓縮機狀態"
+      },
+      "condensation_state": {
+        "name": "冷凝狀態"
+      },
+      "cool_enable": {
+        "name": "製冷啟用"
+      },
+      "cycle_memory": {
+        "name": "週期記憶"
+      },
+      "damp_dry_signal": {
+        "name": "濕烘訊號"
+      },
+      "day_time_state": {
+        "name": "日間時段狀態"
+      },
+      "db_baby_lock": {
+        "name": "DB 兒童鎖"
+      },
+      "db_clean_notification": {
+        "name": "DB 清潔通知"
+      },
+      "db_detergent_needed": {
+        "name": "DB 需要洗衣精"
+      },
+      "db_fast_clean_wash": {
+        "name": "DB 快速清潔洗"
+      },
+      "db_light": {
+        "name": "DB 燈"
+      },
+      "db_nightly_wash": {
+        "name": "DB 夜間洗"
+      },
+      "da_power": {
+        "name": "小桶電源"
+      },
+      "da_control_status": {
+        "name": "小桶開始／暫停"
+      },
+      "da_program": {
+        "name": "小桶程式"
+      },
+      "da_running_status": {
+        "name": "小桶運轉狀態"
+      },
+      "da_remain_time": {
+        "name": "小桶剩餘時間"
+      },
+      "db_power": {
+        "name": "主洗電源"
+      },
+      "db_control_status": {
+        "name": "主洗開始／暫停"
+      },
+      "db_program": {
+        "name": "主洗程式"
+      },
+      "dc_power": {
+        "name": "烘乾機電源"
+      },
+      "dc_control_status": {
+        "name": "烘乾機開始／暫停"
+      },
+      "db_softener_needed": {
+        "name": "DB 需要柔軟精"
+      },
+      "db_steam_wash": {
+        "name": "DB 蒸氣洗"
+      },
+      "db_wash_dry_link": {
+        "name": "DB 洗烘連動"
+      },
+      "defrost_state": {
+        "name": "除霜狀態"
+      },
+      "disinfect_on_off": {
+        "name": "消毒開關"
+      },
+      "display_on_off": {
+        "name": "顯示開關"
+      },
+      "door_downstair": {
+        "name": "下層門"
+      },
+      "door_middlestair": {
+        "name": "中層門"
+      },
+      "door_upstair": {
+        "name": "上層門"
+      },
+      "door_warn": {
+        "name": "門警告"
+      },
+      "down_light": {
+        "name": "下層燈"
+      },
+      "downstair_iscooling": {
+        "name": "下層正在冷卻"
+      },
+      "downstair_ispreheat": {
+        "name": "下層正在預熱"
+      },
+      "dry": {
+        "name": "烘乾"
+      },
+      "dry_weighing_already": {
+        "name": "烘乾已秤重"
+      },
+      "drying_tunnel_overheating": {
+        "name": "烘乾通道過熱"
+      },
+      "easy_ironing": {
+        "name": "易熨燙"
+      },
+      "eco_dry_switch": {
+        "name": "節能烘乾開關"
+      },
+      "esp_enable": {
+        "name": "ESP 啟用"
+      },
+      "esp_state": {
+        "name": "ESP 狀態"
+      },
+      "eye_wash": {
+        "name": "護眼洗"
+      },
+      "fast_clean_wash": {
+        "name": "快速清潔洗"
+      },
+      "flocks_switcher": {
+        "name": "絮狀物開關"
+      },
+      "flowmeter_error": {
+        "name": "流量計異常"
+      },
+      "freeze_state": {
+        "name": "冷凍狀態"
+      },
+      "fresh_air_remove_odor": {
+        "name": "新風除味"
+      },
+      "fresh_anion_switch": {
+        "name": "清新負離子開關"
+      },
+      "function_set_energy_save": {
+        "name": "功能設定：節能"
+      },
+      "function_set_link": {
+        "name": "功能設定：連動"
+      },
+      "function_set_prheat": {
+        "name": "功能設定：預熱"
+      },
+      "function_set_sleep": {
+        "name": "功能設定：睡眠"
+      },
+      "function_set_ultimate": {
+        "name": "功能設定：極致"
+      },
+      "gesture_function": {
+        "name": "手勢功能"
+      },
+      "hcho_check_enable": {
+        "name": "HCHO 檢測啟用"
+      },
+      "heat_enable": {
+        "name": "加熱啟用"
+      },
+      "holiday_mode": {
+        "name": "假日模式"
+      },
+      "holiday_on_state": {
+        "name": "假日已開啟狀態"
+      },
+      "holiday_set_state": {
+        "name": "假日設定狀態"
+      },
+      "holiday_state": {
+        "name": "假日狀態"
+      },
+      "humidity_check_enable": {
+        "name": "濕度檢測啟用"
+      },
+      "humidity_state": {
+        "name": "濕度狀態"
+      },
+      "intelligent_wash": {
+        "name": "智慧洗"
+      },
+      "is_error": {
+        "name": "是否異常"
+      },
+      "keep_fresh_status": {
+        "name": "保鮮狀態"
+      },
+      "leak_water": {
+        "name": "漏水"
+      },
+      "leak_water_protection": {
+        "name": "漏水保護"
+      },
+      "light": {
+        "name": "燈"
+      },
+      "lock": {
+        "name": "鎖定"
+      },
+      "lock_state": {
+        "name": "鎖定狀態"
+      },
+      "low_battery": {
+        "name": "電量低"
+      },
+      "low_salt": {
+        "name": "鹽量偏低"
+      },
+      "maintenance_reminder_switch": {
+        "name": "保養提醒開關"
+      },
+      "memory": {
+        "name": "記憶"
+      },
+      "micro_leak": {
+        "name": "微量漏水"
+      },
+      "micro_leak_protection": {
+        "name": "微漏保護"
+      },
+      "microbubble": {
+        "name": "微氣泡"
+      },
+      "middlestair_iscooling": {
+        "name": "中層正在冷卻"
+      },
+      "middlestair_ispreheat": {
+        "name": "中層正在預熱"
+      },
+      "netions_on_off": {
+        "name": "淨離子開關"
+      },
+      "nightly": {
+        "name": "夜間"
+      },
+      "no_salt": {
+        "name": "無鹽"
+      },
+      "old_speedy": {
+        "name": "舊版快速"
+      },
+      "passby_enable": {
+        "name": "過水啟用"
+      },
+      "person_mode_one": {
+        "name": "人員模式一"
+      },
+      "person_mode_three": {
+        "name": "人員模式三"
+      },
+      "person_mode_two": {
+        "name": "人員模式二"
+      },
+      "pm25_check_enable": {
+        "name": "PM2.5 檢測啟用"
+      },
+      "power": {
+        "name": "電源"
+      },
+      "power_state": {
+        "name": "電源狀態"
+      },
+      "pre_heat": {
+        "name": "預熱"
+      },
+      "pre_regeneration": {
+        "name": "預再生"
+      },
+      "preheat_enable": {
+        "name": "預熱啟用"
+      },
+      "preheat_state": {
+        "name": "預熱狀態"
+      },
+      "prevent_straight_wind": {
+        "name": "防直吹"
+      },
+      "follow_body_sense": {
+        "name": "跟隨體感"
+      },
+      "prevent_wrinkle_switch": {
+        "name": "防皺開關"
+      },
+      "regeneration": {
+        "name": "再生"
+      },
+      "remain_able": {
+        "name": "可剩餘"
+      },
+      "remind_sound": {
+        "name": "提示音"
+      },
+      "room_temp_ctrl": {
+        "name": "室溫控制"
+      },
+      "room_temp_set": {
+        "name": "室溫設定"
+      },
+      "rsj_stand_by": {
+        "name": "RSJ 待機"
+      },
+      "safe": {
+        "name": "安全"
+      },
+      "salt_level_sensor_error": {
+        "name": "鹽量感測器異常"
+      },
+      "silence_set_state": {
+        "name": "靜音設定狀態"
+      },
+      "silence_state": {
+        "name": "靜音狀態"
+      },
+      "silent": {
+        "name": "靜音"
+      },
+      "soak": {
+        "name": "浸泡"
+      },
+      "soften": {
+        "name": "柔軟"
+      },
+      "speedy": {
+        "name": "快速"
+      },
+      "spray_wash": {
+        "name": "噴淋洗"
+      },
+      "steam": {
+        "name": "蒸氣"
+      },
+      "steam_switch": {
+        "name": "蒸氣開關"
+      },
+      "steam_wash": {
+        "name": "蒸氣洗"
+      },
+      "strong_wash": {
+        "name": "強力洗"
+      },
+      "super_clean_wash": {
+        "name": "超淨洗"
+      },
+      "time_set_state": {
+        "name": "時間設定狀態"
+      },
+      "timer_state": {
+        "name": "定時狀態"
+      },
+      "ultraviolet_lamp": {
+        "name": "紫外線燈"
+      },
+      "upstair_iscooling": {
+        "name": "上層正在冷卻"
+      },
+      "upstair_ispreheat": {
+        "name": "上層正在預熱"
+      },
+      "uv_disinfect": {
+        "name": "紫外線消毒"
+      },
+      "uvswitch": {
+        "name": "紫外線開關"
+      },
+      "warn_state": {
+        "name": "警告狀態"
+      },
+      "water_box": {
+        "name": "水盒"
+      },
+      "water_plus": {
+        "name": "加水"
+      },
+      "water_way": {
+        "name": "水路"
+      },
+      "waterswitch": {
+        "name": "水開關"
+      },
+      "week_time_state": {
+        "name": "週時段狀態"
+      },
+      "wind_dispel": {
+        "name": "驅風"
+      },
+      "acme_freezing_mode": {
+        "name": "極致冷凍模式"
+      },
+      "acquire_icea_mode_power": {
+        "name": "取得冰吧模式電源"
+      },
+      "acquire_water_mode_power": {
+        "name": "取得水模式電源"
+      },
+      "all_refrigeration_power": {
+        "name": "全冷藏電源"
+      },
+      "brash_icea_mode_power": {
+        "name": "刷新冰吧模式電源"
+      },
+      "cross_peak_electricity": {
+        "name": "跨峰用電"
+      },
+      "dry_zone": {
+        "name": "乾燥區"
+      },
+      "electronic_smell": {
+        "name": "電子除味"
+      },
+      "energy_saving_mode": {
+        "name": "節能模式"
+      },
+      "eradicate_pesticide_residue": {
+        "name": "去除農藥殘留"
+      },
+      "floodlight_power": {
+        "name": "照明燈電源"
+      },
+      "freezing_ice_machine_power": {
+        "name": "冷凍製冰機電源"
+      },
+      "freezing_mode": {
+        "name": "冷凍模式"
+      },
+      "freezing_power": {
+        "name": "冷凍電源"
+      },
+      "function_zone_power": {
+        "name": "功能區電源"
+      },
+      "humidify": {
+        "name": "冷風"
+      },
+      "humidify_power": {
+        "name": "加濕電源"
+      },
+      "ice_mouth_power": {
+        "name": "冰口電源"
+      },
+      "icea_mode_power": {
+        "name": "冰吧模式電源"
+      },
+      "intelligent_mode": {
+        "name": "智慧模式"
+      },
+      "left_flexzone_power": {
+        "name": "左側變溫室電源"
+      },
+      "microcrystal_fresh": {
+        "name": "微晶保鮮"
+      },
+      "milk_mode_power": {
+        "name": "牛奶模式電源"
+      },
+      "moisturize_mode": {
+        "name": "保濕模式"
+      },
+      "performance_mode": {
+        "name": "效能模式"
+      },
+      "plasma_aseptic_mode_power": {
+        "name": "電漿無菌模式電源"
+      },
+      "preservation_mode": {
+        "name": "保鮮模式"
+      },
+      "radar_mode_power": {
+        "name": "雷達模式電源"
+      },
+      "remove_dew_power": {
+        "name": "除露電源"
+      },
+      "right_flexzone_power": {
+        "name": "右側變溫室電源"
+      },
+      "storage_power": {
+        "name": "儲藏電源"
+      },
+      "unfreeze_power": {
+        "name": "解凍電源"
+      },
+      "heat_start": {
+        "name": "開始加熱"
+      },
+      "keep_warm": {
+        "name": "保溫"
+      },
+      "vacation": {
+        "name": "假期模式"
+      },
+      "germicidal": {
+        "name": "殺菌"
+      },
+      "drainage": {
+        "name": "排水"
+      },
+      "cool": {
+        "name": "製冷中"
+      },
+      "human_sensing_switch": {
+        "name": "人體感應"
+      },
+      "set_germicidal_countdown": {
+        "name": "設定殺菌倒數"
+      },
+      "wash_enable": {
+        "name": "洗滌啟用"
+      },
+      "eco": {
+        "name": "節能模式"
+      },
+      "ptc": {
+        "name": "輔助加熱"
+      },
+      "digital_display": {
+        "name": "數位顯示"
+      },
+      "voice_control": {
+        "name": "語音控制"
+      },
+      "voice_control_speaking": {
+        "name": "語音播報"
+      },
+      "mute_voice": {
+        "name": "靜音"
+      },
+      "strong": {
+        "name": "強力模式"
+      },
+      "sterilize": {
+        "name": "殺菌"
+      },
+      "selfclean": {
+        "name": "自清潔"
+      },
+      "humidification": {
+        "name": "加濕"
+      },
+      "diagnose": {
+        "name": "診斷"
+      },
+      "co2_check": {
+        "name": "CO2 檢測"
+      },
+      "hcho_check": {
+        "name": "HCHO 檢測"
+      },
+      "pm25_check": {
+        "name": "PM2.5 檢測"
+      },
+      "idu_silent": {
+        "name": "室內機靜音"
+      },
+      "idu_light": {
+        "name": "室內機燈光"
+      },
+      "idu_sleep": {
+        "name": "室內機睡眠"
+      },
+      "wind_feeling": {
+        "name": "風感"
+      },
+      "timer_on": {
+        "name": "定時開啟"
+      },
+      "timer_off": {
+        "name": "定時關閉"
+      },
+      "backup": {
+        "name": "備份"
+      },
+      "cur_fault": {
+        "name": "目前故障"
+      },
+      "filter_notification": {
+        "name": "濾網通知"
+      },
+      "left_power": {
+        "name": "左側電源"
+      },
+      "left_dry_fire_protection": {
+        "name": "左側乾燒保護"
+      },
+      "left_lock": {
+        "name": "左側鎖定"
+      },
+      "light_lampblack_mode": {
+        "name": "輕油煙模式"
+      },
+      "blowing_direction": {
+        "name": "吹風方向"
+      },
+      "function_led_enable": {
+        "name": "功能 LED 啟用"
+      },
+      "smelly_trigger": {
+        "name": "異味觸發"
+      },
+      "heating_direction": {
+        "name": "加熱方向"
+      },
+      "light_mode": {
+        "name": "燈光模式"
+      },
+      "wifi_led_enable": {
+        "name": "WiFi LED 啟用"
+      },
+      "bath_direction": {
+        "name": "沐浴方向"
+      },
+      "delay_enable": {
+        "name": "延遲啟用"
+      },
+      "digit_led_enable": {
+        "name": "數字 LED 啟用"
+      },
+      "dehumidity_trigger": {
+        "name": "除濕觸發"
+      },
+      "drying_direction": {
+        "name": "烘乾方向"
+      },
+      "antifreeze": {
+        "name": "防凍"
+      },
+      "cold_water_master": {
+        "name": "冷水主控"
+      },
+      "is_lock_heat": {
+        "name": "加熱鎖定"
+      },
+      "is_lock_cool": {
+        "name": "製冷鎖定"
+      },
+      "fan_speed_lock": {
+        "name": "風速鎖定"
+      },
+      "is_lock_rc": {
+        "name": "遙控器鎖定"
+      },
+      "endpoint_1_onoff": {
+        "name": "按鈕 1"
+      },
+      "endpoint_2_onoff": {
+        "name": "按鈕 2"
+      },
+      "endpoint_3_onoff": {
+        "name": "按鈕 3"
+      },
+      "endpoint_4_onoff": {
+        "name": "按鈕 4"
+      },
+      "endpoint_5_onoff": {
+        "name": "按鈕 5"
+      },
+      "endpoint_6_onoff": {
+        "name": "按鈕 6"
+      },
+      "endpoint_7_onoff": {
+        "name": "按鈕 7"
+      },
+      "endpoint_8_onoff": {
+        "name": "按鈕 8"
+      },
+      "wisdom_wind": {
+        "name": "智慧風"
+      },
+      "work_switch": {
+        "name": "工作開關"
+      },
+      "water_model_power_save": {
+        "name": "省電模式"
+      },
+      "water_model_power": {
+        "name": "水模式電源"
+      },
+      "water_model_go_out": {
+        "name": "外出模式"
+      },
+      "fastdhw_state": {
+        "name": "快速熱水"
+      },
+      "forcetbh_state": {
+        "name": "強制待機"
+      },
+      "force_heat": {
+        "name": "強制加熱"
+      },
+      "mute_en": {
+        "name": "靜音"
+      },
+      "manul_humi": {
+        "name": "加濕"
+      },
+      "manul_humi_value": {
+        "name": "設定濕度"
+      },
+      "down_wind_left_switch": {
+        "name": "下送風左開關"
+      },
+      "down_wind_right_switch": {
+        "name": "下送風右開關"
+      },
+      "disinfect": {
+        "name": "消毒"
+      },
+      "remove_arofene": {
+        "name": "除甲醛"
+      },
+      "remove_peculiar_smell": {
+        "name": "除異味"
+      },
+      "auto_fresh_off_co2": {
+        "name": "自動新風 CO2 關閉"
+      },
+      "comfort_fresh_air": {
+        "name": "舒適新風"
+      },
+      "elec_dust_remove": {
+        "name": "電除塵"
+      },
+      "air_exhaust": {
+        "name": "排氣"
+      },
+      "auto_rinse": {
+        "name": "自動沖洗"
+      },
+      "auto_deodorization": {
+        "name": "自動除臭"
+      },
+      "light_sensor": {
+        "name": "光感應器"
+      },
+      "auto_eco": {
+        "name": "自動節能"
+      },
+      "carpet_switch": {
+        "name": "地毯開關"
+      },
+      "disturb": {
+        "name": "勿擾"
+      },
+      "open_close_switch": {
+        "name": "開關切換"
+      },
+      "start_clean": {
+        "name": "開始清潔"
+      },
+      "filter_element_flushing": {
+        "name": "濾芯沖洗"
+      },
+      "no_obsolete_water": {
+        "name": "無陳水"
+      },
+      "save_mode": {
+        "name": "節能模式"
+      },
+      "reheating": {
+        "name": "再加熱"
+      },
+      "smart_no_obsolete_water": {
+        "name": "智慧零陳水"
+      },
+      "filter_wash": {
+        "name": "濾網清洗"
+      },
+      "autoclean_ctrl": {
+        "name": "自動清掃"
+      },
+      "leaking_protect_status": {
+        "name": "漏水保護"
+      },
+      "full": {
+        "name": "水箱已滿"
+      },
+      "sedentary_remind": {
+        "name": "久坐提醒"
+      },
+      "energysaving_state1": {
+        "name": "節能 1"
+      },
+      "sleep_state1": {
+        "name": "睡眠 1"
+      },
+      "energysaving_state2": {
+        "name": "節能 2"
+      },
+      "sleep_state2": {
+        "name": "睡眠 2"
+      },
+      "energysaving_state3": {
+        "name": "節能 3"
+      },
+      "sleep_state3": {
+        "name": "睡眠 3"
+      },
+      "energysaving_state4": {
+        "name": "節能 4"
+      },
+      "sleep_state4": {
+        "name": "睡眠 4"
+      },
+      "energysaving_state5": {
+        "name": "節能 5"
+      },
+      "sleep_state5": {
+        "name": "睡眠 5"
+      },
+      "natural_wind": {
+        "name": "自然風"
+      },
+      "inner_purifier": {
+        "name": "內部淨化器"
+      },
+      "purifier": {
+        "name": "淨化器"
+      },
+      "screen_display": {
+        "name": "螢幕顯示"
+      },
+      "wind_swing_lr_left": {
+        "name": "左右擺風（左）"
+      },
+      "wind_swing_lr_right": {
+        "name": "左右擺風（右）"
+      },
+      "wind_swing_ud_left": {
+        "name": "上下擺風（左）"
+      },
+      "wind_swing_ud_right": {
+        "name": "上下擺風（右）"
+      },
+      "sound": {
+        "name": "蜂鳴器"
+      },
+      "self_clean": {
+        "name": "自清潔"
+      },
+      "water_pump": {
+        "name": "水泵"
+      },
+      "dry_night": {
+        "name": "夜間烘乾"
+      },
+      "remove_static_electricity": {
+        "name": "抗靜電"
+      },
+      "intelligent_prevent_damp": {
+        "name": "智慧防潮"
+      },
+      "flash_dry": {
+        "name": "閃烘"
+      },
+      "anion_enable": {
+        "name": "負離子"
+      },
+      "smelly_enable": {
+        "name": "異味偵測"
+      },
+      "set_light_off": {
+        "name": "延遲關燈開關"
+      },
+      "mic_switch": {
+        "name": "麥克風"
+      },
+      "horn_switch": {
+        "name": "提示音"
+      },
+      "wakeup_free_switch": {
+        "name": "免喚醒詞"
+      },
+      "continuous_dialogue_switch": {
+        "name": "連續對話"
+      },
+      "remote_control_broadcast_switch": {
+        "name": "遠端廣播"
+      },
+      "lift_up_switch": {
+        "name": "抬起升降"
+      },
+      "wifi_light_switch": {
+        "name": "網路指示燈"
+      },
+      "filter_self_cleaning": {
+        "name": "濾網自清潔"
+      },
+      "extreme_mode": {
+        "name": "極致模式"
+      },
+      "auto_fill_water": {
+        "name": "自動加水"
+      },
+      "smart_ro_obsolete_water": {
+        "name": "智慧 RO 廢水比"
+      },
+      "gesture": {
+        "name": "手勢控制"
+      },
+      "prepare_food": {
+        "name": "備餐"
+      },
+      "quick_fry": {
+        "name": "快炒"
+      },
+      "fengguan_remove_odor": {
+        "name": "管道除味"
+      },
+      "ac_dry": {
+        "name": "烘乾"
+      },
+      "auto_comfort_fresh_air": {
+        "name": "自動舒適新風"
+      },
+      "exhaust": {
+        "name": "排氣"
+      },
+      "dry_step_switch": {
+        "name": "烘乾步驟開關"
+      },
+      "dryswitch": {
+        "name": "烘乾開關"
+      },
+      "voice_power": {
+        "name": "語音"
+      },
+      "power_switch": {
+        "name": "電源"
+      },
+      "cleaning_switch": {
+        "name": "清潔中"
+      },
+      "forced_deice_switch": {
+        "name": "強制除冰"
+      },
+      "uv_sterilization_switch": {
+        "name": "紫外線殺菌"
+      },
+      "turbo": {
+        "name": "渦輪"
+      }
+    },
+    "text": {
+      "external_humidity_sensor": {
+        "name": "外接濕度感測器"
+      }
+    },
+    "vacuum": {
+      "vacuum": {
+        "name": "掃地機器人",
+        "state_attributes": {
+          "fan_speed": {
+            "state": {
+              "soft": "柔和",
+              "normal": "一般",
+              "high": "高",
+              "super": "超強"
+            }
+          }
+        }
+      }
+    }
+  }
+}
