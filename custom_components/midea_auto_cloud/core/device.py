@@ -236,16 +236,6 @@ class MiedaDevice(threading.Thread):
             return tuple(sorted(query.items()))
         return (("__raw__", query),)
 
-    @staticmethod
-    def _normalize_status_query(device_type: int, query):
-        """T0xCF lua 不接受空 query，运行时补默认 query_type。"""
-        if device_type != 0xCF or not isinstance(query, dict):
-            return query
-        normalized = query.copy()
-        if not normalized.get("query_type"):
-            normalized["query_type"] = "0x11"
-        return normalized
-
     def set_centralized(self, centralized: list):
         self._centralized = centralized
 
@@ -588,8 +578,11 @@ class MiedaDevice(threading.Thread):
                 continue
 
             # 针对T0xD9复式洗衣机，根据 db_position 动态调整 db_location
+            # 注意：T0xCF 必须原样发空 query，云端 T_0000_CF_.lua 对
+            # query_type=0x11/0x12 会抛 arithmetic on nil value（code 9999），
+            # 查询会被判为 lua analysis exception 并永久跳过，导致所有实体 unknown；
+            # 本地 lua 构建路径的 query_type 补齐由 lua_runtime 负责。
             actual_query = query.copy() if isinstance(query, dict) else query
-            actual_query = self._normalize_status_query(self._device_type, actual_query)
             if self._device_type == 0xD9 and isinstance(actual_query, dict):
                 # 根据 db_position 调整 db_location
                 calculated_location = self._adjust_t0xd9_db_location_based_on_position(actual_query)
