@@ -598,8 +598,13 @@ class MeijuCloud(MideaCloud):
         data: dict,
         header=None,
         _retried_after_login: bool = False,
+        ok_field: str = "errCode",
     ) -> dict | None:
-        """家用空调 jykt 接口，响应格式为 errCode/result 而非 code/data。"""
+        """jykt/cfhrs family: response is {ok_field, result} rather than code/data.
+
+        jykt endpoints report success in ``errCode``; the dishwasher cfhrs
+        endpoint (WaterDisherConsumptionV2) reports it in ``retCode``.
+        """
         header = header or {}
         # 会话已丢失时先尝试恢复登录（带节流），与 _api_request 保持一致
         if (
@@ -641,17 +646,17 @@ class MeijuCloud(MideaCloud):
             traceback.print_exc()
             return None
 
-        if str(response.get("errCode")) == "0":
+        if str(response.get(ok_field)) == "0":
             if _retried_after_login:
                 self._token_invalid_retry_count = 0
             return response.get("result")
 
-        err_code = response.get("errCode")
-        err_msg = response.get("errMsg") or response.get("message")
+        err_code = response.get(ok_field)
+        err_msg = response.get("desc") or response.get("errMsg") or response.get("message")
         if err_code is not None:
             MideaLogger.debug(
                 f"Midea jykt API failed: endpoint={endpoint}, "
-                f"errCode={err_code}, errMsg={err_msg}, data={data}"
+                f"{ok_field}={err_code}, errMsg={err_msg}, data={data}"
             )
 
         # 关闭自动重登时，不做 token 失效专项检测与日志记录
@@ -806,6 +811,40 @@ class MeijuCloud(MideaCloud):
         if str(response.get("errCode")) == "0":
             return response.get("result")
         return None
+
+    async def query_dish_water_power(
+        self,
+        appliance_id: int,
+        query_type: str = "month",
+    ) -> dict | None:
+        """Query dishwasher cloud water/power statistics.
+
+        Uses the app endpoint ``WaterDisherConsumptionV2`` on /cfhrs/e1/v1/api
+        (POST, response carries ``retCode``/``result``). It backs the
+        week/month/year tabs of the app's water & power statistics screens.
+
+        query_type:
+            "week"  -> 7 daily buckets, xTime 1..7 = Monday..Sunday
+            "month" -> daily buckets, xTime 1..31 = day of month
+            "year"  -> 12 monthly buckets, xTime 1..12 = month
+
+        Returns ``{queryType, savedWater, savedElectricity,
+        data: [{xTime, yWater, yElectricity, washTimes, overNight}, ...]}``
+        where yWater is litres and yElectricity is kWh (already display units).
+
+        Note: do not pass userId/authUserId — the cloud then answers
+        "no permission for this appliance"; applianceId + queryType suffice.
+        """
+        data = {
+            "msg": "WaterDisherConsumptionV2",
+            "params": {
+                "applianceId": str(appliance_id),
+                "queryType": query_type,
+            },
+        }
+        return await self._jykt_api_request(
+            "/cfhrs/e1/v1/api", data, ok_field="retCode"
+        )
 
     async def get_device_status(self, appliance_code: int, query: dict) -> dict | None:
         data = {

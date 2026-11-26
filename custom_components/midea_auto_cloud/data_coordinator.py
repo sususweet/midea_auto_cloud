@@ -393,6 +393,160 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
         finally:
             self._last_cloud_poll["electricity"] = now
 
+    @staticmethod
+    def _sum_flat_bucket(
+        entries: list | None, start_ms: int, end_ms: int
+    ) -> float:
+        """Sum ``amount`` of flat [{time, amount}] entries inside a time window."""
+        total = 0.0
+        for entry in entries or []:
+            try:
+                ts = int(entry.get("time") or 0)
+                if start_ms <= ts < end_ms:
+                    total += float(entry.get("amount") or 0)
+            except (TypeError, ValueError, AttributeError):
+                continue
+        return total
+
+    @staticmethod
+    def _sum_wash_bucket(
+        result: dict | None,
+        drum: str,
+        resource: str,
+        start_ms: int,
+        end_ms: int,
+    ) -> float:
+        """Sum one drum/resource series of result[drum][resource] in a window."""
+        if not result:
+            return 0.0
+        entries = ((result.get(drum) or {}).get(resource)) or []
+        return MideaDataUpdateCoordinator._sum_flat_bucket(entries, start_ms, end_ms)
+
+    def _apply_wash_cloud_today(
+        self,
+        result: dict | None,
+        *,
+        dual_drum: bool,
+        day_start_ms: int,
+    ) -> None:
+        """Extract today's bucket from a resultType=1 response (7 daily buckets)."""
+        cloud = self._cloud
+        if not cloud or not result:
+            return
+        day_end_ms = day_start_ms + 24 * 3600 * 1000
+
+        # Single-drum machines return top-level water/power lists
+        # (water unit 0.1 L, power unit Wh) — same shape as _apply_wash_cloud_totals.
+        if not dual_drum and isinstance(result.get("water"), list):
+            water_raw = self._sum_flat_bucket(
+                result.get("water"), day_start_ms, day_end_ms
+            )
+            power_raw = self._sum_flat_bucket(
+                result.get("power"), day_start_ms, day_end_ms
+            )
+            self.device._attributes["cloud_water_today"] = round(water_raw / 10.0, 1)
+            self.device._attributes["cloud_power_today"] = round(power_raw / 1000.0, 3)
+            return
+
+        drums = ("da", "db")
+        if dual_drum:
+            for drum in drums:
+                water_raw = self._sum_wash_bucket(
+                    result, drum, "water", day_start_ms, day_end_ms
+                )
+                power_raw = self._sum_wash_bucket(
+                    result, drum, "power", day_start_ms, day_end_ms
+                )
+                self.device._attributes[f"cloud_water_today_{drum}"] = round(
+                    cloud.wash_water_liters(water_raw), 2
+                )
+                self.device._attributes[f"cloud_power_today_{drum}"] = round(
+                    cloud.wash_power_kwh(power_raw), 3
+                )
+        else:
+            water_raw = sum(
+                self._sum_wash_bucket(result, drum, "water", day_start_ms, day_end_ms)
+                for drum in drums
+            )
+            power_raw = sum(
+                self._sum_wash_bucket(result, drum, "power", day_start_ms, day_end_ms)
+                for drum in drums
+            )
+            self.device._attributes["cloud_water_today"] = round(
+                cloud.wash_water_liters(water_raw), 2
+            )
+            self.device._attributes["cloud_power_today"] = round(
+                cloud.wash_power_kwh(power_raw), 3
+            )
+
+    def _apply_dish_cloud_totals(
+        self,
+        result: dict | None,
+        *,
+        period: str,
+        now: datetime,
+    ) -> None:
+        """Parse a WaterDisherConsumptionV2 result (yWater=L, yElectricity=kWh)."""
+        if not result:
+            return
+        rows = result.get("data") or []
+        try:
+            water = sum(float(r.get("yWater") or 0) for r in rows)
+            power = sum(float(r.get("yElectricity") or 0) for r in rows)
+        except (TypeError, ValueError):
+            return
+        self.device._attributes[f"cloud_water_{period}"] = round(water, 2)
+        self.device._attributes[f"cloud_power_{period}"] = round(power, 3)
+        if period == "month":
+            # Month view: xTime is the day-of-month, so the matching bucket
+            # is today's usage.
+            today_key = str(now.day)
+            water_t = sum(
+                float(r.get("yWater") or 0)
+                for r in rows
+                if str(r.get("xTime")) == today_key
+            )
+            power_t = sum(
+                float(r.get("yElectricity") or 0)
+                for r in rows
+                if str(r.get("xTime")) == today_key
+            )
+            self.device._attributes["cloud_water_today"] = round(water_t, 2)
+            self.device._attributes["cloud_power_today"] = round(power_t, 3)
+
+    async def _poll_dish_water_power(
+        self, cloud, now: datetime, water_power_cfg: dict
+    ) -> None:
+        """Poll dishwasher cloud statistics (month + year, today from month view)."""
+        if not hasattr(cloud, "query_dish_water_power"):
+            return
+        try:
+            month_result = await cloud.query_dish_water_power(
+                self._device_id, query_type="month"
+            )
+            if month_result:
+                self._apply_dish_cloud_totals(month_result, period="month", now=now)
+            else:
+                MideaLogger.debug(
+                    f"Cloud dish water/power month query returned no data for {self._device_id}"
+                )
+
+            year_result = await cloud.query_dish_water_power(
+                self._device_id, query_type="year"
+            )
+            if year_result:
+                self._apply_dish_cloud_totals(year_result, period="year", now=now)
+            else:
+                MideaLogger.debug(
+                    f"Cloud dish water/power year query returned no data for {self._device_id}"
+                )
+        except Exception as e:
+            MideaLogger.warning(
+                f"Error polling cloud dish water/power for device {self._device_id}: {e}"
+            )
+        finally:
+            self._last_cloud_poll["water_power"] = now
+
     def _apply_wash_cloud_totals(
         self,
         result: dict | None,
@@ -448,14 +602,38 @@ class MideaDataUpdateCoordinator(DataUpdateCoordinator[MideaDeviceData]):
     async def _poll_cloud_water_power(
         self, cloud, now: datetime, water_power_cfg: dict
     ) -> None:
-        """轮询洗衣机/洗碗机云端水电统计（月 + 年）。"""
+        """轮询洗衣机/洗碗机云端水电统计（日 + 月 + 年）。"""
         if not hasattr(cloud, "query_wash_water_power"):
+            return
+
+        # api="dish": dishwashers use WaterDisherConsumptionV2 (cfhrs),
+        # everything else uses the washer getWaterPower endpoint.
+        if str(water_power_cfg.get("api") or "wash") == "dish":
+            await self._poll_dish_water_power(cloud, now, water_power_cfg)
             return
 
         device_type = water_power_cfg.get("device_type", self.device.device_type)
         dual_drum = bool(water_power_cfg.get("dual_drum"))
         today = now.strftime("%Y%m%d")
+        day_start_ms = int(
+            now.replace(hour=0, minute=0, second=0, microsecond=0).timestamp() * 1000
+        )
         try:
+            day_result = await cloud.query_wash_water_power(
+                self._device_id,
+                device_type=device_type,
+                result_type=1,
+                time=today,
+            )
+            if day_result:
+                self._apply_wash_cloud_today(
+                    day_result, dual_drum=dual_drum, day_start_ms=day_start_ms
+                )
+            else:
+                MideaLogger.debug(
+                    f"Cloud water/power day query returned no data for {self._device_id}"
+                )
+
             month_result = await cloud.query_wash_water_power(
                 self._device_id,
                 device_type=device_type,

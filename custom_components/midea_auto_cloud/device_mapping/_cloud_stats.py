@@ -21,6 +21,20 @@ _ELECTRICITY_SENSORS = {
 }
 
 _WATER_POWER_SENSORS = {
+    "cloud_water_today": {
+        "attribute": "cloud_water_today",
+        "device_class": SensorDeviceClass.WATER,
+        "unit_of_measurement": UnitOfVolume.LITERS,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_water_today",
+    },
+    "cloud_power_today": {
+        "attribute": "cloud_power_today",
+        "device_class": SensorDeviceClass.ENERGY,
+        "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_power_today",
+    },
     "cloud_water_month": {
         "attribute": "cloud_water_month",
         "device_class": SensorDeviceClass.WATER,
@@ -52,6 +66,34 @@ _WATER_POWER_SENSORS = {
 }
 
 _WATER_POWER_SENSORS_DUAL = {
+    "cloud_water_today_da": {
+        "attribute": "cloud_water_today_da",
+        "device_class": SensorDeviceClass.WATER,
+        "unit_of_measurement": UnitOfVolume.LITERS,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_water_today_da",
+    },
+    "cloud_water_today_db": {
+        "attribute": "cloud_water_today_db",
+        "device_class": SensorDeviceClass.WATER,
+        "unit_of_measurement": UnitOfVolume.LITERS,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_water_today_db",
+    },
+    "cloud_power_today_da": {
+        "attribute": "cloud_power_today_da",
+        "device_class": SensorDeviceClass.ENERGY,
+        "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_power_today_da",
+    },
+    "cloud_power_today_db": {
+        "attribute": "cloud_power_today_db",
+        "device_class": SensorDeviceClass.ENERGY,
+        "unit_of_measurement": UnitOfEnergy.KILO_WATT_HOUR,
+        "state_class": SensorStateClass.TOTAL,
+        "translation_key": "cloud_power_today_db",
+    },
     "cloud_water_month_da": {
         "attribute": "cloud_water_month_da",
         "device_class": SensorDeviceClass.WATER,
@@ -138,7 +180,9 @@ _CLOUD_STATS_REGISTRY: dict[int, dict] = {
     },
     0xE1: {
         "cloud_queries": {
-            "water_power": {"interval": 300},
+            # Dishwashers use cfhrs WaterDisherConsumptionV2 (the same
+            # water/power statistics endpoint the HeyTap app shows).
+            "water_power": {"interval": 300, "api": "dish"},
         },
         "sensors": _WATER_POWER_SENSORS,
     },
