@@ -147,10 +147,12 @@ class MideaSelectEntity(MideaEntity, SelectEntity):
         return self._dict_get_selected(self._key_options)
 
     async def async_select_option(self, option: str):
+        self._require_command_condition()
         new_status = self._key_options.get(option)
         if not new_status:
             return
 
+        new_status = {**self._config.get("reset_draft_parameters", {}), **new_status}
         self._last_option = option
         command = self._config.get("command")
         merged_command = {}
